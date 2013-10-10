@@ -1,0 +1,4 @@
+meegpipe
+========
+
+Main meegpipe repository
