@@ -110,4 +110,12 @@ if verbose
     fprintf([verboseLabel 'End of Remark output\n\n']);
 end
 
+source = catfile(report.root_path, 'remark.css');
+target = catfile(folder, 'remark_files', 'remark.css');
+[success, msg] = copyfile(source, target);
+if ~success,
+   warning('remark:UnableToCopyCSS', ...
+       'Not able to copy custom CSS settings: %s', msg);
+end
+
 end

@@ -143,7 +143,7 @@ try
     transRegex = '(?<date>.{14})_(?<hash>.{5}).+';
     
     fName = aggregate(data, 'features.txt', 'features_all.txt', ...
-        transRegex, [], false);   
+        transRegex, [], false, false);   
     
     ok(exist(fName, 'file')>0, name);
     

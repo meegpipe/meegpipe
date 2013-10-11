@@ -39,9 +39,7 @@ if isempty(get_parent(obj)),
     hashCode1 = get_static_hash_code(obj);
     
     % Get also a hash code for the version of meegpipe and its submods
-    dirName = rel2abs([meegpipe.root_path filesep '..']);
-    [modRev, modList] = submodule_revision(dirName);
-    hashCode2 = DataHash({modRev, modList});
+    hashCode2 = DataHash(meegpipe.version);
     
     hashCode = DataHash({hashCode1, hashCode2});
     

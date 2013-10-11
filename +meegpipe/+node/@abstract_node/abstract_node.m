@@ -224,7 +224,11 @@ classdef abstract_node < ...
         % Generate I/O report
         report      = io_report(obj, input, output);
         
-        restore_global_state(obj);
+        restore_global_state(obj);          
+       
+        % File where the meegpipe version is stored
+        fileName = get_vers_file(obj);        
+       
         
     end
     
@@ -372,6 +376,9 @@ classdef abstract_node < ...
         
         % Get root directory of report
         dirName     = get_full_dir(obj, data);
+        
+        % meegpipe version with which the node was last run
+        vers = get_meegpipe_version(obj);        
         
         
     end

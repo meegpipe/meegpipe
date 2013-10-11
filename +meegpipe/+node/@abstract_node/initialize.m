@@ -32,7 +32,7 @@ obj.RootDir_ = get_full_dir(obj, data);
 obj.SaveDir_ = obj.RootDir_;
 
 if isempty(get_parent(obj)),
-    obj.VersionFile_ = catfile(obj.RootDir_, 'submodule.version');
+    obj.VersionFile_ = catfile(obj.RootDir_, 'meegpipe.version');
 end
 
 if ~exist(obj.RootDir_, 'dir'),
@@ -68,11 +68,8 @@ if isempty(get_parent(obj))
             'f');
     end
     
-    fid = safefid.fopen(obj.VersionFile_, 'w');
-    dirName = rel2abs([meegpipe.root_path filesep '..']);
-    [modRev, modList] = submodule_revision(dirName);
-    fprintf(fid, 'modList=%s\n', any2str(modList, Inf));
-    fprintf(fid, 'modRev=%s\n', any2str(modRev, Inf));
+    fid = safefid.fopen(obj.VersionFile_, 'w');    
+    fprintf(fid, meegpipe.version);
 
 end
 
