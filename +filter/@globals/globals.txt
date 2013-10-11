@@ -1,0 +1,24 @@
+#
+# filter globals 
+#
+Ap                  .5          # passband ripple in dB
+Ast                 50          # stopband attenuation in dB
+DesignMethod        'ellip'     # filter design method
+MaxOrder            40          # maximum filter order
+DelayCorr           100         # in percentage from least accurate/fastest to slowest/most accurate
+Verbose             true        # Verbose mode
+StdOut              1           # Standard output for status messages
+EigValTh            0           # Eigenvalue thresholding parameter (<<1)
+VarTh               .95         # Variance threshold in percentage (0<VarTh<100)
+EmbedDim            10          # Embedding dimension
+WindowOverlap       .01         # Window overlap in percentage
+LargestMemoryChunk  100*10e7    # Maximum size for a MATLAB variable
+Precision           double      # Numeric data precision#
+NbC                 Inf         # Number of components for the eds filter
+#
+# Specific to varfilt
+#
+AR                  false       # Perform the filtering in an univariate
+                                # fashion, i.e. channel by channel?  
+VAR                 var.arfit   # VAR estimation algorithm                             
+
