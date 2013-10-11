@@ -1,0 +1,4 @@
+Class: abstract_var
+============
+
+[[Parent]]: pkg_var.txt

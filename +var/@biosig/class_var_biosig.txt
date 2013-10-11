@@ -1,0 +1,5 @@
+Class: biosig
+============
+
+[[Parent]]: class_var_estimator.txt
+

@@ -1,0 +1,15 @@
+# -------------------------------------------------------------------------
+# Generic globals
+# -------------------------------------------------------------------------
+
+Verbose             true
+VerboseLabel        @(x,y) ['(' strrep(x, 'spt.', ''), ':' y ')']
+StdOut              1
+
+# -------------------------------------------------------------------------
+# var.estimator
+# -------------------------------------------------------------------------
+
+Algorithm       var.arfit   # Default minimum model order
+PCA               spt.pca   # Default maximum model order
+MaxCond             1e10    # Maximum allowed condition number of the G matrix of a VAR model
