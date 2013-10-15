@@ -31,5 +31,6 @@ Events                  : Event :
 Position (e.g. body)    : Pos   : 
 Carbon Wires            : CW    :   V
 Blood pressure          : BP    :
+Pupillometry            : Pupil :
 Unknown                 : Unknown : na
 # Add new signal types above this line
