@@ -1,8 +1,8 @@
-function [status, MEh] = test_fileio()
-% test_fileio - Test Fieldtrip's fileio importer
+function [status, MEh] = test_pupillator()
+% TEST_PUPILLATOR - Test importer for Wisse&Joris pupillometry measurements
 
 import mperl.file.spec.*;
-import physioset.import.fileio;
+import physioset.import.pupillator;
 import test.simple.*;
 import pset.session;
 import safefid.safefid;
@@ -12,7 +12,7 @@ import misc.rmdir;
 % The sample data file to be used for testing
 % You may have to edit some of the tests below if you change this URL
 DATA_URL = ['http://kasku.org/data/meegpipe/' ...
-    'test_mux.mff.tgz'];
+    'pupw_0001_pupillometry_afternoon-sitting_1.csv'];
 
 MEh     = [];
 
@@ -42,7 +42,7 @@ end
 try
     
     name = 'constructor';
-    fileio;
+    pupillator;
     ok(true, name);
     
 catch ME
@@ -57,11 +57,8 @@ try
     name = 'download sample data file';
     
     folder = session.instance.Folder;    
-    file = untar(DATA_URL, folder);
-    file = file{1};
-    folderSc = strrep(folder, '\', '\\');
-    file = regexprep(file, [folderSc '.(.+)(\\|/).+$'], '$1');    
-    file = catfile(folder, file);
+    file = catfile(folder, 'sample.csv');
+    urlwrite(DATA_URL, file);    
     ok(exist(file, 'file') > 0, name);
     
 catch ME
@@ -78,16 +75,13 @@ try
     
     warning('off', 'sensors:InvalidLabel');
     warning('off', 'sensors:MissingPhysDim');
-    data = import(fileio('Equalize', false), file);
+    data = import(pupillator, file);
     warning('on', 'sensors:MissingPhysDim');
     warning('on', 'sensors:InvalidLabel'); 
+
+    ok(all(size(data) == [2 52508]) & numel(get_event(data)) == 246, name);    
     
-    evalc('dataFt = ft_read_data(file)');
-    
-    condition  = all(size(data) == size(dataFt)) & ...
-        max(abs(data(:) - dataFt(:))) < 0.001; %#ok<NODEF>
     clear data;
-    ok(condition, name);
     
     
 catch ME
@@ -105,13 +99,13 @@ try
     
     name = 'import multiple files';
     folder = session.instance.Folder;   
-    file2 = catfile(folder, 'copy.mff');
+    file2 = catfile(folder, 'sample_copy.mff');
     copyfile(file, file2);
     
     warning('off', 'sensors:InvalidLabel');
     warning('off', 'sensors:MissingPhysDim');
     warning('off', 'equalize:ZeroVarianceData')
-    data = import(fileio, file, file2);
+    data = import(pupillator, file, file2);
     warning('on', 'equalize:ZeroVarianceData')
     warning('on', 'sensors:MissingPhysDim');
     warning('on', 'sensors:InvalidLabel');
@@ -143,7 +137,7 @@ try
     warning('off', 'sensors:InvalidLabel');
     warning('off', 'sensors:MissingPhysDim');
     warning('off', 'equalize:ZeroVarianceData')
-    import(fileio('FileName', catfile(folder, 'myfile')), file);
+    import(pupillator('FileName', catfile(folder, 'myfile')), file);
     warning('on', 'equalize:ZeroVarianceData')
     warning('on', 'sensors:MissingPhysDim');
     warning('on', 'sensors:InvalidLabel');
