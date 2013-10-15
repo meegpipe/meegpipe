@@ -20,7 +20,7 @@ classdef ba < ...
     %
     % See also: filter
     
-    properties (SetAccess = private, GetAccess = private)
+    properties (SetAccess = private, GetAccess = public)
         
         B;
         A;

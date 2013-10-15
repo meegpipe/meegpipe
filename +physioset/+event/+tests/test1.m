@@ -7,7 +7,7 @@ import test.simple.*;
 
 MEh     = [];
 
-initialize(18);
+initialize(19);
 
 %% default constructors
 try
@@ -399,6 +399,29 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+
+%% value_selector  (numeric)
+try
+    
+    name = 'value_selector  (numeric)';
+    
+    ev = event(1:100:1000, 'Type', 'myType');
+    for i = 2:numel(ev)
+        ev(i) = set(ev(i), 'Value', i);
+    end
+    
+    selEvs = select(value_selector(2,4), ev);    
+    
+    ok(numel(selEvs) == 2 & selEvs(2).Value == 4, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 
 %% Select nearest neighbors

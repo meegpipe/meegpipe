@@ -1,7 +1,7 @@
 classdef latency_selector < ...
         physioset.event.selector & ...
         goo.abstract_setget
-    % latency_selector - Class that selects events within a latency_selector range
+    % LATENCY_SELECTOR - Class that selects events within certain latency range
     %
     % import physioset.event.*;
     % mySelector = latency_selector(sr, latRange);

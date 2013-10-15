@@ -36,7 +36,6 @@ if ~isempty(rejIdx),
     hold on;
     h = plot(rejIdx, rankVal(rejIdx), 'ro');
     set(h, 'MarkerFaceColor', 'red');
-    
 end
 
 th = prctile(rankVal, [5 90]);
