@@ -1,8 +1,5 @@
-classdef event_data < pset.selector.abstract_selector & goo.hashable
-    % EVENT_DATA - Selects data epochs using events
-    %
-    % NOTE: This selector is obsolete and will be removed in future
-    % versions. Use the event_selector selector instead.
+classdef event_selector < pset.selector.abstract_selector & goo.hashable
+    % EVENT_SELECTOR - Selects data epochs using events
     %
     % ## Usage synopsis:
     %
@@ -19,9 +16,9 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
     % ev = event.std.qrs(1:10:100, 'Type', 'notMyType');
     % add_event(data, ev);
     %
-    % % Select only myType epochs of class qrs
-    % myEvent = event.std.qrs(1, 'Type', 'myType');
-    % dataSel = selector.event_data(myEvent);
+    % % Select only myType epochs
+    % myEvSelector = physioset.event.class_selector('Type', 'myType');
+    % dataSel = selector.event_data(myEventSelector);
     % select(dataSel, data);
     % ````
     %
@@ -33,7 +30,7 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
     properties (SetAccess = private, GetAccess = private)
         
         Negated             = false;
-        Event               = [];
+        EventSelector       = [];
         Offset              = [];
         Duration            = [];
         
@@ -41,7 +38,7 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
     
     methods
         
-        function obj = set.Event(obj, value)
+        function obj = set.EventSelector(obj, value)
             
             import exceptions.*
             
@@ -50,12 +47,12 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
                 return;
             end
             
-            if numel(value) ~= 1 || ~isa(value, 'physioset.event.event'),
+            if numel(value) ~= 1 || ~isa(value, 'physioset.event.selector'),
                 throw(InvalidPropValue('Event', ...
-                    'Must be an event object'));
+                    'Must be an event selector'));
             end
             
-            obj.Event = value;
+            obj.EventSelector = value;
             
         end
         
@@ -72,8 +69,8 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
         function code = get_hash_code(obj)
             import datahash.DataHash;
             objStr = struct(obj);
-            if ~isempty(obj.Event),
-                objStr.Event = get_hash_code(obj.Event);
+            if ~isempty(obj.EventSelector),
+                objStr.Event = get_hash_code(obj.EventSelector);
             end
             code = DataHash(objStr);            
         end
@@ -100,7 +97,7 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
             if isempty(ev), return; end
             if isempty(obj.Event), return; end
             
-            ev = ev(ev == obj.Event);
+            ev = select(obj.EventSelector, ev);
             
             if isempty(ev), return; end
             
@@ -147,7 +144,7 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
         function disp(obj)
             
             import goo.disp_class_info;
-            import misc.dimtype_str;
+            import misc.any2str;
             
             disp_class_info(obj);
             
@@ -156,8 +153,8 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
             else
                 fprintf('%20s : no\n', 'Negated');
             end
-            fprintf('%20s : [%s]\n', 'Event', ...
-                dimtype_str(obj.Event, usejava('Desktop')));
+            fprintf('%20s : %s\n', 'EventSelector', ...
+                any2str(obj.EventSelector, 100));
             
             if ~isempty(obj.Duration),
                 fprintf('%20s : %d\n', 'Duration', obj.Duration);
@@ -175,13 +172,9 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
     % Constructor
     methods
         
-        function obj = event_data(ev, varargin)
+        function obj = event_selector(evSel, varargin)
             
             import misc.process_arguments;
-            
-            warning('event_data:Obsolete', ...
-                'This selector is obsolete. Use event_selector instead');
-            
             
             if nargin < 1, return; end
             
@@ -192,7 +185,7 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
             obj.Offset      = opt.Offset;
             obj.Duration    = opt.Duration;
             
-            obj.Event = ev;
+            obj.EventSelector = evSel;
             
         end
         
