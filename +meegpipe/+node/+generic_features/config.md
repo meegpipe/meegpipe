@@ -28,11 +28,11 @@ mySel1 = pset.selector.event_selector(value_selector(4,5,7));
 mySel2 = pset.selector.event_selector(value_selector(2,3));
 mySel3 = pset.selector.event_selector(value_selector(8));
 
-myFirstLevelFeature  = @(x, ev) mean(x);
+myFirstLevelFeature  = {@(x, ev) mean(x)};
 mySecondLevelFeature = {@(x, selectorObj) x(1)/x(2), ...
     @(x, selectorArray) mean(x)};
 
-myConfig = node.generic_features.new(...
+myConfig = node.generic_features.config(...
     'TargetSelector', {mySel1, mySel2, mySel3}, ...
     'FirstLevel',     myFirstLevelFeature, ...
     'SecondLevel',    mySecondLevelFeature, ...
@@ -52,7 +52,7 @@ mySel1 = pset.selector.event_selector(value_selector(4,5,7));
 mySel2 = pset.selector.event_selector(value_selector(2,3));
 mySel3 = pset.selector.event_selector(value_selector(8));
 
-myFirstLevelFeature  = @(x, ev) mean(x);
+myFirstLevelFeature  = {@(x, ev) mean(x)};
 mySecondLevelFeature = {@(x) x(1)/x(2), ...
     @(x, evArray) (get_duration(evArray)./sum(get_duration(evArray))).*x};
 
@@ -79,20 +79,128 @@ __Class__: `pset.selector.selector`
 
 __Default__: `[]`, i.e. select all data
 
+A cell array of selector objects that will be used to select targets for 
+feature extraction. For instance:
+
+````matlab
+import meegpipe.node.*;
+import physioset.event.value_selector;
+import physioset.event.class_selector;
+import physioset.event.cascade_selector;
+import pset.selector.event_selector;
+
+myEvSel1 = class_selector('Type', 'block');
+myEvSel2 = value_selector(4,5,7);
+myEvSel1 = cascade_selector(myEvSel1, myEvSel2);
+mySel1   = event_selector(myEvSel1);
+
+myEvSel2 = value_selector(2,3);
+myEvSel2 = cascade_selector(myEvSel1, myEvSel2);
+mySel2 = pset.selector.event_selector(myEvSel2); 
+
+myNode = generic_features.new(...
+    'TargetSelector', {mySel1, mySel2});
+````
+
+will extract features from:
+
+* The subset of data delimited by `block` events with `Value` equal to 
+4, 5, 7.
+
+* The subset of data delimited by `block` events with `Value` equal to 
+2, 3.
+
 
 
 ### `FirstLevel`
 
-__Class__: `function_handle`
+__Class__: `cell array` of `function_handle`
 
-__Default__: `@(x) mean(x)`
+__Default__: `{@(x) mean(x)}`
+
+
+Property `FirstLevel` specifies the feature extraction function for each 
+target selection.
+
+For instance:
+
+````matlab
+import meegpipe.node.*;
+import physioset.event.value_selector;
+import physioset.event.class_selector;
+import physioset.event.cascade_selector;
+import pset.selector.event_selector;
+
+myEvSel1 = class_selector('Type', 'block');
+myEvSel2 = value_selector(4,5,7);
+myEvSel1 = cascade_selector(myEvSel1, myEvSel2);
+mySel1   = event_selector(myEvSel1);
+
+myEvSel2 = value_selector(2,3);
+myEvSel2 = cascade_selector(myEvSel1, myEvSel2);
+mySel2 = pset.selector.event_selector(myEvSel2); 
+
+myNode = generic_features.new(...
+    'TargetSelector',   {mySel1, mySel2}, ...
+    'FirstLevel',       @(x) mean(x(:)), ...
+    'FeatureNames',     {'mean'});
+````
+
+will extract two features from a physioset:
+
+* The mean signal value (across channels) for blocks 4, 5, 7.
+
+* The mean signal value (across channels) for blocks 2, 3.
+
+Note that each `function_handle` in `FirstLevel` must produce 
+__a numeric scalar value__. 
+
+See below for explanations on the purpose of the mandatory argument 
+`FeatureNames`. 
 
 
 ### `SecondLevel` 
 
-__Class__: `function_handle`
+__Class__: `cell array` of `function_handle` or `[]`
 
-__Default__: `@(x) mean(x)`
+__Default__: `[]`
+
+Property `SecondLevel` can be used to aggregate first level features. For
+instance:
+
+````matlab
+import meegpipe.node.*;
+import physioset.event.value_selector;
+import physioset.event.class_selector;
+import physioset.event.cascade_selector;
+import pset.selector.event_selector;
+
+myEvSel1 = class_selector('Type', 'block');
+myEvSel2 = value_selector(4,5,7);
+myEvSel1 = cascade_selector(myEvSel1, myEvSel2);
+mySel1   = event_selector(myEvSel1);
+
+myEvSel2 = value_selector(2,3);
+myEvSel2 = cascade_selector(myEvSel1, myEvSel2);
+mySel2 = pset.selector.event_selector(myEvSel2); 
+
+myNode = generic_features.new(...
+    'TargetSelector',   {mySel1, mySel2}, ...
+    'FirstLevel',       @(x) mean(x(:)), ...
+    'SecondLevel',      @(x) x(2)/x(1), ...
+    'FeatureNames',     {'ratioOfAverages'});
+````
+
+will compute just one feature: the result of dividing the average signal 
+value (across channels) for blocks 4, 5, 7 by the average signal value 
+(across channels) for blocks 2, 3.
+
+
+Note that each `function_handle` in `SecondLevel` must produce a 
+__numeric scalar value__.
+
+See below for explanations on the purpose of the mandatory argument 
+`FeatureNames`. 
 
 
 ### `FeatureNames`
@@ -101,3 +209,37 @@ __Class__: `cell array of strings`
 
 __Default__: `{'mean'}`
 
+
+A cell array with the names of the extracted features. The dimensions of 
+`FeatureNames` must match the dimensions of the `FirstLevel` and 
+`SecondLevel` properties. Namely:
+
+````
+size(FeatureNames) == [numel(FirstLevel) numel(SecondLevel)]
+````
+
+For instance:
+
+````matlab
+import meegpipe.node.*;
+import physioset.event.value_selector;
+import physioset.event.class_selector;
+import physioset.event.cascade_selector;
+import pset.selector.event_selector;
+
+myEvSel1 = class_selector('Type', 'block');
+myEvSel2 = value_selector(4,5,7);
+myEvSel1 = cascade_selector(myEvSel1, myEvSel2);
+mySel1   = event_selector(myEvSel1);
+
+myEvSel2 = value_selector(2,3);
+myEvSel2 = cascade_selector(myEvSel1, myEvSel2);
+mySel2 = pset.selector.event_selector(myEvSel2); 
+
+myNode = generic_features.new(...
+    'TargetSelector',   {mySel1, mySel2}, ...
+    'FirstLevel',       {@(x) mean(x(:)), @(x) median(x(:))}, ...
+    'SecondLevel',      {@(x) x(2)/x(1), @(x)x(2)*x(1)}, ...
+    'FeatureNames',     ...
+        {'ratioOfMeans', 'prodOfMeans';'ratioOfMedians', 'prodOfMedians'});
+````

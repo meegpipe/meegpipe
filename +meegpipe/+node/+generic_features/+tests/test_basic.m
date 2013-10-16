@@ -1,5 +1,5 @@
 function [status, MEh] = test_basic()
-% test_basic - Tests basic node functionality
+% TEST_BASIC - Tests basic node functionality
 
 import mperl.file.spec.*;
 import meegpipe.node.*;
@@ -9,12 +9,14 @@ import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
 import oge.has_oge;
-import physioset.event.event;
-import physioset.event.class_selector;
+import physioset.event.value_selector;
 
 MEh     = [];
 
-initialize(5);
+DATA_URL = ['http://kasku.org/data/meegpipe/' ...
+    'pupw_0001_pupillometry_afternoon-sitting_1.csv'];
+
+initialize(6);
 
 %% Create a new session
 try
@@ -40,7 +42,7 @@ end
 try
     
     name = 'constructor';
-    ev_features.new;
+    generic_features.new; 
     ok(true, name);
     
 catch ME
@@ -53,12 +55,45 @@ end
 %% constructor with config options
 try
     
-    name = 'construct bad_epochs node with using a custom config';
-    mySel  = class_selector('Type', 'myevent');
-    myNode = ev_features.new(...
-        'EventSelector', mySel, ...
-        'Features',      'Time');
-    ok(strcmp(get_config(myNode, 'Features'), 'Time'), name);
+    name = 'constructor with config options';
+    generic_features.new('FirstLevel', @(x) median(x));
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% process sample data: no SecondLevel
+try
+    
+    name = 'process sample data: no SecondLevel';
+    
+    % random data with sinusolidal trend
+    folder = session.instance.Folder;    
+    file = catfile(folder, 'sample.csv');
+    urlwrite(DATA_URL, file);    
+    warning('off', 'sensors:InvalidLabel');
+    data = import(physioset.import.pupillator, file);
+    warning('on', 'sensors:InvalidLabel');
+    
+    mySel1 = pset.selector.event_selector(value_selector(4,5,7));
+    mySel2 = pset.selector.event_selector(value_selector(2,3));
+    mySel3 = pset.selector.event_selector(value_selector(8));
+    
+    myFirstLevelFeature  = @(x, ev) mean(x(:));
+  
+    myNode = generic_features.new(...
+        'TargetSelector', {mySel1, mySel2, mySel3}, ...
+        'FirstLevel',     myFirstLevelFeature, ...
+        'SecondLevel',    [], ...
+        'FeatureNames',   {'funnyratio1', 'funnyratio2'});
+    
+    run(myNode, data);
+    
+    ok(true, name);
     
 catch ME
     
@@ -71,17 +106,31 @@ end
 try
     
     name = 'process sample data';
-
-    data = my_sample_data();
     
-    set_bad_sample(data, 1000:5000);
+    % random data with sinusolidal trend
+    folder = session.instance.Folder;    
+    file = catfile(folder, 'sample.csv');
+    urlwrite(DATA_URL, file);    
+    warning('off', 'sensors:InvalidLabel');
+    data = import(physioset.import.pupillator, file);
+    warning('on', 'sensors:InvalidLabel');
     
-    mySel  = class_selector('Type', 'myevent');
-    myNode = ev_features.new('EventSelector', mySel, ...
-        'Features', {'Sample', 'Time', 'myprop'});
+    mySel1 = pset.selector.event_selector(value_selector(4,5,7));
+    mySel2 = pset.selector.event_selector(value_selector(2,3));
+    mySel3 = pset.selector.event_selector(value_selector(8));
+    
+    myFirstLevelFeature  = @(x, ev) mean(x(:));
+    mySecondLevelFeature = {@(x, selectorObj) x(1)/x(2), ...
+        @(x, selectorArray) mean(x)};
+    
+    myNode = generic_features.new(...
+        'TargetSelector', {mySel1, mySel2, mySel3}, ...
+        'FirstLevel',     myFirstLevelFeature, ...
+        'SecondLevel',    mySecondLevelFeature, ...
+        'FeatureNames',   {'funnyratio1', 'funnyratio2'});
     
     run(myNode, data);
-  
+    
     ok(true, name);
     
 catch ME
@@ -90,6 +139,8 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+
 
 %% Cleanup
 try
@@ -104,33 +155,5 @@ catch ME
     ok(ME, name);
 end
 
-
 %% Testing summary
 status = finalize();
-
-end
-
-%% Helper functions
-function data = my_sample_data()
-import physioset.event.event;
-
-X = sin(2*pi*(1/100)*(0:199));
-X = rand(10,1)*X;
-X = repmat(X, [1 1 50]);
-X = X + 0.25*randn(size(X));
-sens = sensors.eeg.from_template('egi256');
-sens = subset(sens, ceil(linspace(1, nb_sensors(sens), 10)));
-data = import(physioset.import.matrix('Sensors', sens), X);
-
-pos = get(get_event(data), 'Sample');
-off = ceil(0.1*data.SamplingRate);
-ev = event(pos + off, 'Type', 'myevent', 'Duration', 100);
-
-for i = 1:numel(ev)
-    ev(i) = set_meta(ev(i), 'myprop', i);
-end
-
-add_event(data, ev);
-
-end
-

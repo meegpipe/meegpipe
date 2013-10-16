@@ -68,7 +68,7 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
        
         function code = get_hash_code(obj)
             import datahash.DataHash;
-            objStr = struct(obj);
+            
             if ~isempty(obj.EventSelector),
                 objStr.Event = get_hash_code(obj.EventSelector);
             end
@@ -95,7 +95,7 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
             ev = get_event(data);
             
             if isempty(ev), return; end
-            if isempty(obj.Event), return; end
+            if isempty(obj.EventSelector), return; end
             
             ev = select(obj.EventSelector, ev);
             
