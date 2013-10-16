@@ -7,7 +7,7 @@ import test.simple.*;
 
 MEh     = [];
 
-initialize(19);
+initialize(20);
 
 %% default constructors
 try
@@ -414,6 +414,38 @@ try
     selEvs = select(value_selector(2,4), ev);    
     
     ok(numel(selEvs) == 2 & selEvs(2).Value == 4, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+
+%% cascade_selector
+try
+    
+    name = 'cascade_selector';
+    
+    ev1 = event(1:100:1000, 'Type', 'myType1');
+    for i = 2:numel(ev1)
+        ev1(i) = set(ev1(i), 'Value', i);
+    end
+    ev2 = event(1:200:1000, 'Type', 'myType2');
+    for i = 2:numel(ev2)
+        ev2(i) = set(ev2(i), 'Value', i);
+    end
+    ev = [ev1(:);ev2(:)];
+    
+    mySel2 = class_selector('Type', 'myType2');
+    mySel1 = value_selector(2, 3);    
+    
+    mySel = cascade_selector(mySel1, mySel2);
+    
+    selEvs = select(mySel, ev);    
+    
+    ok(numel(selEvs) == 2 & strcmp(selEvs(2).Type, 'myType2'), name);
     
 catch ME
     
