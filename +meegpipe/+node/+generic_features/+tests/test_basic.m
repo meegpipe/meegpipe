@@ -79,21 +79,39 @@ try
     data = import(physioset.import.pupillator, file);
     warning('on', 'sensors:InvalidLabel');
     
-    mySel1 = pset.selector.event_selector(value_selector(4,5,7));
-    mySel2 = pset.selector.event_selector(value_selector(2,3));
-    mySel3 = pset.selector.event_selector(value_selector(8));
+    mySel{1} = pset.selector.event_selector(value_selector(4,5,7));
+    mySel{2} = pset.selector.event_selector(value_selector(2,3));
+    mySel{3} = pset.selector.event_selector(value_selector(8));
     
     myFirstLevelFeature  = @(x, ev) mean(x(:));
   
     myNode = generic_features.new(...
-        'TargetSelector', {mySel1, mySel2, mySel3}, ...
+        'TargetSelector', mySel, ...
         'FirstLevel',     myFirstLevelFeature, ...
         'SecondLevel',    [], ...
-        'FeatureNames',   {'funnyratio1', 'funnyratio2'});
+        'FeatureNames',   {'mean'});
     
-    run(myNode, data);
+    data = run(myNode, data);
     
-    ok(true, name);
+    featFile = catfile(get_full_dir(myNode, data), 'features.txt');
+    condition = exist(featFile, 'file') > 0;
+    
+    if condition,
+        [~, ~, rownames] = misc.dlmread(featFile, ',', [], 1);
+        condition =  condition & numel(rownames) == 3;
+        if condition
+            for i = 1:3
+                condition = condition & strcmp(rownames{i}, ...
+                    get_hash_code(mySel{i}));
+            end
+        end
+    end
+    
+    delete(file);
+    data.Temporary = true;
+    clear data ans;
+        
+    ok(condition, name);
     
 catch ME
     
@@ -129,9 +147,25 @@ try
         'SecondLevel',    mySecondLevelFeature, ...
         'FeatureNames',   {'funnyratio1', 'funnyratio2'});
     
-    run(myNode, data);
+    data = run(myNode, data);    
+   
+    featFile = catfile(get_full_dir(myNode, data), 'features.txt');
+    condition = exist(featFile, 'file') > 0;
     
-    ok(true, name);
+    if condition,
+        [~, hdr] = misc.dlmread(featFile, ',');
+        condition =  condition & numel(hdr) == 2;
+        if condition
+            condition = condition & ...
+                all(ismember(hdr, {'funnyratio1', 'funnyratio2'}));
+        end
+    end
+    
+    delete(file);
+    data.Temporary = true;
+    clear data ans;
+
+    ok(condition, name);
     
 catch ME
     

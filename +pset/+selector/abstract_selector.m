@@ -20,6 +20,14 @@ classdef abstract_selector < pset.selector.selector
            
        end
        
+       function hashCode = get_hash_code(obj)
+           
+           import datahash.DataHash;
+           
+           hashCode = DataHash(struct(obj));
+           
+       end
+       
    end
     
     

@@ -49,12 +49,15 @@ if isempty(secondLevel),
     % X, Y, Z
     % ....
     % In this case, featNames is assumed to refer to first-level features
-    hdr = ['%s,', repmat('%s,',1, numel(featNames))];hdr(end) = [];
-    fprintf(fid, [hdr '\n'], featNames{:});
-    fmt = ['selector,', repmat('%10.4f,', 1, numel(featNames))];
-    fmt(end) = [];
+    hdr = ['selector_hash,selector_idx,', ...
+        repmat('%s,',1, numel(featNames))];
+    hdr(end:end+1) = '\n';
+    fprintf(fid, hdr, featNames{:});
+    fmt = ['%s, %d,', repmat('%10.4f,', 1, numel(featNames))];
+    fmt(end:end+1) = '\n';
     for i = 1:numel(targetSelector)
-        fprintf(fid, fmt, firstLevelFeats);
+        fprintf(fid, fmt, ...
+            get_hash_code(targetSelector{i}), i, firstLevelFeats(i));
     end    
     
 else
@@ -72,7 +75,7 @@ else
     hdr(end) = [];    
     fprintf(fid, [hdr '\n'], featNames{:});
     fmt = repmat('%10.4f,', 1, numel(featNames)); 
-    fmt(end) = [];
+    fmt(end:end+1) = '\n';
     fprintf(fid, fmt, featVals);
     
 end
