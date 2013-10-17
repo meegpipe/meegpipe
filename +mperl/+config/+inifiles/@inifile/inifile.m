@@ -262,7 +262,9 @@ classdef inifile < handle & goo.hashable_handle
             obj.File = filename;
             
             % Ensure that CR/LF are used as end of line characters
-            inifile.ensure_crlf(obj.File);
+            % This function is broken right now. It sometimes leads to the
+            % ini file being emptied. Please fix this !
+            %inifile.ensure_crlf(obj.File);
             
             obj = read(obj);
             

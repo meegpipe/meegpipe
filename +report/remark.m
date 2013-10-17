@@ -25,66 +25,37 @@ verboseLabel    = globals.get.VerboseLabel;
 
 if nargin < 1 || isempty(folder), folder = pwd; end
 
-cmd0 = catfile(root_path, '../../external_remark/remark/Remark/remark.py');
-
 if isunix,
     quotes = '''';
 else
     quotes = '"';
 end
 
-if isunix,
-    cmd = ['source ~/.bashrc ; python ' cmd0];
-    [~, msg1] = system(cmd);
-    if isempty(regexpi(msg1, 'Usage:\s+remark.py')),
-        % The .bashrc may be missing ...
-        cmd = ['python ' cmd0];
+[~, msg] = system('remark');
+if isempty(regexpi(msg, '^\s+Usage\s')),
+    [~, msg] = system('remark.py');
+    if isempty(regexpi(msg, '^\W*Usage')) && isunix,
+        % Try running bashrc first
+        cmd = 'source ~/.bashrc; remark';
         [~, msg] = system(cmd);
-    else
-        msg = msg1;
-    end
-        
-else
-    cmd = ['python ' quotes cmd0 quotes];
-    [~, msg] = system(cmd);
-end
-
-if verbose,
-   fprintf([verboseLabel 'Executed: ''%s'' ...\n\n'], cmd);
-   if isempty(regexpi(msg, 'Usage:\s+remark.py')),
-      fprintf([verboseLabel 'Unexpected response from OS: \n\n%s'], ...
-          msg);
-      fprintf('\n\n');
-   end
-end
-
-% Is Remark installed somewhere else or has some other name?
-if isempty(regexpi(msg, 'Usage:\s+remark.py')),
-    [~, msg] = system('remark');
-    if isempty(regexpi(msg, '^\s+Usage\s')),
-        [~, msg] = system('remark.py');
-        if isempty(regexpi(msg, '^\W*Usage')) && isunix,
-            % Try running bashrc first
-            cmd = 'source ~/.bashrc; remark';
+        if isunix && isempty(regexpi(msg, '^\W*Usage')),
+            cmd = 'source ~/.bashrc; remark.py';
             [~, msg] = system(cmd);
-            if isunix && isempty(regexpi(msg, '^\W*Usage')),
-                cmd = 'source ~/.bashrc; remark.py';
-                [~, msg] = system(cmd);
-                if isempty(regexpi(msg, 'Usage:\s+remark.py')),
-                    error('Remark is not installed in this system');
-                else
-                    cmd = 'source ~/.bashrc; remark.py';
-                end
+            if isempty(regexpi(msg, 'Usage:\s+remark.py')),
+                error('Remark is not installed in this system');
             else
-                cmd = 'source ~/.bashrc; remark';
+                cmd = 'source ~/.bashrc; remark.py';
             end
         else
-            cmd = 'remark.py';
+            cmd = 'source ~/.bashrc; remark';
         end
     else
-        cmd = 'remark';
+        cmd = 'remark.py';
     end
+else
+    cmd = 'remark';
 end
+
 
 if verbose,
     fprintf([verboseLabel ...
@@ -103,10 +74,10 @@ elseif verbose
     fprintf('\n\n');
 end
 
-if verbose    
+if verbose
     res = strrep(res, char(10), [char(10) char(9) 'system->    ']);
     res = [char(9) 'system->    ' res '\n\n'];
-    disp(res);    
+    disp(res);
     fprintf([verboseLabel 'End of Remark output\n\n']);
 end
 
@@ -114,8 +85,8 @@ source = catfile(report.root_path, 'remark.css');
 target = catfile(folder, 'remark_files', 'remark.css');
 [success, msg] = copyfile(source, target);
 if ~success,
-   warning('remark:UnableToCopyCSS', ...
-       'Not able to copy custom CSS settings: %s', msg);
+    warning('remark:UnableToCopyCSS', ...
+        'Not able to copy custom CSS settings: %s', msg);
 end
 
 end
