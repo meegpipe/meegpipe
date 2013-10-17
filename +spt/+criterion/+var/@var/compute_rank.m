@@ -62,13 +62,15 @@ if verbose,
     fprintf([verboseLabel 'Computing explained variance criterion ...']);
 end
 
+filtDataVar = var(filtData, 0, 2);
+
 for sigIter = 1:size(data,1)
     
     % Do not assume that the rows of data are uncorrelated, although they
     % usually will be!
     thisSignal  = A(matches, sigIter)*data(sigIter, :);
     
-    rankValue(sigIter) = aggregator(var(thisSignal, 0 , 2)./var(filtData, 0, 2));
+    rankValue(sigIter) = aggregator(var(thisSignal, 0 , 2)./filtDataVar);
     
     if verbose,
         eta(tinit, size(data, 1), sigIter, 'remaintime', false);

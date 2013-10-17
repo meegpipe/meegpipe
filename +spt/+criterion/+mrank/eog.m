@@ -4,13 +4,13 @@ import misc.process_arguments;
 import spt.criterion.*;
 
 
-opt.Criteria        = { tfd.eog, psd_ratio.eog};
-opt.Weights         = [0.40 0.60];
-opt.Percentile      = 90;
+opt.Criteria        = { tfd.eog, psd_ratio.eog, topo_ratio.eog_egi256_hcgsn1};
+opt.Weights         = [0.20 0.60 0.2];
+opt.Percentile      = 80;
 opt.MinCard         = 3;
-opt.MaxCard         = 6;
+opt.MaxCard         = 7;
 opt.Min             = -Inf;
-opt.Max             = @(rank) median(rank) + 4*mad(rank);
+opt.Max             = @(rank) median(rank) + 2*mad(rank);
 opt.Filter          = [];
 
 [~, opt] = process_arguments(opt, varargin);

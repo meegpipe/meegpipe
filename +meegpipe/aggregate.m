@@ -27,7 +27,7 @@ if nargin < 5 || isempty(rowNames),
     rowNames = true;
 end
 
-if nargin < 4 || isempty(includeFileName),
+if nargin < 6 || isempty(includeFileName),
     includeFileName = true;
 end
 

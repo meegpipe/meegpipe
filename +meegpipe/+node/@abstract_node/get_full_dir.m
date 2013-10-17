@@ -19,7 +19,6 @@ import misc.get_username;
 import misc.get_matlabver;
 import mperl.file.spec.catdir;
 import meegpipe.node.abstract_node;
-import datahash.DataHash;
 import mperl.file.spec.rel2abs;
 
 if initialized(obj),
@@ -36,15 +35,8 @@ if isempty(get_parent(obj)),
     
     dataDir = get_data_dir(obj, data);
     
-    hashCode1 = get_static_hash_code(obj);
-    
-    % Get also a hash code for the version of meegpipe and its submods
-    hashCode2 = DataHash(meegpipe.version);
-    
-    hashCode = DataHash({hashCode1, hashCode2});
-    
     subDirName = sprintf('%s_%s_%s', ...
-        [get_name(obj) '-' hashCode(end-5:end)], ...
+        [get_name(obj) '-' get_id(obj)], ...
         get_username, ...
         [computer '-' get_matlabver]);
     

@@ -117,13 +117,21 @@ isPVT    = cellfun(@(x) strcmp(x, 'pvt'), protHdr);
 myProtEvs = event(transitionSampl);
 
 blockDur = diff([transitionSampl(:);size(data,1)]);
+isPre = true;
+isPost = false;
 for i = 1:numel(myProtEvs)
    
    thisType = 'block_';
    if prot(i, isRed) > 0,
        thisType = [thisType 'red']; %#ok<*AGROW>
+       isPre = false;
    elseif prot(i, isBlue) > 0,
        thisType = [thisType 'blue'];
+       isPost = true;
+   elseif isPre,
+       thisType = [thisType 'dark_pre'];
+   elseif isPost
+       thisType = [thisType 'dark_post'];
    else
        thisType = [thisType 'dark'];
    end

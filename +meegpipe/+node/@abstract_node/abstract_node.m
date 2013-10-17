@@ -408,6 +408,8 @@ classdef abstract_node < ...
     methods
         
         hashCode            = get_hash_code(obj);
+        % get_id is what is used to name the output directory
+        hashCode            = get_id(obj);
         hashCode            = get_static_hash_code(obj);
     end
     

@@ -1,7 +1,8 @@
 function h = plot(data, varargin)
 
 if ~exist('eegplot', 'file'),
-    error('EEGLAB is required for plotting physiosets');
+    error(['EEGLAB is required for plotting physiosets\n' ...
+        'Did you forget running meegpipe.initialize?']);
 end
 
 % Events

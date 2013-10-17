@@ -45,7 +45,7 @@ fid = get_log(obj, 'features.txt');
 if isempty(secondLevel),
     
     % Write:
-    % selector, feat1, feat2, ...
+    % selector_hash,selector_idx, feat1, feat2, ...
     % X, Y, Z
     % ....
     % In this case, featNames is assumed to refer to first-level features
@@ -53,7 +53,7 @@ if isempty(secondLevel),
         repmat('%s,',1, numel(featNames))];
     hdr(end:end+1) = '\n';
     fprintf(fid, hdr, featNames{:});
-    fmt = ['%s, %d,', repmat('%10.4f,', 1, numel(featNames))];
+    fmt = ['%s, %d,', repmat('%.4f,', 1, numel(featNames))];
     fmt(end:end+1) = '\n';
     for i = 1:numel(targetSelector)
         fprintf(fid, fmt, ...
@@ -74,7 +74,7 @@ else
     hdr = repmat('%s,',1, numel(featNames));
     hdr(end) = [];    
     fprintf(fid, [hdr '\n'], featNames{:});
-    fmt = repmat('%10.4f,', 1, numel(featNames)); 
+    fmt = repmat('%.4f,', 1, numel(featNames)); 
     fmt(end:end+1) = '\n';
     fprintf(fid, fmt, featVals);
     
