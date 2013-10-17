@@ -48,14 +48,6 @@ end
 %% Single dataset case
 data = varargin{1};
 
-% We send the job to the grid even if it's a single job (user rules)
-if usejava('Desktop') && obj.Parallelize && ...
-        ((has_condor && strcmp(obj.Queue, 'condor')) || ...
-        (has_oge && ~strcmpi(obj.Queue, 'condor')))
-    data = run_oge(obj, data);
-    return;
-end
-
 set_tinit(obj, tic);
 
 % Select data to be processed
