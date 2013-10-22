@@ -7,7 +7,7 @@ classdef config < meegpipe.node.abstract_config
     properties
         
         TargetSelector    = [];
-        FirstLevel        = {@(x) mean(x)};
+        FirstLevel        = {@(x, ev, dataSel) mean(x)};
         SecondLevel       = [];
         FeatureNames      = {'mean'};
         

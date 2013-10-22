@@ -83,7 +83,7 @@ try
     mySel{2} = pset.selector.event_selector(value_selector(2,3));
     mySel{3} = pset.selector.event_selector(value_selector(8));
     
-    myFirstLevelFeature  = @(x, ev) mean(x(:));
+    myFirstLevelFeature  = @(x, ev, dataSel) mean(x(:));
   
     myNode = generic_features.new(...
         'TargetSelector', mySel, ...
@@ -137,9 +137,9 @@ try
     mySel2 = pset.selector.event_selector(value_selector(2,3));
     mySel3 = pset.selector.event_selector(value_selector(8));
     
-    myFirstLevelFeature  = @(x, ev) mean(x(:));
-    mySecondLevelFeature = {@(x, selectorObj) x(1)/x(2), ...
-        @(x, selectorArray) mean(x)};
+    myFirstLevelFeature  = @(x, ev, dataSel) mean(x(:));
+    mySecondLevelFeature = {@(x, ev, selectorObj) x{1}/x{2}, ...
+        @(x, selectorEvs, selectorArray) mean(cell2mat(x))};
     
     myNode = generic_features.new(...
         'TargetSelector', {mySel1, mySel2, mySel3}, ...

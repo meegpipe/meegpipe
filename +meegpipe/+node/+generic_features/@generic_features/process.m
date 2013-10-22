@@ -23,7 +23,7 @@ if isempty(firstLevel),
     return;
 end
 
-firstLevelFeats = nan(numel(firstLevel), numel(targetSelector));
+firstLevelFeats = cell(numel(firstLevel), numel(targetSelector));
 
 selectionEvents = cell(1, numel(targetSelector));
 
@@ -34,7 +34,7 @@ for targetItr = 1:numel(targetSelector)
         select(targetSelector{targetItr}, data);
     
     for featItr = 1:numel(firstLevel)
-        firstLevelFeats(featItr, targetItr) = firstLevel{featItr}(data, ...
+        firstLevelFeats{featItr, targetItr} = firstLevel{featItr}(data, ...
             selectionEvents{targetItr}, targetSelector{targetItr});
     end
     
@@ -54,16 +54,31 @@ if isempty(secondLevel),
     % selector_hash,selector_idx, feat1, feat2, ...
     % X, Y, Z
     % ....
-    % In this case, featNames is assumed to refer to first-level features
+    % In this case, featNames is assumed to refer to first-level features, 
+    % which are assumed to be numeric, for simplicity
     hdr = ['selector_hash,selector_idx,', ...
         repmat('%s,',1, numel(featNames))];
     hdr(end:end+1) = '\n';
     fprintf(fid, hdr, featNames{:});
-    fmt = ['%s, %d,', repmat('%.4f,', 1, numel(featNames))];
+    fmt = '%s, %d,'; 
+    
+    for i = 1:numel(featNames),
+       if ischar(firstLevelFeats{1, i}),
+           fmt = [fmt '%s,'];
+       elseif isinteger(firstLevelFeats{1, i})
+           fmt = [fmt '%s,'];
+       elseif isnumeric(firstLevelFeats{1, i}),
+           fmt = [fmt '%.4f,'];
+       else
+          error('Feature values must be numeric scalars or strings'); 
+       end
+        
+    end
+ 
     fmt(end:end+1) = '\n';
     for i = 1:numel(targetSelector)
         fprintf(fid, fmt, ...
-            get_hash_code(targetSelector{i}), i, firstLevelFeats(i));
+            get_hash_code(targetSelector{i}), i, firstLevelFeats{:, i});
     end    
     
 else
