@@ -18,6 +18,7 @@ verbose = is_verbose(obj);
 evSel           = get_config(obj, 'EventSelector');
 featList        = get_config(obj, 'Features');
 feat2String     = get_config(obj, 'Feature2String');
+feat2Value      = get_config(obj, 'FeatureValues');
 
 if ischar(featList), featList = {featList}; end
 
@@ -61,9 +62,8 @@ end
 fid = get_log(obj, 'features.txt');
 hdr = repmat('%s,',1, numel(featList));
 fprintf(fid, [hdr '\n'], featList{:});
-specialFeat = keys(feat2String);
-[specialFeat, iSpecial] = intersect(featList, specialFeat);
-[stdFeat, iStd]         = setdiff(featList, specialFeat);
+has2String = keys(feat2String);
+has2Value  = keys(feat2Value);
 
 defValues = repmat({''}, 1, numel(featList));
 fmt = repmat('%s,', 1, numel(featList));
@@ -75,27 +75,24 @@ if verbose,
 end
 for i = 1:numel(ev)
     values = defValues;
-    for j = 1:numel(stdFeat)
-        if ismember(stdFeat{j}, evProps),
-            thisValue = get(ev(i), stdFeat{j});
+    for j = 1:numel(featList)
+        if ismember(featList{j}, has2Value),
+            fh = feat2Value(featList{j});
+            thisValue = fh(ev(i), data);
         else
-            thisValue = get_meta(ev(i), stdFeat{j});
+            if ismember(featList{j}, evProps),
+                thisValue = get(ev(i), featList{j});
+            else
+                thisValue = get_meta(ev(i), featList{j});
+            end
         end
-        values{iStd(j)} = any2str(thisValue, 100);
-    end
-    for j = 1:numel(specialFeat)
-        if ismember(specialFeat{j}, evProps),
-            thisValue = get(ev(i), specialFeat{j});
+        if ismember(featList{j}, has2String),
+            fh = feat2String(featList{j});
+            values{j} = fh(thisValue);
         else
-            thisValue = get_meta(ev(i), specialFeat{j});
+            values{j} = any2str(thisValue, 100);
         end
-        % Convenient, but ugly and slow...
-        if isempty(thisValue) && strcmp(specialFeat{j}, 'Time'),
-            [~, thisValue] = get_sampling_time(data, get_sample(ev(i)));
-        end
-        fh = feat2String(specialFeat{j});
-        values{iSpecial(j)} = fh(thisValue);
-    end
+    end    
     fprintf(fid, fmt, values{:});
     if verbose && ~mod(i, iBy100),
         eta(tinit, numel(ev), i);

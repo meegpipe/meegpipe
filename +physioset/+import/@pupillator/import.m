@@ -123,31 +123,55 @@ for i = 1:numel(myProtEvs)
    
    thisType = 'block_';
    if prot(i, isRed) > 0,
+       
        thisType = [thisType 'red']; %#ok<*AGROW>
        isPre = false;
    elseif prot(i, isBlue) > 0,
        thisType = [thisType 'blue'];
        isPost = true;
    elseif isPre,
-       thisType = [thisType 'dark_pre'];
+       thisType = [thisType 'dark-pre'];
    elseif isPost
-       thisType = [thisType 'dark_post'];
+       thisType = [thisType 'dark-post'];
    else
        thisType = [thisType 'dark'];
    end
-   if prot(i, isPVT) > 0, 
-       thisType = [thisType, '_pvt'];
+   if prot(i, isPVT) > 0,
+       thisType = [thisType, '-pvt'];
    end
-    
+   
    myProtEvs(i) = set(myProtEvs(i), ...
        'Time',      data(transitionSampl(i), isTime), ...
        'Value',     blockID(i), ...
        'Duration',  blockDur(i), ...
        'Type',      thisType ...
        );
-       
+   
+   myProtEvs(i) = set_meta(myProtEvs(i), 'Block_1_7', ceil(blockID(i)/3));
+   
 end
 
+% The only blocks that are always there are the dark-pre, the red, the
+% dark, the blue and the dark-post. Any block before the dark-pre will be
+% labeled as dark-pre-1, dark-pre-2, etc. Any block after the dark-post
+% will be labeled as dark-post-1, dark-post-2, etc.
+evTypes = get(myProtEvs, 'Type');
+
+firstBlock = find(ismember(evTypes, 'block_dark-pre-pvt'), 1, 'last');
+
+for i = 1:firstBlock-1
+    thisType = get(myProtEvs(i), 'Type');
+    newType  = [thisType '-' num2str(firstBlock-i)];
+    myProtEvs(i) = set(myProtEvs(i), 'Type', newType);
+end
+
+lastBlock = find(ismember(evTypes, 'block_dark-post-pvt'), 1, 'first');
+
+for i = 1:(numel(myProtEvs)-lastBlock)
+    thisType = get(myProtEvs(lastBlock+i), 'Type');
+    newType  = [thisType '-' num2str(i)];
+    myProtEvs(lastBlock+i) = set(myProtEvs(lastBlock+i), 'Type', newType);
+end
 
 dataCols = cellfun(@(x) ismember(x, {'diameter [mm]', 'shapefactor'}), dataHdr);
 

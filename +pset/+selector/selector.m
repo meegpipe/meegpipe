@@ -32,7 +32,7 @@ classdef selector
       
        obj = not(obj);
        
-       data = select(obj, data, remember);
+       [data, varargout] = select(obj, data, remember);
        
    end
     

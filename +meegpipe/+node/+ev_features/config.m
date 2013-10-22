@@ -8,6 +8,7 @@ classdef config < meegpipe.node.abstract_config
         
         EventSelector     = physioset.event.class_selector('Type', 'erp')
         Features          = {'Type', 'Sample', 'Time', 'Duration'};
+        FeatureValues     = mjava.hash('Time', @(ev, data) get_abs_sampling_time(data, get_sample(ev)));
         Feature2String    = mjava.hash('Time', @(x) datestr(x));
         
     end

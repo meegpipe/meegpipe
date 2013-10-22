@@ -464,6 +464,10 @@ classdef physioset < ...
         [sTime, absTime]   = sampling_time(obj);
         [sTime, absTime]   = get_sampling_time(obj, idx);
         
+        function absTime = get_abs_sampling_time(obj, idx)
+           [~, absTime] = get_sampling_time(obj, idx);  
+        end
+        
         value              = get_method_config(obj, varargin);
         
         nbEvents           = nb_event(obj);

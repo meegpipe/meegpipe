@@ -1,5 +1,6 @@
 function [data, dataNew] = process(obj, data, varargin)
 
+import misc.isinteger;
 
 dataNew = [];
 
@@ -23,13 +24,18 @@ if isempty(firstLevel),
 end
 
 firstLevelFeats = nan(numel(firstLevel), numel(targetSelector));
+
+selectionEvents = cell(1, numel(targetSelector));
+
 for targetItr = 1:numel(targetSelector)
     
-    select(targetSelector{targetItr}, data);
+    % selectionEvents is only relevant for event_selector selectors
+    [~, selectionEvents{targetItr}] = ...
+        select(targetSelector{targetItr}, data);
     
     for featItr = 1:numel(firstLevel)
         firstLevelFeats(featItr, targetItr) = firstLevel{featItr}(data, ...
-            targetSelector{targetItr});
+            selectionEvents{targetItr}, targetSelector{targetItr});
     end
     
     restore_selection(data);
@@ -66,17 +72,30 @@ else
     % feat1, feat2
     % X, Y
     
-    featVals = nan(1, numel(secondLevel));
+    featVals = cell(1, numel(secondLevel));
     
     for i = 1:numel(featVals),
-        featVals(i) = secondLevel{i}(firstLevelFeats, targetSelector);
+        featVals{i} = secondLevel{i}(firstLevelFeats, ...
+            selectionEvents, targetSelector);
     end
     hdr = repmat('%s,',1, numel(featNames));
     hdr(end) = [];    
     fprintf(fid, [hdr '\n'], featNames{:});
-    fmt = repmat('%.4f,', 1, numel(featNames)); 
+    
+    fmt = '';
+    for i = 1:numel(featVals),
+        if isinteger(featVals{i}),
+            fmt = [fmt '%d,'];
+        elseif isnumeric(featVals{i}),
+            fmt = [fmt '%.4f,'];
+        elseif ischar(featVals{i}),
+            fmt = [fmt '%s,'];
+        else
+            error('Features must be numeric scalars or strings');
+        end
+    end
     fmt(end:end+1) = '\n';
-    fprintf(fid, fmt, featVals);
+    fprintf(fid, fmt, featVals{:});
     
 end
 

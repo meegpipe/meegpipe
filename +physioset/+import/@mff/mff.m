@@ -14,6 +14,9 @@ classdef mff < physioset.import.abstract_physioset_import
     % See also: abstract_physioset_import
  
    
+    properties
+       ReadDataValues = true; 
+    end
     
     % physioset.import.import interface
     methods

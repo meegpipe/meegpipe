@@ -86,7 +86,7 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
             
         end
         
-        function data = select(obj, data, remember)
+        function [data, ev] = select(obj, data, remember)
             
             if nargin < 3 || isempty(remember),
                 remember = true;

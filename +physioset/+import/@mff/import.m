@@ -247,6 +247,11 @@ if verbose,
     end
 end
 
+if ~obj.ReadDataValues,
+   physiosetObj = evArray;
+   return;
+end
+
 %% Read data values
 fid = fopen(newFileName, 'w');
 if fid < 1,
