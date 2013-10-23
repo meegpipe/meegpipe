@@ -1,5 +1,7 @@
 function [Qp,QRS1,type]=Qwave(n,X,D,Der,PKni,Rp,M,I,ymax,imax,ymin,imin,dermax,type,Sgran,Fs,Kq,Kr)
 
+import ecgpuwave.*;
+
 % ---- Q wave and QRS onset ----
 
 Qp=[]; QRS1=[]; Qex=1; crece=0; Kq=1.8; 

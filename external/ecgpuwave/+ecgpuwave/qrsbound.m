@@ -2,6 +2,8 @@ function [QRS1,Qp,Rp,Sp,R2p,QRS2,dermax,type,Sgran]=qrsbound(n,X,Xpb,D,Der,PKni,
 
 % ---- QRS complex peak positions and limits depending on morphology ---- 
 
+import ecgpuwave.*;
+
 % ---- Initialization ----
 QRS1=[]; QRS2=[]; Qp=[]; Rp=[]; Sp=[]; R2p=[]; Rex=0; Qex=0; Sex=0; R2ex=0;
 type=0; noR=0; Sgran=0;

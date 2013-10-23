@@ -2,6 +2,8 @@ function [T1,Tp2,Tp,T2,Ttype]=tbound(n,X,Xpa,F,PKni,Rp,QRS1,QRS2,PKnii,dermax,ba
 
 % ---- T wave delineation ----
 
+import ecgpuwave.*;
+
 T1=[]; T2=[]; Tp=[]; Tp2=[]; Ttype=6; peaks=0;
 flag1=1;
 kdis=round(50e-3*Fs);

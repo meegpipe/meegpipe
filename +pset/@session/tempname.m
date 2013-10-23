@@ -3,8 +3,6 @@ function fileName = tempname(obj)
 
 import datahash.DataHash;
 
-filesep = '/'; % Use this regardless of operating system
-
 fileName = [obj.Folder filesep datestr(now, 'yyyymmddTHHMMSS')];
 
 hashStr = DataHash(rand(1,100));

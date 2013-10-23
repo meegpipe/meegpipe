@@ -2,6 +2,7 @@ function [POS,AMP,ANNOT,POS_ANNOT,NUMFIELD,SUBTYPEFIELD,CHANFIELD,POS_QT,VAL_QT,
 
 % ---- Identification of wave limits and amplitudes ----
 
+import ecgpuwave.*;
 
 Kr=5;
 ns=length(X);

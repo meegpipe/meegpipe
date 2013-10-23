@@ -11,6 +11,11 @@ classdef ecg_annotate < meegpipe.node.abstract_node
         [info, hrvInfo] = ecgpuwave(obj, data);
     end
     
+    methods (Static)
+        check_dependencies; 
+        write_qrs_annot(fName, qrs, sr);
+    end
+    
     % from meegpipe.node.abstract_node
     methods
         [data, dataNew] = process(obj, data, varargin)

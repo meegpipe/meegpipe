@@ -2,6 +2,8 @@ function [Sp,QRS2,type,Sgran]=Swave(n,X,D,Der,PKni,Rp,Sp,M,I,ymax,imax,ymin,imin
 
 % ---- S wave and QRS offset ----
 
+import ecgpuwave.*;
+
 Sp=[]; QRS2=[]; Sex=1; crece=0; iumb=[];
 Daux=Der(imin:length(Der));
 ncero=zerocross(Daux); ncero=imin+ncero-1;

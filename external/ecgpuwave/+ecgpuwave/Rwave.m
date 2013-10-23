@@ -4,6 +4,8 @@ function [QRS1,Rp,Sp,R2p,QRS2,ymaxaux,type,Sgran]=Rwave(n,X,Xpb,D,Der,PKni,M,I,F
 % In RSR' type significative points are returned, 
 % in QRS and QR types, R and S wave positions, are returned respectively.
 
+import ecgpuwave.*;
+
 % ---- Initialization ----
 QRS1=[]; QRS2=[]; Qp=[]; Rp=[]; Sp=[]; R2p=[]; Rex=0; Qex=0; Sex=0; R2ex=0;
 type=0; noR=0; Sgran=0; 
@@ -80,8 +82,8 @@ if (Xpb(PKni)<0)|(ydi>0&ydd<0&(kpi*ydi<(-1)*ydd|kpi*(-1)*ydd<ydi))
             % ---- PKnii corresponds to R' wave ----
             Daux=flipud(D(1:mpici));
             ncero=zerocross(Daux);
-            ncero=mpici-ncero+1;
-	    if ~isempty(ncero) return; end
+            if isempty(ncero) return; end
+            ncero=mpici-ncero+1;	    
             Ir=find(I<ncero);
 	    if ~isempty(Ir)
 		 mpic=I(Ir(length(Ir)));

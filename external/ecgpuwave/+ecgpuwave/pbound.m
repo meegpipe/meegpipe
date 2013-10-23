@@ -2,6 +2,8 @@ function [P1,Pp,P2,type]=pbound(n,X,Xpb,F,PKni,Rp,QRS1,prevt,dermax,Fs,Kpb,Kpe)
 
 % ---- P wave detection ----
 
+import ecgpuwave.*;
+
 Pex=1; P1=[]; Pp=[]; P2=[];
 type=0;
 nofi=1;

@@ -45,24 +45,19 @@ import mperl.file.spec.*;
 import io.conversion.edf2mit;
 import io.edf.write;
 import goo.globals;
-import misc.has_pscp;
-import misc.has_plink;
-import misc.has_vbox;
-import misc.has_ssh;
 import datahash.DataHash;
-import misc.send_ssh_command;
 import misc.system;
+import pset.session;
+import fmrib.my_fmrib_qrsdetect;
+import meegpipe.node.ecg_annotate.ecg_annotate;
 
-MAX_TRIES       = 10;
-PAUSE_INTERVAL  = 25;
+if isunix,
+    CMD_SEP = ' ; ';
+else
+    CMD_SEP = ' & ';
+end
 
 verbose = is_verbose(obj);
-
-vmURL = get_config(obj, 'VMUrl');
-
-% Username and password for the remove VM
-usr = meegpipe.get_config('node-ecg_annotate', 'vm-usr');
-pw = meegpipe.get_config('node-ecg_annotate', 'vm-pw');
 
 sr = data.SamplingRate;
 
@@ -78,30 +73,20 @@ else
     physdim = 'V';
 end
 
-
-if nargin < 2 || isempty(sr),
-    error('The data sampling rate must be provided');
-end
-
-if ~has_vbox,
-    error('Dependency ''Virtual Box'' is missing.');
-end
-
-if ispc && (~has_pscp || ~has_plink),
-    error('Dependency ''PuttY'' is missing');
-elseif ~ispc && ~has_ssh
-    error('Dependency ''ssh'' is missing');
-end    
-
 verboseLabel = globals.get.VerboseLabel;
 if isempty(verboseLabel),
     verboseLabel = '(ecgpuwave) ';
 end
 
-edfFileName   = tempname;
-[~, name]  = fileparts(edfFileName);
-tmpPath = pset.session.instance.Folder;
-edfFileName   = catfile(tmpPath, [name '.edf']);
+% Create a temporary directory under the home dir. This is VERY
+% important because it seems that the HRV toolkit creates temporary
+% files with fixed names. Thus we need to isolate completely each run
+% of get_hrv
+recName = DataHash(tempname);
+recName = recName(1:14);
+
+session.subsession(recName);
+edfFileName     = catfile(session.instance.Folder, [recName '.edf']);
 
 % Write input data to temporary EDF file
 if verbose,
@@ -111,96 +96,48 @@ write(edfFileName, [], data, 'Verbose', 2*verbose, 'SamplingRate', sr, ...
     'PhysDim', physdim);
 if verbose, fprintf('[done]\n\n'); end
 
-% Start the ecgpuwave VM
-if isempty(vmURL),
-    [~, msg] = system('VBoxManage startvm ecgpuwave');
-    
-    if ~isempty(strfind(msg, 'VBOX_E_OBJECT_NOT_FOUND')),
-        error('Unable to start ecgpuwave VM');
-    end
-    
-    if isempty(strfind(msg, 'VBOX_E_INVALID_OBJECT_STATE')),
-        % If the machine is not running already, start it!
-        if verbose,
-            fprintf([verboseLabel 'Starting ecgpuwave VM...']);
-        end
-        vm_wait = meegpipe.get_config('node-ecg_annotate', 'vm-wait');
-        if isempty(vm_wait),
-            vm_wait = 7;
-        else
-            vm_wait = min(40, double(vm_wait));
-        end
-        pause(vm_wait);
-    end
-    
-    cmd = ['VBoxManage guestproperty get ecgpuwave ' ...
-        '"/VirtualBox/GuestInfo/Net/0/V4/IP"'];
-    [~, msg] = system(cmd);
-    url = regexprep(msg, '[^\d]*(\d+\.\d+\.\d+\.\d+)[^\d]*', '$1');
-    if isempty(url),
-        error('The URL of the ecgpuwave VM is unknown');
-    end
-    if verbose,
-        fprintf('[done]\n\n');
-    end
-else
-    url = vmURL;
-end
-
-
-try
-    recName = DataHash(tempname);
-    recName = recName(1:14);
-    
-    % Create a temporary directory under the home dir. This is VERY
-    % important because it seems that the HRV toolkit creates temporary
-    % files with fixed names. Thus we need to isolate completely each run
-    % of get_hrv
-    if verbose,
-        fprintf([verboseLabel 'Creating ~/%s on %s...'], ...
-            recName, url);
-    end
-    cmd = sprintf('mkdir ~/%s', recName);
-    send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);   
-    if verbose, fprintf('[done]\n\n'); end
-    
-    %% Transferring files to VM
-    if verbose,
-        fprintf([verboseLabel 'Transferring EDF file to %s...'], ...
-            url);
-    end
- 
-    
-    if ispc,       
-        cmd1 = sprintf('pscp -pw ecgpuwave %s ecgpuwave@%s:~/%s/%s', ...
-            edfFileName, url, recName, [recName '.edf']);       
-    else
-        % error('Not implemented this OS!');
-        cmd1 =  sprintf(['sshpass -p ''ecgpuwave'' scp -o "%s" %s ' ...
-            'ecgpuwave@%s:~/%s/%s'], 'StrictHostKeyChecking no', ...
-            edfFileName, url, recName, [recName '.edf']);        
-    end
-    
-    system(cmd1);
-
-    if verbose, fprintf('[done]\n\n'); end
-    
+try  
+   
     % Convert EDF file to MIT format    
     if verbose,
-        fprintf([verboseLabel 'Converting EDF file to MIT at %s'], url);
+        fprintf([verboseLabel 'Converting EDF file to MIT format ...']);
     end
-    cmd = sprintf('cd ~/%s ; edf2mit -i %s.edf -r %s', recName, recName, ...
-        recName);
-    send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);    
-    if verbose, fprintf('[done]\n\n'); end    
- 
-    %% ecgpuwave on the VM
+    cmd = sprintf('cd %s %s edf2mit -i %s.edf -r %s', ...
+        session.instance.Folder, CMD_SEP, recName, recName);
+    system(cmd); 
+    if verbose, fprintf('[done]\n\n'); end
+    
+    
+    % Detect QRS complexes using FMRIB
     if verbose,
-        fprintf([verboseLabel 'Running ecgpuwave at %s...'], url);
+        fprintf([verboseLabel 'Detecting QRS complexes using FMRIB ...']);
     end
-    cmd = sprintf('cd ~/%s ; ecgpuwave -r %s -a ecgpuwave', recName, ...
-        recName);
-    send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);
+    peaks = my_fmrib_qrsdetect(data(:,:), sr, false);
+    annotFile = catfile(session.instance.Folder, [recName '.txt']);
+    ecg_annotate.write_qrs_annot(annotFile, peaks, sr);
+    if verbose, fprintf('[done]\n\n'); end
+    
+    % Convert annotation file to MIT format
+    if verbose,
+        fprintf([verboseLabel 'Converting %s.txt --> %s.qrs ...']);
+    end
+    cmd = sprintf('cd %s %s wrann -r %s -a qrs < %s.txt', ...
+        session.instance.Folder, CMD_SEP, recName, recName);
+    system(cmd);
+    if verbose, fprintf('[done]\n\n'); end
+ 
+    %% ecgpuwave
+    if verbose,
+        fprintf([verboseLabel 'Running ecgpuwave ...']);
+    end
+    info = ecgpuwave.limits(...
+        session.instance.Folder, ...
+        session.instance.Folder, ...
+        session.instance.Folder, ...
+        recName, ...
+        'qrs', ...
+        0, ...
+        0);
     
     %% Conversion to TXT on the VM
     annFileName = [recName, '.txt'];
@@ -234,7 +171,7 @@ try
     if isempty(sel),   
         hrvFile = catfile(tmpPath, [recName '.hrv']);
         % Extract HRV features
-        cmd = sprintf('cd ~/%s ; get_hrv -M %s ecgpuwave > %s.hrv', ...
+        cmd = sprintf('cd %s ; get_hrv -M %s ecgpuwave > %s.hrv', ...
             recName, recName, recName);
         send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);
         
@@ -326,20 +263,6 @@ catch ME
     rethrow(ME);
     
 end
-
-% Clean up and shut down the VM
-cmd = sprintf('rm -rf ~/%s*', recName);
-if ispc,
-    cmd = sprintf('plink -pw ecgpuwave ecgpuwave@%s "%s"', url, cmd);
-else
-    cmd = sprintf(['sshpass -p ''ecgpuwave'' ssh -o "%s" ' ...
-        'ecgpuwave@%s "%s"'], 'StrictHostKeyChecking no', url, cmd);
-end
-system(cmd);
-% Do not shutdown the VM! Consider the case of multiple jobs running in
-% parallel which share a single VM instance. The user has to stop the
-% VM when he/she is done.
-% [~, ~] = system('VboxManage controlvm ecgpuwave acpipowerbutton');
 
 % Extract annotations info
 info = io.wfdb.annotations.read(catfile(tmpPath, annFileName));

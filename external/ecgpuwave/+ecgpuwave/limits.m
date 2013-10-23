@@ -40,10 +40,10 @@ if nargin<8
    nl=1;
 end
 if nargin<9
-   ti='0:00';
+   ti=[];
 end
 if nargin<10
-   tf='end';
+   tf=[];
 end
 if nargin<11
    nbo_flag=0;
@@ -63,6 +63,8 @@ fidan=0;
 if ~isempty(ti)&~isempty(tf)
     ti=timestr(ti); tf=timestr(tf);
     t=[ti,tf];
+else
+    t = [1 Inf];
 end
 
 
@@ -81,7 +83,7 @@ end
   
 % ----  MIT format ----
 if typerec==0,
-    heasig=readheader([dirhea ecgnr '.hea']); 
+    heasig=readheader([dirhea filesep ecgnr '.hea']); 
     heasig.gain=heasig.gain(1); 
     if (heasig.fmt(nl)==16) | (heasig.fmt(nl)==212) | (heasig.fmt(nl)==61),
         formato = num2str(heasig.fmt(nl));
@@ -95,12 +97,14 @@ if typerec==0,
     if strcmp(formato,'16')|strcmp(formato,'61'),
        % fid = fopen([sigdir ecgnr '.dat'],'rb');
        % if fid == -1,
-       fid = fopen([sigdir heasig.fname(nl,:)],'rb');
+       fid = fopen([dirsig filesep heasig.fname(nl,:)],'rb');
        % end
        fseek(fid,0,-1);  % Rewind the file
        if strcmp(heasig.fname(nl,1),'_'),  % Siemens card recordings with MIT-type header
             timeoffset=512;
             fseek (fid, timeoffset,-1); % offset
+       else
+           timeoffset = 0;
        end
     end
 end
@@ -128,10 +132,10 @@ if t(1) < 1, t(1) = 1; end
 if t(2) == Inf, t(2) = round(heasig.nsamp-0.1*heasig.freq); end
 
 
-anname=[dirann ecgnr '.' anot]; 
+anname=[dirann filesep ecgnr '.' anot]; 
 %anname=[dirann anot '.' ecgnr]; % reverse name style
 if (exist(anname)==2)
-   annot=readannot([dirann ecgnr '.' anot],heasig,t); 
+   annot=readannot([dirann filesep ecgnr '.' anot],heasig,t); 
    %annot=readannot([dirann anot '.' ecgnr],t); % reverse name style
 elseif (~exist(anname))
   %---------------------------------------------------------------------------
@@ -264,7 +268,7 @@ while ilat<no_beats-3
        X=sinal(nl,ti+1:tf)';
    end
    
-   keyboard
+   %keyboard
    
 %get signals for processing.
 [Xpa,Xpb,D,F,Der]=lynfilt(index,X,Fs,ns); 

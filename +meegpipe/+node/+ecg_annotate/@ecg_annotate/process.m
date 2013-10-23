@@ -4,6 +4,9 @@ import physioset.plotter.snapshots.snapshots;
 import physioset.event.std.ecg_ann;
 import goo.globals;
 import misc.eta;
+import meegpipe.node.ecg_annotate.ecg_annotate;
+
+ecg_annotate.check_dependencies;
 
 dataNew = [];
 
