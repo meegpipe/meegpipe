@@ -356,7 +356,7 @@ if isempty(obj.Sensors),
 else
     
     if verbose,
-        fprintf([verboseLabel 'Sensor information explicity provided ...']);
+        fprintf([verboseLabel 'Sensor information explicity provided ...\n\n']);
     end
     sensorsMixed = obj.Sensors;
     
