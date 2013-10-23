@@ -5,7 +5,7 @@ import safefid.safefid;
 fid = safefid.fopen(fName, 'w');
 [nbMins, nbSecs, nbMSecs] = sample2time(qrs, sr);
 fieldLength = 2*round(log10(max(qrs)));
-fmt = ['%0.2d:%0.2d.%0.3d\t%' num2str(fieldLength) 'd\t\tN\t0\t0\t0\n'];
+fmt = ['%d:%0.2d.%0.3d%' num2str(fieldLength) 'd     N    0    0    0\n'];
 for i = 1:numel(qrs)
    
    fprintf(fid, fmt, nbMins(i), nbSecs(i), nbMSecs(i), qrs(i)); 

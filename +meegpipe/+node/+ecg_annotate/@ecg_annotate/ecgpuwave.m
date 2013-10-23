@@ -50,6 +50,7 @@ import misc.system;
 import pset.session;
 import fmrib.my_fmrib_qrsdetect;
 import meegpipe.node.ecg_annotate.ecg_annotate;
+import wfdb.mat2wfdb;
 
 if isunix,
     CMD_SEP = ' ; ';
@@ -86,14 +87,13 @@ recName = DataHash(tempname);
 recName = recName(1:14);
 
 session.subsession(recName);
-edfFileName     = catfile(session.instance.Folder, [recName '.edf']);
+wfdbFileName     = catfile(session.instance.Folder, recName);
 
-% Write input data to temporary EDF file
+% Write input data to WFDB format
 if verbose,
-    fprintf([verboseLabel 'Writing ECG data to temporary EDF file...   ']);
+    fprintf([verboseLabel 'Writing ECG data to WFDB format...   ']);
 end
-write(edfFileName, [], data, 'Verbose', 2*verbose, 'SamplingRate', sr, ...
-    'PhysDim', physdim);
+mat2wfdb(data(:,:)', wfdbFileName, sr);
 if verbose, fprintf('[done]\n\n'); end
 
 try  
