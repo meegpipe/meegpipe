@@ -56,18 +56,17 @@ if isempty(secondLevel),
     % ....
     % In this case, featNames is assumed to refer to first-level features, 
     % which are assumed to be numeric, for simplicity
-    hdr = ['selector_hash,selector_idx,', ...
-        repmat('%s,',1, numel(featNames))];
+    hdr = repmat('%s,',1, numel(featNames));
     hdr(end:end+1) = '\n';
     fprintf(fid, hdr, featNames{:});
-    fmt = '%s, %d,'; 
+    fmt = ''; 
     
     for i = 1:numel(featNames),
-       if ischar(firstLevelFeats{1, i}),
+       if ischar(firstLevelFeats{i, 1}),
            fmt = [fmt '%s,'];
-       elseif isinteger(firstLevelFeats{1, i})
-           fmt = [fmt '%s,'];
-       elseif isnumeric(firstLevelFeats{1, i}),
+       elseif isinteger(firstLevelFeats{i, 1})
+           fmt = [fmt '%d,'];
+       elseif isnumeric(firstLevelFeats{i, 1}),
            fmt = [fmt '%.4f,'];
        else
           error('Feature values must be numeric scalars or strings'); 
@@ -77,8 +76,7 @@ if isempty(secondLevel),
  
     fmt(end:end+1) = '\n';
     for i = 1:numel(targetSelector)
-        fprintf(fid, fmt, ...
-            get_hash_code(targetSelector{i}), i, firstLevelFeats{:, i});
+        fprintf(fid, fmt, firstLevelFeats{:, i});
     end    
     
 else
