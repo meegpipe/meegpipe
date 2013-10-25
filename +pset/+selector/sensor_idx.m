@@ -83,7 +83,9 @@ classdef sensor_idx < pset.selector.abstract_selector
     % constructor
     methods
         
-        function obj = sensor_idx(idx)
+        function obj = sensor_idx(idx, varargin)
+            
+            obj = obj@pset.selector.abstract_selector(varargin{:});
             
             if nargin < 1, return; end
             

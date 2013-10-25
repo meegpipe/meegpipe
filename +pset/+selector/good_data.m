@@ -26,18 +26,18 @@ classdef good_data < pset.selector.abstract_selector
     %   max(abs(data(:) - X(:)))<1e-3);
     %
     % See also: selector
-  
-    %% IMPLEMENTATION 
     
-    properties (SetAccess = private, GetAccess = private)        
-     
+    %% IMPLEMENTATION
+    
+    properties (SetAccess = private, GetAccess = private)
+        
         Negated             = false;
         
     end
     
     
     %% PUBLIC INTERFACE ....................................................
-   
+    
     % pset.selector.selector interface
     methods
         
@@ -64,28 +64,33 @@ classdef good_data < pset.selector.abstract_selector
                     remember);
                 
             end
-           
-        end                
+            
+        end
         
     end
     
-    % Public methods declared and defined here
     
     methods
         
         function disp(obj)
             
             import goo.disp_class_info;
-           
+            
             disp_class_info(obj);
-           
+            
             if obj.Negated,
                 fprintf('%20s : yes\n', 'Negated');
             else
                 fprintf('%20s : no\n', 'Negated');
             end
             
-        end        
+        end
+        
+        function obj = good_data(varargin)
+            
+            obj = obj@pset.selector.abstract_selector(varargin{:});
+            
+        end
         
     end
     

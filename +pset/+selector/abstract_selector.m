@@ -1,9 +1,6 @@
-classdef abstract_selector < pset.selector.selector
-   % ABSTRACT_SELECTOR - Common implementation among selector classes
-   %
-   % See also: selector
-   
-   
+classdef abstract_selector < ...
+        pset.selector.selector
+ 
    methods
       
        function y = and(varargin)
@@ -28,9 +25,12 @@ classdef abstract_selector < pset.selector.selector
            
        end
        
+       function obj = abstract_selector(varargin)
+           
+           
+       end
+  
    end
     
-    
-    
-    
+   
 end

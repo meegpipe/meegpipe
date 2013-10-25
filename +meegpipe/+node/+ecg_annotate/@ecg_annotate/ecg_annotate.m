@@ -13,7 +13,7 @@ classdef ecg_annotate < meegpipe.node.abstract_node
     
     methods (Static)
         check_dependencies; 
-        write_qrs_annot(fName, qrs, sr);
+        bool = has_hrv;     
     end
     
     % from meegpipe.node.abstract_node

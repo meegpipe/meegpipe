@@ -16,7 +16,7 @@ import physioset.event.class_selector;
 
 MEh     = [];
 
-initialize(12);
+initialize(10);
 
 %% Create a new session
 try
@@ -67,82 +67,10 @@ catch ME
     
 end
 
-%% process sample data using existing VM
+%% process sample data
 try
     
-    name   = 'process sample data using existing VM';
-    
-    tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
-    ecg = tmp.ecg;
-    
-    mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors);
-    
-    data = import(myImporter, ecg);
-    
-    myNode = ecg_annotate('VMUrl', '192.87.10.186');
-    
-    run(myNode, data);
-    
-    % ensure the imported and original data are identical
-    ok(numel(get_event(data))>0, name);
-    clear data;
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-%% multiple experimental conditions (existing VM)
-try
-    
-    name   = 'multiple experimental conditions (existing VM)';
-    
-    tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
-    ecg = tmp.ecg;
-    
-    mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors);
-    
-    % Add three experimental conditions
-    ev = event(1:1000:3001);
-    ev(1) = set(ev(1), 'Type', 'dark-pre', 'Duration', 60000);
-    ev(2) = set(ev(2), 'Type', 'red', 'Duration', 60000);
-    ev(3) = set(ev(3), 'Type', 'dark', 'Duration', 60000);
-    ev(4) = set(ev(4), 'Type', 'blue', 'Duration', 60000);
-    
-    data = import(myImporter, ecg);
-    
-    add_event(data, ev);
-    
-    % The event selectors
-    selDark = class_selector('Type', 'dark', 'Name', 'dark');    
-    selBlue = class_selector('Type', '^blue$', 'Name', 'blue');
-    selRed  = class_selector('Type', '^red$', 'Name', 'red');    
-    
-    myNode = ecg_annotate('VMUrl', '192.87.10.186', ...
-        'EventSelector', {selDark, selBlue, selRed});
-    
-    run(myNode, data);
-    
-    % ensure the imported and original data are identical
-    ok(numel(get_event(data))>0, name);
-    clear data;
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-
-%% process sample data starting a local VM
-try
-    
-    name   = 'process sample data starting a local VM';
+    name   = 'process sample data';
     
     tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
     ecg = tmp.ecg;
@@ -167,10 +95,10 @@ catch ME
     
 end
 
-%% save node output (use existing VM)
+%% multiple experimental conditions
 try
     
-    name   = 'save node output (use existing VM)';
+    name   = 'multiple experimental conditions';
     
     tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
     ecg = tmp.ecg;
@@ -178,13 +106,29 @@ try
     mySensors  = sensors.physiology('Label', 'ECG');
     myImporter = physioset.import.matrix('Sensors', mySensors);
     
+    % Add three experimental conditions
+    ev = event(1:1000:3001);
+    ev(1) = set(ev(1), 'Type', 'dark-pre', 'Duration', 60000);
+    ev(2) = set(ev(2), 'Type', 'red', 'Duration', 60000);
+    ev(3) = set(ev(3), 'Type', 'dark', 'Duration', 60000);
+    ev(4) = set(ev(4), 'Type', 'blue', 'Duration', 60000);
+    
     data = import(myImporter, ecg);
     
-    myNode = ecg_annotate('Save', true, 'VMUrl', '192.87.10.186');
+    add_event(data, ev);
+    
+    % The event selectors
+    selDark = class_selector('Type', 'dark', 'Name', 'dark');    
+    selBlue = class_selector('Type', '^blue$', 'Name', 'blue');
+    selRed  = class_selector('Type', '^red$', 'Name', 'red');    
+    
+    myNode = ecg_annotate('EventSelector', {selDark, selBlue, selRed});
     
     run(myNode, data);
     
-    ok(exist(get_output_filename(myNode, data), 'file')>0, name);
+    % ensure the imported and original data are identical
+    ok(numel(get_event(data))>0, name);
+    clear data;
     
 catch ME
     
@@ -193,31 +137,7 @@ catch ME
     
 end
 
-%% save node output (start new VM)
-try
-    
-    name   = 'save node output (start new VM)';
-    
-    tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
-    ecg = tmp.ecg;
-    
-    mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors);
-    
-    data = import(myImporter, ecg);
-    
-    myNode = ecg_annotate('Save', true);
-    
-    run(myNode, data);
-    
-    ok(exist(get_output_filename(myNode, data), 'file')>0, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
+
 
 %% process multiple files (use existing VM)
 try
@@ -235,7 +155,7 @@ try
         data{i} = import(myImporter, ecg + randn(size(ecg)));
     end
     
-    myNode = ecg_annotate('OGE', false, 'VMUrl', '192.87.10.186');
+    myNode = ecg_annotate('OGE', false);
     run(myNode, data{:});
     
     ok(numel(get_event(data{3}))>0, name);
@@ -295,7 +215,7 @@ try
             data{i} = import(myImporter, ecg + randn(size(ecg)));
         end
         
-        myNode = ecg_annotate('OGE', true, 'VMUrl', '192.87.10.186');
+        myNode = ecg_annotate('OGE', true);
         dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic

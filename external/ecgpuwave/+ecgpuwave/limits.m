@@ -1,4 +1,7 @@
-function [annt,annAmp,banot,QT,QTC,QW,RW,SW,QRS]=limits(dirhea,dirsig,dirann,ecgnr,anot,typerec,res,nl,ti,tf,nbo_flag,Kq,Kr,Ks,Krr,Kpb,Kpe,Ktb,Kte,pco)
+function [annt,annAmp,banot,QT,QTC,QW,RW,SW,QRS]=limits(dirhea,dirsig,ecgnr,rtimes,typerec,res,nl,ti,tf,nbo_flag,Kq,Kr,Ks,Krr,Kpb,Kpe,Ktb,Kte,pco)
+
+
+import safefid.safefid;
 
 %-----  WL Principal program  ----------------------
 %Deteccion de puntos significativos en el ECG.
@@ -6,9 +9,8 @@ function [annt,annAmp,banot,QT,QTC,QW,RW,SW,QRS]=limits(dirhea,dirsig,dirann,ecg
 %Input parameters:
 %  dirhea: header directory
 %  dirsig: signal directory
-%  dirann: annotator directory
 %  ecgnr: record name
-%  anot: annotator name
+%  rtimes: the locations (sample indices) of the R-peaks
 %  typerec: type of recording (0:MIT-DB, 1:Lund-Siemens, 2:matlab)
 %  res: results format (0: struct, 1: text file)
 %  nl: leads (1:12)
@@ -33,30 +35,30 @@ function [annt,annAmp,banot,QT,QTC,QW,RW,SW,QRS]=limits(dirhea,dirsig,dirann,ecg
 import ecgpuwave.*;
 
 %Default parameters.
-if nargin<7
+if nargin<6
    res=0;
 end
-if nargin<8
+if nargin<7
    nl=1;
 end
-if nargin<9
+if nargin<8
    ti=[];
 end
-if nargin<10
+if nargin<9
    tf=[];
 end
-if nargin<11
+if nargin<10
    nbo_flag=0;
 end
-if nargin<12  Kq=1.5; end
-if nargin<13  Kr=5; end
-if nargin<14  Ks=3; end
-if nargin<15  Krr=5; end
-if nargin<16  Kpb=1.35; end
-if nargin<17  Kpe=2; end
-if nargin<18  Ktb=2; end
-if nargin<19  Kte=3.5; end
-if nargin<20  pco=8; end
+if nargin<11  Kq=1.5; end
+if nargin<12  Kr=5; end
+if nargin<13  Ks=3; end
+if nargin<14  Krr=5; end
+if nargin<15  Kpb=1.35; end
+if nargin<16  Kpe=2; end
+if nargin<17  Ktb=2; end
+if nargin<18  Kte=3.5; end
+if nargin<19  pco=8; end
 
 
 fidan=0;
@@ -97,7 +99,7 @@ if typerec==0,
     if strcmp(formato,'16')|strcmp(formato,'61'),
        % fid = fopen([sigdir ecgnr '.dat'],'rb');
        % if fid == -1,
-       fid = fopen([dirsig filesep heasig.fname(nl,:)],'rb');
+       fid = safefid.fopen([dirsig filesep heasig.fname(nl,:)],'rb');
        % end
        fseek(fid,0,-1);  % Rewind the file
        if strcmp(heasig.fname(nl,1),'_'),  % Siemens card recordings with MIT-type header
@@ -132,46 +134,15 @@ if t(1) < 1, t(1) = 1; end
 if t(2) == Inf, t(2) = round(heasig.nsamp-0.1*heasig.freq); end
 
 
-anname=[dirann filesep ecgnr '.' anot]; 
-%anname=[dirann anot '.' ecgnr]; % reverse name style
-if (exist(anname)==2)
-   annot=readannot([dirann filesep ecgnr '.' anot],heasig,t); 
-   %annot=readannot([dirann anot '.' ecgnr],t); % reverse name style
-elseif (~exist(anname))
-  %---------------------------------------------------------------------------
-  % determine beats contained in the desired time interval and creation of structure annot
-  tsav = getbtb(dirsig,ecgnr,'t'); % get what is saved
-  if ~isempty(tsav) 
-    if (tsav(1)>t(1) | tsav(end)<t(2)),  % check if not useful and process    
-      disp('QRS detection');
-      basicECG(dirsig,ecgnr,t); 
-      rr=getbtb(dirsig,ecgnr,'RR_interval',t);
-      tsav = getbtb(dirsig,ecgnr,'t',t);
-    else tsav = getbtb(dirsig,ecgnr,'t',t); % get if useful
-    end
-  else
-    disp('QRS detection');
-    basicECG(dirsig,ecgnr,t); 
-    rr=getbtb(dirsig,ecgnr,'RR_interval',t);
-    tsav = getbtb(dirsig,ecgnr,'t',t);
-  end  
-  
-  annot.time=tsav';
-  beat_class = getbtb(dirsig,ecgnr,'beat_class',t);
-  maxcl=max(beat_class); C=ones(1,maxcl);
-  for i=1:maxcl
-    au=(find(beat_class==i));
-    if size(find(beat_class==i),2)<15
-      C(i)=0;
-      annot.anntyp(au,1)='V'; %labeled ventricular just to distinguish from the normals
-    else annot.anntyp(au,1)='N';
-    end;
-  end;
-  annot.num=zeros(length(length(rr)),1);
-  annot.subtyp=zeros(length(length(rr)),1);
-  annot.chan=zeros(length(length(rr)),1);
-  %---------------------------------------------------------------------------
-end
+%---------------------------------------------------------------------------
+% Build the annot structure using the provided QRS locations
+annot.time = rtimes(:);
+annot.anntyp = repmat('N', numel(rtimes), 1);
+annot.num=zeros(length(length(rtimes)),1);
+annot.subtyp=zeros(length(length(rtimes)),1);
+annot.chan=zeros(length(length(rtimes)),1);
+%---------------------------------------------------------------------------
+
 
 no_leads=heasig.nsig;
 if nl>no_leads
@@ -207,10 +178,6 @@ annt.Tonset=[]; annt.T=[]; annt.T2=[]; annt.Toffset=[];
 annAmp.P=[]; annAmp.Q=[]; annAmp.R=[]; annAmp.S=[]; annAmp.R2=[]; annAmp.T=[]; annAmp.T2=[];
 banot.time=[]; banot.anntyp=[]; banot.subtyp=[]; banot.num=[]; banot.chan=[];
 
-% ----  Removing of non-QRS annotations  ----
-
-if (exist(anname)==2), annot=isqrs(annot,heasig,t); end
-
 
 % ----  Removing of first beat  ----
 %if (annot.time(1)<0.5*heasig.freq) annot(1)=[]; end
@@ -224,9 +191,9 @@ no_beats=length(annot.time);
 %   no_beats=length(annot.time);
 %end
 
-s=sprintf('%s.b%d',ecgnr,nl-1);
+s=sprintf('%s%s.ecgpuwave.txt',[dirsig, filesep], ecgnr);
 if res==1
-fidan=fopen(s,'wt+');
+fidan=safefid.fopen(s,'wt+');
 end
 
 %READING SIGNAL SEGMENTS
@@ -386,9 +353,7 @@ ilat=ilat+nlat;
 nlat=min(nlat,no_beats-ilat-3);
 ti=annot.time(ilat)-round(2*heasig.freq);
 end
-if res==1 fclose(fidan); 
-end
+%if res==1 fclose(fidan); 
+%end
 
 %if res==0 save('fanot','banot'); end
-
-fclose('all');    

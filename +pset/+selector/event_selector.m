@@ -176,6 +176,8 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
             
             import misc.process_arguments;
             
+            obj = obj@pset.selector.abstract_selector(varargin{:});
+            
             if nargin < 1, return; end
             
             opt.Offset      = [];

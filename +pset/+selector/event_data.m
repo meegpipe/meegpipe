@@ -183,6 +183,8 @@ classdef event_data < pset.selector.abstract_selector & goo.hashable
                 'This selector is obsolete. Use event_selector instead');
             
             
+            obj = obj@pset.selector.abstract_selector(varargin{:});
+            
             if nargin < 1, return; end
             
             opt.Offset      = [];

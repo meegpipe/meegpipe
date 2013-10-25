@@ -116,6 +116,8 @@ classdef sensor_group_idx < pset.selector.abstract_selector
         
         function obj = sensor_group_idx(varargin)
             
+            obj = obj@pset.selector.abstract_selector(varargin{:});
+            
             if nargin < 1, return; end
             
             obj.SensorGroupIdx = cell2mat(varargin);

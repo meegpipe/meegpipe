@@ -140,6 +140,10 @@ classdef cascade < pset.selector.abstract_selector
         
         function obj = cascade(varargin)
             
+            obj = obj@pset.selector.abstract_selector(varargin{:});
+            
+            if nargin < 1, return; end
+            
             obj.SelectorList = varargin;
             
         end

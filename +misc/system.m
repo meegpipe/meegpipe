@@ -11,10 +11,11 @@ if nargin < 2 || isempty(maxTries),
     maxTries = 5;
 end
 
-status = 127; msg = ''; numTries = 0;
-while (status > 0 || ~isempty(regexp(msg, '(error|Can''t|can''t)', 'once'))) ...
+numTries = 0;
+[status, msg] = system(cmd);
+while (~isempty(regexp(msg, '(error|Can''t|can''t)', 'once'))) ...
         && numTries < maxTries
-    [status, msg] = system(cmd);
+    
     numTries = numTries + 1;
     if (~isempty(regexp(msg, '(error|Can''t|can''t)', 'once'))) ...
             && numTries < maxTries
@@ -24,7 +25,7 @@ while (status > 0 || ~isempty(regexp(msg, '(error|Can''t|can''t)', 'once'))) ...
     end
 end
 
-if status > 0 || ~isempty(regexp(msg, '(error|Can''t|can''t)', 'once')),
+if ~isempty(regexp(msg, '(error|Can''t|can''t)', 'once')),
     error('Failed system call ''%s'': %s', cmd, msg);
 end
 

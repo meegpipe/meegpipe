@@ -106,6 +106,10 @@ classdef reject_boundaries < pset.selector.abstract_selector
         function obj = reject_boundaries(varargin)
             import misc.process_arguments;
             
+            obj = obj@pset.selector.abstract_selector(varargin{:});  
+            
+            if nargin < 1, return; end
+            
             opt.StartMargin = 0;
             opt.EndMargin   = 0;
             

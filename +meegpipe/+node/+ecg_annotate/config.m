@@ -3,35 +3,15 @@ classdef config < meegpipe.node.abstract_config
     %
     % See: <a href="matlab:misc.md_help('meegpipe.node.ecg_annotate.config')">misc.md_help(''meegpipe.node.ecg_annotate.config'')</a>
     
-    properties
-        
-        VMUrl   = '';
-        EventSelector = [];
+    properties        
+       
+        EventSelector  = [];        
         
     end
     
     % Consistency checks
     methods
        
-        function obj = set.VMUrl(obj, value)
-           
-            import exceptions.InvalidPropValue;
-            
-            if isempty(value),
-                obj.VMUrl = '';
-                return;
-            end
-            
-            if ~ischar(value) || ~isvector(value) || ...
-                    isempty(regexp(value, '^\d+\.\d+\.\d+\.\d+$', 'once')),
-                throw(InvalidPropValue('VMUrl', ...
-                    'The provided URL is not valid'));
-            end
-            
-            obj.VMUrl = value;
-            
-        end
-        
         function obj = set.EventSelector(obj, value)
            
             import exceptions.InvalidPropValue;
@@ -47,7 +27,7 @@ classdef config < meegpipe.node.abstract_config
             
             if ~iscell(value) || ~all(cellfun(@(x) ...
                     isa(x, 'physioset.event.selector'), value)),
-                throw(InvalidPropValue('EventSelector', ...
+                throw(InvalidPropValue('TargetSelector', ...
                     'Must be a cell array of event selectors'));
             end
             

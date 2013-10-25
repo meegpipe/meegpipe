@@ -140,6 +140,8 @@ classdef sensor_class < pset.selector.abstract_selector
             
             import misc.process_arguments;
             
+            obj = obj@pset.selector.abstract_selector(varargin{:});
+            
             if nargin < 1, return; end
             
             opt.Class = [];
