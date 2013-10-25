@@ -9,7 +9,7 @@ function anot=readannot(name,heasig,t)
 % e-mail: olmos@posta.unizar.es
 
 
-dim=heasig.nsamp/heasig.freq*2;
+dim=ceil(heasig.nsamp/heasig.freq*2);
 % pre-allocating of memory
 anot=struct('time',zeros(dim,1),'anntyp',blanks(dim)','subtyp',blanks(dim)','chan',blanks(dim)','num',blanks(dim)','aux',repmat(blanks(dim)',1,10));
 

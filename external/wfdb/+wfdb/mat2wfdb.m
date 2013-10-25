@@ -200,7 +200,9 @@ end
 
 %Header string
 head_str=cell(M+1,1);
-head_str(1)={[fname ' ' num2str(M) ' ' num2str(Fs) ' ' num2str(N)]};
+
+[~, nameOnly] = fileparts(fname);
+head_str(1)={[nameOnly ' ' num2str(M) ' ' num2str(Fs) ' ' num2str(N)]};
 
 %Loop through all signals, digitizing them and generating lines in header
 %file
@@ -215,7 +217,7 @@ for m=1:M
         bit_res,gain{m},baseline{m},isint);
     
     y(:,m)=tmp_bit1;
-    head_str(m+1)={[fname '.dat ' num2str(bit_res) ' ' num2str(bit_gain) '(' ...
+    head_str(m+1)={[nameOnly '.dat ' num2str(bit_res) ' ' num2str(bit_gain) '(' ...
         num2str(baseline_tmp) ')/' adu{m} ' ' '0 0 0 ' num2str(ck_sum) ' 0 ' sg_name{m}]};
 end
 
