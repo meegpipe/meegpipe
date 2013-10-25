@@ -16,7 +16,7 @@ import physioset.event.class_selector;
 
 MEh     = [];
 
-initialize(10);
+initialize(9);
 
 %% Create a new session
 try
@@ -142,36 +142,6 @@ end
 %% process multiple files (use existing VM)
 try
     
-    name = 'process multiple datasets (use existing VM)';
-    
-    tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
-    ecg = tmp.ecg;
-    
-    mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors);
-    
-    data = cell(1, 3);
-    for i = 1:3,
-        data{i} = import(myImporter, ecg + randn(size(ecg)));
-    end
-    
-    myNode = ecg_annotate('OGE', false);
-    run(myNode, data{:});
-    
-    ok(numel(get_event(data{3}))>0, name);
-    clear physObj;
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-
-%% process multiple files
-try
-    
     name = 'process multiple datasets';
     
     tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
@@ -197,6 +167,7 @@ catch ME
     MEh = [MEh ME];
     
 end
+
 
 %% oge
 try
