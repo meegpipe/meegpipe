@@ -15,7 +15,7 @@ if (fid<=0)
    keyboard;
 end
 
-pp=' /+:()x';
+pp=' /+()';
 
 % First line reading
 s=fgetl(fid);

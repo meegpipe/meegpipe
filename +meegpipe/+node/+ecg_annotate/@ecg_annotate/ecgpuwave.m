@@ -93,91 +93,130 @@ wfdbFileName     = catfile(session.instance.Folder, recName);
 if verbose,
     fprintf([verboseLabel 'Writing ECG data to WFDB format...   ']);
 end
-mat2wfdb(data(:,:)', wfdbFileName, sr);
+mat2wfdb(data(:,:)', wfdbFileName, sr, false);
 if verbose, fprintf('[done]\n\n'); end
 
-try  
-   
-    % Convert EDF file to MIT format    
-    if verbose,
-        fprintf([verboseLabel 'Converting EDF file to MIT format ...']);
-    end
-    cmd = sprintf('cd %s %s edf2mit -i %s.edf -r %s', ...
-        session.instance.Folder, CMD_SEP, recName, recName);
-    system(cmd); 
-    if verbose, fprintf('[done]\n\n'); end
-    
-    
-    % Detect QRS complexes using FMRIB
-    if verbose,
-        fprintf([verboseLabel 'Detecting QRS complexes using FMRIB ...']);
-    end
-    peaks = my_fmrib_qrsdetect(data(:,:), sr, false);
-    annotFile = catfile(session.instance.Folder, [recName '.txt']);
-    ecg_annotate.write_qrs_annot(annotFile, peaks, sr);
-    if verbose, fprintf('[done]\n\n'); end
-    
-    % Convert annotation file to MIT format
-    if verbose,
-        fprintf([verboseLabel 'Converting %s.txt --> %s.qrs ...']);
-    end
-    cmd = sprintf('cd %s %s wrann -r %s -a qrs < %s.txt', ...
-        session.instance.Folder, CMD_SEP, recName, recName);
-    system(cmd);
-    if verbose, fprintf('[done]\n\n'); end
- 
-    %% ecgpuwave
-    if verbose,
-        fprintf([verboseLabel 'Running ecgpuwave ...']);
-    end
-    info = ecgpuwave.limits(...
-        session.instance.Folder, ...
-        session.instance.Folder, ...
-        session.instance.Folder, ...
-        recName, ...
-        'qrs', ...
-        0, ...
-        0);
-    
-    %% Conversion to TXT on the VM
-    annFileName = [recName, '.txt'];
-    cmd = sprintf('cd ~/%s ; rdann -r %s -a ecgpuwave > %s', recName, ...
-        recName, annFileName);
+% Detect QRS complexes using FMRIB
+if verbose,
+    fprintf([verboseLabel 'Detecting QRS complexes using FMRIB ...']);
+end
+peaks = my_fmrib_qrsdetect(data(:,:), sr, false);
+annotFile = catfile(session.instance.Folder, [recName '.txt']);
+ecg_annotate.write_qrs_annot(annotFile, peaks, sr);
+if verbose, fprintf('[done]\n\n'); end
+
+% Convert annotation file to MIT format
+if verbose,
+    fprintf([verboseLabel 'Converting %s.txt --> %s.qrs ...']);
+end
+cmd = sprintf('cd %s %s wrann -r %s -a qrs < %s.txt', ...
+    session.instance.Folder, CMD_SEP, recName, recName);
+system(cmd);
+if verbose, fprintf('[done]\n\n'); end
+
+%% ecgpuwave
+if verbose,
+    fprintf([verboseLabel 'Running ecgpuwave ...']);
+end
+info = ecgpuwave.limits(...
+    session.instance.Folder, ...
+    session.instance.Folder, ...
+    session.instance.Folder, ...
+    recName, ...
+    'qrs', ...
+    0, ...
+    0);
+
+%% Conversion to TXT on the VM
+annFileName = [recName, '.txt'];
+cmd = sprintf('cd ~/%s ; rdann -r %s -a ecgpuwave > %s', recName, ...
+    recName, annFileName);
+send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);
+if verbose, fprintf('[done]\n\n'); end
+
+%% Downloading text annotations from VM
+if verbose,
+    fprintf([verboseLabel 'Downloading annotations (%s)...'], ...
+        annFileName);
+end
+source = sprintf('ecgpuwave@%s:~/%s/%s', url, recName, annFileName);
+target = catfile(tmpPath, annFileName);
+if ispc,
+    cmd = sprintf('pscp -pw ecgpuwave %s %s', source, target);
+else
+    cmd =  sprintf('sshpass -p ''ecgpuwave'' scp -o "%s" %s %s', ...
+        'StrictHostKeyChecking no', source, target);
+end
+system(cmd);
+if verbose, fprintf('[done]\n\n'); end
+
+%% Compute the HRV features for each experimental condition
+if verbose,
+    fprintf([verboseLabel 'Computing HRV features at %s...'], url);
+end
+sel = get_config(obj, 'EventSelector');
+
+if isempty(sel),
+    hrvFile = catfile(tmpPath, [recName '.hrv']);
+    % Extract HRV features
+    cmd = sprintf('cd %s ; get_hrv -M %s ecgpuwave > %s.hrv', ...
+        recName, recName, recName);
     send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);
-    if verbose, fprintf('[done]\n\n'); end
     
-    %% Downloading text annotations from VM
-    if verbose,
-        fprintf([verboseLabel 'Downloading annotations (%s)...'], ...
-            annFileName);
-    end
-    source = sprintf('ecgpuwave@%s:~/%s/%s', url, recName, annFileName);
-    target = catfile(tmpPath, annFileName);
+    % Download the HRV features file
+    source = sprintf('ecgpuwave@%s:~/%s/%s', url, recName, ...
+        [recName '.hrv']);
     if ispc,
-        cmd = sprintf('pscp -pw ecgpuwave %s %s', source, target);
+        cmd = sprintf('pscp -pw ecgpuwave %s %s', source, hrvFile);
     else
         cmd =  sprintf('sshpass -p ''ecgpuwave'' scp -o "%s" %s %s', ...
-            'StrictHostKeyChecking no', source, target);
+            'StrictHostKeyChecking no', source, hrvFile);
     end
     system(cmd);
-    if verbose, fprintf('[done]\n\n'); end
     
-    %% Compute the HRV features for each experimental condition
-    if verbose,
-        fprintf([verboseLabel 'Computing HRV features at %s...'], url);
-    end
-    sel = get_config(obj, 'EventSelector');
+    hrvInfo = io.wfdb.hrv.read(hrvFile);
     
-    if isempty(sel),   
-        hrvFile = catfile(tmpPath, [recName '.hrv']);
-        % Extract HRV features
-        cmd = sprintf('cd %s ; get_hrv -M %s ecgpuwave > %s.hrv', ...
-            recName, recName, recName);
+else
+    hrvInfo = cell(1, numel(sel));
+    ev = get_event(data);
+    for i = 1:numel(sel)
+        
+        hrvFile = catfile(tmpPath, [recName '_' num2str(i) '.hrv']);
+        
+        thisEv = select(sel{i}, ev);
+        
+        if isempty(thisEv), continue; end
+        
+        % Create recName_i with the RR intervals
+        for j = 1:numel(thisEv)
+            
+            first = get_sample(thisEv(j)) + get_offset(thisEv(j));
+            last = get_sample(thisEv(j)) + get_duration(thisEv(j)) - 1;
+            
+            if (last - first) < data.SamplingRate*2,
+                error('Events have too short duration');
+            end
+            
+            % Create RR time series
+            %cmd = sprintf('rm %s_%d.rr', recName, i);
+            %send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);
+            cmd = sprintf(...
+                ['cd ~/%s ; ann2rr -r %s -a ecgpuwave -i s -f s%d ' ...
+                '-t s%d >> %s_%d.rr'], ...
+                recName, recName, first, last, recName, i);
+            
+            send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);
+            
+        end
+        
+        % Get HRV statistics for this group/condition
+        cmd = sprintf('cd ~/%s ; get_hrv -M -R %s_%d.rr > %s_%d.hrv', ...
+            recName, recName, i, recName, i);
         send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);
         
         % Download the HRV features file
-        source = sprintf('ecgpuwave@%s:~/%s/%s', url, recName, ...
-            [recName '.hrv']);        
+        source = sprintf('ecgpuwave@%s:~/%s/%s_%d.hrv', url, ...
+            recName, recName, i);
         if ispc,
             cmd = sprintf('pscp -pw ecgpuwave %s %s', source, hrvFile);
         else
@@ -186,83 +225,15 @@ try
         end
         system(cmd);
         
-        hrvInfo = io.wfdb.hrv.read(hrvFile);        
+        hrvInfo{i} = io.wfdb.hrv.read(hrvFile);
         
-    else
-        hrvInfo = cell(1, numel(sel));
-        ev = get_event(data);
-        for i = 1:numel(sel)
-            
-            hrvFile = catfile(tmpPath, [recName '_' num2str(i) '.hrv']);
-           
-            thisEv = select(sel{i}, ev);
-            
-            if isempty(thisEv), continue; end
-            
-            % Create recName_i with the RR intervals
-            for j = 1:numel(thisEv)
-               
-                first = get_sample(thisEv(j)) + get_offset(thisEv(j));
-                last = get_sample(thisEv(j)) + get_duration(thisEv(j)) - 1;
-                
-                if (last - first) < data.SamplingRate*2,
-                    error('Events have too short duration');
-                end
-                
-                % Create RR time series
-                %cmd = sprintf('rm %s_%d.rr', recName, i);
-                %send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);     
-                cmd = sprintf(...
-                    ['cd ~/%s ; ann2rr -r %s -a ecgpuwave -i s -f s%d ' ...
-                    '-t s%d >> %s_%d.rr'], ...
-                    recName, recName, first, last, recName, i);
-                
-                send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);          
-                
-            end
-            
-            % Get HRV statistics for this group/condition
-            cmd = sprintf('cd ~/%s ; get_hrv -M -R %s_%d.rr > %s_%d.hrv', ...
-                recName, recName, i, recName, i);
-            send_ssh_command(url, cmd, usr, pw, MAX_TRIES, PAUSE_INTERVAL);    
-            
-            % Download the HRV features file
-            source = sprintf('ecgpuwave@%s:~/%s/%s_%d.hrv', url, ...
-                recName, recName, i);
-            if ispc,
-                cmd = sprintf('pscp -pw ecgpuwave %s %s', source, hrvFile);
-            else
-                cmd =  sprintf('sshpass -p ''ecgpuwave'' scp -o "%s" %s %s', ...
-                    'StrictHostKeyChecking no', source, hrvFile);
-            end
-            system(cmd);
-            
-            hrvInfo{i} = io.wfdb.hrv.read(hrvFile);            
-            
-        end
-
     end
-    
-    if verbose, fprintf('[done]\n\n'); end
-    
-catch ME
-    
-    % Clean up and shut down the VM
-    cmd = sprintf('rm -rf ~/%s*', recName);
-    if ispc,
-        cmd = sprintf('plink -pw ecgpuwave ecgpuwave@%s "%s"', url, cmd);
-    else
-        cmd = sprintf(['sshpass -p ''ecgpuwave'' ssh -o "%s" ' ...
-            'ecgpuwave@%s "%s"'], 'StrictHostKeyChecking no', url, cmd);
-    end
-    system(cmd);
-    % Do not shutdown the VM! Consider the case of multiple jobs running in
-    % parallel which share a single VM instance. The user has to stop the
-    % VM when he/she is done.
-    %[~, ~] = system('VboxManage controlvm ecgpuwave acpipowerbutton');
-    rethrow(ME);
     
 end
+
+if verbose, fprintf('[done]\n\n'); end
+
+
 
 % Extract annotations info
 info = io.wfdb.annotations.read(catfile(tmpPath, annFileName));
