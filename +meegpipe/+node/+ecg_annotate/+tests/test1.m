@@ -125,9 +125,10 @@ try
     myNode = ecg_annotate('EventSelector', {selDark, selBlue, selRed});
     
     run(myNode, data);
-    
-    % ensure the imported and original data are identical
-    ok(numel(get_event(data))>0, name);
+   
+    evs = get_event(data);
+    evSel = class_selector('Type', 'N');
+    ok(numel(select(evSel, evs)) == 241, name);
     clear data;
     
 catch ME
@@ -139,7 +140,7 @@ end
 
 
 
-%% process multiple files (use existing VM)
+%% process multiple files
 try
     
     name = 'process multiple datasets';
@@ -172,7 +173,7 @@ end
 %% oge
 try
     
-    name = 'Oracle grid engine (use existing VM)';
+    name = 'Oracle grid engine';
     
     if has_oge,
         tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');

@@ -123,7 +123,7 @@ sel = get_config(obj, 'EventSelector');
 % Write annotations in WFDB format
 cmd = sprintf('cd %s %s wrann -r %s -a ecgpuwave <%s', ...
     session.instance.Folder, CMD_SEP, recName, [recName '.ecgpuwave.txt']);
-system(cmd);
+[~, ~] = system(cmd);
 
 if isempty(sel),
     hrvFile = catfile(session.instance.Folder, [recName '.hrv']);
@@ -140,7 +140,7 @@ if isempty(sel),
         cmd2 = sprintf('cd %s & %s %s', ...
             session.instance.Folder, cygrun, cmd);        
     end
-    system(cmd2);    
+    [~, ~] = system(cmd2);    
   
    hrvInfo = io.wfdb.hrv.read(hrvFile);
     
@@ -172,7 +172,7 @@ else
                 session.instance.Folder, CMD_SEP, recName, first, last, ...
                 recName, i);
             
-            system(cmd);
+            [~, ~] = system(cmd);
             
         end
         

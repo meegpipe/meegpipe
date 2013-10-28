@@ -3,37 +3,52 @@
 
 The `ecg_annotate` node detects QRS complexes and annotates heartbeats
 using [ecgpuwave][ecgpuwave]. This node is actually a wrapper to the public
-`ecgpuwave` implementation in Fortran 77 by [Pablo Laguna][laguna] and others.
+`ecgpuwave` implementation in MATLAB by [Pablo Laguna][laguna] and others.
+Unfortunately, the latter implementation is not complete and requires a 
+third-party R-peak detector. This has been solved using the R-peak detector
+included in the [FMRIB toolbox][fmrib] for MATLAB. 
+
+[fmrib]: http://fsl.fmrib.ox.ac.uk/eeglab/fmribplugin/
+
 
 Additionally, the `ecg_annotate` node computes heart rate variability features
 based on the annotations produced by `ecgpuwave`. This is done using the
-[HRV Toolkit][hrv_toolkit] available at [physionet.org][physionet]. The HRV
-features are stored in a log file (`features.txt`) contained within the node's
-report directory.
+[HRV Toolkit][hrv_toolkit]. The HRV features are stored in a log file 
+(`features.txt`) contained within the node's report directory, and easily
+accessible through the node's HTML report.
 
 [hrv_toolkit]: http://physionet.org/tutorials/hrv-toolkit/
 [physionet]: http://physionet.org/
 
+
 ## Dependencies
 
-Compiling Fortran 77 code in modern Linux distros and modern versions of
-[Cygwin][cygwin] can be remarkably difficult. I have got around this problem by
-compiling the original implementation of `ecgpuwave` by Pablo Laguna in a
-[Virtual Machine][vbox] running an ancient [Debian 4.0][debian4] linux distro.
-This VM needs to be in the same network as the machine running node
-`ecg_annotate`. If you are working at `somerengrid` (the private computing grid
-used by our [research group][sc]) then you don't need to worry about this and
-everything should work out of the box. Otherwise you will need to perform some
-[additional installation steps][install].
+Node `ecg_annotate` depends of several Linux command-line utilities. If you 
+are using `ecg_annotate` in Windows, then you will need to install 
+[Cygwin][cygwin] and start MATLAB from a Cygwin terminal window so that all
+built-in Cygwin utilities become accessible to MATLAB through the 
+`system()` command. 
 
-[install]: ./installation.md
-[sc]: http://www.nin.knaw.nl/research_groups/van_someren_group/
-[vbox]: https://www.virtualbox.org/
-[debian4]: http://www.debian.org/releases/etch/debian-installer/
-[ecgpuwave-install]: http://www.physionet.org/physiotools/ecgpuwave/src/INSTALL
 [cygwin]: http://www.cygwin.com/
+
+The following third-party software needs to be installed in your Linux-like 
+system for node `ecg_annotate` to work:
+
+* [Physionet's WFDB][wfdb]
+
+* [Physionet's HRV toolkit][hrv_toolkit]
+
+[wfdb]: http://www.physionet.org/physiotools/wfdb.shtml
+
+If you are working at `somerengrid` (the private computing grid used by our
+[research group][sc]) then all third-party dependencies should be already
+there, and you node `ecg_annotate` should work out of the box.
+TALL
+
 [ecgpuwave]: http://www.physionet.org/physiotools/ecgpuwave/
 [laguna]: http://diec.unizar.es/~laguna/personal/
+
+
 
 ## Usage synopsis:
 
@@ -50,9 +65,9 @@ where `data` is a [physioset][physioset] object.
 
 ## Construction arguments
 
-The `qrs_detect` node admits all the key/value pairs admitted by the
-[abstract_node][abstract-node] class. For configuration options specific to this
-node class see the documentation of the helper [config][config] class.
+The `ecg_annotate` node admits all the key/value pairs admitted by the
+[abstract_node][abstract-node] class. For configuration options specific to
+this node class see the documentation of the helper [config][config] class.
 
 [abstract-node]: ../@abstract_node/README.md
 [config]: ./config.md

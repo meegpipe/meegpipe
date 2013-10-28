@@ -9,22 +9,20 @@ necessary for building a valid [ecg_annotate][ecg_annotate] node.
 
 ## Usage synopsis
 
-Enforce the ECG annotation to be performed at a Virtual Machine (VM) with a 
-fixed URL, instead of attempting to start a new VM locally:
 
 ````matlab
 import meegpipe.node.*;
-myConfig = ecg_annotate.config('VMUrl', '192.87.10.186');
+myConfig = ecg_annotate.config('key', value, ...);
 myNode   = ecg_annotate.new(myConfig);
 ````
 
-Altenatively, the following syntax is equivalent, and preferable for being
-more concise:
+Altenatively, the following syntax is equivalent and preferable:
 
 ````matlab
 import meegpipe.node.*;
-myNode = ecg_annotate.new('VMUrl', '192.87.10.186');
+myNode = ecg_annotate.new('key', value, ...);
 ````
+
 
 ## Configuration properties
 
@@ -32,6 +30,7 @@ myNode = ecg_annotate.new('VMUrl', '192.87.10.186');
 The following construction options are accepted by the constructor of
 this config class, and thus by the constructor of the `ecg_annotate` node
 class:
+
 
 ### `EventSelector`
 
@@ -73,12 +72,3 @@ name for each experimental condition. This name will be used to identify
 the condition in the generated features table (see the data processing
 report).
 
-
-### `VMUrl`
-
-__Class__: `string`
-
-__Default__: `''`
-
-The IP address of the VM that will be used to run `ecgpuwave`. If this 
-option is not provided, the node will attempt to start a new VM locally.
