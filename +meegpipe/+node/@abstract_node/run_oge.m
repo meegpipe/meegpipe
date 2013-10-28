@@ -38,7 +38,7 @@ else
 end
 
 if ~isempty(get_name(obj)),
-    jobName = [get_name(obj) '-' jobName];
+    jobName = ['meegpipe-' get_name(obj) '-' jobName];
 end
 
 %% Save the input data to disk

@@ -16,7 +16,7 @@ import physioset.event.class_selector;
 
 MEh     = [];
 
-initialize(9);
+initialize(8);
 
 %% Create a new session
 try
@@ -134,6 +134,8 @@ try
     
     run(myNode, data);
     
+    featuresFile = catfile(get_full_dir(myNode, data), 'features.txt');
+    
     condition = check_features_file(featuresFile, 14, 3);
     
     evs = get_event(data);
@@ -211,7 +213,10 @@ try
             tries = tries + 1;
         end
         [~, ~] = system(sprintf('qdel -u %s', get_username));
-        ok(exist(dataFiles{3}, 'file') > 0, name);
+        
+        featuresFile = catfile(get_full_dir(myNode, data{1}), 'features.txt');
+        
+        ok(exist(featuresFile, 'file') > 0, name);
         
     else
         
@@ -252,9 +257,10 @@ end
 
 function condition = check_features_file(featuresFile, nbCols, nbRows)
 
-condition = exist(featuresFile, 'file');
-condition = condition && ...
-    numel(evs) > 0 && numel(select(evSel, evs)) == 241;
+import safefid.safefid;
+import mperl.split;
+
+condition = exist(featuresFile, 'file') > 0;
 
 if condition,
     fid = safefid.fopen(featuresFile, 'r');

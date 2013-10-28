@@ -204,7 +204,11 @@ if verbose, fprintf('[done]\n\n'); end
 annFileName = catfile(session.instance.Folder, [recName, '.ecgpuwave.txt']);
 info = io.wfdb.annotations.read(annFileName);
 
-rmdir(session.instance.Folder, 's');
+try
+    rmdir(session.instance.Folder, 's');
+catch ME
+    caca = 5;
+end
 session.clear_subsession();
 
 end
