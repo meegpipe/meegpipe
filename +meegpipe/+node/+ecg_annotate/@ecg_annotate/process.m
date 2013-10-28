@@ -6,8 +6,6 @@ import goo.globals;
 import misc.eta;
 import meegpipe.node.ecg_annotate.ecg_annotate;
 
-ecg_annotate.check_dependencies;
-
 dataNew = [];
 
 verbose      = is_verbose(obj);
@@ -25,7 +23,7 @@ evSel    = get_config(obj, 'EventSelector');
 
 [info, hrvInfo] = ecgpuwave(obj, data);
 
-obj.HRVFeatures = hrvInfo;
+obj.HRVFeatures_ = hrvInfo;
 
 %% Save HRV features to log file
 hrvLogFile = 'features.txt';

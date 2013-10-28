@@ -4,16 +4,11 @@ classdef ecg_annotate < meegpipe.node.abstract_node
     % See: <a href="matlab:misc.md_help('meegpipe.node.ecg_annotate')">misc.md_help(''meegpipe.node.ecg_annotate'')</a>
         
     properties (SetAccess = private, GetAccess = private)
-       HRVFeatures; 
+       HRVFeatures_; 
     end
     
     methods (Access = private)
         [info, hrvInfo] = ecgpuwave(obj, data);
-    end
-    
-    methods (Static)
-        check_dependencies; 
-        bool = has_hrv;     
     end
     
     % from meegpipe.node.abstract_node

@@ -42,7 +42,7 @@ end
 try
     
     name = 'constructor';
-    ecg_annotate; 
+    ecg_annotate;
     ok(true, name);
     
 catch ME
@@ -82,10 +82,18 @@ try
     
     myNode = ecg_annotate;
     
-    run(myNode, data);
+    run(myNode, data);  
+
+    featuresFile = catfile(get_full_dir(myNode, data), 'features.txt');
     
-    % ensure the imported and original data are identical
-    ok(numel(get_event(data))>0, name);
+    condition = check_features_file(featuresFile, 13, 1);
+    
+    evs = get_event(data);
+    evSel = class_selector('Type', 'N');
+    condition = condition && numel(evs) > 0 && ...
+        numel(select(evSel, evs)) == 241;
+    
+    ok(condition, name);
     clear data;
     
 catch ME
@@ -118,17 +126,22 @@ try
     add_event(data, ev);
     
     % The event selectors
-    selDark = class_selector('Type', 'dark', 'Name', 'dark');    
+    selDark = class_selector('Type', 'dark', 'Name', 'dark');
     selBlue = class_selector('Type', '^blue$', 'Name', 'blue');
-    selRed  = class_selector('Type', '^red$', 'Name', 'red');    
+    selRed  = class_selector('Type', '^red$', 'Name', 'red');
     
     myNode = ecg_annotate('EventSelector', {selDark, selBlue, selRed});
     
     run(myNode, data);
-   
+    
+    condition = check_features_file(featuresFile, 14, 3);
+    
     evs = get_event(data);
     evSel = class_selector('Type', 'N');
-    ok(numel(select(evSel, evs)) == 241, name);
+    condition = condition && numel(evs) > 0 && ...
+        numel(select(evSel, evs)) == 241;
+    
+    ok(condition, name);
     clear data;
     
 catch ME
@@ -232,3 +245,28 @@ end
 
 %% Testing summary
 status = finalize();
+
+end
+
+
+
+function condition = check_features_file(featuresFile, nbCols, nbRows)
+
+condition = exist(featuresFile, 'file');
+condition = condition && ...
+    numel(evs) > 0 && numel(select(evSel, evs)) == 241;
+
+if condition,
+    fid = safefid.fopen(featuresFile, 'r');
+    hdr = fgetl(fid);
+    condition = condition && numel(split(',', hdr)) == nbCols;
+    lineCounter = 0;
+    while condition
+        line = fgetl(fid);
+        if ~ischar(line), break; end
+        lineCounter = lineCounter + 1;
+    end
+    condition = condition && lineCounter == nbRows;
+end
+
+end
