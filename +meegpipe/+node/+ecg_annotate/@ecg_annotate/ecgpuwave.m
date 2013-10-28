@@ -99,8 +99,8 @@ if verbose, fprintf('[done]\n\n'); end
 if verbose,
     fprintf([verboseLabel 'Detecting QRS complexes using FMRIB ...']);
 end
-peaks = my_fmrib_qrsdetect(data(:,:), sr, false);
-if verbose, fprintf('[done]\n\n'); end
+peaks = my_fmrib_qrsdetect(data(:,:), sr, 1);
+if verbose, fprintf('\n\n'); end
 
 %% ecgpuwave
 if verbose,
@@ -116,7 +116,7 @@ ecgpuwave.limits(...
 
 %% Compute the HRV features for each experimental condition
 if verbose,
-    fprintf([verboseLabel 'Computing HRV features at %s...'], url);
+    fprintf([verboseLabel 'Computing HRV features using the HRV toolkit...']);
 end
 sel = get_config(obj, 'EventSelector');
 

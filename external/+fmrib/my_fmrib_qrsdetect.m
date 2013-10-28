@@ -50,7 +50,7 @@
 
 function [Peaks UsableData Correlations]=my_fmrib_qrsdetect(ecg,fs, verbose)
 
-
+import misc.eta;
 
 %
 % This program detects QRS peaks from a ECG channel.  First a complex lead
@@ -307,6 +307,11 @@ F2(1:ms350)=F(1:ms350);
 
 %Detect QRS
 %----------
+if verbose, 
+    Lby100 = floor(L/100);
+    tinit = tic; 
+end
+
 for n=1:L
     
     %wait bar
@@ -316,7 +321,7 @@ for n=1:L
         Flag25=0;
         Flag50=0;
         Flag75=0;
-        if verbose,
+        if verbose > 2,
             fprintf('\nStage 1 of 5: Adaptive threshold peak detection.\n');
         end
     end
@@ -384,17 +389,17 @@ for n=1:L
     percentdone=floor(n*100/L);
     if floor(percentdone)>=barth
         if percentdone>=25 & Flag25==0
-            if verbose, fprintf('25%% '); end
+            if verbose > 2, fprintf('25%% '); end
             Flag25=1;
         elseif percentdone>=50 & Flag50==0
-            if verbose, fprintf('50%% '); end
+            if verbose > 2, fprintf('50%% '); end
             Flag50=1;
         elseif percentdone>=75 & Flag75==0
-            if verbose, fprintf('75%% '); end
+            if verbose > 2, fprintf('75%% '); end
             Flag75=1;
         elseif percentdone==100
-            if verbose, fprintf('100%%\n'); end
-        elseif verbose,
+            if verbose > 2, fprintf('100%%\n'); end
+        elseif verbose > 2,
             fprintf('.')
         end
 
@@ -405,6 +410,10 @@ for n=1:L
             barth=100;
         end
     end 
+    
+    if verbose && ~mod(n, Lby100),
+       misc.eta(tinit, L, n); 
+    end
 end
 
 %correct QRS Peaks
