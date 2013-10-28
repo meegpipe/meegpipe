@@ -6,6 +6,10 @@ classdef pupillator < physioset.import.abstract_physioset_import
         physiosetObj = import(obj, filename, varargin);        
     end
     
+    methods (Static)
+        evArray = block_events(blockOnset, blockOnsetTime, seq); 
+    end
+    
     
     % Constructor
     methods

@@ -21,6 +21,7 @@ import misc.decompress;
 import io.pupillator.read;
 import safefid.safefid;
 import datestr2num.DateStr2Num;
+import physioset.import.pupillator;
 
 if numel(varargin) == 1 && iscell(varargin{1}),
     varargin = varargin{1};
@@ -112,66 +113,15 @@ end
 isStatus = cellfun(@(x) strcmp(x, 'status'), dataHdr);
 isRed    = cellfun(@(x) strcmp(x, 'red [0-255]'), protHdr);
 isBlue   = cellfun(@(x) strcmp(x, 'blue [0-255]'), protHdr);
-isPVT    = cellfun(@(x) strcmp(x, 'pvt'), protHdr);
-[blockID, transitionSampl] = unique(data(:, isStatus), 'first');
-myProtEvs = event(transitionSampl);
+[~, transitionSampl] = unique(data(:, isStatus), 'first');
 
-blockDur = diff([transitionSampl(:);size(data,1)]);
-isPre = true;
-isPost = false;
-for i = 1:numel(myProtEvs)
-   
-   thisType = 'block_';
-   if prot(i, isRed) > 0,
-       
-       thisType = [thisType 'red']; %#ok<*AGROW>
-       isPre = false;
-   elseif prot(i, isBlue) > 0,
-       thisType = [thisType 'blue'];
-       isPost = true;
-   elseif isPre,
-       thisType = [thisType 'dark-pre'];
-   elseif isPost
-       thisType = [thisType 'dark-post'];
-   else
-       thisType = [thisType 'dark'];
-   end
-   if prot(i, isPVT) > 0,
-       thisType = [thisType, '-pvt'];
-   end
-   
-   myProtEvs(i) = set(myProtEvs(i), ...
-       'Time',      data(transitionSampl(i), isTime), ...
-       'Value',     blockID(i), ...
-       'Duration',  blockDur(i), ...
-       'Type',      thisType ...
-       );
-   
-   myProtEvs(i) = set_meta(myProtEvs(i), 'Block_1_7', ceil(blockID(i)/3));
-   
-end
+seq = repmat('D', 7, 1);
+seq(prot(1:3:end, isRed)>0) = 'R';
+seq(prot(1:3:end, isBlue)>0) = 'B';
+transitionSampl = [transitionSampl(:); size(data,1)];
 
-% The only blocks that are always there are the dark-pre, the red, the
-% dark, the blue and the dark-post. Any block before the dark-pre will be
-% labeled as dark-pre-1, dark-pre-2, etc. Any block after the dark-post
-% will be labeled as dark-post-1, dark-post-2, etc.
-evTypes = get(myProtEvs, 'Type');
-
-firstBlock = find(ismember(evTypes, 'block_dark-pre-pvt'), 1, 'last');
-
-for i = 1:firstBlock-1
-    thisType = get(myProtEvs(i), 'Type');
-    newType  = [thisType '-' num2str(firstBlock-i)];
-    myProtEvs(i) = set(myProtEvs(i), 'Type', newType);
-end
-
-lastBlock = find(ismember(evTypes, 'block_dark-post-pvt'), 1, 'first');
-
-for i = 1:(numel(myProtEvs)-lastBlock)
-    thisType = get(myProtEvs(lastBlock+i), 'Type');
-    newType  = [thisType '-' num2str(i)];
-    myProtEvs(lastBlock+i) = set(myProtEvs(lastBlock+i), 'Type', newType);
-end
+myProtEvs = pupillator.block_events(...
+    transitionSampl, data(transitionSampl, isTime), seq);
 
 dataCols = cellfun(@(x) ismember(x, {'diameter [mm]', 'shapefactor'}), dataHdr);
 

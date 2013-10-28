@@ -85,11 +85,13 @@ else
     formatStr = repmat('%5.3f,', 1, numel(hrvFeats));
     if isempty(rowName),
         for i = 1:size(feat,1)
+            if all(isnan(feat(i,:))), continue; end
             fprintf(fid, formatStr, feat(i,:));
         end
     else
         formatStr =['%s,' formatStr(1:end-1) '\n'];
         for i = 1:size(feat,1)
+            if all(isnan(feat(i,:))), continue; end
             fprintf(fid, formatStr, rowName{i}, feat(i,:));
         end
     end
