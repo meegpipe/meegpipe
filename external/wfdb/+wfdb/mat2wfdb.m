@@ -207,11 +207,7 @@ head_str(1)={[nameOnly ' ' num2str(M) ' ' num2str(Fs) ' ' num2str(N)]};
 %Loop through all signals, digitizing them and generating lines in header
 %file
 eval(['y=int' num2str(bit_res) '(zeros(N,M));'])  %allocate space
-for m=1:M
-    nameArray = regexp(fname,'/','split');
-    if ~isempty(nameArray)
-        fname = nameArray{end};
-    end
+for m=1:M   
     
     [tmp_bit1,bit_gain,baseline_tmp,ck_sum]=quant(x(:,m), ...
         bit_res,gain{m},baseline{m},isint);
