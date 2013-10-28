@@ -52,6 +52,10 @@ function [Peaks UsableData Correlations]=my_fmrib_qrsdetect(ecg,fs, verbose)
 
 import misc.eta;
 
+if ~goo.globals.get.Verbose,
+    verbose = 0;
+end
+
 %
 % This program detects QRS peaks from a ECG channel.  First a complex lead
 %   is constructed by computing the Teager Energy Operator TEO [Kim04] and 
@@ -411,7 +415,7 @@ for n=1:L
         end
     end 
     
-    if verbose && ~mod(n, Lby100),
+    if verbose > 0 && ~mod(n, Lby100),
        misc.eta(tinit, L, n); 
     end
 end

@@ -51,12 +51,6 @@ import fmrib.my_fmrib_qrsdetect;
 import meegpipe.node.ecg_annotate.ecg_annotate;
 import wfdb.mat2wfdb;
 
-if isunix,
-    CMD_SEP = ';';
-else
-    CMD_SEP = '&';
-end
-
 verbose = is_verbose(obj);
 
 sr = data.SamplingRate;
@@ -104,7 +98,7 @@ if verbose, fprintf('\n\n'); end
 
 %% ecgpuwave
 if verbose,
-    fprintf([verboseLabel 'Running ecgpuwave ...']);
+    fprintf([verboseLabel 'Running ecgpuwave ...\n\n']);
 end
 ecgpuwave.limits(...
     session.instance.Folder, ...
@@ -121,28 +115,32 @@ end
 sel = get_config(obj, 'EventSelector');
 
 % Write annotations in WFDB format
-cmd = sprintf('cd %s %s wrann -r %s -a ecgpuwave <%s', ...
-    session.instance.Folder, CMD_SEP, recName, [recName '.ecgpuwave.txt']);
+currDir = pwd;
+cd(session.instance.Folder);
+cmd = sprintf('wrann -r %s -a ecgpuwave <%s', ...
+    recName, [recName '.ecgpuwave.txt']);
 [~, ~] = system(cmd);
+cd(currDir);
 
 if isempty(sel),
     hrvFile = catfile(session.instance.Folder, [recName '.hrv']);
     
-    % Extract HRV features    
+    % Extract HRV features
     cmd = sprintf('get_hrv -M %s ecgpuwave > %s.hrv', ...
         recName, recName);
     
-    if isunix,
-        cmd2 = sprintf('cd %s ; %s', session.instance.Folder, cmd); 
-    else
+    if misc.iscygwin,
         cygbin = val(meegpipe.get_config, 'cygwin', 'bindir');
         cygrun = catfile(cygbin, 'bash');
-        cmd2 = sprintf('cd %s & %s %s', ...
-            session.instance.Folder, cygrun, cmd);        
+        cmd = sprintf('%s %s', cygrun, cmd);
     end
-    [~, ~] = system(cmd2);    
-  
-   hrvInfo = io.wfdb.hrv.read(hrvFile);
+    
+    currDir = pwd;
+    cd(session.instance.Folder);
+    [~, ~] = system(cmd);
+    cd(currDir);
+    
+    hrvInfo = io.wfdb.hrv.read(hrvFile);
     
 else
     hrvInfo = cell(1, numel(sel));
@@ -165,14 +163,14 @@ else
                 error('Events have too short duration');
             end
             
-            % Create RR time series           
+            % Create RR time series
             cmd = sprintf(...
-                ['cd %s %s ann2rr -r %s -a ecgpuwave -i s -f s%d ' ...
-                '-t s%d >> %s_%d.rr'], ...
-                session.instance.Folder, CMD_SEP, recName, first, last, ...
-                recName, i);
-            
+                ['ann2rr -r %s -a ecgpuwave -i s -f s%d ' ...
+                '-t s%d >> %s_%d.rr'], recName, first, last, recName, i);
+            currDir = pwd;
+            cd(session.instance.Folder);
             [~, ~] = system(cmd);
+            cd(currDir);
             
         end
         
@@ -180,17 +178,17 @@ else
         cmd = sprintf('get_hrv -M -R %s_%d.rr >%s_%d.hrv', ...
             recName, i, recName, i);
         
-        if isunix,
-            cmd2 = sprintf('cd %s ; %s', session.instance.Folder, cmd);
-        else
+        if misc.iscygwin,
             cygbin = val(meegpipe.get_config, 'cygwin', 'bindir');
             cygrun = catfile(cygbin, 'bash');
-            cmd2 = sprintf('cd %s & %s %s', ...
-                session.instance.Folder, cygrun, cmd);
+            cmd = sprintf('%s %s', cygrun, cmd);
         end
         
-        [~, ~] = system(cmd2);        
-       
+        currDir = pwd;
+        cd(session.instance.Folder);
+        [~, ~] = system(cmd);
+        cd(currDir);
+        
         hrvInfo{i} = io.wfdb.hrv.read(hrvFile);
         
     end
@@ -207,7 +205,7 @@ info = io.wfdb.annotations.read(annFileName);
 try
     rmdir(session.instance.Folder, 's');
 catch ME
-    caca = 5;
+    % do nothing, just ignore
 end
 session.clear_subsession();
 
