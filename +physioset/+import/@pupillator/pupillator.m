@@ -3,11 +3,11 @@ classdef pupillator < physioset.import.abstract_physioset_import
     
     % physioset.import.import interface
     methods
-        physiosetObj = import(obj, filename, varargin);        
+        physiosetObj = import(obj, filename, varargin);
     end
     
     methods (Static)
-        evArray = block_events(blockOnset, blockOnsetTime, seq); 
+        evArray = block_events(blockOnset, blockOnsetTime, seq);
     end
     
     
@@ -15,7 +15,7 @@ classdef pupillator < physioset.import.abstract_physioset_import
     methods
         
         function obj = pupillator(varargin)
-            obj = obj@physioset.import.abstract_physioset_import(varargin{:});             
+            obj = obj@physioset.import.abstract_physioset_import(varargin{:});
         end
         
     end
