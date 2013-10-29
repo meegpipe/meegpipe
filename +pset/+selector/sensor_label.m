@@ -69,6 +69,8 @@ classdef sensor_label < pset.selector.abstract_selector
         end
         
         function data = select(obj, data, remember)
+            import misc.any2str;
+            
             if nargin < 3 || isempty(remember),
                 remember = true;
             end
@@ -90,7 +92,17 @@ classdef sensor_label < pset.selector.abstract_selector
             end
             
             if ~any(isSelected),
-                error('Cannot select an empty set');
+                
+                % Debuggin info
+                fprintf('\n----Debugging information:\n')
+                fprintf('Regex = %s\n', any2str(obj.Regex));
+                fprintf('SensorLabels = %s\n', any2str(sensLabels));
+                fprintf('Matches = %s\n', any2str(isSelected));
+                fprintf('\n----End of debugging information');
+                
+                ME = MException('selector:emptySet', ...
+                    'Cannot select an empty set');
+                throw(ME);
             end
             
             select(data, find(isSelected), [], remember);

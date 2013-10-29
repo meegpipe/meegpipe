@@ -17,7 +17,7 @@ function str = any2str(val, maxLength)
 % See also: misc
  
 
-
+import misc.any2str;
 import misc.cell2str;
 import misc.matrix2str;
 
@@ -58,6 +58,10 @@ elseif islogical(val) && numel(val) == 1,
 elseif ischar(val) && numel(val) < maxLength,
     
     str = val;
+    
+elseif islogical(val),
+    
+    str = any2str(double(val));
     
 else
     
