@@ -27,10 +27,15 @@ end
 
 dataFileExt   = globals.get.DataFileExt;
 opt.chunksize = globals.get.LargestMemoryChunk;
-opt.filename  = [];
+opt.filename  = []; % For backward compatibility. Use DataFile instead
+opt.DataFile  = [];
 opt.precision = globals.get.Precision;
 
 [~, opt] = process_arguments(opt, varargin);
+
+if isempty(opt.filename),
+    opt.filename = opt.DataFile;
+end
 
 if isempty(opt.filename),
     filename = session.instance.tempname;
