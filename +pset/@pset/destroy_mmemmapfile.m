@@ -7,6 +7,8 @@ function obj = destroy_mmemmapfile(obj, idx)
 %
 % See also: pset.
 
+if nargin < 2, idx = []; end
+
 if isempty(idx),
     obj.MemoryMap = [];
     obj.MapIndices = [];

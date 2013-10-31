@@ -118,7 +118,10 @@ switch s(1).type
                     this_map_subset = (mIdx==umIdx(i));
                     y(:, this_map_subset) = ...
                         obj.MemoryMap{umIdx(i)}.Data.Data(dIdx, ...
-                        pIdx(this_map_subset));                    
+                        pIdx(this_map_subset)); 
+                    if obj.AutoDestroyMemMap,
+                       destroy_mmemmapfile(obj, umIdx(i));
+                    end
                 end
             end
             
