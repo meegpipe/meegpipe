@@ -376,11 +376,11 @@ classdef pset < pset.mmappset & ...
             opt.Transposed   = get_config('pset', 'transposed');
             opt.Precision    = get_config('pset', 'precision');
             opt.Writable     = get_config('pset', 'writable');
+            opt.AutoDestroyMemMap = get_config('pset', 'auto_destroy_mem_map');
             
             [~, opt] = process_arguments(opt, varargin);
             
-            fNames = {'Temporary', 'Transposed', 'Precision', ...
-                'Writable'};
+            fNames = fieldnames(opt);
             for i = 1:numel(fNames)
                 obj.(fNames{i}) = opt.(fNames{i});
             end

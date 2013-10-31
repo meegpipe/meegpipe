@@ -16,7 +16,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(11);
+initialize(12);
 
 %% Create a new session
 try
@@ -113,6 +113,31 @@ catch ME
     MEh = [MEh ME];
 
 end
+
+%% process sample data with AutoDestroyMemMap
+try
+
+    name = 'process sample data with AutoDestroyMemMap';
+
+    myNode1 = resample('UpsampleBy', 2);
+    myNode2 = resample('DownsampleBy', 2, 'AutoDestroyMemMap', true);
+    myPipe  = pipeline(myNode1, myNode2);
+
+    data = import(physioset.import.matrix, randn(10, 1000));
+    data = filter(lpfilt('fc', 0.1), data);
+
+    newData = run(myPipe, data);
+
+    ok(data.PointSet.AutoDestroyMemMap & ...
+        max(abs(newData(:)-data(:))) < .1, name);
+
+catch ME
+
+    ok(ME, name);
+    MEh = [MEh ME];
+
+end
+
 
 %% process sample data using outRate
 try

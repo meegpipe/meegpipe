@@ -32,6 +32,7 @@ classdef config < meegpipe.node.abstract_config
         UpsampleBy   = 1;
         DownsampleBy = 1;
         OutputRate   = NaN;
+        AutoDestroyMemMap = false;
         
     end
     

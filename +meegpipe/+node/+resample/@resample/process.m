@@ -16,6 +16,7 @@ verboseLabel = get_verbose_label(obj);
 P = get_config(obj, 'UpsampleBy');
 Q = get_config(obj, 'DownsampleBy');
 outRate = get_config(obj, 'OutputRate');
+autoDestroyMemMap = get_config(obj, 'AutoDestroyMemMap');
 
 if ~isnan(outRate),
     sr = dataIn.SamplingRate;
@@ -36,7 +37,8 @@ end
 
 args = construction_args(dataIn, 'pset');
 dataOut  = pset.nan(size(dataIn,1), ceil(P*size(dataIn,2)/Q), ...
-    args{:}, 'FileName', fileName, 'Temporary', true);
+    args{:}, 'FileName', fileName, 'Temporary', true, ...
+    'AutoDestroyMemMap', autoDestroyMemMap);
 
 if verbose, fprintf('[done]\n\n'); end
 

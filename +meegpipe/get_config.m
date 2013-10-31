@@ -34,7 +34,9 @@ cfg = val(cfg, varargin{:});
 try
     value = eval(cfg);
 catch ME
-    if strcmp(ME.identifier, 'MATLAB:m_missing_variable_or_function')
+    catchedErrors = {'MATLAB:m_missing_variable_or_function', ...
+        'MATLAB:UndefinedFunction'};
+    if ismember(ME.identifier, catchedErrors)
         value = cfg;
     else
         rethrow(ME);
