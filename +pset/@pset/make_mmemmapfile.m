@@ -5,15 +5,12 @@ function obj = make_mmemmapfile(obj)
 % obj = make_mmemmapfile(obj)
 %
 %
-% (c) German Gomez-Herrero
-% Contact: german.gomezherrero@ieee.org
 %
 % See also: pset.
 
 import pset.pset;
-import pset.globals;
 
-mapsize = globals.get.MapSize;
+mapsize = meegpipe.get_config('pset', 'memory_map_size');
 
 % Number of points stored in the file
 fid = fopen(obj.DataFile);

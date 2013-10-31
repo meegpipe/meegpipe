@@ -64,6 +64,9 @@ classdef pset < pset.mmappset & ...
         DimMapH;
         DimInvMapH;
         
+        % Destroy memory maps after use?
+        AutoDestroyMemMap = false;
+        
     end
     
     % Private static methods
