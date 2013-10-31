@@ -39,12 +39,8 @@ classdef sensor_label < pset.selector.abstract_selector
             
             if isempty(value), 
                 value = {'.+'};
-            end
-            
-            if iscell(value) && all(cellfun(@(x) ischar(x), value)),
-                value = {['^(' join('|', value) ')$']};
-            end
-            
+            end            
+           
             if ischar(value),
                 value = {value};
             end

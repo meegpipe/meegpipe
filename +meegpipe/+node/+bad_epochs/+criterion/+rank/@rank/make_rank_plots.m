@@ -48,7 +48,11 @@ if ~isempty(rejIdx),
     set(gca, 'XTick', nonRejIdx);
     
     if ~isempty(nonRejIdx),
-        XLabels = split(',', join(',', nonRejIdx));
+        if numel(nonRejIdx) > 1,
+            XLabels = split(',', join(',', nonRejIdx));
+        else
+            XLabels = {num2str(nonRejIdx)};
+        end
         XLabels = cellfun(@(x) [x '   '], XLabels, 'UniformOutput', false);
         set(gca, 'XTickLabel', XLabels);
         th = rotateticklabel(gca, 90);

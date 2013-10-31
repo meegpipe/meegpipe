@@ -1,5 +1,5 @@
 function [fName, aggrFiles] = aggregate2(fileList, regex, fName, ...
-    fNameTrans, rowNames, includeFileName, verbose)
+    fNameTrans, includeFileName, verbose)
 % AGGREGATE2 - New version of aggregate
 %
 % See: misc.md_help('meegpipe.aggregate2')
@@ -23,15 +23,11 @@ if nargin < 4 || isempty(fNameTrans),
     fNameTrans = '';
 end
 
-if nargin < 5 || isempty(rowNames),
-    rowNames = true;
-end
-
-if nargin < 6 || isempty(includeFileName),
+if nargin < 5 || isempty(includeFileName),
     includeFileName = true;
 end
 
-if nargin < 7 || isempty(verbose),
+if nargin < 6 || isempty(verbose),
     verbose = true;
 end
 
@@ -45,7 +41,7 @@ origFiles = cell(numel(fileList)*5, 1);
 count = 0;
 
 for i = 1:numel(fileList)
-   
+    
     [path, name]  = fileparts(fileList{i});
     root = catdir(path, [name '.meegpipe']);
     thisFiles = finddepth_regex_match(root, regex, false, true, false);
@@ -57,7 +53,7 @@ for i = 1:numel(fileList)
     aggrFiles(count+1:count+numel(thisFiles)) = thisFiles;
     origFiles(count+1:count+numel(thisFiles)) = ...
         repmat(fileList(i), numel(thisFiles), 1);
-    count = count+numel(thisFiles);    
+    count = count+numel(thisFiles);
     
 end
 
@@ -81,25 +77,73 @@ end
 
 %% Do the aggregation
 printedHeader = false;
+
 for i = 1:count,
-   thisFile = aggrFiles{i};
-   if verbose,
-       fprintf('(aggregate) Aggregating %s ...', thisFile);
-   end
-   
-   thisFid = safefid(thisFile, 'r');
-   count = 0;
-   while 1
-       tline = fgetl(thisFid);   
-       count = count + 1;
-       if ~ischar(tline), break; end
-       if count > 1 || ~printedHeader
-           fprintf(fid, '%s\n', tline);
-           printedHeader = true;
-       end
-   end
-   
-   if verbose, fprintf('[done]\n\n'); end    
+    thisFile = aggrFiles{i};
+    if verbose,
+        fprintf('(aggregate) Aggregating %s ...', thisFile);
+    end
+    
+    metaNames = {};
+    meta = [];
+    
+    if ~isempty(fNameTrans),
+        
+        if ischar(fNameTrans),
+            % A regex
+            meta = regexp(aggrFiles{i}, fNameTrans, 'names');
+        elseif isa(fNameTrans, 'function_handle'),
+            meta = fNameTrans(aggrFiles{i});
+        else
+            error('fNameTrans must be a regex or a function_handle');
+        end
+        if ~isempty(meta),
+            tmp = fieldnames(meta);
+            metaNames = [metaNames;tmp(:)]; %#ok<AGROW>
+        end
+        
+    end
+    
+    if includeFileName,
+        [~, name, ext] = fileparts(origFiles{i});
+        meta.filename = [name ext];
+        metaNames = [{'filename'};metaNames(:)];
+    end    
+    
+    if isempty(metaNames),
+        metaStr = '';
+    else
+        metaVals = cell(1, numel(metaNames));
+        
+        for j = 1:numel(metaNames)
+            metaVals{j} =meta.(metaNames{j});
+        end
+        metaStr = [join(',', metaVals) ','];        
+    end
+    
+    thisFid = safefid(thisFile, 'r');
+    count = 0;
+    
+    
+    while 1
+        tline = fgetl(thisFid);
+        count = count + 1;
+        if ~ischar(tline), break; end
+        if ~printedHeader && count == 1,
+            % Printing the header line, add some extra fields, if necessary
+            if ~isempty(metaNames),
+                fprintf(fid, '%s,%s', join(',', metaNames), tline);
+            else
+                fprintf(fid, '%s', tline);
+            end
+            printedHeader = true;
+        end
+        if count > 1
+            fprintf(fid, '%s%s\n', metaStr,tline);
+        end
+    end
+    
+    if verbose, fprintf('[done]\n\n'); end
 end
 
 
