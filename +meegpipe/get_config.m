@@ -25,6 +25,7 @@ else
 end
 
 if nargin < 1,
+    value = cfg;
     return;
 end
 
