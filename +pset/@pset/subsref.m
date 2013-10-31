@@ -14,8 +14,10 @@ function y = subsref(obj, s)
 import misc.find_pattern;
 
 
-if strcmpi(s(1).type, '()') && ~isempty(obj) && isempty(obj.MemoryMap),
-    make_mmemmapfile(obj);
+if strcmpi(s(1).type, '()') && ~isempty(obj) 
+    if isempty(obj.MemoryMap) || any(cellfun(@(x) isempty(x), obj.MemoryMap)) ,
+        make_mmemmapfile(obj);
+    end
 end
 
 nbPoints = nb_pnt(obj);

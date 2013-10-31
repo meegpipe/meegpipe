@@ -264,7 +264,7 @@ classdef pset < pset.mmappset & ...
     % Other public methods
     methods
         
-        obj = destroy_mmemmapfile(obj);
+        obj = destroy_mmemmapfile(obj, idx);
         
         obj = make_mmemmapfile(obj);
         
