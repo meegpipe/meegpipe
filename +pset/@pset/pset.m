@@ -62,11 +62,8 @@ classdef pset < pset.mmappset & ...
         
         % For storing previous spatial maps
         DimMapH;
-        DimInvMapH;
-        
-        % Destroy memory maps after use?
-        AutoDestroyMemMap = false;
-        
+        DimInvMapH;        
+    
     end
     
     % Private static methods
@@ -95,7 +92,8 @@ classdef pset < pset.mmappset & ...
         
         Temporary   = true;    % Is the object opt.temporary?
         Transposed  = false;   % Are the sample values stored rowwise?
-        Writable    = true;    % Write access
+        Writable    = true;    % Write access           
+        AutoDestroyMemMap = false;  % Destroy memmaps inmmediatelty after use?        
         
     end
     
