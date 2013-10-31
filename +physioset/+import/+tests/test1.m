@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Create a new session
 try
@@ -77,6 +77,24 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% import data matrix, setting AutoDestroyMemMap
+try
+    
+    name = 'import data matrix';
+    
+    X    = randn(10, 1000);
+    data = import(matrix('AutoDestroyMemMap', true), X);  
+    
+    ok(data.PointSet.AutoDestroyMemMap & max(abs(data(:)-X(:))) < 1e-4, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% import multiple matrices
 try

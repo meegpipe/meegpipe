@@ -27,6 +27,7 @@ classdef abstract_physioset_import < ...
                 'Writable',  obj.Writable, ...
                 'Temporary', obj.Temporary, ...
                 'FileName',  obj.FileName, ...
+                'AutoDestroyMemMap', obj.AutoDestroyMemMap, ...
                 'StartTime', obj.StartTime_ ...
                 };
             
@@ -46,10 +47,12 @@ classdef abstract_physioset_import < ...
     %% PUBLIC INTERFACE ...................................................
     properties
         
-        Precision    = pset.globals.get.Precision;
-        Writable     = pset.globals.get.Writable;
-        Temporary    = pset.globals.get.Temporary;
-        ChunkSize    = pset.globals.get.ChunkSize;
+        Precision    = meegpipe.get_config('pset', 'precision');
+        Writable     = meegpipe.get_config('pset', 'writable');
+        Temporary    = meegpipe.get_config('pset', 'temporary');
+        ChunkSize    = meegpipe.get_config('pset', 'largest_memory_chunk');
+        AutoDestroyMemMap = ...
+            meegpipe.get_config('pset', 'auto_destroy_mem_map');
         ReadEvents   = true;
         FileName     = '';
         FileNaming   = 'inherit';
@@ -66,8 +69,8 @@ classdef abstract_physioset_import < ...
         
         function val = get.StartTime(obj)
             
-            dateFmt = pset.globals.get.DateFormat;
-            timeFmt = pset.globals.get.TimeFormat;
+            dateFmt = meegpipe.get_config('pset', 'date_format');
+            timeFmt = meegpipe.get_config('pset', 'time_format');
             val = datestr(obj.StartTime_, [dateFmt ' ' timeFmt] );
             
         end
@@ -166,7 +169,6 @@ classdef abstract_physioset_import < ...
         function obj = set.FileName(obj, value)
             
             import exceptions.*;
-            import pset.globals;
             
             if ~ischar(value),
                 throw(InvalidPropValue('FileName', ...
@@ -182,7 +184,7 @@ classdef abstract_physioset_import < ...
             
             if isempty(pathName), pathName = pwd; end
             
-            psetExt = globals.get.DataFileExt;
+            psetExt = meegpipe.get_config('pset', 'data_file_ext');
             
             if ~isempty(ext) && ~strcmp(ext, psetExt),
                 warning('abstract_physioset_import:InvalidExtension', ...
@@ -228,7 +230,6 @@ classdef abstract_physioset_import < ...
             
             
             import safefid.safefid;
-            import pset.globals;
             
             if ~exist(fileName, 'file'),
                 ME = MException(...
@@ -243,7 +244,7 @@ classdef abstract_physioset_import < ...
             
             if ~isempty(tline) && fid.feof && exist(tline, 'file'),
                 
-                dataFileExt = globals.get.DataFileExt;
+                dataFileExt = meegpipe.get_config('pset', 'data_file_ext');
                 [path, name] = fileparts(fileName);
                 obj.FileName = [path name dataFileExt];
                 fileName = tline;
