@@ -16,7 +16,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(9);
+initialize(10);
 
 %% Create a new session
 try
@@ -112,6 +112,31 @@ try
     newData = run(myPipe, data);
     
     ok(size(newData,1) == 2, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% process sample data
+try
+    
+    name = 'process sample data with AutoDestroyMemMap=true';
+    
+    sel1 = pset.selector.sensor_idx(5:8);
+    sel2 = pset.selector.sensor_idx(2:3);
+    
+    myNode1 = subset('SubsetSelector', sel1);
+    myNode2 = subset('SubsetSelector', sel2, 'AutoDestroyMemMap', true);
+    myPipe  = pipeline(myNode1, myNode2);
+    
+    data = import(physioset.import.matrix, randn(10, 1000));
+
+    newData = run(myPipe, data);
+    
+    ok(newData.PointSet.AutoDestroyMemMap & size(newData,1) == 2, name);
     
 catch ME
     

@@ -10,6 +10,7 @@ import goo.globals;
 dataNew = [];
 
 subsetSelector  = get_config(obj, 'SubsetSelector');
+autoDestroyMemMap = get_config(obj, 'AutoDestroyMemMap');
 
 verbose          = is_verbose(obj);
 verboseLabel     = get_verbose_label(obj);
@@ -24,8 +25,9 @@ if verbose,
 end
 
 dataOut  = subset(dataIn, subsetSelector, ...
-    'FileName', fileName, ...
-    'Temporary', true);
+    'FileName',             fileName, ...
+    'Temporary',            true, ...
+    'AutoDestroyMemMap',    autoDestroyMemMap);
 
 
 %% Undo stuff

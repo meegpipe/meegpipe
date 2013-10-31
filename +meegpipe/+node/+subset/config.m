@@ -9,6 +9,7 @@ classdef config < meegpipe.node.abstract_config
     properties
         
         SubsetSelector
+        AutoDestroyMemMap = false;
         
     end
     
