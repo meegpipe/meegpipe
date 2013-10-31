@@ -26,15 +26,13 @@ function [mmap, midx] = mmemmapfile(datafile, n_dims, n_points, ...
 %
 % Accepted key/value pairs:
 %
-% MapSize   : Scalar (def: @globals/MapSize)
+% MapSize   : Scalar (def: meegpipe.get_config('pset', 'memory_map_size'))
 %             Maximum map size in bytes 
 %
-% Writable  : Logical value (def: @globals/Writable)
+% Writable  : Logical value (def: meegpipe.get_config('pset', 'writable'))
 %             Should the generated memory maps be writable?
 %
 %
-% (c) German Gomez-Herrero, 2011
-% Contact: german.gomezherrero@ieee.org
 %
 % See also: pset.
 
@@ -51,8 +49,8 @@ end
 
 THIS_OPTIONS = {'mapsize', 'writable'};
 
-mapsize =  globals.get.MapSize;
-writable = globals.get.Writable;
+mapsize =  meegpipe.get_config('pset', 'memory_map_size');
+writable = meegpipe.get_config('pset', 'writable');
 
 eval(process_varargin(THIS_OPTIONS, varargin));
 

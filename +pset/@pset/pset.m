@@ -349,6 +349,7 @@ classdef pset < pset.mmappset & ...
             import misc.get_full_path;
             import misc.process_arguments;
             import misc.sizeof;
+            import meegpipe.get_config;
   
             if nargin < 1, return; end
             
@@ -359,8 +360,8 @@ classdef pset < pset.mmappset & ...
                 
             end
             
-            dataFileExt = pset.globals.get.DataFileExt;
-            hdrFileExt  = pset.globals.get.HdrFileExt;
+            dataFileExt = get_config('pset', 'data_file_ext');
+            hdrFileExt  = get_config('pset', 'hdr_file_ext');
             
             if isunix,
                 obj.DataFile = filename;
@@ -370,10 +371,10 @@ classdef pset < pset.mmappset & ...
             
             obj.HdrFile = strrep(obj.DataFile, dataFileExt, hdrFileExt);
             
-            opt.Temporary    = pset.globals.get.Temporary;
-            opt.Transposed   = pset.globals.get.Transposed;
-            opt.Precision    = pset.globals.get.Precision;
-            opt.Writable     = pset.globals.get.Writable;
+            opt.Temporary    = get_config('pset', 'temporary');
+            opt.Transposed   = get_config('pset', 'transposed');
+            opt.Precision    = get_config('pset', 'precision');
+            opt.Writable     = get_config('pset', 'writable');
             
             [~, opt] = process_arguments(opt, varargin);
             
