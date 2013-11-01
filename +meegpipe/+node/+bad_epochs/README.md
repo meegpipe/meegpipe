@@ -38,6 +38,20 @@ See the documentation of the [node API documentation][node].
 [node]: ../
 
 
+## Default node configurations
+
+### `minmax(minTh, maxTh, 'key', value, ...)`
+
+The `minmax` configuration rejects epochs that exceed a minimum/maximum
+threshold. Below an illustration on how to build a `bad_epochs` node that will
+reject any epoch whose maximum amplitude exceeds 100 or whose minimum amplitude
+is below -50:
+
+````
+import meegpipe.node.*;
+myNode = bad_epochs.minmax(-50, 100);
+````
+
 
 ## Usage examples
 
@@ -86,13 +100,8 @@ myNode = bad_epochs.new('Criterion', myCrit, 'EventSelector', myEvSel);
 % Reject epochs that fulfill the rejection criterion
 run(myNode, myData);
 ````
-
-### `minmax` default configuration
-
-For convenience, the `bad_epochs` node includes a default configuration that
-implements the common criteria of rejecting epochs with extreme amplitude
-values. The following code snippet is completely equivalent to the snippet that
-we used in the previous example:
+The code above is completely equivalent to the following code, which uses the
+`minmax` default configuration:
 
 ````matlab
 import meegpipe.node.*;
