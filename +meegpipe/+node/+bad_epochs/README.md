@@ -53,7 +53,7 @@ meegpipe.initialize;
 The following code snippet rejects all 10-second epochs in a physioset `data`
 that exceed (in any channel, in absolute value) a threshold of 100.
 
-````
+````matlab
 % Create a sample physioset
 mySensors  = sensors.eeg.dummy(10);
 myImporter = physioset.import.matrix('Sensors', mySensors);
