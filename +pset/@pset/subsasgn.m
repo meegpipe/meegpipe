@@ -118,6 +118,12 @@ switch s(1).type
     case '.'
         if length(s) < 2,
            obj.(s(1).subs) = b;
+        elseif strcmp(s(1).subs, 'PointSet'),
+            if numel(s) > 2,
+                error('Not implemented');
+            else
+                obj.(s(2).subs) = b;
+            end
         else
             obj = subsasgn(obj.(s(1).subs),s(2:end),b);
         end
