@@ -183,6 +183,7 @@ try
     while tries < MAX_TRIES && ~all(cellfun(@(x) ...
             exist(get_output_filename(myNode, x), 'file') > 0, data))
         pause(2); % give time to the file system to put things in place
+        tries = tries + 1;
     end
     
     ok(all(cellfun(@(x) ...
