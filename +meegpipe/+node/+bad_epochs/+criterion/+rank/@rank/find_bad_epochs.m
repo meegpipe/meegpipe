@@ -34,6 +34,14 @@ if isa(maxRank, 'function_handle'),
     maxRank = maxRank(rankIndex);
 end
 
+if isa(minC, 'function_handle'),
+    minC = minC(rankIndex);
+end
+
+if isa(maxC, 'function_handle'),
+    maxC = maxC(rankIndex);
+end
+
 % Min/Max criterion
 if ~isempty(maxRank),
     selected(rankIndex > maxRank) = true;
