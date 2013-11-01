@@ -97,7 +97,9 @@ opt.PercentileBad = [3 95];
 [~, pipeName] = fileparts(mfilename('fullpath'));
 
 crit2 = criterion.xcorr.xcorr;
-crit1 = criterion.var.var('Percentile', opt.PercentileBad);
+crit1 = criterion.var.var(...
+    'Min', @(x) prctile(x, opt.PercentileBad(1)), ...
+    'Max', @(x) prctile(x, opt.PercentileBad(2)));
 
 if isnan(sr),
     myFilter = @(sr) filter.bpfilt('Fp', [0.5 sr/2]/(sr/2));

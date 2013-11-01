@@ -72,7 +72,7 @@ try
     name   = 'process sample data';    
    
     ecgSens = sensors.physiology('Label', 'ECG');
-    eegSens = sensors.eeg.empty(5);
+    eegSens = sensors.eeg.dummy(5);
     sens = sensors.mixed(eegSens, ecgSens);
     myImporter = physioset.import.matrix('Sensors', sens);
     X = randn(6, 10000);

@@ -38,8 +38,6 @@ classdef config < meegpipe.node.bad_channels.criterion.rank.config
     % See also: xcorr, bad_channels, abstract_node
     
     
-    %% PUBLIC INTERFACE ...................................................
-    
     properties
         
         NN              = 10;
@@ -88,7 +86,6 @@ classdef config < meegpipe.node.bad_channels.criterion.rank.config
             
             opt.Min = @(x) median(x) - 10;
             opt.Max = Inf;
-            opt.Percentile = [1 100];
             
             [~, opt] = process_arguments(opt, varargin);
             
