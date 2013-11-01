@@ -105,8 +105,9 @@ for i = 1:count,
     end
     
     if includeFileName,
-        [~, name, ext] = fileparts(origFiles{i});
-        meta.filename = [name ext];
+        aggrFiles{i} = strrep(aggrFiles{i}, '\', '/');
+        regex = '.*[/]([^/]+)\.meegpipe[/].+';
+        meta.filename = regexprep(aggrFiles{i}, regex, '$1');                
         metaNames = [{'filename'};metaNames(:)];
     end    
     
