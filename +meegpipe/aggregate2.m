@@ -132,9 +132,9 @@ for i = 1:count,
         if ~printedHeader && count == 1,
             % Printing the header line, add some extra fields, if necessary
             if ~isempty(metaNames),
-                fprintf(fid, '%s,%s', join(',', metaNames), tline);
+                fprintf(fid, '%s,%s\n', join(',', metaNames), tline);
             else
-                fprintf(fid, '%s', tline);
+                fprintf(fid, '%s\n', tline);
             end
             printedHeader = true;
         end

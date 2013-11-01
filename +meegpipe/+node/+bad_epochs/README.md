@@ -1,7 +1,11 @@
 `bad_epochs` - bad epochs rejection node
 ====
 
-The `bad_epochs` node identifies and marks bad epochs in a physioset.
+The `bad_epochs` node identifies and marks bad epochs in a physioset, based on
+a user-provided criterion. Several [pre-defined criteria][predef-crit] are
+available and class users can easily define their own custom criteria.
+
+[predef-crit]: ../+criterion/README.md
 
 
 ## Usage synopsis

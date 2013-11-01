@@ -1,8 +1,11 @@
 `bad_channels` - bad channels rejection node
 ====
 
-The `bad_channels` node can be used to identify bad channels in a physioset.
+The `bad_channels` node identifies bad channels based on a user-provided
+rejection criterion. Several [pre-defined criteria][predef-crit] are
+available and class users can easily define their own custom criteria.
 
+[predef-crit]: ../+criterion/README.md
 
 ## Usage synopsis
 
@@ -14,7 +17,7 @@ data = run(obj, data);
 
 where `data` is a [physioset][physioset] object.
 
-[physioset]: https://github.com/germangh/matlab_physioset/blob/master/%2Bphysioset/%40physioset/README.md
+[physioset]: ../../../+physioset/@physioset/README.md
 
 
 ## Construction arguments
