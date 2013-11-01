@@ -4,10 +4,10 @@
 In this document we will refer to this package as the `criterion` package
 instead of its fully qualified name `meegpipe.node.bad_epochs.criterion`.
 
-The `criterion` package contains MATLAB classes implementing various bad 
-epochs rejection criteria. All such criteria implement the 
+The `criterion` package contains MATLAB classes implementing various
+epoch rejection criteria. All such criteria implement the
 [criterion interface][crit-ifc], which must also be implemented by any
-user-defined criteria. 
+user-defined criteria.
 
 [crit-ifc]: ./criterion.md
 
