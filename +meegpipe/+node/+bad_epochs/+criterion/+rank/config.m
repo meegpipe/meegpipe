@@ -28,9 +28,10 @@ classdef config < goo.abstract_setget_handle
                 return;
             end
             
-            if numel(value) ~= 1 || ~isnumeric(value),
+            if numel(value) ~= 1 || ...
+                    (~isnumeric(value) && ~isa(value, 'function_handle')),
                 throw(InvalidPropValue('MaxCard', ...
-                    'Must be a natural scalar'));
+                    'Must be a natural scalar or a function_handle'));
             end
             
             obj.MaxCard = value;
@@ -47,9 +48,10 @@ classdef config < goo.abstract_setget_handle
                 return;
             end
             
-            if numel(value) ~= 1 || ~isnumeric(value),
+            if numel(value) ~= 1 || ...
+                    (~isnumeric(value) && ~isa(value, 'function_handle')),
                 throw(InvalidPropValue('MinCard', ...
-                    'Must be a natural scalar'));
+                    'Must be a natural scalar or a function_handle'));
             end
             
             obj.MinCard = value;

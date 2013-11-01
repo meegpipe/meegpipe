@@ -22,9 +22,9 @@ __Default:__ `0`
 
 The minimum number of epochs that will be rejected. If set to a
 `function_handle` the minimum number of epochs that will be rejected
-will be obtained by evaluating `MinCard` on the number of epochs of the
-input dataset. That is, to ensure that at least 10% of epochs are
-rejected you could set `MinCard` to `@(nbEpochs) ceil(0.1*nbEpochs)`.
+will be obtained by evaluating `MinCard` on the array of rank values for
+all epochs. That is, to ensure that at least 10% of epochs are
+rejected you could set `MinCard` to `@(rankVal) ceil(0.1*numel(rankVal))`.
 
 
 ### `MaxCard`
@@ -34,11 +34,11 @@ __Class:__ `numeric` scalar or `function_handle`
 __Default:__ `@(dim) ceil(0.2*dim)`
 
 
-The maximum number of channels that will be rejected.  If set to a
+The maximum number of epochs that will be rejected. If set to a
 `function_handle` the maximum number of epochs that will be rejected
-will be obtained by evaluating `MaxCard` on the number of epochs of the
-input dataset. That is, to ensure that at most 50% of epochs are
-rejected you could set `MaxCard` to `@(nbEpochs) floor(0.5*nbEpochs)`.
+will be obtained by evaluating `MaxCard` on the array of rank values for
+all epochs. That is, to ensure that at most 50% of epochs are
+rejected you could set `MaxCard` to `@(rankVal) floor(0.5*numel(rankVal))`.
 
 
 ### `Min`
@@ -50,7 +50,7 @@ __Default:__ `@(x) median(x)-10*mad(x)`
 The lower rank value threshold below which an epoch will be rejected. If
 `Min` is set to a `function_handle`, then the actual lower threshold will
 be obtained by evaluating `Min` on the array of rank values for all
-channels. That is, to ensure that those epochs whose rank value is 10
+epochs. That is, to ensure that those epochs whose rank value is 10
 or more median absolute deviations below the median you should set `Min`
 to `@(rankVal) median(rankVal)-10*mad(rankVal)`.
 
