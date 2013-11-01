@@ -18,8 +18,6 @@ end
 % Configuration options
 minRank = get_config(obj, 'Min');
 maxRank = get_config(obj, 'Max');
-MADs    = get_config(obj, 'MADs');
-perc    = get_config(obj, 'Percentile');
 minC    = get_config(obj, 'MinCard');
 maxC    = get_config(obj, 'MaxCard');
 
@@ -42,25 +40,6 @@ if ~isempty(maxRank),
 end
 if ~isempty(minRank),
     selected(rankIndex < minRank) = true;
-end
-
-% Percentile criterion
-if ~isempty(perc),
-    th = prctile(rankIndex, perc);
-    selected(rankIndex < th(1) | rankIndex > th(2)) = true;
-end
-
-% MADs
-if ~isempty(MADs),
-    
-    if numel(MADs) == 1,
-        MADs = repmat(MADs, 1, 2);
-    end
-    
-    rankMAD = mad(rankIndex);
-    rankMed = median(rankIndex);
-    selected(rankIndex < rankMed - MADs(1)*rankMAD | ...
-        rankIndex > rankMed + MADs(2)*rankMAD) = true;
 end
 
 % Minimum and maximum cardinality of the set of selected channels

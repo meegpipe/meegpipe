@@ -2,10 +2,7 @@ classdef config < meegpipe.node.abstract_config
     % CONFIG - Configuration of bad_channels nodes
     %
     % See: <a href="matlab:misc.md_help('meegpipe.node.bad_channels.config')">misc.md_help(''meegpipe.node.bad_channels.config'')</a>
-   
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+ 
     properties
         
         Criterion = meegpipe.node.bad_channels.criterion.var.var;

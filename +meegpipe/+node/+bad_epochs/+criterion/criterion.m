@@ -1,8 +1,8 @@
 classdef criterion
-   % CRITERION - Bad epochs selection criterion interface
-   %
-   % 
-   % See also: pset/node/bad_epochs/criterion
+    % CRITERION - Interface for bad epochs rejection criteria
+    %
+    % See: <a href="matlab:misc.md_help('meegpipe.node.bad_epochs.criterion.criterion')">misc.md_help(''meegpipe.node.bad_epochs.criterion.criterion'')</a>
+
    
    
    

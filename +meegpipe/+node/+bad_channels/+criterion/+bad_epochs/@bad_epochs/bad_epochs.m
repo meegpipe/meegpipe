@@ -1,5 +1,5 @@
 classdef bad_epochs < meegpipe.node.bad_channels.criterion.abstract_criterion
-    % bad_epochs - Reject bad channels that produce many epoch rejections
+    % BAD_EPOCHS - Reject bad channels that produce many epoch rejections
     %
     % See: <a href="matlab:misc.md_help('meegpipe.node.bad_channels.bad_epochs.bad_epochs')">misc.md_help(''meegpipe.node.bad_channels.bad_epochs.bad_epochs'')</a>
     

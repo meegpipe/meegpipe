@@ -71,7 +71,7 @@ try
     data = sample_data;
     
     crit = meegpipe.node.bad_channels.criterion.var.var('MinCard', 3, ...
-        'MaxCard', 3, 'Percentile', [0 100]);
+        'MaxCard', 3);
     dataSel = pset.selector.sensor_class('Class', 'eeg');
     myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel);
     run(myNode, data);
@@ -139,7 +139,6 @@ try
     crit = meegpipe.node.bad_channels.criterion.var.var(...
         'MinCard',      1, ...
         'MaxCard',      1, ...
-        'Percentile',   [0 100], ...
         'Filter',       @(sr) filter.hpfilt('fc', .5));
     dataSel = pset.selector.sensor_class('Class', 'eeg');
     myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel);
@@ -181,7 +180,7 @@ try
     
     filtObj = []; % Don't use a filter or set Normalize=false
     crit = meegpipe.node.bad_channels.criterion.var.var('MinCard', 3, ...
-        'MaxCard', 3, 'Percentile', [0 100], 'Filter', filtObj);
+        'MaxCard', 3, 'Filter', filtObj);
     dataSel = pset.selector.sensor_class('Class', 'eeg');
     myNode = bad_channels('Save', true, 'Criterion', crit, ...
         'DataSelector', dataSel);

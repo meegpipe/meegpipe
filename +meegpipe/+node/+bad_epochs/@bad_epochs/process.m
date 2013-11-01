@@ -51,8 +51,12 @@ if isempty(ev),
 end
 
 % Set the duration and offset properties of the events
-ev = set_duration(ev, round(dur*data.SamplingRate));
-ev = set_offset(ev, round(off*data.SamplingRate));
+if ~isempty(dur),
+    ev = set_duration(ev, round(dur*data.SamplingRate));
+end
+if ~isempty(off),
+    ev = set_offset(ev, round(off*data.SamplingRate));
+end
 
 evLogName = [get_name(data) '_events.log'];
 fid = get_log(obj, evLogName);

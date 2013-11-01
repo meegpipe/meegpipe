@@ -11,16 +11,6 @@ own custom criteria.
 All criteria classes that inherit from the `rank` criterion accept the 
 following configuration options:
 
-### `Percentile`
-
-__Class:__ `numeric`
-
-__Default:__ `[2.5 97.5]`
-
-Channels whose rank values fall below the `Percentile(1)` percentile 
-rank value or that are larger than the `Percentile(2)` percentile rank
-value will be selected.
-
 
 ### `MinCard`
 
@@ -56,7 +46,6 @@ be obtained by evaluating `Min` on the array of rank values for all
 channels. That is, to ensure that those channels whose rank value is 10 
 or more median absolute deviations below the median you should set `Min` 
 to `@(rankVal) median(rankVal)-10*mad(rankVal)`.
-
 
 
 ### `Max`

@@ -1,13 +1,8 @@
 classdef rank < meegpipe.node.bad_epochs.criterion.abstract_criterion
-    % RANK - Selects components according to a rank index
+    % RANK - Definition of abstract epoch rejection criterion rank
     %
-    % This is an abstract class that implements common functionality
-    % accross classes that select components by ranking them according to a
-    % specific "rank index". This is an abstract class designed for
-    % inheritance.
-    %
-    %
-    % See also: meegpipe.node.bad_epochs.config
+    % See: <a href="matlab:misc.md_help('meegpipe.node.bad_epochs.criterion.rank')">misc.md_help(''meegpipe.node.bad_epochs.criterion.rank'')</a>
+    
 
     methods (Static, Access = private)
        generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank); 

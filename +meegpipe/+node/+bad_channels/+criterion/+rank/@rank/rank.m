@@ -1,12 +1,8 @@
 classdef rank < meegpipe.node.bad_channels.criterion.abstract_criterion
-    % RANK - Selects components according to a rank index
+    % RANK - Definition of abstract channel rejection criterion rank
     %
-    % This is an abstract class that implements common functionality
-    % accross classes that select components by ranking them according to a
-    % specific "rank index". This class designed for inheritance.
-    %
-    %
-    % See also: config
+    % See: <a href="matlab:misc.md_help('meegpipe.node.bad_channels.criterion.rank')">misc.md_help(''meegpipe.node.bad_channels.criterion.rank'')</a>
+    
     
  
     % criterion interface

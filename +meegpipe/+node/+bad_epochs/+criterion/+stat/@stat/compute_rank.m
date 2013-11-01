@@ -1,8 +1,5 @@
 function [rankVal, ev] = compute_rank(obj, data, ev)
 % COMPUTE_RANK - Ranks bad epochs according to a simple statistic
-%
-%
-% See also: minmax
 
 
 import meegpipe.node.bad_epochs.bad_epochs;
@@ -11,8 +8,8 @@ import misc.eta;
 verbose      = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);
 
-stat1 = get_config(obj, 'Statistic1');
-stat2 = get_config(obj, 'Statistic2');
+stat1 = get_config(obj, 'ChannelStat');
+stat2 = get_config(obj, 'EpochStat');
 
 if nargin < 3 || isempty(ev),
     warning('bad_epochs:NoEpochs', ...
@@ -45,7 +42,6 @@ for i = 1:size(dataEpochs, 3)
     end
     
 end
-
 
 
 if verbose,

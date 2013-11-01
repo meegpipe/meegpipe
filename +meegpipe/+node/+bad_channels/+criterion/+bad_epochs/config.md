@@ -11,6 +11,7 @@ for bad channels rejection.
 
 ## Configuration options
 
+
 ### `BadEpochsCriterion`
 
 __Class:__ `meegpipe.node.bad_epochs.criterion.criterion`

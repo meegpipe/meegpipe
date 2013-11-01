@@ -57,17 +57,18 @@ try
     mySel  = class_selector('Type', 'myevent');
     
     crit = criterion.stat.stat(...
-        'Statistic1',    @(x) max(abs(x)), ...
-        'Statistic2',    @(x) max(x), ...
-        'Percentile',    [5 95]);
+        'ChannelStat',  @(x) x, ...
+        'EpochStat',    @(x) x^2);
     
     myNode = bad_epochs(...
         'Criterion',     crit, ...
         'EventSelector', mySel, ...    
         'Save',          true);
     
-    perc = get_config(get_config(myNode, 'Criterion'), 'Percentile');
-    ok(~isempty(get_config(myNode, 'Criterion')) & all(perc ==[5 95]), name);
+    crit = get_config(myNode, 'Criterion');
+    chanStat = get_config(crit, 'ChannelStat');
+    epochStat = get_config(crit, 'EpochStat');
+    ok(chanStat(10) == 10 && epochStat(10) == 100, name);
     
 catch ME
     
@@ -235,7 +236,7 @@ data = import(physioset.import.matrix('Sensors', sens), X);
 
 pos = get(get_event(data), 'Sample');
 off = ceil(0.1*data.SamplingRate);
-ev = event(pos + off, 'Type', 'myevent');
+ev = event(pos + off, 'Type', 'myevent', 'Duration', data.SamplingRate);
 add_event(data, ev);
 
 end
@@ -248,9 +249,8 @@ import meegpipe.node.bad_epochs.criterion.stat.stat;
 
 mySel  = class_selector('Type', 'myevent');
 crit   = stat(...
-    'Statistic1',    @(x) max(abs(x)), ...
-    'Statistic2',    @(x) max(x), ...
-    'Percentile',    [0 100], ...
+    'ChannelStat',  @(x) max(abs(x)), ...
+    'EpochStat',    @(x) max(x), ... 
     'Max',           15);
 
 

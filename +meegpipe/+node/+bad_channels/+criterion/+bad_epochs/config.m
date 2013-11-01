@@ -1,11 +1,9 @@
 classdef config < meegpipe.node.abstract_config
-    % CONFIG - Configuration for the bad_epochs criterion for channel
-    % rejection
-    
+    % CONFIG - Configuration for channel rejection criterion bad_epochs
+    %
+    % See: <a href="matlab:misc.md_help('meegpipe.node.bad_channels.criterion.bad_epochs.config')">misc.md_help(''meegpipe.node.bad_channels.criterion.bad_epochs.config'')</a>
     
    
-    %% PUBLIC INTERFACE ...................................................
-    
     properties
         
         BadEpochsCriterion;

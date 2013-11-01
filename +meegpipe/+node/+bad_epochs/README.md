@@ -55,7 +55,30 @@ that exceed (in any channel, in absolute value) a threshold of 100.
 
 ````
 % Create a sample physioset
-mySensors = subset(sensors.eeg.from_template('egi256'
+mySensors  = sensors.eeg.dummy(10);
 myImporter = physioset.import.matrix('Sensors', mySensors);
-myData = import(physioset.import.matrix, 
+myData = import(physioset.import.matrix, randn(10, 10000));
+
+% We need to add events marking the onset and durations of the epochs
+% As an example, we use non-overlapping epochs of 10s duration
+import physioset.event.periodic_generator;
+myEventGenerator = periodic_generator('Period', 10, 'Type', 'myType');
+myEvents = generate(myEventGenerator, myData);
+add_event(myData, myEvents);
+
+% Define the epoch rejection criterion
+import meegpipe.node.*;
+myCrit = bad_epochs.criterion.stat(...
+    'ChannelStat',  @(chanValues) max(abs(chanValues)), ...
+    'EpochStat',    @(chanStat) max(chanStat));
+
+% Define the event selector
+myEvSel = physioset.event.class_selector('Type', 'myType');
+
+% Build the epoch rejection node
+myNode = bad_channels.new('Criterion', myCrit, 'EventSelector', myEvSel);
+
+% Reject epochs that fulfill the rejection criterion
+run(myNode, myData);
+
 ````

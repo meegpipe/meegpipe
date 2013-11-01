@@ -16,10 +16,12 @@ criteria must implement this interface, including
 Find bad channels from data matrix or from a [pset][pset] or [physioset][phys]
 object.
 
-[pset]: https://github.com/germangh/matlab_pset/tree/master/%2Bpset/%40pset/README.md
-[phys]: https://github.com/germangh/matlab_physioset/blob/master/%2Bphysioset/%40physioset/README.md
+[pset]: ../../../../+pset/@pset/README.md
+[phys]: ../../../../+physioset/@physioset/README.md
 
-    [idx, rankVal] = find_bad_channels(obj, data)
+````matlab
+[idx, rankVal] = find_bad_channels(obj, data)
+````
 
 Where
 
@@ -29,8 +31,9 @@ Where
 `idx` is an array of natural indices corresponding to the channels that were
 identified as bad.
 
-`rankVal` is a logical array with as many elements as rows has the input `data`.
-For each `data` row (or channel), the corresponding entry of `rankVal` contains
-the assigned rank value by the bad channel selection criterion. Higher rank
-values increase the chances of the channel being marked as bad.
+`rankVal` is a numeric array with as many elements as rows has the 
+input `data`. For each `data` row (or channel), the corresponding entry of
+`rankVal` contains the assigned rank value by the bad channel selection
+criterion. Extreme rank values increase the chance of a channel being 
+rejected.
 

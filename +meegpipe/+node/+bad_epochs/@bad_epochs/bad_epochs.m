@@ -1,22 +1,7 @@
 classdef bad_epochs < meegpipe.node.abstract_node
-    % BAD_EPOCHS - Rejects bad data epochs
+    % BAD_EPOCHS - Reject bad data epochs
     %
-    % import meegpipe.node.bad_epochs.*;
-    % obj = bad_epochs
-    % obj = bad_epochs('key', value, ...)
-    %
-    % ## Accepted key/value pairs:
-    %
-    % * All key/value pairs accepted by abstract_node
-    %
-    % * All key/value pairs accepted by meegpipe.node.bad_epochs.config
-    %
-    %
-    % See also: config, abstract_node
-    
-    
-    
-    %% IMPLEMENTATION .....................................................
+    % See: <a href="matlab:misc.md_help('meegpipe.node.bad_epochs')">misc.md_help(''meegpipe.node.bad_epochs'')</a>
     
     % Helper methods
     methods (Access = private, Static)
@@ -28,16 +13,11 @@ classdef bad_epochs < meegpipe.node.abstract_node
     % Helper static methods
     methods (Access = private, Static)
         
-        % To generate the figures of Remark reports
         hFig = make_topo_plots(sens, rejIdx, xvar)
         
         hFig = make_rank_plots(sens, rejIdx, xvar);
         
     end
-    
-    
-    %% PUBLIC INTERFACE ...................................................
-    
     
     methods
         % meegpipe.node.node interface
@@ -47,7 +27,7 @@ classdef bad_epochs < meegpipe.node.abstract_node
         disp(obj);
         
     end
-
+    
     
     % Constructor
     methods
@@ -70,7 +50,7 @@ classdef bad_epochs < meegpipe.node.abstract_node
             dataSel2 = good_data;
             dataSel  = cascade(dataSel1, dataSel2);
             
-            if isempty(get_data_selector(obj));                
+            if isempty(get_data_selector(obj));
                 set_data_selector(obj, dataSel);
             end
             
