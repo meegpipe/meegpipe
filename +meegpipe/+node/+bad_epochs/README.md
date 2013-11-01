@@ -48,10 +48,7 @@ clear all;
 meegpipe.initialize;
 ````
 
-### Reject epochs with extreme values
-
-The following code snippet rejects all 10-second epochs in a physioset `data`
-that exceed (in any channel, in absolute value) a threshold of 100.
+They also assume that a dummy dataset has been created using:
 
 ````matlab
 % Create a sample physioset
@@ -65,7 +62,15 @@ import physioset.event.periodic_generator;
 myEventGenerator = periodic_generator('Period', 10, 'Type', 'myType');
 myEvents = generate(myEventGenerator, myData);
 add_event(myData, myEvents);
+````
 
+
+### Reject epochs with extreme values
+
+The following code snippet rejects all 10-second epochs in a physioset `data`
+that exceed (in any channel, in absolute value) a threshold of 100.
+
+````matlab
 % Define the epoch rejection criterion
 import meegpipe.node.*;
 myCrit = bad_epochs.criterion.stat(...
@@ -76,9 +81,23 @@ myCrit = bad_epochs.criterion.stat(...
 myEvSel = physioset.event.class_selector('Type', 'myType');
 
 % Build the epoch rejection node
-myNode = bad_channels.new('Criterion', myCrit, 'EventSelector', myEvSel);
+myNode = bad_epochs.new('Criterion', myCrit, 'EventSelector', myEvSel);
 
 % Reject epochs that fulfill the rejection criterion
 run(myNode, myData);
+````
 
+### `minmax` default configuration
+
+For convenience, the `bad_epochs` node includes a default configuration that
+implements the common criteria of rejecting epochs with extreme amplitude
+values. The following code snippet is completely equivalent to the snippet that
+we used in the previous example:
+
+````matlab
+import meegpipe.node.*;
+
+myEvSel = physioset.event.class_selector('Type', 'myType');
+myNode = bad_epochs.minmax(-100, 100, 'EventSelector', myEvSel);
+run(myNode, myData);
 ````
