@@ -57,7 +57,7 @@ that exceed (in any channel, in absolute value) a threshold of 100.
 % Create a sample physioset
 mySensors  = sensors.eeg.dummy(10);
 myImporter = physioset.import.matrix('Sensors', mySensors);
-myData = import(physioset.import.matrix, randn(10, 10000));
+myData = import(myImporter, randn(10, 10000));
 
 % We need to add events marking the onset and durations of the epochs
 % As an example, we use non-overlapping epochs of 10s duration
