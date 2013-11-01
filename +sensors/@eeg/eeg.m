@@ -222,7 +222,8 @@ classdef eeg < sensors.physiology
         obj = from_hash(hashObj);
         obj = from_template(name, varargin);
         obj = guess_from_labels(labels);
-        obj = empty(nb);
+        obj = empty(nb);  % For backwards compatibility, use dummy instead
+        obj = dummy(nb);  % To replace empty() at some point
         
     end
     

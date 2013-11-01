@@ -18,7 +18,7 @@ data = run(obj, data);
 
 where `data` is a [physioset][physioset] object.
 
-[physioset]: https://github.com/germangh/matlab_physioset/blob/master/%2Bphysioset/%40physioset/README.md
+[physioset]: ../../../+physioset/@physioset/README.md
 
 
 ## Construction arguments
@@ -51,4 +51,11 @@ meegpipe.initialize;
 ### Reject epochs with extreme values
 
 The following code snippet rejects all 10-second epochs in a physioset `data`
-that exceed (in any channel) a voltage
+that exceed (in any channel, in absolute value) a threshold of 100.
+
+````
+% Create a sample physioset
+mySensors = subset(sensors.eeg.from_template('egi256'
+myImporter = physioset.import.matrix('Sensors', mySensors);
+myData = import(physioset.import.matrix, 
+````
