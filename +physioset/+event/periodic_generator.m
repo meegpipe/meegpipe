@@ -65,11 +65,16 @@ classdef periodic_generator < physioset.event.generator & ...
             period = ceil(obj.Period*data.SamplingRate);
             startTime = max(1, ceil(obj.StartTime*data.SamplingRate));
             
+            
             evArray = event(startTime:period:size(data,2), ...
                 'Type',     obj.Type, ...
                 'Offset',   round(obj.Offset*data.SamplingRate), ...
                 'Duration', ceil(obj.Duration*data.SamplingRate));
             
+            for i = 1:numel(evArray)
+               evArray(i) = set(evArray(i), 'Value', i); 
+            end
+
         end
         
         % Constructor

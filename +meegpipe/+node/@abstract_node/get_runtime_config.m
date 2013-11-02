@@ -9,18 +9,12 @@ function cfg = get_runtime_config(obj, forceRead)
 %
 % See also: mperl.config.inifiles.inifile
 
-% Documentation: class_abstract_node_impl.txt
-% Description: Get runtime configuration object
 
 import mperl.config.inifiles.inifile;
 import mperl.file.spec.catfile;
 
 if nargin < 2, 
     forceRead = false;
-end
-
-if ~has_runtime_config(obj),
-    error('This node does not support runtime configuration');
 end
 
 if forceRead || isempty(obj.RunTime_),

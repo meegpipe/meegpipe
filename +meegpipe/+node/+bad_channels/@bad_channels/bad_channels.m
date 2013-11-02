@@ -15,7 +15,7 @@ classdef bad_channels < meegpipe.node.abstract_node
     methods (Access = private, Static)
         
         % To generate the figures of Remark reports
-        hFig = make_topo_plots(sens, rejIdx, xvar)
+        hFig = make_topo_plots(sens, rejIdx, xvar);
         
         hFig = make_rank_plots(sens, rejIdx, xvar);
         
@@ -32,6 +32,16 @@ classdef bad_channels < meegpipe.node.abstract_node
         % reimplementation
         disp(obj);
         
+       
+    end
+    
+    methods (Access = protected)
+        
+         % override from abstract_node
+        function bool = has_runtime_config(~)
+            bool = true;
+        end
+  
     end
     
     % Constructor
@@ -44,7 +54,7 @@ classdef bad_channels < meegpipe.node.abstract_node
             import pset.selector.cascade;
             
             obj = obj@meegpipe.node.abstract_node(varargin{:});
-            
+           
             if nargin > 0 && ~ischar(varargin{1}),
                 % copy construction: keep everything like it is
                 return;

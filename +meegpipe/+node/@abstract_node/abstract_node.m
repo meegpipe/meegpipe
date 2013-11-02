@@ -282,7 +282,7 @@ classdef abstract_node < ...
         % Override this if your node does not have runtime configuration
         function bool = has_runtime_config(~)
             
-            bool = true;
+            bool = false;
             
         end
         

@@ -15,10 +15,21 @@ classdef bss_regr < meegpipe.node.abstract_node
     
     %% PUBLIC INTERFACE ...................................................
     
-    % meegpipe.node.node interface
+    
     methods
-        
+        % meegpipe.node.node interface
         [data, dataNew] = process(obj, data, varargin);
+        
+        
+        
+    end
+    
+    methods (Access = protected)
+        
+        % override from abstract_node
+        function bool = has_runtime_config(~)
+            bool = true;
+        end
         
     end
     
@@ -31,6 +42,7 @@ classdef bss_regr < meegpipe.node.abstract_node
             import report.plotter.io;
             
             obj = obj@meegpipe.node.abstract_node(varargin{:});
+            
             
             if nargin > 0 && ~ischar(varargin{1}),
                 % copy construction: keep everything like it is

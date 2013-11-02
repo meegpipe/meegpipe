@@ -175,7 +175,7 @@ try
         data{i} = import(physioset.import.matrix, randn(10, 1000));
     end
     
-    myNode = bss_regr('Save', true);
+    myNode = bss_regr('Save', true, 'Parallelize', false);
     run(myNode, data{:});
     
     MAX_TRIES = 20;
@@ -261,7 +261,7 @@ try
         end
         
         myNode = bss_regr('Save', true);
-        dataFiles = run(myNode, data);
+        dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic
         MAX_TRIES = 100;
