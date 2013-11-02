@@ -46,11 +46,11 @@ end
 %% Empty arrays
 try
     
-    name = 'empty arrays';
+    name = 'dummy arrays';
     
-    obj1 = meg.empty(50);
-    obj2 = eeg.empty(50);
-    obj3 = eeg.empty(50);
+    obj1 = meg.dummy(50);
+    obj2 = eeg.dummy(50);
+    obj3 = eeg.dummy(50);
     
     ok(nb_sensors(obj1) == 50 && nb_sensors(obj2) == 50 && ...
         nb_sensors(obj3) == 50, name);
@@ -84,7 +84,7 @@ try
     
     name = 'conversion of MEG sensors to ftrip and EEGLAB';
     
-    obj = meg.empty(256);
+    obj = meg.dummy(256);
     
     eStr = eeglab(obj);
     fStr = fieldtrip(obj);

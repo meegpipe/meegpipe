@@ -1,8 +1,4 @@
-function obj = empty(nb)
-
-warning('sensors:meg:Obsolete', ...
-    'Static constructor empty() has been deprecated by dummy()');
-
+function obj = dummy(nb)
 
 labels = cellfun(@(x) ['MEG ' num2str(x)], num2cell(1:nb), 'UniformOutput', false); 
 obj = sensors.meg('Cartesian', nan(nb,3), 'Label', labels, 'PhysDim', 'na');

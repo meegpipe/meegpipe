@@ -253,7 +253,8 @@ classdef meg < sensors.physiology
         
         obj = from_fieldtrip(fStr, label);
         obj = from_eeglab(eStr);
-        obj = empty(nb);
+        obj = empty(nb);  % For backwards compatibility, use dummy instead
+        obj = dummy(nb);  % To replace empty() at some point
         
     end
     
