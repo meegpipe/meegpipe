@@ -127,7 +127,13 @@ for i = 1:numel(ev)
     print_title(splitRep, 'Splitting event characteristics', ...
         get_level(rep) + 1);
     
-    print_paragraph(splitRep, report.disp2table(eventCharacteristics));    
+    print_paragraph(splitRep, report.disp2table(eventCharacteristics)); 
+    
+    % Print a link to the binary data file
+    set_method_config(dataOut{splitCount}, 'fprintf', 'ParseDisp', true);
+    set_method_config(dataOut{splitCount}, 'fprintf', 'SaveBinary', true);
+    print_title(splitRep, 'Splitted physioset', get_level(rep) + 1);
+    fprintf(splitRep, dataOut{splitCount});
     
     set_name(dataOut{splitCount}, [get_name(dataIn) '_' splitName]);
     

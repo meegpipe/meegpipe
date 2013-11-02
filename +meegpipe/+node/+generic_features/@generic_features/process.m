@@ -51,7 +51,7 @@ fid = get_log(obj, 'features.txt');
 if isempty(secondLevel),
     
     % Write:
-    % selector_hash,selector_idx, feat1, feat2, ...
+    % feat1, feat2, feat3, ...
     % X, Y, Z
     % ....
     % In this case, featNames is assumed to refer to first-level features, 
@@ -63,7 +63,7 @@ if isempty(secondLevel),
     
     for i = 1:numel(featNames),
        if ischar(firstLevelFeats{i, 1}),
-           fmt = [fmt '%s,'];
+           fmt = [fmt '%s,'];  %#ok<*AGROW>
        elseif isinteger(firstLevelFeats{i, 1})
            fmt = [fmt '%d,'];
        elseif isnumeric(firstLevelFeats{i, 1}),
