@@ -29,7 +29,7 @@ obj.HRVFeatures_ = hrvInfo;
 hrvLogFile = 'features.txt';
 if verbose,
     fprintf([verboseLabel, ...
-        'Saving spectral features to %s ...'], hrvLogFile);
+        'Saving HRV features to %s ...'], hrvLogFile);
 end
 % Create a table of features:
 % EvSelector | HRV features
