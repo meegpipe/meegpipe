@@ -59,6 +59,8 @@ classdef mmappset < ...
         
         obj = backup_projection(obj);
         
+        bool = is_temporary(obj);
+        
     end
     
     

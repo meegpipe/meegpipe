@@ -259,6 +259,10 @@ classdef pset < pset.mmappset & ...
         
         [y, pIdx] = get_chunk(obj, chunk_index);
         
+        function bool = is_temporary(obj)
+           bool = obj.Temporary;            
+        end
+        
     end
     
     % Other public methods

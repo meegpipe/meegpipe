@@ -111,6 +111,9 @@ for i = 1:numel(ev)
         sample+off:sample+off+dur-1, ...
         'FileName', fileName, ...
         'Temporary', true);
+    
+    set_name(dataOut{splitCount}, [get_name(dataIn) '_' splitName]);
+    save(dataOut{splitCount});
 
     % Print split information also to the HTML reports
     repTitle = sprintf('Split %s', get_name(dataOut{splitCount}));
@@ -134,9 +137,7 @@ for i = 1:numel(ev)
     set_method_config(dataOut{splitCount}, 'fprintf', 'SaveBinary', true);
     print_title(splitRep, 'Splitted physioset', get_level(rep) + 1);
     fprintf(splitRep, dataOut{splitCount});
-    
-    set_name(dataOut{splitCount}, [get_name(dataIn) '_' splitName]);
-    
+
     if verbose,
         fprintf([verboseLabel 'Created %s ...\n\n'], ...
             get_datafile(dataOut{splitCount}));
@@ -144,10 +145,6 @@ for i = 1:numel(ev)
     
 end
 dataOut(splitCount+1:end) = [];
-
-for i = 1:numel(dataOut)
-    save(dataOut{i});
-end
 
 if numel(dataOut) == 1,
     dataOut = dataOut{1};

@@ -443,6 +443,9 @@ classdef physioset < ...
         
         sensObj = retrieve_sensors_history(obj, idx);
         
+        function bool = is_temporary(obj)
+           bool = is_temporary(obj.PointSet);
+        end
         
     end
     

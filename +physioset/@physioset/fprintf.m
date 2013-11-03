@@ -31,6 +31,10 @@ import misc.fid2fname;
 import mperl.file.spec.*;
 import misc.code2multiline;
 import pset.globals;
+import meegpipe.get_config;
+
+dataFileExt = get_config('pset', 'data_file_ext');
+hdrFileExt  = get_config('pset', 'hdr_file_ext');
 
 origVerbose = goo.globals.get.Verbose;
 goo.globals.set('Verbose', false);
@@ -43,33 +47,27 @@ cfg = [cfg(:);varargin(:)];
 [~, opt] = process_arguments(opt, cfg);
 
 count = 0;
-if opt.ParseDisp,
-    
-    myTable = parse_disp(obj);
-    
+if opt.ParseDisp,   
+    myTable = parse_disp(obj); 
     count = count + fprintf(fid, myTable);
-    
 end
 
-if opt.SaveBinary,
-    
+if opt.SaveBinary && is_temporary(obj),    
     fName = rel2abs(fid2fname(fid));
     [rPath, fName] = fileparts(fName);
-    
-    % Save binary data
-    dataName    = get_name(obj);
-    
+ 
     newDataFile = catfile(rPath, fName);
-    
-    dataFileExt = globals.get.DataFileExt;
-    hdrFileExt  = globals.get.HdrFileExt;
-    
+
     if ~exist([newDataFile dataFileExt], 'file'),
-        dataCopy = copy(obj, 'DataFile', newDataFile);
-        save(dataCopy);
-        clear dataCopy;
+        obj = copy(obj, 'DataFile', newDataFile);
     end
-    
+    save(obj);
+end
+
+
+if ~is_temporary(obj)  
+    dataName    = get_name(obj);
+
     count = count + ...
         fprintf(fid, '\n%-20s: [%s][%s]\n\n', ...
         'Binary data file', ...
@@ -81,25 +79,19 @@ if opt.SaveBinary,
         [dataName hdrFileExt], [dataName '-hdr']);
     
     count = count + ...
-        fprintf(fid, '[%s]: %s\n', [dataName '-data'], ...
-        [fName dataFileExt]);
+        fprintf(fid, '[%s]: %s\n', [dataName '-data'], get_datafile(obj));
     
     count = count + ...
-        fprintf(fid, '[%s]: %s\n', [dataName '-hdr'], ...
-        [fName hdrFileExt]);
+        fprintf(fid, '[%s]: %s\n', [dataName '-hdr'], get_hdrfile(obj));
     
     count = count + ...
         fprintf(fid, '\n\nTo load to MATLAB''s workspace:\n\n');
     
     count = count + fprintf(fid, '[[Code]]:\n');
     
-    [path, name] = fileparts(newDataFile);
-    newDataFile  = catfile(path, [name hdrFileExt]);
-    
-    code = sprintf('data = pset.load(''%s'')', newDataFile);
+    code = sprintf('data = pset.load(''%s'')', get_hdrfile(obj));
     code = code2multiline(code, [], char(9));
-    count = count + fprintf(fid, '%s\n\n', code);
-    
+    count = count + fprintf(fid, '%s\n\n', code);   
 end
 
 goo.globals.set('Verbose', origVerbose);
