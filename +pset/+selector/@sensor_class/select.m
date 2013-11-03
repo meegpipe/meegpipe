@@ -1,4 +1,6 @@
-function data = select(obj, data, remember)
+function [data, emptySel, arg] = select(obj, data, remember)
+
+arg = [];
 
 if nargin < 3 || isempty(remember),
     remember = true;
@@ -54,10 +56,12 @@ if ~isempty(obj.SensorType)
 end
 
 if ~any(isSelected),
-    throw(MException('selector:EmptySelection', ...
-        'Not even one sensor fulfils the criteria'));
+    emptySel = true;    
+else
+    emptySel = false;
+    select(data, isSelected, [], remember);
 end
 
-select(data, isSelected, [], remember);
+
 
 end

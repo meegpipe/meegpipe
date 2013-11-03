@@ -14,9 +14,6 @@ classdef bad_samples < meegpipe.node.abstract_node
     %
     % See also: config, abstract_node, meegpipe.node
     
-    % Documentation: class_bad_samples.txt
-    % Description: Bad sample rejection
-    
     %% IMPLEMENTATION .....................................................
     methods (Access = private, Static)
         
@@ -48,6 +45,11 @@ classdef bad_samples < meegpipe.node.abstract_node
             import pset.selector.cascade;
             
             obj = obj@meegpipe.node.abstract_node(varargin{:});
+            
+            warning('bad_samples:SoonObsolete', ...
+                ['Node bad_samples is obsolete and will be ' ...
+                'removed in future versions of meegpipe. Use a ' ...
+                'bad_epochs node instead.']);
             
             if nargin > 0 && ~ischar(varargin{1}),
                 % copy construction: keep everything like it is

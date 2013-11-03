@@ -100,7 +100,7 @@ classdef sensor_class < pset.selector.abstract_selector
             
         end
         
-        data = select(obj, data, remember);
+        [data, emptySel, arg] = select(obj, data, remember);
         
         function disp(obj)
             
