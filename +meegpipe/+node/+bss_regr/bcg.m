@@ -13,7 +13,6 @@ import spt.criterion.terp.terp;
 import spt.pca.pca;
 import exceptions.*;
 import physioset.event.std.qrs;
-import pset.selector.event_data;
 import pset.selector.sensor_class;
 import spt.bss.jade.jade;
 import misc.split_arguments;

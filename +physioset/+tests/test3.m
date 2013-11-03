@@ -37,7 +37,7 @@ try
     
     name = 'set_bad_channel/is_bad_channel/clear_bad_channel';
    
-    myImporter = physioset.import.matrix('Sensors', sensors.eeg.empty(7));
+    myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(7));
     data = import(myImporter, randn(7,10000));
     
     cond1 = ~any(is_bad_channel(data));
