@@ -47,9 +47,19 @@ classdef sensor_idx < pset.selector.abstract_selector
             
         end
         
-        function data = select(obj, data, remember)
+        function [data, emptySel, arg] = select(obj, data, remember)
+            
+            arg = [];
+            
             if nargin < 3 || isempty(remember),
                 remember = true;
+            end
+            
+            if isempty(obj.SensorIdx), 
+                emptySel = true;
+                return;
+            else
+                emptySel = false;
             end
             
             select(data, obj.SensorIdx, [], remember);

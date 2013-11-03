@@ -52,7 +52,9 @@ classdef sensor_group_idx < pset.selector.abstract_selector
             
         end
         
-        function data = select(obj, data, remember)
+        function [data, emptySel, arg] = select(obj, data, remember)
+            
+            arg = [];
             
             if nargin < 3 || isempty(remember),
                 remember = true;
@@ -75,6 +77,13 @@ classdef sensor_group_idx < pset.selector.abstract_selector
                     rowSel = intersect(rowSel, selChan);
                 end
                 
+            end
+            
+            if isempty(rowSel),
+                emptySel = true;
+                return;
+            else
+                emptySel = false;
             end
             
             select(data, rowSel, [], remember);

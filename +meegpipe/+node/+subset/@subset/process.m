@@ -9,7 +9,6 @@ import goo.globals;
 
 dataNew = [];
 
-subsetSelector  = get_config(obj, 'SubsetSelector');
 autoDestroyMemMap = get_config(obj, 'AutoDestroyMemMap');
 
 verbose          = is_verbose(obj);
@@ -24,7 +23,7 @@ if verbose,
        get_name(dataIn)); 
 end
 
-dataOut  = subset(dataIn, subsetSelector, ...
+dataOut  = subset(dataIn,  ...
     'FileName',             fileName, ...
     'Temporary',            true, ...
     'AutoDestroyMemMap',    autoDestroyMemMap);

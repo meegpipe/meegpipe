@@ -30,12 +30,16 @@ selectionEvents = cell(1, numel(targetSelector));
 for targetItr = 1:numel(targetSelector)
     
     % selectionEvents is only relevant for event_selector selectors
-    [~, selectionEvents{targetItr}] = ...
+    [~, emptySel, selectionEvents{targetItr}] = ...
         select(targetSelector{targetItr}, data);
     
+    if emptySel, continue; end
+    
     for featItr = 1:numel(firstLevel)
+        
         firstLevelFeats{featItr, targetItr} = firstLevel{featItr}(data, ...
             selectionEvents{targetItr}, targetSelector{targetItr});
+        
     end
     
     restore_selection(data);
@@ -77,6 +81,10 @@ if isempty(secondLevel),
  
     fmt(end:end+1) = '\n';
     for i = 1:numel(targetSelector)
+        
+        if all(cellfun(@(x) isempty(x), firstLevelFeats(:,i))),
+            continue;
+        end
         fprintf(fid, fmt, firstLevelFeats{:, i});
     end    
     

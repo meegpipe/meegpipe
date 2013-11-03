@@ -52,7 +52,9 @@ classdef reject_boundaries < pset.selector.abstract_selector
             obj.Negated = ~obj.Negated;
         end
         
-        function data = select(obj, data, remember)
+        function [data, emptySel, arg] = select(obj, data, remember)
+            
+            arg = [];
             
             if nargin < 3 || isempty(remember), remember = true; end
             
@@ -75,6 +77,13 @@ classdef reject_boundaries < pset.selector.abstract_selector
             
             if obj.Negated,
                 selected = ~selected;
+            end
+            
+            if ~any(selected),
+                emptySel = true;
+                return;
+            else
+                emptySel = false;
             end
             
             select(data, 1:size(data,1), selected, remember);

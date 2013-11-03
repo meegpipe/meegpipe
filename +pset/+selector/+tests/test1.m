@@ -208,7 +208,7 @@ try
     % (never mind about sensor labels)
     sg1 = sensors.dummy(5);
     sg2 = sensors.physiology('Label', {'ECG 1', 'ECG 2'});
-    sg3 = sensors.eeg.empty(10);
+    sg3 = sensors.eeg.dummy(10);
     
     % Put them together into a mixed sensor array
     mySensors = sensors.mixed(sg1, sg2, sg3);
@@ -240,7 +240,7 @@ try
     % (never mind about sensor labels)
     sg1 = sensors.dummy(5);
     sg2 = sensors.physiology('Label', {'ECG 1', 'ECG 2'});
-    sg3 = sensors.eeg.empty(10);
+    sg3 = sensors.eeg.dummy(10);
     
     % Put them together into a mixed sensor array
     mySensors = sensors.mixed(sg1, sg2, sg3);
@@ -272,7 +272,7 @@ try
     % (never mind about sensor labels)
     sg1 = sensors.dummy(5);
     sg2 = sensors.physiology('Label', {'ECG 1', 'ECG 2'});
-    sg3 = sensors.eeg.empty(10);
+    sg3 = sensors.eeg.dummy(10);
     
     % Put them together into a mixed sensor array
     mySensors = sensors.mixed(sg1, sg2, sg3);

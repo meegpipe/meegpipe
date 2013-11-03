@@ -24,22 +24,25 @@ classdef good_samples < pset.selector.abstract_selector
             
         end
         
-        function data = select(obj, data, remember)
+        function [data, emptySel, arg] = select(obj, data, remember)
+            
+            arg = [];
             
             if nargin < 3 || isempty(remember),
                 remember = true;
             end
             
             if obj.Negated,
-                
-                select(data, 1:size(data,1), is_bad_sample(data), ...
-                    remember);
-                
+                selection = is_bad_sample(data);
             else
-                
-                select(data, 1:size(data,1), ~is_bad_sample(data), ...
-                    remember);
-                
+                selection = ~is_bad_sample(data);
+            end
+            
+            if any(selection),
+                emptySel = false;
+                select(data, 1:size(data,1), selection, remember);
+            else
+                emptySel = true;
             end
             
         end

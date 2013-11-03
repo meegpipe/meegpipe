@@ -47,22 +47,27 @@ classdef good_data < pset.selector.abstract_selector
             
         end
         
-        function data = select(obj, data, remember)
+        function [data, emptySel, arg] = select(obj, data, remember)
+            
+            arg = [];
             
             if nargin < 3 || isempty(remember),
                 remember = true;
             end
             
             if obj.Negated,
-                
-                select(data, is_bad_channel(data), is_bad_sample(data), ...
-                    remember);
-                
+                selRows = is_bad_channel(data);
+                selCols = is_bad_sample(data);
             else
-                
-                select(data, ~is_bad_channel(data), ~is_bad_sample(data), ...
-                    remember);
-                
+                selRows = ~is_bad_channel(data);
+                selCols = ~is_bad_sample(data);
+            end
+            
+            if any(selRows) || any(selCols),
+                emptySel = false;
+                select(data, selRows, selCols, remember);
+            else
+                emptySel = true;
             end
             
         end

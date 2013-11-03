@@ -8,31 +8,10 @@ classdef config < meegpipe.node.abstract_config
     
     properties
         
-        SubsetSelector
         AutoDestroyMemMap = false;
         
     end
-    
-    % Consistency checks
-    methods
-        
-        function obj = set.SubsetSelector(obj, value)
-            
-            import exceptions.*;
-            if isempty(value),
-                obj.SubsetSelector = [];
-                return;
-            end
-            
-            if numel(value) ~= 1 || ~isa(value, 'pset.selector.selector'),
-                throw(InvalidPropValue('SubsetSelector', ...
-                    'Must be a selector object'));
-            end
-            obj.SubsetSelector = value;
-            
-        end
-        
-    end
+   
     
     % Constructor
     methods

@@ -65,14 +65,14 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
     
     % goo.hashable
     methods
-       
+        
         function code = get_hash_code(obj)
             import datahash.DataHash;
             
             if ~isempty(obj.EventSelector),
                 objStr.Event = get_hash_code(obj.EventSelector);
             end
-            code = DataHash(objStr);            
+            code = DataHash(objStr);
         end
         
     end
@@ -86,7 +86,7 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
             
         end
         
-        function [data, ev] = select(obj, data, remember)
+        function [data, emptySel, ev] = select(obj, data, remember)
             
             if nargin < 3 || isempty(remember),
                 remember = true;
@@ -94,12 +94,21 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
             
             ev = get_event(data);
             
-            if isempty(ev), return; end
-            if isempty(obj.EventSelector), return; end
+            if isempty(ev),
+                emptySel = true;
+                return;
+            end
+            if isempty(obj.EventSelector),
+                emptySel = true;
+                return;
+            end
             
             ev = select(obj.EventSelector, ev);
             
-            if isempty(ev), return; end
+            if isempty(ev),
+                emptySel = true;
+                return;
+            end
             
             ev  = sort(ev);
             pos = get_sample(ev);
@@ -131,7 +140,12 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
                 
             end
             
-            select(data, [], find(selected), remember);
+            if any(selected),
+                emptySel = false;
+                select(data, [], selected, remember);
+            else
+                emptySel = true;
+            end
             
         end
         

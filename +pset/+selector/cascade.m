@@ -73,19 +73,29 @@ classdef cascade < pset.selector.abstract_selector
             
         end
         
-        function data = select(obj, data, inRemember)
+        function [data, emptySel, arg] = select(obj, data, inRemember)
             
             if nargin < 3 || isempty(inRemember),
                 inRemember = true;
             end
             
+            allArgs = {};
             for i = 1:numel(obj.SelectorList)
                 if i < 2,
                     remember = inRemember;
                 else
                     remember = false;
                 end
-                select(obj.SelectorList{i}, data, remember);
+                [~, emptySel, arg] = select(obj.SelectorList{i}, data, ...
+                    remember);
+                allArgs = [allArgs;{arg}]; %#ok<AGROW>
+                if emptySel,
+                    % roll back the selections that were done
+                    for j = (i-1):-1:1
+                        restore_selection(data);
+                    end
+                    return;
+                end
             end
             
             if obj.Negated,
