@@ -80,16 +80,6 @@ there is a 50% overlap between correlative epochs.
 epochs whose mean variance is above the 95% percentile of the mean epoch
 variances.
 
-The following code can be used to build a node (a pipeline, actually)
-that will reject those epochs whose mean variance is 5 median absolute 
-deviations above the median mean epoch variance:
-
-````
-import meegpipe.node.*;
-maxVar = @(epochVars) median(epochVars) + 5*mad(epochVars);
-myNode = bad_epochs.sliding_window_var(0.5, 1, maxVar);
-````
-
 
 ## Usage examples
 
@@ -148,3 +138,21 @@ myEvSel = physioset.event.class_selector('Type', 'myType');
 myNode = bad_epochs.minmax(-100, 100, 'EventSelector', myEvSel);
 run(myNode, myData);
 ````
+
+### Reject epochs with large variance
+
+The following code can be used to build a node (a pipeline, actually)
+that will reject those epochs whose mean variance is 5 median absolute 
+deviations above the median mean epoch variance:
+
+````matlab
+import meegpipe.node.*;
+maxVar = @(epochVars) median(epochVars) + 5*mad(epochVars);
+myNode = bad_epochs.sliding_window_var(0.5, 1, maxVar);
+run(myNode, myData);
+````
+
+Note that in the code above we are using the `sliding_window_var` default
+ configuration (see above). 
+
+
