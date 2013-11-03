@@ -29,14 +29,19 @@ select(data, 1:nb_dim(data), ~is_bad_sample(data));
 [sensObj, sensIdx] = sensor_groups(sensors(data));
 
 
-crit  = get_config(obj, 'Criterion');
-evSel = get_config(obj, 'EventSelector');
-dur   = get_config(obj, 'Duration');
-off   = get_config(obj, 'Offset');
+crit   = get_config(obj, 'Criterion');
+evSel  = get_config(obj, 'EventSelector');
+dur    = get_config(obj, 'Duration');
+off    = get_config(obj, 'Offset');
+delEvs = get_config(obj, 'DeleteEvents');
+
 
 ev = get_event(data);
 if ~isempty(ev) && ~isempty(evSel),
-    ev = select(evSel, ev);
+    [ev, evIdx] = select(evSel, ev);   
+    if delEvs && ~isempty(evIdx)
+        delete_event(data, evIdx);
+    end    
 end
 
 rep = get_report(obj);

@@ -52,6 +52,44 @@ import meegpipe.node.*;
 myNode = bad_epochs.minmax(-50, 100);
 ````
 
+Note that the `minmax` configuration actually creates a tiny pipeline that
+contains two `bad_epochs` nodes. 
+
+### `sliding_window_var(period, dur, maxVar, 'key', value, ...)`
+
+The `sliding_window_var` configuration can be used to reject bad data 
+samples without having to first embed events into the physioset object. 
+The `sliding_window_var` configuration produces a small pipeline that 
+contains two nodes:
+
+* An [ev_gen node][ev_gen] that generates periodic events with a period of
+`period` seconds and a duration of `dur` seconds. 
+
+* A `bad_epochs` node that ranks the epochs generated above according to 
+their mean (across channels) variance. It then rejects those epochs whose 
+rank is above the provided `maxVar`. Note that `maxVar` maybe a 
+`function_handle` that computes the actual variance threshold based on the
+array of epoch statistics.
+
+By default:
+
+* `period=0.5`, `dur=1`, i.e. the epochs have a duration of 1 seconds and 
+there is a 50% overlap between correlative epochs.
+
+* `epochStat = @(epochStats) prctile(epochStats, 95), i.e. reject those 
+epochs whose mean variance is above the 95% percentile of the mean epoch
+variances.
+
+The following code can be used to build a node (a pipeline, actually)
+that will reject those epochs whose mean variance is 5 median absolute 
+deviations above the median mean epoch variance:
+
+````
+import meegpipe.node.*;
+maxVar = @(epochVars) median(epochVars) + 5*mad(epochVars);
+myNode = bad_epochs.sliding_window_var(0.5, 1, maxVar);
+````
+
 
 ## Usage examples
 

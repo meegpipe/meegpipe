@@ -10,6 +10,7 @@ classdef config < meegpipe.node.abstract_config
         Offset          = []; % Use the offset of the epoch events
         EventSelector   = ...
             physioset.event.class_selector('Class', {'epoch_begin', 'trial_begin'});
+        DeleteEvents    = false; % Should the epoch events be removed?
         Criterion       = meegpipe.node.bad_epochs.criterion.stat.stat;
     end
     

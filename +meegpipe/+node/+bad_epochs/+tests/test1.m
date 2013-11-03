@@ -14,7 +14,7 @@ import physioset.event.class_selector;
 
 MEh     = [];
 
-initialize(9);
+initialize(11);
 
 %% Create a new session
 try
@@ -97,6 +97,32 @@ catch ME
     
 end
 
+%% process sample data (DeleteEvents=true)
+try
+    
+    name = 'process sample data (DeleteEvents=true)';
+
+    data = my_sample_data();
+     
+    otherEv = event(100, 'Type', 'othertype');
+    add_event(data, otherEv);
+    
+    myNode = my_sample_node('DeleteEvents', true);
+    
+    run(myNode, data);
+    
+    ev = get_event(data);
+    ok(...
+        numel(ev) == 51 && numel(unique(ev)) == 2 && ...
+        numel(find(is_bad_sample(data))) == 250, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 %% minmax
 try
     
@@ -110,6 +136,27 @@ try
     run(myNode, data);
     
     ok(numel(find(is_bad_sample(data))) == 900, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% sliding_window_var
+try
+    
+    name = 'sliding_window_var';
+
+    data = my_sample_data();
+     
+    myNode = sliding_window_var;
+    
+    run(myNode, data);
+    
+    select(pset.selector.good_data, data);
+    ok(max(data(1,:)) < 5 && min(data(1,:)) > -5, name);
     
 catch ME
     
@@ -259,7 +306,8 @@ myNode = bad_epochs(...
     'Duration',      0.5, ...
     'Offset',        -0.1, ...
     'EventSelector', mySel, ...
-    'Save',          true);
+    'Save',          true, ...
+    varargin{:});
 
 
 end

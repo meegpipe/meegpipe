@@ -31,7 +31,7 @@ rejected you could set `MinCard` to `@(rankVal) ceil(0.1*numel(rankVal))`.
 
 __Class:__ `numeric` scalar or `function_handle`
 
-__Default:__ `@(dim) ceil(0.2*dim)`
+__Default:__ `@(rankVal) ceil(0.2*numel(rankVal))`
 
 
 The maximum number of epochs that will be rejected. If set to a

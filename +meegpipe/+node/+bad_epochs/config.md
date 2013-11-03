@@ -41,6 +41,16 @@ physioset) those events that are marking the onset and duration of the
 data epochs. 
 
 
+## `DeleteEvents`
+
+__Class__: `logical scalar`
+
+__Default__: `false`
+
+If `DeleteEvents` is set to true, the events selected with `EventSelector`
+will be removed from the input physioset. 
+
+
 ### `Duration`
 
 __Class__: `numeric scalar` or `[]`
