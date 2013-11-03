@@ -52,7 +52,8 @@ if isempty(secondLevel),
     
     % Write:
     % feat1, feat2, feat3, ...
-    % X, Y, Z
+    % X, Y, Z  -> first selector
+    % V, W, M  -> second selector
     % ....
     % In this case, featNames is assumed to refer to first-level features, 
     % which are assumed to be numeric, for simplicity

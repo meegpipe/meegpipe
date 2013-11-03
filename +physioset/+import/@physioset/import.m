@@ -37,4 +37,6 @@ if ~isa(physObj, 'physioset.physioset'),
         'File %s does not store a physioset object', fileName);
 end
 
+physObj.PointSet.AutoDestroyMemMap = obj.AutoDestroyMemMap;
+
 end
