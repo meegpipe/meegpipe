@@ -146,6 +146,7 @@ myEvArray = [...
     event(1501:1600, 'Value', 2, 'Type', 'type2') ...
     ];
 
+% Select only events with Value=2
 mySel = value_selector(2);
 newEvArray = select(mySel, myEvArray);
 
