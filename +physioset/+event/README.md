@@ -49,7 +49,7 @@ the subset of events that define the relevant data epochs.
 [bad_epochs]: ../../+meegpipe/+node/+bad_epochs/README.md
 
 
-### The `class_selector`
+### `class_selector`
 
 The `class_selector` event selector is, arguably, the most commonly used one.
 Given an array of events, it selects a subset of events of a given `class`, with
@@ -101,11 +101,59 @@ assert(...
 ````
 
 
-### The `sample_selector`
+### `sample_selector`
+
+The [sample_selector][sample_selector] event selector selects events whose value
+of the `Sample` property falls within a given range. For instance the following
+code snippet will select all events whose time span falls completely between
+samples 50 and 100 or between samples 1000 and 2000:
+
+````matlab
+import physioset.event.sample_selector;
+import physioset.event.event;
+
+% Create a dummy event array
+myEvArray = [...
+    event(61:70, 'Type', 'type1'), ...
+    event(40, 'Type', 'type2', 'Duration', 20), ... % Not in range!!
+    event(1501:1600, 'Type', 'type3') ...
+    ];
 
 
-### The `value_selector`
+mySel = sample_selector(50:100, 1000:2000);
+newEvArray = select(mySel, myEvArray);
 
+assert(...
+    numel(newEvArray) == 110 & ...
+    ~ismember('type2', unique(newEvArray)) ...
+    );
+
+````
+
+
+### `value_selector`
+
+The `value_selector` selects events based on the value of their `Value`
+property. For instance:
+
+````matlab
+import physioset.event.value_selector;
+import physioset.event.event;
+
+% Create a dummy event array
+myEvArray = [...
+    event(61:70, 'Value', 1, 'Type', 'type1'), ...
+    event(1501:1600, 'Value', 2, 'Type', 'type2') ...
+    ];
+
+mySel = value_selector(2);
+newEvArray = select(mySel, myEvArray);
+
+assert(...
+    numel(newEvArray) == 100 & ...
+    ~ismember('type1', unique(newEvArray)) ...
+    );
+````
 
 
 ## Event generators
