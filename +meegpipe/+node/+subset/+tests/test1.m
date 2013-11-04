@@ -193,7 +193,7 @@ try
         end
         
         sel = pset.selector.sensor_idx(5:8);
-        myNode = subset('DataSelector', sel, 'OGE', true);
+        myNode = subset('DataSelector', sel, 'OGE', true, 'Save', true);
         
         dataFiles = run(myNode, data{:});
         pause(5); % give time for OGE to do its magic
