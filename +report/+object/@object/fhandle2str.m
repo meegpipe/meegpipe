@@ -32,7 +32,7 @@ newFile     = catfile(path, refs{1,2});
 fidTmp      = fopen(newFile, 'w');
 
 try
-    fprintf(fidTmp, char(pValue));
+    fprintf(fidTmp, '%s', char(pValue));
     pValue = sprintf('[ [function_handle] ][%s]', refs{1,1});
     fclose(fidTmp);
 catch ME

@@ -29,6 +29,7 @@ classdef physioset < ...
         TimeOrig;
         SensorsHistory;          % To keep track of proj/bproj
         RerefMatrix;
+        MetaMapper;        
         
     end
     
@@ -42,7 +43,7 @@ classdef physioset < ...
         DimInvMap;
         StartTime;
         StartDate;
-        
+      
     end
     
     % Get methods for the dependent properties
@@ -106,6 +107,21 @@ classdef physioset < ...
         add_event_gui(obj);
         delete_event_gui(obj);
         
+        % Add meta-data info to the physioset
+        function apply_meta_mapper(obj)
+            
+            if isempty(obj.MetaMapper), return; end
+            
+            meta = obj.MetaMapper(obj);
+            if isempty(meta), return; end
+            
+            fNames = fieldnames(meta);
+            for i = 1:numel(fNames),
+                set_meta(obj, fNames{i}, meta.(fNames{i}));
+            end
+            
+        end
+ 
     end
     
     methods (Access = private, Static)
@@ -760,6 +776,7 @@ classdef physioset < ...
             opt.badsample     = [];
             opt.info          = struct;
             opt.header        = [];
+            opt.metamapper    = [];
             
             [~, opt] = process_arguments(opt, varargin);
             
@@ -794,6 +811,7 @@ classdef physioset < ...
             obj.EqWeights       = opt.eqweights;
             obj.EqWeightsOrig   = opt.eqweightsorig;
             obj.PhysDimPrefixOrig = opt.physdimprefixorig;
+            obj.MetaMapper      = opt.metamapper;
             
             obj                 = set_name(obj, opt.name);
             
@@ -801,8 +819,10 @@ classdef physioset < ...
             if ~isempty(opt.header),
                 opt.info.header = opt.header;
             end
-            
+         
             obj = set_meta(obj, opt.info);
+            
+            apply_meta_mapper(obj);
             
             if obj.NbDims > 0,
                 if isempty(opt.badchannel),

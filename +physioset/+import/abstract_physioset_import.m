@@ -34,13 +34,12 @@ classdef abstract_physioset_import < ...
         end
         
         % Might be overloaded by children classes
-        function args = construction_args_physioset(~)
+        function args = construction_args_physioset(obj)
             
-            args = {};
+            args = {'MetaMapper', obj.MetaMapper};
             
-        end
-        
-        
+        end        
+      
     end
     
     
@@ -57,7 +56,8 @@ classdef abstract_physioset_import < ...
         FileName     = '';
         FileNaming   = 'inherit';
         Sensors      = [];
-        EventMapping = mjava.hash({'TREV', 'tr', 'TR\s.+', 'tr'})
+        EventMapping = mjava.hash({'TREV', 'tr', 'TR\s.+', 'tr'});
+        MetaMapper  = @(data) regexp(get_name(data), '(?<subject_id>0+\d+)_.+', 'names');
         
     end
     
