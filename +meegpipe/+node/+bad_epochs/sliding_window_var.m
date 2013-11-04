@@ -1,4 +1,4 @@
-function obj = sliding_window_var(period, dur, maxVar, varargin)
+function obj = sliding_window_var(period, dur, varargin)
 % SLIDING_WINDOW_VAR - Reject sliding windows with large variance
 
 import meegpipe.node.bad_epochs.criterion.stat.stat;
@@ -15,14 +15,11 @@ if nargin < 2 || isempty(dur),
     dur = 0.5*period;
 end
 
-if nargin < 3 || isempty(maxVar),
-    maxVar = @(meanVar) prctile(meanVar, 95);
-end
-
 crit = stat(...
     'ChannelStat',  @(x) var(x), ...
     'EpochStat',    @(chanVars) mean(chanVars), ...
-    'Max',          maxVar);
+    'Max',          @(meanVar) prctile(meanVar, 95), ...
+    varargin{:});
 
 randomEvType = ['__' DataHash(rand(1,100))];
 
@@ -42,6 +39,6 @@ node2 = bad_epochs.new(...
     'EventSelector',    evSel);
 
 obj = pipeline('NodeList', {node1, node2}, ...
-    'Name', 'bad_epochs.sliding_window_var', varargin{:});
+    'Name', 'bad_epochs.sliding_window_var');
 
 end

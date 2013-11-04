@@ -55,7 +55,7 @@ myNode = bad_epochs.minmax(-50, 100);
 Note that the `minmax` configuration actually creates a tiny pipeline that
 contains two `bad_epochs` nodes. 
 
-### `sliding_window_var(period, dur, maxVar, 'key', value, ...)`
+### `sliding_window_var(period, dur, 'key', value, ...)`
 
 The `sliding_window_var` configuration can be used to reject bad data 
 samples without having to first embed events into the physioset object. 
@@ -66,19 +66,24 @@ contains two nodes:
 `period` seconds and a duration of `dur` seconds. 
 
 * A `bad_epochs` node that ranks the epochs generated above according to 
-their mean (across channels) variance. It then rejects those epochs whose 
-rank is above the provided `maxVar`. Note that `maxVar` maybe a 
-`function_handle` that computes the actual variance threshold based on the
-array of epoch statistics.
+their mean (across channels) variance. 
 
-By default:
+All additional key/value pairs that are passed to `sliding_window_var` are 
+used in the constructio of the associated [stat criterion][stat-crit]. That
+is, to build a node that will reject those epochs having variance below the 
+1% percentile or above the 95% you would do:
 
-* `period=0.5`, `dur=1`, i.e. the epochs have a duration of 1 seconds and 
-there is a 50% overlap between correlative epochs.
+````matlab
+import meegpipe.node.*;
+myNode = bad_epochs.sliding_window_var(0.5, 1, ...
+    'Min', @(epochStat) prctile(epochStat, 1), ...
+    'Max', @(epochStat) prctile(epochStat, 95));
+````
 
-* `epochStat = @(epochStats) prctile(epochStats, 95), i.e. reject those 
-epochs whose mean variance is above the 95% percentile of the mean epoch
-variances.
+[stat-crit]: ./+criterion/+stat/README.md
+
+By default `period=0.5` and `dur=1`, i.e. the epochs have a duration of 
+1 seconds and there is a 50% overlap between correlative epochs.
 
 
 ## Usage examples
