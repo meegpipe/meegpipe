@@ -65,6 +65,8 @@ contains two nodes:
 * An [ev_gen node][ev_gen] that generates periodic events with a period of
 `period` seconds and a duration of `dur` seconds. 
 
+[ev_gen]: ../+ev_gen/README.md
+
 * A `bad_epochs` node that ranks the epochs generated above according to 
 their mean (across channels) variance. 
 
