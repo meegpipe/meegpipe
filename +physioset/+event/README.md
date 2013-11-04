@@ -26,7 +26,7 @@ which assumes that the QRS complex was located at sample 1000, and that spanned
 from sample `1000-Offset = 960` until sample `(1000-Offset)+Duration-1 = 1059`.
 
 
-## Standard events
+## Standard event sub-classes
 
 Package `physioset.event.std` contain various event sub-classes with specific
 purposes. These classes are used internally by `meegpipe` and thus you best
