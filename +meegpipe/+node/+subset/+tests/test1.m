@@ -56,16 +56,12 @@ end
 try
     
     name = 'constructor from config object';
-    
-    sel = pset.selector.sensor_class('Class', 'sensors.dummy');
-    myCfg  = config('SubsetSelector', sel);
+
+    myCfg  = config('AutoDestroyMemMap', true); 
     myNode = subset(myCfg);
+    bool = get_config(myNode, 'AutoDestroyMemMap');
     
-    sel2 = get_config(myNode, 'SubsetSelector');
-    
-    ok(...
-        isa(sel2, 'pset.selector.sensor_class'), ...
-        name);
+    ok(bool, name);
     
 catch ME
     
@@ -77,16 +73,10 @@ end
 %% constructor with config options
 try
     
-    name = 'constructor with config options';
-    
-    subsetSel = pset.selector.sensor_idx(5:10);
-    myNode = subset('SubsetSelector', subsetSel);
-    
-    sel = get_config(myNode, 'SubsetSelector');
-    
-    ok(...
-        isa(sel, 'pset.selector.sensor_idx'), ...
-        name);
+    name = 'constructor with config options';   
+    myNode = subset('AutoDestroyMemMap', true);    
+    bool = get_config(myNode, 'AutoDestroyMemMap');   
+    ok(bool, name);
     
 catch ME
     
@@ -103,8 +93,8 @@ try
     sel1 = pset.selector.sensor_idx(5:8);
     sel2 = pset.selector.sensor_idx(2:3);
     
-    myNode1 = subset('SubsetSelector', sel1);
-    myNode2 = subset('SubsetSelector', sel2);
+    myNode1 = subset('DataSelector', sel1);
+    myNode2 = subset('DataSelector', sel2);
     myPipe  = pipeline(myNode1, myNode2);
     
     data = import(physioset.import.matrix, randn(10, 1000));
@@ -128,8 +118,8 @@ try
     sel1 = pset.selector.sensor_idx(5:8);
     sel2 = pset.selector.sensor_idx(2:3);
     
-    myNode1 = subset('SubsetSelector', sel1);
-    myNode2 = subset('SubsetSelector', sel2, 'AutoDestroyMemMap', true);
+    myNode1 = subset('DataSelector', sel1);
+    myNode2 = subset('DataSelector', sel2, 'AutoDestroyMemMap', true);
     myPipe  = pipeline(myNode1, myNode2);
     
     data = import(physioset.import.matrix, randn(10, 1000));
@@ -151,7 +141,7 @@ try
     name = 'save node output';
     
     sel = pset.selector.sensor_idx(5:8);
-    myNode = subset('SubsetSelector', sel, 'Save', true);
+    myNode = subset('DataSelector', sel, 'Save', true);
     
     data = import(physioset.import.matrix, randn(10, 1000));
     
@@ -179,7 +169,7 @@ try
     end
     
     sel = pset.selector.sensor_idx(5:8);
-    myNode = subset('SubsetSelector', sel, 'OGE', false);
+    myNode = subset('DataSelector', sel, 'OGE', false);
     newData = run(myNode, data{:});
     ok(size(newData{1},1) == 4, name);
     
@@ -203,7 +193,7 @@ try
         end
         
         sel = pset.selector.sensor_idx(5:8);
-        myNode = subset('SubsetSelector', sel, 'OGE', true);
+        myNode = subset('DataSelector', sel, 'OGE', true);
         
         dataFiles = run(myNode, data{:});
         pause(5); % give time for OGE to do its magic
