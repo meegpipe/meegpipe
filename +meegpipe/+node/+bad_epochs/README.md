@@ -71,7 +71,7 @@ contains two nodes:
 their mean (across channels) variance. 
 
 All additional key/value pairs that are passed to `sliding_window_var` are 
-used in the constructio of the associated [stat criterion][stat-crit]. That
+used in the construction of the associated [stat criterion][stat-crit]. That
 is, to build a node that will reject those epochs having variance below the 
 1% percentile or above the 95% you would do:
 
@@ -85,7 +85,7 @@ myNode = bad_epochs.sliding_window_var(0.5, 1, ...
 [stat-crit]: ./+criterion/+stat/README.md
 
 By default `period=0.5` and `dur=1`, i.e. the epochs have a duration of 
-1 seconds and there is a 50% overlap between correlative epochs.
+1 second and there is 50% overlap between correlative epochs.
 
 
 ## Usage examples
