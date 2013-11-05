@@ -46,7 +46,7 @@ classdef copy < meegpipe.node.abstract_node
     methods (Access = protected)
         
         % We override this to prevent infinite recursion
-        function save(obj, data)
+        function data = save(obj, data)
             
             import mperl.file.spec.catfile;
             
