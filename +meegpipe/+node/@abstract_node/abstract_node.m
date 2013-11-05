@@ -294,7 +294,7 @@ classdef abstract_node < ...
         bool        = has_changed(obj);
         
         
-        save(obj, data, varargin);
+        data = save(obj, data, varargin);
         
         % Called from run()
         obj         = initialize(obj, data);
