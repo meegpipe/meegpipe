@@ -301,4 +301,7 @@ data = import(importer, X);
 
 set_bad_sample(data, 50:2500);
 
+myEv = physioset.event.event(1:10:500, 'Type', 'myevent');
+add_event(data, myEv);
+
 end

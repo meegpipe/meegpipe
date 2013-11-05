@@ -28,8 +28,11 @@ for i = 1:numel(obj.Objects)
          print_title(obj, 'Sensor information', get_level(obj) + 1);
          fprintf(fid, sensors(thisObj));
          
-         print_title(obj, 'Events information', get_level(obj) + 1);
-         %fprintf(fid, get_event(thisObj));
+         evArray = get_event(thisObj);
+         if ~isempty(evArray)
+             print_title(obj, 'Events information', get_level(obj) + 1);
+             fprintf(fid, evArray, 'SummaryOnly', true);
+         end
          
     elseif isa(thisObj, 'goo.reportable') || ...
             isa(thisObj, 'goo.reportable_handle'),
