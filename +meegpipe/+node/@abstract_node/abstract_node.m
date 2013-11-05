@@ -416,11 +416,7 @@ classdef abstract_node < ...
     %% goo.reportable_handle interface
     methods
         
-        function [pName, pVal, pDescr] = report_info(obj)
-            
-            [pName, pVal, pDescr] = report_info(get_config(obj));
-            
-        end
+        [pName, pVal, pDescr] = report_info(obj)
         
         function str = whatfor(~)
             str = '';

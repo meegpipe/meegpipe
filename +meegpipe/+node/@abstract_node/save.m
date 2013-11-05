@@ -1,4 +1,4 @@
-function save(obj, data, varargin)
+function data = save(obj, data, varargin)
 % SAVE - Saves node output to a disk file
 %
 % save(obj, data, dataIn)
@@ -36,6 +36,7 @@ else
         'Temporary', false);
     
     save(dataCopy);
+    data = dataCopy;
 end
 
 end

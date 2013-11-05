@@ -11,6 +11,11 @@ import report.remark;
 import misc.rmdir;
 import pset.session;
 
+%% Save node output
+if obj.Save,
+    data = save(obj, data);
+end
+
 %% Output report
 output_report(obj, data);
 
@@ -30,7 +35,6 @@ fNames = fieldnames(obj.SuperGlobals_);
 for i = 1:numel(fNames)
     goo.globals.set(fNames{i}, obj.SuperGlobals_.(fNames{i}));
 end
-
 
 % Rinitialize the report
 if ~isempty(get_report(obj)),
@@ -58,10 +62,6 @@ end
 %% Store runtime params hash
 set_static(obj, 'hash', 'runtime', get_hash_code(obj.RunTime_));
 
-%% Save node output
-if obj.Save,
-    save(obj, data);
-end
 
 if isempty(get_parent(obj))
     %% Clear session and temporary dir
