@@ -202,6 +202,7 @@ classdef eeg < sensors.physiology
         [sens, I] = left_hemisphere(obj);
         [sens, I] = right_hemisphere(obj);
         [sens, I] = midline(obj);
+        count     = fprintf(fid, obj, varargin);
         
     end
     

@@ -22,7 +22,14 @@ for i = 1:numel(obj.Objects)
         
      elseif isa(thisObj, 'physioset.physioset')
          
+         print_title(obj, 'Summary information', get_level(obj) + 1);
          fprintf(fid, thisObj);
+         
+         print_title(obj, 'Sensor information', get_level(obj) + 1);
+         fprintf(fid, sensors(thisObj));
+         
+         print_title(obj, 'Events information', get_level(obj) + 1);
+         %fprintf(fid, get_event(thisObj));
          
     elseif isa(thisObj, 'goo.reportable') || ...
             isa(thisObj, 'goo.reportable_handle'),

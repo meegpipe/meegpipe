@@ -72,6 +72,7 @@ classdef mixed < sensors.abstract_sensors
         weigths         = get_eqweights(obj)
         obj             = subset(obj, idx)  
         xyz             = cartesian_coords(obj);
+        count           = fprintf(fid, obj, varargin);       
     end
     
     % sensors.abstract_sensors

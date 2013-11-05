@@ -7,7 +7,7 @@ function h = plot(obj, varargin)
 % Where
 %
 % OBJ is a sensors.eeg object
-% 
+%
 %
 % See also: sensors.eeg
 
@@ -15,24 +15,52 @@ import misc.split_arguments;
 import misc.process_arguments;
 
 
-[args1, varargin] = split_arguments({'Labels'}, varargin);
+[args1, varargin] = ...
+    split_arguments({'Labels', 'Project2D', 'Visible'}, varargin);
 
-opt.Labels = false;
+opt.Labels    = false;
+opt.Project2D = false;
+opt.Visible   = true;
 [~, opt] = process_arguments(opt, args1);
 
 if numel(varargin) < 2,
     varargin = {'r', 'filled'};
 end
 
+if opt.Visible,
+    visible = 'on';
+else
+    visible = 'off';
+end
 
-h = scatter3(obj.Cartesian(:,1), obj.Cartesian(:,2), obj.Cartesian(:,3), varargin{:});
-
-axis equal;
-set(gca, 'visible', 'off');
-set(gcf, 'color', 'white');
-
-if opt.Labels,
-    text(obj.Cartesian(:,1), obj.Cartesian(:,2), obj.Cartesian(:,3), labels(obj));
+h = figure('Visible', visible);
+if opt.Project2D,
+    if opt.Labels,
+        electrodes = 'labels';
+    else
+        electrodes = 'on';
+    end    
+    topoplot([], eeglab(obj), 'whitebk', 'on', ...
+        'electrodes', electrodes);
+    
+    % Make the labels smaller
+    if opt.Labels && obj.NbSensors > 64,
+        hT = findobj(h, 'type', 'text');
+        baseFontSize = get(hT(1), 'FontSize');
+        for i = 1:numel(hT)
+            set(hT, 'FontSize', floor(baseFontSize*0.7));
+        end
+    end     
+else
+    scatter3(obj.Cartesian(:,1), obj.Cartesian(:,2), obj.Cartesian(:,3), varargin{:});
+    
+    axis equal;
+    set(gca, 'visible', 'off');
+    set(gcf, 'color', 'white');
+    
+    if opt.Labels,
+        text(obj.Cartesian(:,1), obj.Cartesian(:,2), obj.Cartesian(:,3), labels(obj));
+    end
 end
 
 end

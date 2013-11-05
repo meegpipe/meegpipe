@@ -47,7 +47,7 @@ cfg = [cfg(:);varargin(:)];
 [~, opt] = process_arguments(opt, cfg);
 
 count = 0;
-if opt.ParseDisp,   
+if opt.ParseDisp,       
     myTable = parse_disp(obj); 
     count = count + fprintf(fid, myTable);
 end

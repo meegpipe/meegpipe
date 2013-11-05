@@ -190,7 +190,7 @@ classdef event < goo.abstract_setget & ...
         
         str = event2str(ev);
         
-        count = fprintf(fid, ev);
+        count = fprintf(fid, ev, varargin);
       
         
         % Consistency checks have been moved here in order to allow for

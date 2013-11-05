@@ -51,6 +51,9 @@ classdef sensors
         struct = fieldtrip(obj);
         struct = eeglab(obj);
         
+        % In order to be able to embed the sensors in the HTML reports
+        count   = fprintf(fid, obj, varargin);
+        
     end
     
     

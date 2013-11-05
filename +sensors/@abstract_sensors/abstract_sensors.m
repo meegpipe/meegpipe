@@ -1,12 +1,7 @@
 classdef abstract_sensors < sensors.sensors & goo.abstract_setget
     % ABSTRACT_SENSORS - Common methods accross sensors.sensorsclasses
-    %
-    %
-    %
-    % See also: sensors.
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+
+   
     % Default implementations
     methods
         
@@ -81,6 +76,8 @@ classdef abstract_sensors < sensors.sensors & goo.abstract_setget
         % Conversion to other formats
         struct = fieldtrip(obj);
         struct = eeglab(obj);
+        
+        count = fprintf(fid, obj, varargin);
         
         
     end
