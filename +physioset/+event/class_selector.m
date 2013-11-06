@@ -7,18 +7,17 @@ classdef class_selector < physioset.event.abstract_selector
     % See also: event, physioset, selector, physioset.event.std
     
     
-    % PUBLIC INTERFACE ....................................................
     properties
         
-        EventClass  = {};
-        EventType   = {};
+        Class  = {};
+        Type   = {};
         Negated     = false;
         
     end
     
     methods
         
-        function obj = set.EventClass(obj, value)
+        function obj = set.Class(obj, value)
             
             import exceptions.*
             
@@ -37,16 +36,16 @@ classdef class_selector < physioset.event.abstract_selector
             
             if ~all(cellfun(@(x) exist(x, 'class'), fullClassName)),
                 
-                throw(InvalidPropValue('EventClass', ...
+                throw(InvalidPropValue('Class', ...
                     'Must be a string/cell array of valid event name(s)'));
                 
             end
             
-            obj.EventClass = value;
+            obj.Class = value;
             
         end
         
-        function obj = set.EventType(obj, value)
+        function obj = set.Type(obj, value)
             
             import exceptions.*;
             import misc.join;
@@ -57,11 +56,11 @@ classdef class_selector < physioset.event.abstract_selector
             isString = cellfun(@(x) misc.isstring(x), value);
             
             if ~all(isString),
-                throw(InvalidPropValue('EventType', ...
+                throw(InvalidPropValue('Type', ...
                     'Must be a cell array of strings'));
             end
             
-            obj.EventType = value;
+            obj.Type = value;
             
                
             if isempty(obj.Name),
@@ -103,9 +102,9 @@ classdef class_selector < physioset.event.abstract_selector
             
             selected = true(size(evArray));
             
-            if ~isempty(obj.EventClass),
+            if ~isempty(obj.Class),
                 fullClassName = cellfun(@(x) ['physioset.event.std.' x], ...
-                    obj.EventClass, 'UniformOutput', false);
+                    obj.Class, 'UniformOutput', false);
                 
                 af = @(x) goo.pkgisa(x, fullClassName);
                 
@@ -113,15 +112,15 @@ classdef class_selector < physioset.event.abstract_selector
             end
             
             
-            if isempty(obj.EventType),                
+            if isempty(obj.Type),                
                 
                 thisSelected = true(size(selected));
                 
             else
                 
                 thisSelected = false(size(selected));
-                for i = 1:numel(obj.EventType),
-                    regex = obj.EventType{i};
+                for i = 1:numel(obj.Type),
+                    regex = obj.Type{i};
                     af = @(x) ~isempty(regexp(get(x, 'Type'), regex, 'once'));
                     
                     thisSelected = thisSelected | arrayfun(af, evArray);
@@ -159,8 +158,8 @@ classdef class_selector < physioset.event.abstract_selector
             
             [~, opt] = process_arguments(opt, varargin);
             
-            obj.EventClass = opt.Class;
-            obj.EventType  = opt.Type;
+            obj.Class = opt.Class;
+            obj.Type  = opt.Type;
          
         end
         
