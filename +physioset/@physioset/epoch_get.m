@@ -34,6 +34,15 @@ import physioset.event.std.trial_begin;
 
 if nargin < 3 || isempty(base), base = false; end
 
+if isempty(trialEv),
+    y           = [];
+    evNew       = [];
+    samplIdx    = [];
+    evOrig      = [];
+    trialEv     = [];
+    return;
+end
+
 dur = unique(get_duration(trialEv));
 
 off = get_offset(trialEv);
@@ -48,7 +57,7 @@ pos = get_sample(trialEv);
 try
 outOfRange = (pos + off) < 1 | (pos + off + dur -1) > size(x,2);
 catch ME
-    keyboard;
+    caca = 5;
 end
     
 trialEv(outOfRange) = [];
