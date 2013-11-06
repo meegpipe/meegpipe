@@ -12,7 +12,7 @@ count = fprintf@sensors.abstract_sensors(fid, obj, varargin);
 h = plot(obj, 'Labels', true, 'Project2D', true, 'Visible', false);
 
 if isempty(h),    
-    count = fprintf(fid, 'Missing sensor coordinates\n\n');
+    count = fprintf(fid, ;
     return;
 end
 

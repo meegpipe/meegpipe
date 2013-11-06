@@ -14,6 +14,12 @@ function h = plot(obj, varargin)
 import misc.split_arguments;
 import misc.process_arguments;
 
+cartesian = obj.Cartesian(~any(isnan(obj.Cartesian')), :);
+if isempty(cartesian),
+    h = [];
+    % Nothing to plot
+    return;
+end
 
 [args1, varargin] = ...
     split_arguments({'Labels', 'Project2D', 'Visible'}, varargin);
@@ -52,14 +58,14 @@ if opt.Project2D,
         end
     end     
 else
-    scatter3(obj.Cartesian(:,1), obj.Cartesian(:,2), obj.Cartesian(:,3), varargin{:});
+    scatter3(obj.Cartesian(:,1), cartesian(:,2), cartesian(:,3), varargin{:});
     
     axis equal;
     set(gca, 'visible', 'off');
     set(gcf, 'color', 'white');
     
     if opt.Labels,
-        text(obj.Cartesian(:,1), obj.Cartesian(:,2), obj.Cartesian(:,3), labels(obj));
+        text(cartesian(:,1), cartesian(:,2), cartesian(:,3), labels(obj));
     end
 end
 
