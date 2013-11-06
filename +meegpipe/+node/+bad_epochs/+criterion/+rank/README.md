@@ -62,3 +62,32 @@ __Class:__ `numeric` scalar or `function_handle`
 __Default:__ `@(x) median(x)+10*mad(x)`
 
 The upper rank value threshold above which an epoch will be rejected.
+
+
+### `RankPlotStats`
+
+__Class:__ `mjava.hash` or `[]`
+
+__Default:__ `meegpipe.node.bad_epochs.criterion.rank.default_plot_stats`
+
+A dictionary containing various statistics to be plotted together with the 
+epoch statistic in the generated HTML report. For instance, you may create
+the following `bad_epochs` node:
+
+````
+import meegpipe.node.*;
+import meegpipe.node.bad_epochs.criterion.*;
+
+myStats = mjava.hash;    % Initialize the dictionary of statistics
+myStats('5%')         = @(x) prctile(x, 5);
+myStats('95%')        = @(x) prctile(x, 95);
+myStats('median')     = @(x) median(x);
+myStats('mean')       = @(x) mean(x);
+myStats('median-mad') = @(x) median(x) - mad(x);
+myStats('median+mad') = @(x) median(x) + mad(x);
+
+myCrit = stat.new('RankPlotStats', myStats);
+
+myNode = bad_epochs.new('Criterion', myCrit);
+
+````
