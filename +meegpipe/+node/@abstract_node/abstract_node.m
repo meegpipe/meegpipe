@@ -447,7 +447,7 @@ classdef abstract_node < ...
             
             props = abstract_node.construction_keys;
             
-            if isa(varargin{1}, 'meegpipe.node.node'),
+            if nargin > 0 && isa(varargin{1}, 'meegpipe.node.node'),
                 %% Copy constructor
                 
                 objO  = varargin{1};
