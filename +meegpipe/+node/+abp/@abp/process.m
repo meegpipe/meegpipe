@@ -37,6 +37,7 @@ formatStr = [formatStr(1:end-1) '\n'];
 fprintf(fid, formatStr, featNames{:});
 
 formatStr = repmat('%5.3f,', 1, numel(featNames));
+formatStr(end) = [];
 
 fprintf(fid, formatStr, featVals);
 
