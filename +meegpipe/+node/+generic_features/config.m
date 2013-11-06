@@ -30,8 +30,7 @@ classdef config < meegpipe.node.abstract_config
                 
             elseif ~isempty(obj.SecondLevel)
                 
-                if ~all(size(obj.FeatureNames) == ...
-                        [numel(obj.FirstLevel) numel(obj.SecondLevel)]),
+                if numel(obj.FeatureNames) ~= numel(obj.SecondLevel),
                     
                     throw(Inconsistent(sprintf([...
                         'Property FeatureNames must have dimensions ' ...
