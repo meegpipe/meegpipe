@@ -18,12 +18,8 @@ if ~ispset(a),
     b = tmp;
 end
 
-if a.NbChunks > 1,
-    y = copy(a);
-    y.Writable = true;
-else
-    y = nan(size(a,1),size(a,2),a.Precision);
-end
+y = a;
+
 for i = 1:a.NbChunks
     [index, dataa] = get_chunk(a, i);
     if ispset(b),
