@@ -9,13 +9,6 @@ dataNew = [];
 
 operator = get_config(obj, 'Operator');
 
-if verbose,
-    
-    [~, fname] = fileparts(data.DataFile);
-    fprintf([verboseLabel 'Applying operator %s on ''%s''...\n\n'], ...
-        char(operator), fname);
-    
-end
 
 if do_reporting(obj),
     
@@ -43,7 +36,18 @@ if do_reporting(obj),
     
 end
 
+
+if verbose,
+    
+    [~, fname] = fileparts(data.DataFile);
+    fprintf([verboseLabel 'Applying operator %s on ''%s''...'], ...
+        char(operator), fname);
+    
+end
+
 operator(data);
+
+if verbose, fprintf('[done]\n\n'); end
 
 if do_reporting(obj),
     
@@ -68,9 +72,6 @@ if do_reporting(obj),
     end
     
 end
-
-
-if verbose, fprintf('[done]\n\n'); end
 
 
 
