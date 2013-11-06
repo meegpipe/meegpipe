@@ -75,7 +75,9 @@ rejIdx = find(selected);
 [~, ~, samplIdx] = epoch_get(data, evBad);
 
 if ~isempty(rep),
-   rank.generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank);
+   rankStats = get_config(obj, 'RankPlotStats');
+   rank.generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank, ...
+       rankStats);
 end
 
 end

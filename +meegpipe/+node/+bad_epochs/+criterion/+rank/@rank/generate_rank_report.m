@@ -1,4 +1,4 @@
-function generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank)
+function generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank, rankStats)
 
 import meegpipe.node.bad_epochs.criterion.rank.rank;
 import inkscape.svg2png;
@@ -19,7 +19,7 @@ if verbose,
         'Plotting rank values across channels...']);
 end
 
-rank.make_rank_plots(rankIndex, rejIdx, minRank, maxRank);
+hFig = rank.make_rank_plots(rankIndex, rejIdx, minRank, maxRank, rankStats); %#ok<NASGU>
 
 % Print to .svg and .png format
 fileName = catfile(get_rootpath(rep), 'epoch_ranks.svg');
@@ -29,7 +29,7 @@ caption = sprintf('Rejection criterion values across epochs');
 
 % IMPORTANT: Print to png AFTER printing to svg. For some reason, printing
 % to .png during terminal mode emulation screws the figures looks!
-evalc('plot2svg(fileName, gcf);');
+evalc('plot2svg(fileName, hFig(1));');
 myGallery = add_figure(myGallery, fileName, caption);
 
 svg2png(fileName);

@@ -5,8 +5,8 @@ classdef rank < meegpipe.node.bad_epochs.criterion.abstract_criterion
     
 
     methods (Static, Access = private)
-       generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank); 
-       hFig = make_rank_plots(rankIndex, rejIdx, minRank, maxRank)
+       generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank, stats); 
+       hFig = make_rank_plots(rankIndex, rejIdx, minRank, maxRank, stats)
     end
    
     % criterion interface
