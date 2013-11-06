@@ -9,7 +9,7 @@ import misc.ispset;
 
 % Check data dimensions
 if ~all(size(a)==size(b)) && ~((prod(size(a))==1) || prod(size(b))==1), %#ok<PSIZE>
-    error('pset.pset:times:dimensionMismatch', 'Data dimensions do not match.');
+    error('times:dimensionMismatch', 'Data dimensions do not match.');
 end
 
 if ~ispset(a),
@@ -40,9 +40,9 @@ for i = 1:a.NbChunks
         end
     end
     if a.Transposed,
-        s.subs = {index, 1:a.NbDims};
+        s.subs = {index, 1:nb_dim(a)};
     else
-        s.subs = {1:a.NbDims, index};
+        s.subs = {1:nb_dim(a), index};
     end
     s.type = '()';
     y = subsasgn(y, s, dataa .* datab);
