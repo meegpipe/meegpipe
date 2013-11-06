@@ -12,14 +12,6 @@ Create a `bad_channels` node that will reject all channels whose
 variance is not within 20 median absolute deviations of the median
 channel variance:
 
-````matlab
-import meegpipe.node.bad_channels.*;
-myCriterion = criterion.var.config('MADs', 20);
-myConfig    = config('Criterion', myCriterion);
-myNode      = bad_channels(myConfig);
-````
-
-The syntax above is completely equivalent to the (preferred) syntax below:
 
 ````matlab
 import meegpipe.node.bad_channels.*;

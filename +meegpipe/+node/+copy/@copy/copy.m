@@ -57,8 +57,7 @@ classdef copy < meegpipe.node.abstract_node
         end
         
     end
-    
-    %% PUBLIC INTERFACE ...................................................
+   
     methods
         
         % required by parent meegpipe.node.abstract_node

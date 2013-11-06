@@ -15,20 +15,6 @@ import meegpipe.node.*;
 myRegrFilter = filter.mlag_regr('Order', 5);
 myMeasSel    = pset.selector.sensor_idx(1:5);
 myRegrSel    = pset.selector.sensor_idx(6:7);
-myConfig     = config('Filter',      myRegrFilter, ...
-                      'Measurement', myMeasSel, ...
-                      'Regressor',   myRegrSel);
-myNode       = aregr.new(myConfig);
-````
-
-The following syntax is completely equivalent, and preferable for being more
-concise:
-
-````matlab
-import meegpipe.node.*;
-myRegrFilter = filter.mlag_regr('Order', 5);
-myMeasSel    = pset.selector.sensor_idx(1:5);
-myRegrSel    = pset.selector.sensor_idx(6:7);
 myNode       = aregr.new('Filter',      myRegrFilter, ...
                          'Measurement', myMeasSel, ...
                          'Regressor',   myRegrSel);

@@ -29,7 +29,8 @@ classdef physioset < ...
         TimeOrig;
         SensorsHistory;          % To keep track of proj/bproj
         RerefMatrix;
-        MetaMapper;        
+        MetaMapper;
+        EventMapper;
         
     end
     
@@ -43,7 +44,7 @@ classdef physioset < ...
         DimInvMap;
         StartTime;
         StartDate;
-      
+        
     end
     
     % Get methods for the dependent properties
@@ -121,7 +122,19 @@ classdef physioset < ...
             end
             
         end
- 
+        
+        % Add events to the physioset
+        function apply_event_mapper(obj)
+            
+            if isempty(obj.EventMapper), return; end
+            
+            evs = obj.EventMapper(obj);
+            if isempty(evs), return; end
+            
+            add_event(obj, evs);
+            
+        end
+        
     end
     
     methods (Access = private, Static)
@@ -353,11 +366,11 @@ classdef physioset < ...
         function obj = reref(obj, W)
             if isa(W, 'function_handle'),
                 W = W(obj);
-            end           
+            end
             tmpPset = W*obj.PointSet;
             for i = 1:size(tmpPset)
                 obj.PointSet(i,:) = tmpPset(i,:);
-            end            
+            end
             obj.RerefMatrix = W;
         end
         
@@ -460,7 +473,7 @@ classdef physioset < ...
         sensObj = retrieve_sensors_history(obj, idx);
         
         function bool = is_temporary(obj)
-           bool = is_temporary(obj.PointSet);
+            bool = is_temporary(obj.PointSet);
         end
         
     end
@@ -484,7 +497,7 @@ classdef physioset < ...
         [sTime, absTime]   = get_sampling_time(obj, idx);
         
         function absTime = get_abs_sampling_time(obj, idx)
-           [~, absTime] = get_sampling_time(obj, idx);  
+            [~, absTime] = get_sampling_time(obj, idx);
         end
         
         value              = get_method_config(obj, varargin);
@@ -777,6 +790,7 @@ classdef physioset < ...
             opt.info          = struct;
             opt.header        = [];
             opt.metamapper    = [];
+            opt.eventmapper   = [];
             
             [~, opt] = process_arguments(opt, varargin);
             
@@ -790,7 +804,7 @@ classdef physioset < ...
                     0:1/opt.samplingrate:obj.PointSet.NbPoints/...
                     opt.samplingrate - 1/opt.samplingrate;
                 
-            end            
+            end
             
             % physioset name
             if isempty(opt.name),
@@ -812,6 +826,7 @@ classdef physioset < ...
             obj.EqWeightsOrig   = opt.eqweightsorig;
             obj.PhysDimPrefixOrig = opt.physdimprefixorig;
             obj.MetaMapper      = opt.metamapper;
+            obj.EventMapper     = opt.eventmapper;
             
             obj                 = set_name(obj, opt.name);
             
@@ -819,10 +834,12 @@ classdef physioset < ...
             if ~isempty(opt.header),
                 opt.info.header = opt.header;
             end
-         
+            
             obj = set_meta(obj, opt.info);
             
             apply_meta_mapper(obj);
+            
+            apply_event_mapper(obj);
             
             if obj.NbDims > 0,
                 if isempty(opt.badchannel),

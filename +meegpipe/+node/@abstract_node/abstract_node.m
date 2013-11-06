@@ -59,7 +59,7 @@ classdef abstract_node < ...
     %% Private properties
     properties
         Name           = '';
-        DataSelector   = meegpipe.node.globals.get.DataSelector;
+        DataSelector   = pset.selector.all_data;
         Parallelize    = meegpipe.node.globals.get.Parallelize;
         Queue          = meegpipe.node.globals.get.Queue;
         Save           = meegpipe.node.globals.get.Save;
@@ -447,7 +447,7 @@ classdef abstract_node < ...
             
             props = abstract_node.construction_keys;
             
-            if nargin == 1 && isa(varargin{1}, 'meegpipe.node.node'),
+            if isa(varargin{1}, 'meegpipe.node.node'),
                 %% Copy constructor
                 
                 objO  = varargin{1};

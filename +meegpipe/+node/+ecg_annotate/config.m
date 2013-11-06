@@ -5,7 +5,8 @@ classdef config < meegpipe.node.abstract_config
     
     properties        
        
-        EventSelector  = [];        
+        EventSelector  = []; 
+        RPeakEventSelector = physioset.event.class_selector('Class', 'qrs');
         
     end
     
@@ -27,11 +28,29 @@ classdef config < meegpipe.node.abstract_config
             
             if ~iscell(value) || ~all(cellfun(@(x) ...
                     isa(x, 'physioset.event.selector'), value)),
-                throw(InvalidPropValue('TargetSelector', ...
+                throw(InvalidPropValue('EventSelector', ...
                     'Must be a cell array of event selectors'));
             end
             
             obj.EventSelector = value;          
+            
+        end
+        
+        function obj = set.RPeakEventSelector(obj, value)
+           
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.RPeakEventSelector = [];
+                return;
+            end
+            
+            if ~isa(value, 'physioset.event.selector'),
+                throw(InvalidPropValue('RPeakEventSelector', ...
+                    'Must be a cell array of event selectors'));
+            end
+            
+            obj.RPeakEventSelector = value;          
             
         end
         

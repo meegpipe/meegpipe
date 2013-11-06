@@ -19,9 +19,6 @@ classdef bss_regr < meegpipe.node.abstract_node
     methods
         % meegpipe.node.node interface
         [data, dataNew] = process(obj, data, varargin);
-        
-        
-        
     end
     
     methods (Access = protected)
@@ -40,17 +37,16 @@ classdef bss_regr < meegpipe.node.abstract_node
             
             import exceptions.*;
             import report.plotter.io;
+            import misc.prepend_varargin;
             
+            dataSel = pset.selector.good_data;
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);            
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             
             if nargin > 0 && ~ischar(varargin{1}),
                 % copy construction: keep everything like it is
                 return;
-            end
-            
-            if isempty(get_data_selector(obj));
-                set_data_selector(obj, pset.selector.good_data);
             end
             
             if isempty(get_name(obj)),

@@ -19,20 +19,13 @@ classdef chopper < meegpipe.node.abstract_node
     %   meegpipe.node.detrend.config.
     %
     % See also: config, abstract_node
-    
-    % Documentation: class_chopper.txt
-    % Description: Chops data into various analysis windows
-    
-    %% IMPLEMENTATION .....................................................
-    
+ 
     methods (Static, Access = private)
         
         generate_index_report(rep, data, idx, bndry);
         
     end
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+
     % from meegpipe.node.abstract_node
     methods
         [data, dataNew] = process(obj, data, varargin)
@@ -54,18 +47,17 @@ classdef chopper < meegpipe.node.abstract_node
     methods
         
         function obj = chopper(varargin)
+            import misc.prepend_varargin;
             
+            dataSel = pset.selector.good_data;
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);  
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             if nargin > 0 && ~ischar(varargin{1}),
                 % copy construction: keep everything like it is
                 return;
             end
-            
-            if isempty(get_data_selector(obj));
-                set_data_selector(obj, pset.selector.good_data);
-            end
-            
+           
             if isempty(get_name(obj)),
                 obj = set_name(obj, 'chopper');
             end

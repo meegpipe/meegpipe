@@ -29,18 +29,17 @@ classdef reref < meegpipe.node.abstract_node
             import pset.selector.sensor_class;
             import pset.selector.good_data;
             import pset.selector.cascade;
+            import misc.prepend_varargin;
             
+            dataSel = sensor_class('Type', 'EEG');
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);       
+  
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             % Copy constructor (private properties only)
             if nargin == 1 && isa(varargin{1}, 'meegpipe.node.reref.reref'),              
                 return;
-            end
-            
-            if isempty(get_data_selector(obj));
-                dataSel = sensor_class('Type', 'EEG');
-                set_data_selector(obj, dataSel);
-            end
+            end            
             
             if isempty(get_name(obj)),
                 obj = set_name(obj, 'reref');

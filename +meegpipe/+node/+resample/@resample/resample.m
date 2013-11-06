@@ -48,13 +48,7 @@ classdef resample < meegpipe.node.abstract_node
                 % copy construction: keep everything like it is
                 return;
             end
-            
-            if isempty(get_data_selector(obj));
-                % If you do this then the bad channels will be gone after
-                % the resample node. You don't usually want to do this!
-                % set_data_selector(obj, pset.selector.good_data);
-            end
-            
+          
             if isempty(get_name(obj)),
                 obj = set_name(obj, 'resample');
             end

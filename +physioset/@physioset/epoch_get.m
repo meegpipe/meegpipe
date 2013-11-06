@@ -45,7 +45,12 @@ end
 
 % Reject trials that are out of range
 pos = get_sample(trialEv);
+try
 outOfRange = (pos + off) < 1 | (pos + off + dur -1) > size(x,2);
+catch ME
+    keyboard;
+end
+    
 trialEv(outOfRange) = [];
 pos(outOfRange)     = [];
 off(outOfRange)     = [];

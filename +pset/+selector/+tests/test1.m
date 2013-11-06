@@ -11,7 +11,7 @@ import datahash.DataHash;
 
 MEh     = [];
 
-initialize(13);
+initialize(14);
 
 %% Create a new session
 try
@@ -41,6 +41,7 @@ try
     good_data;
     sensor_group_idx;
     sensor_idx;
+    all_data;
     ok(true, name);
     
 catch ME
@@ -331,6 +332,27 @@ try
     
     % Must be OK
     ok(all(size(data) == [3 800]), name);
+    
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% all_data
+try
+    
+    name = 'all_data';
+    
+    data = import(physioset.import.matrix, rand(3,1000));
+    
+    origSize = size(data);
+    select(all_data, data);
+    
+    % Must be OK
+    ok(all(size(data) == origSize), name);
     
     
 catch ME

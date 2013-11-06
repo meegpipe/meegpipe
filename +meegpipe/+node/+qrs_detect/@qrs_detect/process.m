@@ -28,14 +28,17 @@ if fid.Valid,
     fprintf(fid, '%d\n', sample);
 else
     warning('qrs_detect:LogWrite', ...
-        'I could not write to log file ''%s''', logFile);    
+        'I could not write to log file ''%s''', logFile);
 end
 
 event = get_config(obj, 'Event');
 
-evArray = repmat(event, 1, numel(sample));
-
-evArray = set_sample(evArray, sample);
+if isa(event, 'function_handle'),
+    evArray = event(sample);
+else
+    evArray = repmat(event, 1, numel(sample));
+    evArray = set_sample(evArray, sample);
+end
 
 add_event(data, evArray);
 
@@ -49,7 +52,7 @@ if do_reporting(obj),
     if is_verbose(obj),
         fprintf([verboseLabel 'Generating report...']);
     end
-
+    
     rep = get_report(obj);
     print_title(rep, 'QRS detection report', get_level(rep)+1);
     
@@ -63,9 +66,9 @@ if do_reporting(obj),
     generate(plotterRep, data);
     
     if is_verbose(obj),
-       fprintf('[done]\n\n'); 
+        fprintf('[done]\n\n');
     end
-
+    
 end
 
 

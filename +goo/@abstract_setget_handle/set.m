@@ -19,7 +19,7 @@ end
 for i = 1:2:numel(varargin)
     if numel(varargin) < i+1,
         error('No value provided for %dth argument: %s', i, ...
-            any2str(varargin{i}, 20));
+            any2str(varargin{i}, 20));        
     end
     thisValue = varargin{i+1};
     obj.(varargin{i}) = thisValue;

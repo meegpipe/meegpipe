@@ -26,15 +26,11 @@ classdef ev_features < meegpipe.node.abstract_node
     % Constructor
     methods
         
-        function obj = ev_features(varargin)
+        function obj = ev_features(varargin)           
            
-            % IMPORTANT:
-            % Class abstract_node implements copy construction for all its
-            % sub-classes!
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
-            if nargin > 0 && ~ischar(varargin{1}),
-                % copy construction: keep everything like it is
+            if nargin > 0 && ~ischar(varargin{1}),               
                 return;
             end
             

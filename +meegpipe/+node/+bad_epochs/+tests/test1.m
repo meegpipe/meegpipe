@@ -14,7 +14,7 @@ import physioset.event.class_selector;
 
 MEh     = [];
 
-initialize(11);
+initialize(12);
 
 %% Create a new session
 try
@@ -123,27 +123,6 @@ catch ME
     
 end
 
-%% minmax
-try
-    
-    name = 'minmax';
-
-    data = my_sample_data();
-     
-    mySel  = class_selector('Type', 'myevent');
-    myNode = minmax(-10, 10, 'EventSelector', mySel);
-    
-    run(myNode, data);
-    
-    ok(numel(find(is_bad_sample(data))) == 900, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
 %% sliding_window_var
 try
     
@@ -157,6 +136,49 @@ try
     
     select(pset.selector.good_data, data);
     ok(max(data(1,:)) < 5 && min(data(1,:)) > -5, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% sliding_window_var with Min threshold
+try
+    
+    name = 'sliding_window_var with Min threshold';
+
+    data = my_sample_data();
+     
+    myNode = sliding_window_var(0.5, 1, ...
+        'Min', @(meanVar) prctile(meanVar, 5));
+    
+    run(myNode, data);
+    
+    select(pset.selector.good_data, data);
+    ok(max(data(1,:)) < 5 && min(data(1,:)) > -5, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% minmax
+try
+    
+    name = 'minmax';
+
+    data = my_sample_data();
+     
+    mySel  = class_selector('Type', 'myevent');
+    myNode = minmax(-10, 10, 'EventSelector', mySel);
+    
+    run(myNode, data);
+    
+    ok(numel(find(is_bad_sample(data))) == 900, name);
     
 catch ME
     

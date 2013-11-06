@@ -28,7 +28,11 @@ end
 
 
 propNameIdx = 1:2:numel(varargin);
+try
 isSelected = cellfun(@(x) ismember(x, lower(props)), lower(varargin(propNameIdx)));
+catch ME
+    keyboard
+end
 
 selIdx = propNameIdx(isSelected);
 selIdx = sort([selIdx selIdx + 1], 'ascend');

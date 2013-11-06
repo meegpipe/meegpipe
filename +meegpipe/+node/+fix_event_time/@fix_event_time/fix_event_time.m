@@ -46,14 +46,16 @@ classdef fix_event_time < meegpipe.node.abstract_node
         function obj = fix_event_time(varargin)
 
             import pset.selector.good_data;
-
-            obj = obj@meegpipe.node.abstract_node(varargin{:});
-
-            if isempty(get_data_selector(obj));
-                dataSel = good_data;
-                set_data_selector(obj, dataSel);
-            end
+            import misc.prepend_varargin;
             
+            varargin = prepend_varargin(varargin, 'DataSelector', good_data);  
+            obj = obj@meegpipe.node.abstract_node(varargin{:});
+            
+            if nargin > 0 && ~ischar(varargin{1}),
+                % copy construction: keep everything like it is
+                return;
+            end
+
             if isempty(get_name(obj)),
                 obj = set_name(obj, 'fix_event_time');
             end

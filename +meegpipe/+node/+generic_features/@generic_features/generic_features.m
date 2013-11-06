@@ -2,7 +2,7 @@ classdef generic_features < meegpipe.node.abstract_node
     % generic_features - Extract pupil diameter features
     %
     % See: <a href="matlab:misc.md_help('meegpipe.node.generic_features')">misc.md_help(''meegpipe.node.generic_features'')</a>
-
+    
     
     %% PUBLIC INTERFACE ...................................................
     
@@ -21,16 +21,18 @@ classdef generic_features < meegpipe.node.abstract_node
             
         end
         
-    end    
-   
+    end
+    
     % Constructor
     methods
         
         function obj = generic_features(varargin)
-           
-            % IMPORTANT:
-            % Class abstract_node implements copy construction for all its
-            % sub-classes!
+            
+            import misc.prepend_varargin;
+            
+            dataSel = pset.selector.good_data;
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);  
+        
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             if nargin > 0 && ~ischar(varargin{1}),
@@ -41,7 +43,7 @@ classdef generic_features < meegpipe.node.abstract_node
             if isempty(get_name(obj)),
                 obj = set_name(obj, 'generic_features');
             end
-           
+            
         end
         
     end

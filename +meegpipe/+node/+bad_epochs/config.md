@@ -9,13 +9,6 @@ necessary for building a valid [bad_epochs][bad_epochs] node.
 
 ## Usage synopsis
 
-````matlab
-import meegpipe.node.*;
-myCfg = bad_epochs.config('key', value, ...)
-myNode = bad_epochs.new(myCfg);
-````
-
-The syntax above is completely equivalent to the (preferred) syntax below:
 
 ````matlab
 import meegpipe.node.*;

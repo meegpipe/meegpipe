@@ -20,17 +20,12 @@ classdef obs < meegpipe.node.abstract_node
     %
     % See also: config, abstract_node
     
-    % Documentation: class_obs.txt
-    % Description: Optimal Basis Set for BCG correction
-    
-    %% IMPLEMENTATION
+
     properties (SetAccess = private, GetAccess = private)
         ERPMean_;     % The mean BCG ERP
         ERPVar_;      % The variance of the BCG ERP
     end
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+   
     % from meegpipe.node.abstract_node
     methods
         [data, dataNew] = process(obj, data, varargin)
@@ -55,8 +50,7 @@ classdef obs < meegpipe.node.abstract_node
             
             erpM = obj.ERPMean_;
             erpV = obj.ERPVar_;
-            
-            
+
         end
         
         
@@ -71,8 +65,10 @@ classdef obs < meegpipe.node.abstract_node
             import pset.selector.good_data;
             import pset.selector.sensor_class;
             import report.plotter.io;
+            import misc.prepend_varargin;
             
-            
+            dataSel = cascade(good_data, sensor_class('Type', 'EEG'));
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);       
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             if nargin > 0 && isa(varargin{1}, 'meegpipe.node.obs.obs'),
@@ -80,11 +76,6 @@ classdef obs < meegpipe.node.abstract_node
                 obj.ERPMean_ = varargin{1}.ERPMean_;
                 obj.ERPVar_  = varargin{1}.ERPVar_;
                 return;
-            end
-            
-            if isempty(get_data_selector(obj));
-                dataSel = cascade(good_data, sensor_class('Type', 'EEG'));
-                set_data_selector(obj, dataSel);
             end
             
             if isempty(get_name(obj)),

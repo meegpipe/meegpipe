@@ -7,17 +7,13 @@ classdef abstract_physioset_import < ...
     % See: <a href="matlab:misc.md_help('physioset.import.abstract_physioset_import')">physioset.import.abstract_physioset_import(''physioset.import.abstract_physioset_import'')</a>
     
     
-    
-    %% Private stuff
     properties (SetAccess = private, GetAccess = private)
         
         StartTime_;
         
     end
     
-    
-    %% PROTECTED INTERFACE ................................................
-    
+  
     methods (Access = protected)
         
         function args = construction_args_pset(obj)
@@ -36,14 +32,14 @@ classdef abstract_physioset_import < ...
         % Might be overloaded by children classes
         function args = construction_args_physioset(obj)
             
-            args = {'MetaMapper', obj.MetaMapper};
+            args = {...
+                'MetaMapper', obj.MetaMapper, ...
+                'EventMapper', obj.EventMapper};
             
         end        
       
     end
-    
-    
-    %% PUBLIC INTERFACE ...................................................
+  
     properties
         
         Precision    = meegpipe.get_config('pset', 'precision');
@@ -57,7 +53,8 @@ classdef abstract_physioset_import < ...
         FileNaming   = 'inherit';
         Sensors      = [];
         EventMapping = mjava.hash({'TREV', 'tr', 'TR\s.+', 'tr'});
-        MetaMapper  = @(data) regexp(get_name(data), '(?<subject_id>0+\d+)_.+', 'names');
+        MetaMapper   = @(data) regexp(get_name(data), '(?<subject_id>0+\d+)_.+', 'names');
+        EventMapper  = [];
         
     end
     

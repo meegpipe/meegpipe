@@ -11,10 +11,7 @@ classdef erp < meegpipe.node.abstract_node
         ERPSensorsImgIdx;
         
     end
-    
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+  
     % from meegpipe.node.abstract_node
     methods
         [data, dataNew] = process(obj, data, varargin)
@@ -63,10 +60,11 @@ classdef erp < meegpipe.node.abstract_node
             import pset.selector.cascade;
             import pset.selector.good_samples;
             import pset.selector.sensor_class;
+            import misc.prepend_varargin;
             
-            % IMPORTANT:
-            % Class abstract_node implements copy construction for all its
-            % sub-classes!
+            dataSel = sensor_class('Type', {'EEG', 'MEG'});
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);  
+            
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             if nargin > 0 && ~ischar(varargin{1}),
@@ -76,17 +74,7 @@ classdef erp < meegpipe.node.abstract_node
             
             if isempty(get_name(obj)),
                 obj = set_name(obj, 'erp');
-            end
-            
-            if isempty(get_data_selector(obj));
-                % Usually a channel interpolation node will precede any ERP
-                % node and thus we don't select only the good channels. 
-                % However, we must discard the bad data samples or
-                % otherwise any bad_epochs node before this node will have
-                % no effect.
-                dataSel = sensor_class('Type', {'EEG', 'MEG'});
-                set_data_selector(obj, cascade(good_samples, dataSel));
-            end            
+            end           
             
         end
         

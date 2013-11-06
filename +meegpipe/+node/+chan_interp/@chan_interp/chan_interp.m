@@ -13,16 +13,13 @@ classdef chan_interp < meegpipe.node.abstract_node
     %
     %
     % See also: config, abstract_node
-
-    
-    %% PUBLIC INTERFACE ...................................................
     
     
     methods
         % meegpipe.node.node interface
-        [data, dataNew] = process(data, varargin);     
+        [data, dataNew] = process(data, varargin);
     end
-
+    
     
     % Constructor
     methods
@@ -32,19 +29,16 @@ classdef chan_interp < meegpipe.node.abstract_node
             import pset.selector.sensor_class;
             import pset.selector.good_data;
             import pset.selector.cascade;
+            import misc.prepend_varargin;
+            
+            dataSel = sensor_class('Class', {'EEG', 'MEG'});
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);  
             
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             if nargin > 0 && ~ischar(varargin{1}),
                 % copy construction: keep everything like it is
                 return;
-            end
-            
-            % Default data selector selects only EEG and MEG channels
-            dataSel = sensor_class('Class', {'EEG', 'MEG'});           
-            
-            if isempty(get_data_selector(obj));                
-                set_data_selector(obj, dataSel);
             end
             
             if isempty(get_name(obj)),

@@ -13,7 +13,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(8);
+initialize(9);
 
 %% Create a new session
 try
@@ -41,6 +41,21 @@ try
     name = 'constructor';
     qrs_detect; 
     ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% constructor with config options
+try
+    
+    name = 'constructor with config options';    
+    myNode = qrs_detect('Event', @(sampl) physioset.event.event(sampl));
+    ev = get_config(myNode, 'Event');    
+    ok(isa(ev(1), 'physioset.event.event'), name);
     
 catch ME
     

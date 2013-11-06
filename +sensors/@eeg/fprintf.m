@@ -4,6 +4,7 @@ import misc.unique_filename;
 import mperl.file.spec.catfile;
 import inkscape.svg2png;
 import misc.fid2fname;
+import plot2svg.plot2svg;
 
 count = fprintf@sensors.abstract_sensors(fid, obj, varargin);
 

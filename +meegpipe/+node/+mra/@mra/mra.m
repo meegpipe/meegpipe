@@ -29,13 +29,17 @@ classdef mra < meegpipe.node.abstract_node
             import pset.selector.cascade;
             import pset.selector.good_data;
             import pset.selector.sensor_class;
+            import misc.prepend_varargin;
+            
+            dataSel = cascade(good_data, ...
+                    sensor_class('Type', {'EEG', 'ECG'}));
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);  
             
             obj = obj@meegpipe.node.abstract_node(varargin{:});
-            
-            if isempty(get_data_selector(obj));
-                dataSel = cascade(good_data, ...
-                    sensor_class('Type', {'EEG', 'ECG'}));
-                set_data_selector(obj, dataSel);
+         
+            if nargin > 0 && ~ischar(varargin{1}),
+                % copy construction: keep everything like it is
+                return;
             end
             
             if isempty(get_name(obj)),

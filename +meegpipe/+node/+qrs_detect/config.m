@@ -10,7 +10,7 @@ classdef config < meegpipe.node.abstract_config
     
     properties
         
-        Event      = physioset.event.std.qrs;
+        Event      = @(sampl) physioset.event.std.qrs(sampl);
         
     end
     
@@ -22,13 +22,30 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.*;
             
             if isempty(value),
-                value = physioset.event.std.qrs;
+                value = @(sampl) physioset.event.std.qrs(sampl);
             end
             
-            if numel(value) ~= 1 || ~isa(value, 'physioset.event.event')
+            if numel(value) ~= 1 || (~isa(value, 'physioset.event.event') ...
+                    && ~isa(value, 'function_handle')),
                 throw(InvalidPropValue('Event', ...
-                    'Must be a physioset.event.event object'));
+                    'Must be an event object or a function_handle'));
             end
+            
+            if isa(value, 'function_handle'),
+                try
+                    toyEv = value(100);
+                    if ~isa(toyEv, 'physioset.event.event'),
+                        throw(InvalidPropValue('Event', ...
+                            ['function_handle %s must evaluate to an ' ...
+                            'event object'], char(value)));
+                    end
+                catch ME
+                    throw(InvalidPropValue('Event', ...
+                            ['function_handle %s must evaluate to an ' ...
+                            'event object'], char(value)));
+                end
+            end
+            
             
             obj.Event = value;
             

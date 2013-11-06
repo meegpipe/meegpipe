@@ -19,14 +19,14 @@ classdef tfilter < meegpipe.node.abstract_node
     %   * All keys accepted by meegpipe.node.tfilter.config
     %
     % See also: config
-
+    
     methods (Static, Access = private)
-       
+        
         gal = generate_filt_plot(rep, idx, data1, data2, samplTime, ...
             gal, showDiff);
         
-    end   
-
+    end
+    
     % meegpipe.node.node interface
     methods
         [data, dataNew] = process(obj, data, varargin)
@@ -35,25 +35,24 @@ classdef tfilter < meegpipe.node.abstract_node
     % Constructor
     methods
         function obj = tfilter(varargin)
+            import misc.prepend_varargin;
             
+            dataSel = pset.selector.good_data;
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);       
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             if nargin > 0 && ~ischar(varargin{1}),
                 % copy construction: keep everything like it is
                 return;
             end
-       
-            if isempty(get_data_selector(obj));               
-                set_data_selector(obj, pset.selector.good_data);
-            end
             
             if isempty(get_name(obj)),
                 filtObj = get_config(obj, 'Filter');
                 if isempty(filtObj),
-                     obj = set_name(obj, 'tfilter');
+                    obj = set_name(obj, 'tfilter');
                 elseif isa(filtObj, 'filter.dfilt') && ...
                         ~isempty(get_name(filtObj)),
-                     obj = set_name(obj, ['tfilter-' get_name(filtObj)]);
+                    obj = set_name(obj, ['tfilter-' get_name(filtObj)]);
                 elseif isa(filtObj, 'function_handle'),
                     % A function_handle of the input data sampling rate
                     tmpObj = filtObj(500);

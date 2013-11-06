@@ -20,11 +20,8 @@ classdef spectra < meegpipe.node.abstract_node
     end
     
     methods (Access = private, Static)
-       name = get_channel_set_name(chanSet); 
+        name = get_channel_set_name(chanSet);
     end
-    
-    
-    %% PUBLIC INTERFACE ...................................................
     
     % from meegpipe.node.abstract_node
     methods
@@ -74,10 +71,11 @@ classdef spectra < meegpipe.node.abstract_node
             import pset.selector.cascade;
             import pset.selector.good_samples;
             import pset.selector.sensor_class;
+            import misc.prepend_varargin;
             
-            % IMPORTANT:
-            % Class abstract_node implements copy construction for all its
-            % sub-classes so don't try to do it here!
+            dataSel = sensor_class('Type', {'EEG', 'MEG'});
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);       
+           
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
             if nargin > 0 && ~ischar(varargin{1}),
@@ -87,16 +85,6 @@ classdef spectra < meegpipe.node.abstract_node
             
             if isempty(get_name(obj)),
                 obj = set_name(obj, 'spectra');
-            end
-            
-            if isempty(get_data_selector(obj));
-                % Usually a channel interpolation node will precede any
-                % spectra node and thus we don't select only the good
-                % channels. However, we must discard the bad data samples or
-                % otherwise any bad_epochs node before this node will have
-                % no effect.
-                dataSel = sensor_class('Type', {'EEG', 'MEG'});
-                set_data_selector(obj, cascade(good_samples, dataSel));
             end
             
         end

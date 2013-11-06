@@ -12,14 +12,6 @@ necessary for building a valid [ecg_annotate][ecg_annotate] node.
 
 ````matlab
 import meegpipe.node.*;
-myConfig = ecg_annotate.config('key', value, ...);
-myNode   = ecg_annotate.new(myConfig);
-````
-
-Altenatively, the following syntax is equivalent and preferable:
-
-````matlab
-import meegpipe.node.*;
 myNode = ecg_annotate.new('key', value, ...);
 ````
 
@@ -72,3 +64,14 @@ name for each experimental condition. This name will be used to identify
 the condition in the generated features table (see the data processing
 report).
 
+### `RPeakEventSelector`
+
+__Class__: `physioset.event.selector`
+
+__Default__: `[]`
+
+
+The event selector that will select the subset of events marking the 
+locations of the R-peaks. If such events are present and can be found by 
+the `RPeakEventSelector` then the `ecg_annotate` node will skip the R-peak
+detection step, which will speed up processing. 

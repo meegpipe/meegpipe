@@ -2,9 +2,9 @@ classdef ecg_annotate < meegpipe.node.abstract_node
     % ecg_annotate - Annotate heartbeats using ECG
     %
     % See: <a href="matlab:misc.md_help('meegpipe.node.ecg_annotate')">misc.md_help(''meegpipe.node.ecg_annotate'')</a>
-        
+    
     properties (SetAccess = private, GetAccess = private)
-       HRVFeatures_; 
+        HRVFeatures_;
     end
     
     methods (Access = private)
@@ -34,19 +34,18 @@ classdef ecg_annotate < meegpipe.node.abstract_node
     methods
         
         function obj = ecg_annotate(varargin)
-
-            import pset.selector.sensor_class;            
+            
+            import pset.selector.sensor_class;
+            import misc.prepend_varargin;
+            
+            dataSel = sensor_class('Type', 'ECG');
+            varargin = prepend_varargin(varargin, 'DataSelector', dataSel);  
             
             obj = obj@meegpipe.node.abstract_node(varargin{:});
-       
+            
             if nargin > 0 && ~ischar(varargin{1}),
                 % copy construction: keep everything like it is
                 return;
-            end
-            
-            if isempty(get_data_selector(obj));
-                dataSel = sensor_class('Type', 'ECG');
-                set_data_selector(obj, dataSel);
             end
             
             if isempty(get_name(obj)),

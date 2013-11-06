@@ -27,16 +27,12 @@ classdef good_data < pset.selector.abstract_selector
     %
     % See also: selector
     
-    %% IMPLEMENTATION
-    
+     
     properties (SetAccess = private, GetAccess = private)
         
         Negated             = false;
         
     end
-    
-    
-    %% PUBLIC INTERFACE ....................................................
     
     % pset.selector.selector interface
     methods

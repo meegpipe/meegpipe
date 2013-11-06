@@ -89,12 +89,22 @@ end
 mat2wfdb(data(:,:)', wfdbFileName, sr, false, 16, {physdim});
 if verbose, fprintf('[done]\n\n'); end
 
-% Detect QRS complexes using FMRIB
-if verbose,
-    fprintf([verboseLabel 'Detecting QRS complexes using FMRIB ...']);
+peaks = [];
+rpeakSelector = get_config(obj, 'RPeakEventSelector');
+if ~isempty(rpeakSelector),
+    qrsEv = select(rpeakSelector, get_event(data));
+    if ~isempty(qrsEv), peaks = get_sample(qrsEv); end
 end
-peaks = my_fmrib_qrsdetect(data(:,:), sr, 1);
-if verbose, fprintf('\n\n'); end
+
+if isempty(peaks),
+    % Detect QRS complexes using FMRIB
+    if verbose,
+        fprintf([verboseLabel 'Could not find QRS events: detecting QRS' ...
+            'complexes using FMRIB ...']);
+    end
+    peaks = my_fmrib_qrsdetect(data(:,:), sr, 1);
+    if verbose, fprintf('\n\n'); end
+end
 
 %% ecgpuwave
 if verbose,

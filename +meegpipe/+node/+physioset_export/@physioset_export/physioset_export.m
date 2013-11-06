@@ -3,12 +3,8 @@ classdef physioset_export < meegpipe.node.abstract_node
     %
     %
     % See also: meegpipe.node
-    
-
-    
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+   
+   
     % meegpipe.node.node interface
     methods
         

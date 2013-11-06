@@ -2,7 +2,9 @@ function [status, MEh] = test1()
 % TEST1 - Tests basic node functionality
 
 import mperl.file.spec.*;
+import meegpipe.node.qrs_detect.qrs_detect;
 import meegpipe.node.ecg_annotate.*;
+import meegpipe.node.pipeline.pipeline;
 import test.simple.*;
 import pset.session;
 import safefid.safefid;
@@ -16,7 +18,7 @@ import physioset.event.class_selector;
 
 MEh     = [];
 
-initialize(8);
+initialize(9);
 
 %% Create a new session
 try
@@ -102,6 +104,43 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% using qrs_detect node
+try
+    
+    name   = 'using qrs_detect node';
+    
+    tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
+    ecg = tmp.ecg;
+    
+    mySensors  = sensors.physiology('Label', 'ECG');
+    myImporter = physioset.import.matrix('Sensors', mySensors);
+    
+    data = import(myImporter, ecg);
+    
+    myNode = pipeline('NodeList', {qrs_detect, ecg_annotate});
+    
+    run(myNode, data);  
+
+    featuresFile = catfile(get_full_dir(myNode, data), 'features.txt');
+    
+    condition = check_features_file(featuresFile, 13, 1);
+    
+    evs = get_event(data);
+    evSel = class_selector('Type', 'N');
+    condition = condition && numel(evs) > 0 && ...
+        numel(select(evSel, evs)) == 241;
+    
+    ok(condition, name);
+    clear data;
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% multiple experimental conditions
 try
