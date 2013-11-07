@@ -11,6 +11,8 @@ classdef config < meegpipe.node.abstract_config
     properties
         
         Event      = @(sampl) physioset.event.std.qrs(sampl);
+        Detector   = @(data) fmrib.my_fmrib_qrsdetect(data(:,:), ...
+            data.SamplingRate, false);
         
     end
     
@@ -48,6 +50,19 @@ classdef config < meegpipe.node.abstract_config
             
             
             obj.Event = value;
+            
+        end
+        
+        function obj = set.Detector(obj, value)
+            
+            import exceptions.InvalidPropValue;
+            
+            if numel(value) ~= 1 || ~isa(value, 'function_handle'),
+                throw(InvalidPropValue('Detector', ...
+                    'Must be a function_handle'));
+            end
+           
+            obj.Detector = value;
             
         end
         

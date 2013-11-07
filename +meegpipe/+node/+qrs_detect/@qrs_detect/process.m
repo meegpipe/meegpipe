@@ -17,7 +17,8 @@ if size(data, 1) > 1,
     error('A single ECG channel is expected');
 end
 
-sample = my_fmrib_qrsdetect(data(:,:), data.SamplingRate, false);
+detector = get_config(obj, 'Detector');
+sample = detector(data(:,:), data.SamplingRate);
 
 logFile = [get_name(data) '_qrs_pos.log'];
 fid = get_log(obj, logFile);
