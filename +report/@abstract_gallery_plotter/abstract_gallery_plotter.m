@@ -3,16 +3,21 @@ classdef abstract_gallery_plotter < ...
         goo.abstract_configurable_handle    & ...
         goo.reportable_handle               & ...
         goo.verbose_handle                  & ...
-        goo.abstract_named_object_handle
+        goo.abstract_named_object_handle    & ...
+        goo.hashable_handle
     
   
-    % goo.reportable interface
+   
     methods
         
-        function str = whatfor(~)
-            
-            str = '';
-            
+        % goo.hashable_handle interface
+        function str = get_hash_code(obj)
+           str = get_hash_code(get_config(obj)); 
+        end
+        
+         % goo.reportable interface
+        function str = whatfor(~)            
+            str = '';            
         end
         
         % Children will probably want to redefine method report_info
