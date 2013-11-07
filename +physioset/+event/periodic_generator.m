@@ -4,15 +4,21 @@ classdef periodic_generator < physioset.event.generator & ...
     %
     % See also: physioset.event
     
+    methods (Static, Access = private)
+        function fh = default_template()
+            fh = @(sampl, idx, data) physioset.event.event(sampl, ...
+                'Type', '_PeriodicEvent', 'Value', idx);
+        end
+    end
+    
+    
     properties
         
         StartTime = 0;    % In seconds from beginning of recording
         Period    = 10;   % In seconds
-        Template  = @(sampl, idx) physioset.event.event(sampl, ...
-            'Type', '_PeriodicEvent', 'Value', idx);
+        Template  = physioset.event.periodic_generator.default_template;
         
     end
-    
     
     methods
         
@@ -57,11 +63,10 @@ classdef periodic_generator < physioset.event.generator & ...
         function obj = set.Template(obj, value)
             
             import exceptions.InvalidPropValue;
+            import physioset.event.periodic_generator;
             
             if isempty(value),
-                obj.Template = ...
-                    @(sampl, idx) physioset.event.event(...
-                    sampl, 'Type', '_PeriodicEvent', 'Value', idx);
+                obj.Template = periodic_generator.default_template;
                 return;
             end
             
@@ -71,7 +76,7 @@ classdef periodic_generator < physioset.event.generator & ...
             end
             
             try
-                toy = value(10, 1);
+                toy = value(10, 1, physioset.physioset);
                 if ~isa(toy, 'physioset.event.event'),
                     throw(InvalidPropValue('Template', ...
                         'Template must evaluate to an event object'));
@@ -79,7 +84,7 @@ classdef periodic_generator < physioset.event.generator & ...
             catch ME
                 if strcmp(ME.identifier, 'MATLAB:TooManyInputs'),
                     throw(InvalidPropValue('Template', ...
-                        'Template must take two arguments'));
+                        'Template must take three arguments'));
                 else
                     rethrow(ME);
                 end
@@ -101,10 +106,10 @@ classdef periodic_generator < physioset.event.generator & ...
             
             sampl = startTime:period:size(data,2);
             
-            evArray = obj.Template(sampl(1), 1);
+            evArray = obj.Template(sampl(1), 1, data);
             evArray = repmat(evArray, 1, numel(sampl));
             for i = 2:numel(sampl)
-                evArray(i) = obj.Template(sampl(i), i);
+                evArray(i) = obj.Template(sampl(i), i, data);
             end
         end
         
@@ -113,6 +118,7 @@ classdef periodic_generator < physioset.event.generator & ...
         function obj = periodic_generator(varargin)
             
             import misc.process_arguments;
+            import physioset.event.periodic_generator;
             
             opt.StartTime = 0;
             opt.Period    = 10;
@@ -127,7 +133,7 @@ classdef periodic_generator < physioset.event.generator & ...
             
             if ~isempty(opt.Type) || ~isempty(opt.Duration) || ...
                     ~isempty(opt.Offset),
-
+                
                 if ~isempty(opt.Template),
                     error(['Cannot use Template together with any of ' ...
                         'Type, Duration, Offset']);
@@ -137,17 +143,16 @@ classdef periodic_generator < physioset.event.generator & ...
                 opt.Duration = 1;
                 opt.Offset   = 0;
                 [~, opt] = process_arguments(opt, varargin);
-                opt.Template = @(sampl, idx) physioset.event.event(sampl, ...
-                    'Type', opt.Type, 'Duration', opt.Duration, ...
-                    'Offset', opt.Offset, 'Value', idx);                
+                opt.Template = @(sampl, idx, data) physioset.event.event(sampl, ...
+                    'Type', opt.Type, 'Duration', ...
+                    ceil(opt.Duration*data.SamplingRate), 'Offset', ...
+                    round(opt.Offset*data.SamplingRate), 'Value', idx);
             else
                 
                 if isempty(opt.Template),
-                    opt.Template =  ...
-                        @(sampl, idx) physioset.event.event(sampl, ...
-                        'Type', '_PeriodicEvent', 'Value', idx);
-                end                
-            end            
+                    opt.Template =  periodic_generator.default_template;
+                end
+            end
             obj.Template = opt.Template;
             obj.Period    = opt.Period;
             obj.StartTime = opt.StartTime;

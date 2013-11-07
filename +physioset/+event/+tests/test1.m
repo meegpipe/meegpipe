@@ -524,7 +524,7 @@ try
     data = import(physioset.import.matrix('SamplingRate', 1), rand(2, 1000));
     
     myGen = periodic_generator('Period', 20, 'Template', ...
-        @(sampl, idx) physioset.event.event(sampl, 'Type', 'mytype'));
+        @(sampl, idx, data) physioset.event.event(sampl, 'Type', 'mytype'));
     
     evArray = generate(myGen, data);
     ok(...
