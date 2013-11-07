@@ -7,12 +7,31 @@ classdef config < meegpipe.node.abstract_config
     properties
         
         EventGenerator = physioset.event.periodic_generator;
+        Plotter = {physioset.plotter.snapshots.snapshots('WinLength', 10)};
         
     end
     
     % Consistency checks
     
     methods
+        
+        function obj = set.Plotter(obj, value)
+            
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value), value = {}; end 
+            
+            if ~iscell(value),
+                value = {value};
+            end
+            
+            if ~all(cellfun(@(x) isa(x, 'report.gallery_plotter'), value)),
+                throw(InvalidPropValue('Plotter', ...
+                    'Must be a cell array of gallery_plotter objects'));
+            end
+           
+            obj.Plotter = value;
+        end
         
         function obj = set.EventGenerator(obj, value)
             

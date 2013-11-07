@@ -14,7 +14,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(8);
+initialize(9);
 
 %% Create a new session
 try
@@ -50,6 +50,29 @@ catch ME
     
 end
 
+%% multiple plotters
+try
+    
+    name = 'multiple plotters';
+    
+    evGen = physioset.event.periodic_generator('Period', 1);
+    myNode = ev_gen.new('EventGenerator', evGen, 'Plotter', ...
+        {physioset.plotter.snapshots.snapshots('WinLength', 4), ...
+        physioset.plotter.snapshots.snapshots('WinLength', 2)});
+    
+    X = 3+randn(2, 1000);
+    data = import(physioset.import.matrix, X);
+    run(myNode, data);
+    
+    ok(numel(get_event(data)) == 4, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 %% process sample data
 try
     
@@ -71,12 +94,13 @@ catch ME
     
 end
 
+
 %% events with meta properties
 try
     
     name = 'events with meta properties';
     
-    myTemplate = @(sampl, idx) set_meta(physioset.event.event(sampl, ...
+    myTemplate = @(sampl, idx, data) set_meta(physioset.event.event(sampl, ...
         'Type', 'mytype'), 'metaprop', rand);
     evGen = physioset.event.periodic_generator('Period', 10, ...
         'Template', myTemplate);
@@ -87,7 +111,7 @@ try
     run(myNode, data);
     
     logFile = catfile(get_full_dir(myNode, data), ...
-        [get_name(data) '_events.log']);
+        [get_name(data) '_events.txt']);
     
     condition = exist(logFile, 'file');
     

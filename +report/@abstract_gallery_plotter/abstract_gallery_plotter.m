@@ -11,8 +11,12 @@ classdef abstract_gallery_plotter < ...
     methods
         
         % goo.hashable_handle interface
-        function str = get_hash_code(obj)
-           str = get_hash_code(get_config(obj)); 
+        function str = get_hash_code(~)
+           % This has to be a constant. Otherwise, changing the plotter
+           % object in a node configuration will look like the part of the
+           % node config relevant for reproducibility has changed and it
+           % hasn't.
+           str = ''; 
         end
         
          % goo.reportable interface

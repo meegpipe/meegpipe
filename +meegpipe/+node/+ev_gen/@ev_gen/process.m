@@ -9,12 +9,13 @@ if verbose,
     
     [~, fname] = fileparts(data.DataFile);
     fprintf([verboseLabel 'Generating events ...'], fname);
-
+    
 end
 
-evGen = get_config(obj, 'EventGenerator');
+evGen        = get_config(obj, 'EventGenerator');
+plotterArray = get_config(obj, 'Plotter');
 
-evLogName = [get_name(data) '_events.log'];
+evLogName = [get_name(data) '_events.txt'];
 rep = get_report(obj);
 print_title(rep, 'Events generation report', get_level(rep) + 1);
 print_paragraph(rep, 'List of generated events: [%s][evlog]', ...
@@ -44,6 +45,34 @@ fid = get_log(obj, evLogName);
 fprintf(fid, evArray);
 
 if verbose, fprintf('[done]\n\n'); end
+
+if do_reporting(obj),
+    
+    print_title(rep, 'Event generation report', get_level(rep)+1);
+    
+    % Run all the plotters
+    for i = 1:numel(plotterArray),
+
+        thisPlotter = plotterArray{i};
+        
+        if is_verbose(obj),
+            fprintf([verboseLabel 'Running plotter %d (%s) ...'], ...
+                i, class(thisPlotter));
+        end        
+        
+        plotterRep = report.plotter.plotter('Plotter', thisPlotter);
+        
+        plotterRep = embed(plotterRep, rep);
+        
+        generate(plotterRep, data);
+        
+        if is_verbose(obj),
+            fprintf('[done]\n\n');
+        end
+        
+    end
+    
+end
 
 
 
