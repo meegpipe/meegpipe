@@ -1,4 +1,4 @@
-function str = any2str(val, maxLength)
+function str = any2str(val, maxLength, empty2emptyString)
 % any2str - Convert MATLAB variable to string
 %
 % ````matlab
@@ -21,9 +21,14 @@ import misc.any2str;
 import misc.cell2str;
 import misc.matrix2str;
 
+if nargin < 3 || isempty(empty2emptyString), empty2emptyString = false; end
+
 if nargin < 2 || isempty(maxLength), maxLength = 200; end
 
-if isnumeric(val),
+if isempty(val) && empty2emptyString,
+    str = '';    
+    
+elseif isnumeric(val),
     
     str = matrix2str(val, false);
     
