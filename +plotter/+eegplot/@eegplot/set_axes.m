@@ -5,8 +5,6 @@ function h = set_axes(h, varargin)
 %
 % See also: get_axes
 
-% Description: Set Axes properties
-% Documentation: class_plotter_eegplot.txt
 
 if ~isempty(h.Axes),
     set(h.Axes, varargin{:});

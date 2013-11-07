@@ -292,7 +292,7 @@ for groupItr = 1:numel(epochs)
         lastTime  = floor(lastSample/data.SamplingRate);
         firstMark = firstTime - tInit;            
         lastMark  = lastTime - tInit;
-        tickPos   = round((firstMark:1:lastMark)*data.SamplingRate/DOWNSAMPLING);
+        tickPos   = (firstMark:1:lastMark)*data.SamplingRate/DOWNSAMPLING;
         tickTimes = firstTime:1:lastTime;
         tickLabel = cell2ticks(num2strcell(tickTimes));
         set_axes(eegplotObj, ...
