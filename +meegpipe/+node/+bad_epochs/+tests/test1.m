@@ -14,7 +14,8 @@ import physioset.event.class_selector;
 
 MEh     = [];
 
-initialize(12);
+% Number of tests that should run if everything goes OK
+initialize(13);
 
 %% Create a new session
 try
@@ -143,6 +144,28 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% rejecting only 1 epoch
+try
+    
+    name = 'rejecting only 1 epoch';
+
+    data = my_sample_data();
+     
+    myNode = sliding_window_var([], [], 'Max', 0.6);
+    
+    run(myNode, data);
+   
+    % The sliding_window_var creates epochs of duration 1s (125 samples)
+   ok(numel(find(is_bad_sample(data))) == 125, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% sliding_window_var with Min threshold
 try
