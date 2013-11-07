@@ -4,10 +4,32 @@ function [status, MEh] = test1()
 import physioset.event.*;
 import physioset.event.std.*;
 import test.simple.*;
+import datahash.DataHash;
+import pset.session;
 
 MEh     = [];
 
-initialize(20);
+initialize(23);
+
+%% Create a new session
+try
+    
+    name = 'create new session';
+    warning('off', 'session:NewSession');
+    session.instance;
+    warning('on', 'session:NewSession');
+    hashStr = DataHash(randn(1,100));
+    session.subsession(hashStr(1:5));
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    status = finalize();
+    return;
+    
+end
+
 
 %% default constructors
 try
@@ -495,7 +517,41 @@ catch ME
     
 end
 
+%% periodic_generator event generation
+try
+    name = 'periodic_generator event generation';
+    
+    data = import(physioset.import.matrix('SamplingRate', 1), rand(2, 1000));
+    
+    myGen = periodic_generator('Period', 20, 'Template', ...
+        @(sampl, idx) physioset.event.event(sampl, 'Type', 'mytype'));
+    
+    evArray = generate(myGen, data);
+    ok(...
+        numel(evArray) == 50 && ...
+        strcmp(get(evArray(2), 'Type'), 'mytype') &&...
+        isempty(get(evArray(3), 'Value')), ...
+        name);
+        
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
 
+%% Cleanup
+try
+    
+    name = 'cleanup'; 
+    clear data dataCopy ans myCfg myNode;
+    rmdir(session.instance.Folder, 's');
+    session.clear_subsession();
+    ok(true, name);
+    
+catch ME
+    ok(ME, name);
+end
 
 
 %% Testing summary

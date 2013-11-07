@@ -14,7 +14,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Create a new session
 try
@@ -70,6 +70,47 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% events with meta properties
+try
+    
+    name = 'events with meta properties';
+    
+    myTemplate = @(sampl, idx) set_meta(physioset.event.event(sampl, ...
+        'Type', 'mytype'), 'metaprop', rand);
+    evGen = physioset.event.periodic_generator('Period', 10, ...
+        'Template', myTemplate);
+    myNode = ev_gen.new('EventGenerator', evGen);
+    
+    X = 3+randn(10, 1000);
+    data = import(physioset.import.matrix('SamplingRate', 1), X);
+    run(myNode, data);
+    
+    logFile = catfile(get_full_dir(myNode, data), ...
+        [get_name(data) '_events.log']);
+    
+    condition = exist(logFile, 'file');
+    
+    if condition,
+       
+        [tableVals, hdr, rownames] = misc.dlmread(logFile, ',', 0, 1);
+        condition = condition & ...
+            numel(hdr) ==  8 & ...
+            numel(rownames) == 100 & ...
+            all(ismember(rownames, 'mytype')) & ...
+            all(tableVals(:,end) > -eps & tableVals(:,end) < 1+eps) & ...
+            all(tableVals(:,1)' == 1:10:1000);        
+    end
+    
+    ok(condition & numel(get_event(data)) == 100, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% save node output
 try
