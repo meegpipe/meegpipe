@@ -1,5 +1,5 @@
 classdef abstract_selector < ...
-        pset.selector.selector
+        pset.selector.selector & goo.abstract_named_object
  
    methods
       
@@ -27,6 +27,7 @@ classdef abstract_selector < ...
        
        function obj = abstract_selector(varargin)
            
+           obj = obj@goo.abstract_named_object(varargin{:});
            
        end
   

@@ -28,9 +28,10 @@ classdef all_data < pset.selector.abstract_selector
             end
             
             if obj.Negated,
-                 emptySel = false;
+                 emptySel = true;
                  return;
             else
+                emptySel = false;
                 select(data, 1:size(data,1), 1:size(data,2), remember);
             end
           
