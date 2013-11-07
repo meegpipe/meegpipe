@@ -73,7 +73,8 @@ if ~isempty(rejIdx),
     end
     
     if ~isempty(rejIdx),
-        sensLabels = split(',', join(',', rejIdx));
+        cellDims = ones(1, numel(rejIdx));
+        sensLabels = mat2cell(rejIdx(:), cellDims, 1);
         for i = 1:numel(rejIdx),
             h = text(rejIdx(i), rankIndex(rejIdx(i)), [' ' sensLabels(i)]);
             set(h, 'Rotation', 90, 'FontSize', fontSize);
