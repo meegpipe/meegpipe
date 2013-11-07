@@ -48,12 +48,10 @@ if ~isempty(rejIdx),
     set(gca, 'XTick', nonRejIdx);
     
     if ~isempty(nonRejIdx),
-        if numel(nonRejIdx) > 1,
-            XLabels = split(',', join(',', nonRejIdx));
-        else
-            XLabels = {num2str(nonRejIdx)};
-        end
-        XLabels = cellfun(@(x) [x '   '], XLabels, 'UniformOutput', false);
+        cellDims = ones(1, numel(nonRejIdx));
+        XLabels = mat2cell(nonRejIdx(:), cellDims, 1);
+        XLabels = cellfun(@(x) [num2str(x) '   '], XLabels, ...
+            'UniformOutput', false);
         set(gca, 'XTickLabel', XLabels);
         th = rotateticklabel(gca, 90);
         
