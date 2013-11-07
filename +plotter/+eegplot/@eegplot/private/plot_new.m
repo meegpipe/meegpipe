@@ -13,11 +13,10 @@ if ~isempty(idx),
 end
 
 % Check if the sampling rate was provided
-opt.srate = 256;
+opt.srate = get_config(obj, 'SamplingRate');
 
 [~, opt] = process_arguments(opt, varargin);
 
-obj.SamplingRate    = opt.srate;
 obj.NbPoints        = size(data,2);
 obj.NbDims          = size(data,1);
 
@@ -30,7 +29,7 @@ end
 % We use evalc to avoid messages from EEGLAB's eegplot
 data = data - repmat(mean(data,2), 1, size(data,2)); 
 
-winLength = max(1, floor((obj.NbPoints-1)/obj.SamplingRate));
+winLength = max(1, ceil(obj.NbPoints/opt.srate));
 evalc(sprintf(['eegplot(''noui'', data, varargin{:}, ''winlength'', ' ...
     '%d, ''visible'', ''%s'');'], winLength, visible));
 

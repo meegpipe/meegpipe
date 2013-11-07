@@ -35,17 +35,12 @@ classdef eegplot < plotter.plotter & goo.abstract_configurable_handle
     %
     % See also: plotter.eegplot.config, plotter.eegplot.demo
     
-    % Documentation: class_plotter_eegplot_eegplot.txt
-    % Description: Plot multi-dimensional time-series
-    
-    %% IMPLEMENTATION .....................................................
-    
+
     properties (SetAccess = private, GetAccess = private)
         
         Figure;
         NbPoints;
-        NbDims;
-        SamplingRate;
+        NbDims;        
         Axes;
         AxesBg;
         EyeLine;

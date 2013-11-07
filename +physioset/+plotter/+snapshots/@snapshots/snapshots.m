@@ -39,18 +39,11 @@ classdef snapshots < report.abstract_gallery_plotter
     %
     %
     % See also: config, demo, make_test
-    
-    % Description: class_snapshots.txt
-    % Documentation: Generates physioset snapshots
-    
-    %% IMPLEMENTATION .....................................................
-    
+
     methods (Static, Access = private)
         [epochs, groupNames] = summary_epochs(epochLength, nbPoints, winrej, config);
     end
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+ 
     methods
         
         % report.gallery_plotter interface

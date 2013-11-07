@@ -46,8 +46,9 @@ import misc.num2strcell;
 
 % Should the data be downsampled before plotting it? This can prevent
 % errors in the conversion of the svg files to .png as well as speeding up
-% the conversion process. The value of this constant is the downsampling
-% factor (set to 1 to plot the original data without any downsampling)
+% the conversion process. Obviously the downside is the loss of accuracy in
+% the images, but this is usually affordable for EEG data that is typically
+% considerably oversampled.
 DOWNSAMPLING = 2;
 
 %% Error checking
@@ -291,7 +292,7 @@ for groupItr = 1:numel(epochs)
         lastTime  = floor(lastSample/data.SamplingRate);
         firstMark = firstTime - tInit;            
         lastMark  = lastTime - tInit;
-        tickPos   = round((firstMark:1:lastMark)*data.SamplingRate);
+        tickPos   = round((firstMark:1:lastMark)*data.SamplingRate/DOWNSAMPLING);
         tickTimes = firstTime:1:lastTime;
         tickLabel = cell2ticks(num2strcell(tickTimes));
         set_axes(eegplotObj, ...
