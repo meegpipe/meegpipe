@@ -42,7 +42,7 @@ end
 
 if ~isempty(first),
     winrej = [first(:) last(:) repmat([0.7 0.5 0.9], numel(first),1) ...
-        true(numel(first), obj.NbDims)];
+        true(numel(first), nb_dim(obj))];
 else
     winrej = [];
 end

@@ -162,6 +162,10 @@ end
 
 %% Determine the data epochs that will be plotted
 winrej = eeglab_winrej(data);
+
+if DOWNSAMPLING > 1 && ~isempty(winrej),
+    winrej(:,1:2) = winrej(:,1:2)/DOWNSAMPLING;
+end
 if isempty(config.Epochs),
     epochLength = config.WinLength*data.SamplingRate;
     [epochs, groupNames] = snapshots.summary_epochs(epochLength, ...
@@ -236,13 +240,16 @@ for groupItr = 1:numel(epochs)
             evSel = physioset.event.sample_selector(firstSample:lastSample);
             
             thisEvents = select(evSel, epochEv);
-            
+
             if ~isempty(thisEvents),
                 thisEvents = shift(thisEvents, -firstSample+1);
                 if DOWNSAMPLING > 1,
                     thisEvents = resample(thisEvents, 1, DOWNSAMPLING);
                 end
-                thisEvents = eeglab(thisEvents);
+                % The second argument to eeglab indicates that trial_begin
+                % events should dealt with as if they were normal events
+                % (i.e. no epoching should be performed).
+                thisEvents = eeglab(thisEvents, false);
                 thisArguments = [arguments, {'events', thisEvents}];
             end
         end

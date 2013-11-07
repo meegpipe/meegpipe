@@ -14,7 +14,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(9);
+initialize(10);
 
 %% Create a new session
 try
@@ -59,6 +59,26 @@ try
     
     myFilter = filter.lasip('Gamma', 1, 'Scales', 1:10);
     myNode = tfilter('Filter', myFilter); 
+    run(myNode, data);
+    
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% use IO report
+try
+    
+    name = 'use IO report';
+
+    data = import(physioset.import.matrix, randn(2,500));
+    
+    myFilter = filter.lasip('Gamma', 1, 'Scales', 1:10);
+    myNode = tfilter('Filter', myFilter, 'IOReport', report.plotter.io); 
     run(myNode, data);
     
     ok(true, name);

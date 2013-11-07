@@ -1,4 +1,4 @@
-function [ev, epochDur, trialBeginEv] = eeglab(a)
+function [ev, epochDur, trialBeginEv] = eeglab(a, makeEpochs)
 % EEGLAB - Conversion to EEGLAB events
 %
 % sArray = eeglab(eArray);
@@ -17,15 +17,17 @@ function [ev, epochDur, trialBeginEv] = eeglab(a)
 %
 % See also: from_eeglab, struct, fieldtrip
 
-% Documentation: class_vent.txt
-% Description: Conversion to EEGLAB events
+if nargin < 2 || isempty(makeEpochs), makeEpochs = true; end
 
 %% Create trials if necessary
 epochDur = NaN;
-isTrialBegin = arrayfun(@(x) isa(x, 'trial_begin'), a);
-trialBeginEv = a(isTrialBegin);
 
-if ~isempty(trialBeginEv),
+if makeEpochs,
+    isTrialBegin = arrayfun(@(x) isa(x, 'trial_begin'), a);
+    trialBeginEv = a(isTrialBegin);
+end
+
+if makeEpochs && ~isempty(trialBeginEv),
     
     trialBegin = get(trialBeginEv, 'Sample');
     

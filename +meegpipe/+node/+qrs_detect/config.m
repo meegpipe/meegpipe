@@ -4,10 +4,6 @@ classdef config < meegpipe.node.abstract_config
     % See: <a href="matlab:misc.md_help('meegpipe.node.qrs_detect.config')">misc.md_help(''meegpipe.node.qrs_detect.config'')</a>
     
     
-    
-    
-    %% PUBLIC INTERFACE ...................................................
-    
     properties
         
         Event      = @(sampl) physioset.event.std.qrs(sampl);

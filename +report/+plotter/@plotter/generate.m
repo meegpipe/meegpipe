@@ -59,8 +59,10 @@ fprintf(fid, '[%s]: [[Ref: %s]]\n\n', repName, [repName '.txt']);
 %set_config(repObj, 'Plotter', plotterObj);
 origVerbose = globals.get.Verbose;
 globals.set('Verbose', false);
+
 [h, captions,  groups, extra, extraCap] = plot(plotterObj, obj, ...
     varargin{:});
+
 globals.set('Verbose', origVerbose);
 
 % Plotting may fail for whatever reasons
