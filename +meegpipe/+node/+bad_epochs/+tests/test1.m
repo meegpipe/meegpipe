@@ -124,14 +124,14 @@ catch ME
     
 end
 
-%% sliding_window_var
+%% sliding_window
 try
     
-    name = 'sliding_window_var';
+    name = 'sliding_window';
 
     data = my_sample_data();
      
-    myNode = sliding_window_var;
+    myNode = sliding_window;
     
     run(myNode, data);
     
@@ -152,11 +152,11 @@ try
 
     data = my_sample_data();
      
-    myNode = sliding_window_var([], [], 'Max', 0.6);
+    myNode = sliding_window([], [], 'Max', 0.6);
     
     run(myNode, data);
    
-    % The sliding_window_var creates epochs of duration 1s (125 samples)
+    % The sliding_window creates epochs of duration 1s (125 samples)
    ok(numel(find(is_bad_sample(data))) == 125, name);
     
 catch ME
@@ -167,14 +167,14 @@ catch ME
 end
 
 
-%% sliding_window_var with Min threshold
+%% sliding_window with Min threshold
 try
     
-    name = 'sliding_window_var with Min threshold';
+    name = 'sliding_window with Min threshold';
 
     data = my_sample_data();
      
-    myNode = sliding_window_var(0.5, 1, ...
+    myNode = sliding_window(0.5, 1, ...
         'Min', @(meanVar) prctile(meanVar, 5));
     
     run(myNode, data);
