@@ -102,6 +102,10 @@ if isempty(peaks),
         fprintf([verboseLabel 'Could not find QRS events: detecting QRS' ...
             'complexes using FMRIB ...']);
     end
+    
+    warning('ecgpuwave:Obsolete', ...
+        ['Future versions of meegpipe will require the presence of '  ...
+        ' QRS events. Use a qrs_detect node to produce such events.']);
     peaks = my_fmrib_qrsdetect(data(:,:), sr, 1);
     if verbose, fprintf('\n\n'); end
 end
