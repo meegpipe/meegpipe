@@ -6,6 +6,10 @@ warning('sliding_window_var:Obsolete', ...
     'bad_epochs.sliding_window and might be removed in future versions']);
 
 
+if nargin < 1, period = []; end
+
+if nargin < 2, dur = []; end
+
 obj = meegpipe.node.bad_epochs.sliding_window(period, dur, varargin{:});
 
 
