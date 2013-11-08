@@ -35,10 +35,10 @@ classdef ecg_annotate < meegpipe.node.abstract_node
         
         function obj = ecg_annotate(varargin)
             
-            import pset.selector.sensor_class;
+            import pset.selector.sensor_label;
             import misc.prepend_varargin;
             
-            dataSel = sensor_class('Type', 'ECG');
+            dataSel = sensor_label('^ECG');
             varargin = prepend_varargin(varargin, 'DataSelector', dataSel);  
             
             obj = obj@meegpipe.node.abstract_node(varargin{:});
