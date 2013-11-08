@@ -356,39 +356,39 @@ more information.
 _meegpipe_ should allow you to reproduce your analysis results perfectly.
 Thus, you may consider deleting the processed data files after your
 project has finalized. May you want to re-produce your results in the
-future, you could do so by following the instructions in the data
-processing report. To reproduce the example above you should simply
-run the following:
+future, you could do so by simply copying and pasting the relevant code 
+snippet that you will find in the processing report. Such code may look 
+like this:
 
 ````matlab
+clear all; 
 
-% Install a clean copy of meegpipe and its submodules
-clear all;
-currDir = pwd;
-mkdir meegpipe_8539d9;
-cd meegpipe_8539d9;
-system('git clone git://github.com/germangh/meegpipe');
-cd meegpipe;
-submodule_update([], true);
+currDir = pwd; 
 
-% Get the right version of meegpipe and its submodules
-submodule_checkout(['C:\Users\gomez\Dropbox\work\repo\workdir\session_1\' ...
-    '20130410T165750_9a78a.meegpipe\' ...
-    'detrend-c8181d_gomez_PCWIN64-R2011b\submodule.version']);
+% Create a temporary dir to store the meegpipe version that was used to 
+% produce these results
+mkdir meegpipe_0cce21; 
 
-% Re-run the data processing
-cd(['C:\Users\gomez\Dropbox\work\repo\workdir\session_1\' ...
-    '20130410T165750_9a78a.meegpipe\' ...
-    'detrend-c8181d_gomez_PCWIN64-R2011b']);
+cd meegpipe_0cce21; 
 
-node = load('node.mat', 'obj');
+% Download meegpipe and check-out the relevant version
+system('git clone git://github.com/meegpipe/meegpipe'); 
+cd meegpipe; 
+system('git checkout 4afd3df36ca62bc290424847953832f3a7b11f4b'); 
 
-input = load('input.mat', 'data');
+cd(['D:\data\pupw\' ...
+    'pupw_0001_physiology_afternoon-sitting_1.meegpipe\' ...
+    'pupillator-abp-e8ec45_gomez_PCWIN64-R2011b']); 
 
-cd(currDir)
+node = load('node.mat', 'obj'); 
 
-% Re-run the data processing
-output = run(node.obj, input.data);
+input = load('input.mat', 'data'); 
+
+cd(currDir) 
+
+meegpipe.initialize; 
+
+output = run(node.obj, input.data); 
 ````
 
 ## Built-in data processing nodes
@@ -399,10 +399,11 @@ with _meegpipe_. This list may be outdated:
 
 Node                                | What for?
 --------------------                | --------------------
+[abp_beat_detect][abp-beat-detect]  | Detect beat onsets from Arterial Blood Pressure time-series
+[abp_features][abp-features]        | Extract features from Arterial Blood Pressure time-series
 [aregr][aregr-node]                 | (adaptively) regressing out a set of channels from another set of channels
 [bad_channels][bad_channels-node]   | Reject bad channels
-[bad_samples][bad_samples-node]     | Reject bad samples
-[bad_epochs][bad_epochs-node]       | Reject bad epochs, typically before an [erp][erp-node] node
+[bad_epochs][bad_epochs-node]       | Reject bad data epochs
 [bss_regr][bss_regr-node]           | Removal of various types of artifacts: EOG, PWL, ECG, etc
 [center][center-node]               | Remove data mean
 [chan_interp][chan_interp-node]     | Interpolate bad channels
@@ -411,23 +412,28 @@ Node                                | What for?
 [dummy][dummy-node]                 | Dummy node to illustrate how to build your own processing nodes
 [ecg_annotate][ecg_ann-node]        | Annotate heartbeats using the ECG
 [erp][erp-node]                     | Compute average ERPs and extract ERP features
-[ev_gen][ev-gen]                    | Event generation
 [ev_features][ev-features]          | Extract features (properties) from events
+[ev_gen][ev-gen]                    | Event generation
 [fix_event_time][fix-event-time-node] | Fix event timings by maximizing cross-correlation across epochs
+[generic_features][generic-features]| Extract scalar features from data
+[merge][merge]                      | Merge two or more physiosets
 [mra][mra-node]                     | MR artifact correction using own (experimental) algorithm
 [mra_fmrib][mra-fmrib-node]         | MR artifact correction using FMRIB's EEGLAB plug-in
 [obs][obs-node]                     | Removal of [BCG artifacts][bcg-art] using [Optimal Basis Sets][obs-doc]
 [physioset_import][phys_import-node]| Construct a physioset from a disk file
+[physioset_export][phys-export]     | Export physioset to a disk file
 [pipeline][pipeline-node]           | Define pipelines (a serial concatenation of nodes)
 [qrs_detect][qrs_detect-node]       | Detect [QRS complexes][qrs-complex] from [ECG][ecg] lead
 [reref][reref-node]                 | Re-referencing
 [resample][resample-node]           | Re-sampling
-[spectra][spectra-node]             | Plot spectra and compute spectral features
 [smoother][smoother-node]           | Smooth transitions between chops, epochs, etc
+[spectra][spectra-node]             | Plot spectra and compute spectral features
 [split][split-node]                 | Split input physioset into several physiosets
 [subset][subset-node]               | Create physioset based on a sub-set of the input data
 [tfilter][tfilter-node]             | Time-domain digital filtering
 
+[abp-beat-detect]: ./+abp_beat_detect/README.md
+[abp-features]: ./+abp_features/README.md
 [aregr-node]: ./+aregr/README.md
 [bad_channels-node]: ./+bad_channels/README.md
 [bad_samples-node]: ./+bad_samples/README.md
@@ -443,10 +449,13 @@ Node                                | What for?
 [ev-gen]: ./+ev_gen/README.md
 [ev-features]: ./+ev_features/README.md
 [fix-event-time-node]: ./+fix_event_time/README.md
+[generic-features]: ./+generic_features/README.md
+[merge]: ./+merge/README.md
 [mra-node]: ./+mra/README.md
 [mra-fmrib-node]: ./+mra_fmrib/README.md
 [obs-node]: ./+obs/README.md
 [phys_import-node]: ./+physioset_import/README.md
+[phys-export]: ./+physioset_export/README.md
 [pipeline-node]: ./+pipeline/README.md
 [qrs_detect-node]: ./+qrs_detect/README.md
 [reref-node]: ./+reref/README.md

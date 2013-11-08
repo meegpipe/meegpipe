@@ -38,7 +38,7 @@ MATLAB package    | What is there?
 The _meegpipe_'s API follows the [object oriented (OO)][oo-programming] 
 programming paradigm. If you are not familiar with OO concepts like
 _class_, _object_ or _interface_, you may want to read some
-[backbround material][oo-concepts] before going any further. If you have
+[background material][oo-concepts] before going any further. If you have
 never used the OO paradigm in MATLAB, you may also want to read some
 documentation on the specifics of [MATLAB's OO programming][matlab-oo].
 
