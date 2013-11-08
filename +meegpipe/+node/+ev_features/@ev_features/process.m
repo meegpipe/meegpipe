@@ -61,7 +61,7 @@ if verbose,
 end
 fid = get_log(obj, 'features.txt');
 hdr = repmat('%s,',1, numel(featList));
-fprintf(fid, [hdr '\n'], featList{:});
+fprintf(fid, [hdr(1:end-1) '\n'], featList{:});
 has2String = keys(feat2String);
 has2Value  = keys(feat2Value);
 

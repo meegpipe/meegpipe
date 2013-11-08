@@ -87,7 +87,7 @@ try
     
     feat  = get_spectra_features(myNode);
     
-    ok( feat{1}('dummy') > 5*feat{1}('alpha'), name);
+    ok( feat{1}('dummy') > 2*feat{1}('alpha'), name);
     
 catch ME
     

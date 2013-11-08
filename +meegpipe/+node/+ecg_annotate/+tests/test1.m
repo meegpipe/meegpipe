@@ -18,7 +18,7 @@ import physioset.event.class_selector;
 
 MEh     = [];
 
-initialize(9);
+initialize(8);
 
 %% Create a new session
 try
@@ -79,15 +79,18 @@ try
     
     mySensors  = sensors.physiology('Label', 'ECG');
     myImporter = physioset.import.matrix('Sensors', mySensors, ...
-        'SamplingRate', 512);
+        'SamplingRate', 256);
     
     data = import(myImporter, ecg);
     
-    myNode = ecg_annotate;
+    myNode1 = qrs_detect;
+    myNode2 = ecg_annotate;
+    myNode = pipeline('NodeList', {myNode1, myNode2});
     
-    run(myNode, data);  
-
-    featuresFile = catfile(get_full_dir(myNode, data), 'features.txt');
+    run(myNode, data);
+    
+    featuresFile = catfile(get_full_dir(myNode, data), ...
+        ['node-02-' get_name(myNode2)], 'features.txt');
     
     condition = check_features_file(featuresFile, 13, 1);
     
@@ -105,44 +108,6 @@ catch ME
     MEh = [MEh ME];
     
 end
-
-%% using qrs_detect node
-try
-    
-    name   = 'using qrs_detect node';
-    
-    tmp = load(catfile(meegpipe.root_path, '+data', 'ecg.mat'), 'ecg');
-    ecg = tmp.ecg;
-    
-    mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors, ...
-        'SamplingRate', 512);
-    
-    data = import(myImporter, ecg);
-    
-    myNode = pipeline('NodeList', {qrs_detect, ecg_annotate});
-    
-    run(myNode, data);  
-
-    featuresFile = catfile(get_full_dir(myNode, data), 'features.txt');
-    
-    condition = check_features_file(featuresFile, 13, 1);
-    
-    evs = get_event(data);
-    evSel = class_selector('Type', 'N');
-    condition = condition && numel(evs) > 0 && ...
-        numel(select(evSel, evs)) == 241;
-    
-    ok(condition, name);
-    clear data;
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
 
 %% multiple experimental conditions
 try
@@ -154,7 +119,7 @@ try
     
     mySensors  = sensors.physiology('Label', 'ECG');
     myImporter = physioset.import.matrix('Sensors', mySensors, ...
-        'SamplingRate', 512);
+        'SamplingRate', 256);
     
     % Add three experimental conditions
     ev = event(1:1000:3001);
@@ -172,11 +137,14 @@ try
     selBlue = class_selector('Type', '^blue$', 'Name', 'blue');
     selRed  = class_selector('Type', '^red$', 'Name', 'red');
     
-    myNode = ecg_annotate('EventSelector', {selDark, selBlue, selRed});
+    myNode1 = qrs_detect;
+    myNode2 = ecg_annotate('EventSelector', {selDark, selBlue, selRed});
+    myPipe = pipeline('NodeList', {myNode1,myNode2});
     
-    run(myNode, data);
+    run(myPipe, data);
     
-    featuresFile = catfile(get_full_dir(myNode, data), 'features.txt');
+    featuresFile = catfile(get_full_dir(myPipe, data), ...
+        ['node-02-' get_name(myNode2)], 'features.txt');
     
     condition = check_features_file(featuresFile, 14, 3);
     
@@ -207,15 +175,18 @@ try
     
     mySensors  = sensors.physiology('Label', 'ECG');
     myImporter = physioset.import.matrix('Sensors', mySensors, ...
-        'SamplingRate', 512);
+        'SamplingRate', 256);
     
     data = cell(1, 3);
     for i = 1:3,
         data{i} = import(myImporter, ecg + randn(size(ecg)));
     end
     
-    myNode = ecg_annotate('OGE', false);
-    run(myNode, data{:});
+    myNode1 = qrs_detect;
+    myNode2 = ecg_annotate('OGE', false);
+    myPipe = pipeline('NodeList', {myNode1,myNode2});
+    
+    run(myPipe, data{:});
     
     ok(numel(get_event(data{3}))>0, name);
     clear physObj;
@@ -239,15 +210,17 @@ try
         
         mySensors  = sensors.physiology('Label', 'ECG');
         myImporter = physioset.import.matrix('Sensors', mySensors, ...
-        'SamplingRate', 512);
+            'SamplingRate', 256);
         
         data = cell(1, 3);
         for i = 1:3,
             data{i} = import(myImporter, ecg + randn(size(ecg)));
         end
         
-        myNode = ecg_annotate('OGE', true);
-        dataFiles = run(myNode, data{:});
+        myNode1 = qrs_detect;
+        myNode2 = ecg_annotate('OGE', true);
+        myPipe = pipeline('NodeList', {myNode1,myNode2});
+        dataFiles = run(myPipe, data{:});
         
         pause(5); % give time for OGE to do its magic
         MAX_TRIES = 100;
@@ -258,7 +231,8 @@ try
         end
         [~, ~] = system(sprintf('qdel -u %s', get_username));
         
-        featuresFile = catfile(get_full_dir(myNode, data{1}), 'features.txt');
+        featuresFile = catfile(get_full_dir(myPipe, data{1}), ...
+            ['node-02-' get_name(myNode2)], 'features.txt');
         
         ok(exist(featuresFile, 'file') > 0, name);
         

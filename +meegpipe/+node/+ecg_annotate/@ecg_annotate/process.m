@@ -83,6 +83,7 @@ else
         fprintf(fid, formatStr, 'eventset', hrvFeats{:});
     end
     formatStr = repmat('%5.3f,', 1, numel(hrvFeats));
+    formatStr = [formatStr(1:end-1) '\n'];
     if isempty(rowName),
         for i = 1:size(feat,1)
             if all(isnan(feat(i,:))), continue; end
