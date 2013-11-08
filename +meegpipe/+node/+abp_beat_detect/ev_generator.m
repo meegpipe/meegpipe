@@ -19,9 +19,7 @@ classdef ev_generator < physioset.event.generator
             beatOnsets(beatOnsets < 1) = 1;
             beatOnsets(beatOnsets > size(data,2)) = size(data,2);
             beatOnsets = unique(beatOnsets);    
-            
-            
-            
+
             % Very simple approach to removing spurious detections
             beatDiff = diff(beatOnsets);
             
@@ -30,8 +28,7 @@ classdef ev_generator < physioset.event.generator
             if ~isempty(idx),
                 beatOnsets(idx+1) = [];
             end         
-            
-            
+
             evArray = abp_onset(beatOnsets);
         end
         

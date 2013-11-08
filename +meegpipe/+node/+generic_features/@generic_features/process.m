@@ -13,6 +13,7 @@ targetSelector  = get_config(obj, 'TargetSelector');
 firstLevel      = get_config(obj, 'FirstLevel');
 secondLevel     = get_config(obj, 'SecondLevel');
 featNames       = get_config(obj, 'FeatureNames');
+auxVars         = get_config(obj, 'AuxVars');
 
 if isempty(firstLevel),
     warning('generic_features:NoFeatures', ...
@@ -29,16 +30,28 @@ selectionEvents = cell(1, numel(targetSelector));
 
 for targetItr = 1:numel(targetSelector)
     
+    thisSel = targetSelector{targetItr};
+    
     % selectionEvents is only relevant for event_selector selectors
-    [~, emptySel, selectionEvents{targetItr}] = ...
-        select(targetSelector{targetItr}, data);
+    [~, emptySel, selectionEvents{targetItr}] = select(thisSel, data);
     
     if emptySel, continue; end
+    
+    % Compute auxiliary variables, if needed
+    if ~isempty(auxVars),
+       auxVarsValues = cell(1, numel(auxVars));
+       for i = 1:numel(auxVars)
+           auxVarsValues{i} = auxVars{i}(data, ...
+               selectionEvents{targetItr}, thisSel);
+       end
+    else
+        auxVarsValues = {};
+    end
     
     for featItr = 1:numel(firstLevel)
         
         firstLevelFeats{featItr, targetItr} = firstLevel{featItr}(data, ...
-            selectionEvents{targetItr}, targetSelector{targetItr});
+            selectionEvents{targetItr}, thisSel, auxVarsValues{:});
         
     end
     
@@ -61,10 +74,10 @@ if isempty(secondLevel),
     % ....
     % In this case, featNames is assumed to refer to first-level features, 
     % which are assumed to be numeric, for simplicity
-    hdr = repmat('%s,',1, numel(featNames));
+    hdr = ['selector,' repmat('%s,',1, numel(featNames))];
     hdr(end:end+1) = '\n';
     fprintf(fid, hdr, featNames{:});
-    fmt = ''; 
+    fmt = '%s,'; 
     
     for i = 1:numel(featNames),
        if ischar(firstLevelFeats{i, 1}),
@@ -85,7 +98,8 @@ if isempty(secondLevel),
         if all(cellfun(@(x) isempty(x), firstLevelFeats(:,i))),
             continue;
         end
-        fprintf(fid, fmt, firstLevelFeats{:, i});
+        fprintf(fid, fmt, get_name(targetSelector{i}), ...
+            firstLevelFeats{:, i});
     end    
     
 else

@@ -6,10 +6,15 @@ classdef config < meegpipe.node.abstract_config
     
     properties
         
-        TargetSelector    = [];
+        TargetSelector    = {pset.selector.all_data};
         FirstLevel        = {@(x, ev, dataSel) mean(x)};
         SecondLevel       = [];
         FeatureNames      = {'mean'};
+        % These Auxiliary vars will be computed only once and passed as
+        % arguments to all FirstLevel feature extractors. This can speed up
+        % considerably the computation of the features when all feature
+        % extractors share some preliminary steps.
+        AuxVars           = {}; 
         
     end
     
@@ -52,7 +57,7 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.InvalidPropValue;
             
             if isempty(value),
-                obj.TargetSelector = [];
+                obj.TargetSelector = {pset.selector.all_data};
                 return;
             end
             

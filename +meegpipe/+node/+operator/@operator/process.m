@@ -52,7 +52,7 @@ if verbose, fprintf('[done]\n\n'); end
 if do_reporting(obj),
     
     if is_verbose(obj),
-        fprintf([verboseLabel 'Generating report...']);
+        fprintf([verboseLabel 'Generating after-operator report...']);
     end
     
     rep = get_report(obj);

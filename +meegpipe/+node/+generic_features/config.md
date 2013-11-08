@@ -243,3 +243,15 @@ myNode = generic_features.new(...
     'FeatureNames',     ...
         {'ratioOfMeans', 'prodOfMeans';'ratioOfMedians', 'prodOfMedians'});
 ````
+
+
+### `AuxVars`
+
+__Class__: `cell array` of `function_handle` or `{}`
+
+__Default__: `{}`
+
+A list of auxiliary variables that should be pre-computed and passed along 
+to all feature extractors.
+
+

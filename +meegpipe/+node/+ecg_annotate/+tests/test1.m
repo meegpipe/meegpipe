@@ -78,7 +78,8 @@ try
     ecg = tmp.ecg;
     
     mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors);
+    myImporter = physioset.import.matrix('Sensors', mySensors, ...
+        'SamplingRate', 512);
     
     data = import(myImporter, ecg);
     
@@ -114,7 +115,8 @@ try
     ecg = tmp.ecg;
     
     mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors);
+    myImporter = physioset.import.matrix('Sensors', mySensors, ...
+        'SamplingRate', 512);
     
     data = import(myImporter, ecg);
     
@@ -151,7 +153,8 @@ try
     ecg = tmp.ecg;
     
     mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors);
+    myImporter = physioset.import.matrix('Sensors', mySensors, ...
+        'SamplingRate', 512);
     
     % Add three experimental conditions
     ev = event(1:1000:3001);
@@ -203,7 +206,8 @@ try
     ecg = tmp.ecg;
     
     mySensors  = sensors.physiology('Label', 'ECG');
-    myImporter = physioset.import.matrix('Sensors', mySensors);
+    myImporter = physioset.import.matrix('Sensors', mySensors, ...
+        'SamplingRate', 512);
     
     data = cell(1, 3);
     for i = 1:3,
@@ -234,7 +238,8 @@ try
         ecg = tmp.ecg;
         
         mySensors  = sensors.physiology('Label', 'ECG');
-        myImporter = physioset.import.matrix('Sensors', mySensors);
+        myImporter = physioset.import.matrix('Sensors', mySensors, ...
+        'SamplingRate', 512);
         
         data = cell(1, 3);
         for i = 1:3,

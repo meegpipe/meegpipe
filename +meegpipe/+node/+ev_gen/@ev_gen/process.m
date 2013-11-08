@@ -8,7 +8,7 @@ dataNew = [];
 if verbose,
     
     [~, fname] = fileparts(data.DataFile);
-    fprintf([verboseLabel 'Generating events ...'], fname);
+    fprintf([verboseLabel 'Generating events ...\n\n'], fname);
     
 end
 
@@ -29,6 +29,12 @@ else
     rep = [];
 end
 evArray = generate(evGen, data, rep, varargin{:});
+
+if verbose,
+    fprintf([verboseLabel 'Generated %d events ...\n\n'], numel(evArray));
+end
+
+if isempty(evArray), return; end
 
 add_event(data, evArray);
 

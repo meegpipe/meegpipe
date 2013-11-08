@@ -102,7 +102,7 @@ try
         if condition
             for i = 1:3
                 condition = condition & strcmp(rownames{i}, ...
-                    get_hash_code(mySel{i}));
+                    get_name(mySel{i}));
             end
         end
     end

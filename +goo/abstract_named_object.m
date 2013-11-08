@@ -41,13 +41,9 @@ classdef abstract_named_object < goo.named_object
             
         end
         
-        function name = get_full_name(obj)
-           
-            if isempty(obj.Name),
-                name = get_name(obj);
-            else
-                name = obj.Name;
-            end
+        function name = get_full_name(obj)           
+         
+            name = get_name(obj);
             
         end
         
