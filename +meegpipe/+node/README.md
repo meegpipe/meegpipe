@@ -394,7 +394,9 @@ output = run(node.obj, input.data);
 ## Built-in data processing nodes
 
 Below you can find a list of the data processing nodes that are bundled
-with _meegpipe_. This list may be outdated:
+with _meegpipe_. The list may be outdated, and quite a few links will
+surely be broken meaning that the corresponding docs have not been written
+ yet.
 
 
 Node                                | What for?
