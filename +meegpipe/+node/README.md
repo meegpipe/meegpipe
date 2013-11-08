@@ -348,7 +348,7 @@ myFTripStr = fieldtrip(data);
 See the documentation of the [physioset][physioset] data structure for
 more information.
 
-[physioset]: https://github.com/germangh/matlab_physioset
+[physioset]: ../../+physioset/README.md
 
 
 ### Reproducing the processing results
