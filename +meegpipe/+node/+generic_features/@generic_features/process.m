@@ -136,6 +136,7 @@ else
 end
 
 rep = get_report(obj);
+print_title(rep, 'Feature extraction report', get_level(rep) + 1);
 print_paragraph(rep, 'Extracted features: [features.txt][feat]');
 print_link(rep, '../features.txt', 'feat');
 if verbose, fprintf('\n\n'); end
