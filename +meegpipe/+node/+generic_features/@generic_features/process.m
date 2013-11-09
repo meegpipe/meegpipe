@@ -14,6 +14,8 @@ firstLevel      = get_config(obj, 'FirstLevel');
 secondLevel     = get_config(obj, 'SecondLevel');
 featNames       = get_config(obj, 'FeatureNames');
 auxVars         = get_config(obj, 'AuxVars');
+plotterArray    = get_config(obj, 'Plotter');
+
 
 if isempty(firstLevel),
     warning('generic_features:NoFeatures', ...
@@ -139,7 +141,34 @@ rep = get_report(obj);
 print_title(rep, 'Feature extraction report', get_level(rep) + 1);
 print_paragraph(rep, 'Extracted features: [features.txt][feat]');
 print_link(rep, '../features.txt', 'feat');
-if verbose, fprintf('\n\n'); end
+
+if verbose, fprintf('[done]\n\n'); end
+
+if do_reporting(obj),
+ 
+    % Run all the plotters
+    for i = 1:numel(plotterArray),
+
+        thisPlotter = plotterArray{i};
+        
+        if is_verbose(obj),
+            fprintf([verboseLabel 'Running plotter %d (%s) ...'], ...
+                i, class(thisPlotter));
+        end        
+        
+        plotterRep = report.plotter.plotter('Plotter', thisPlotter);
+        
+        plotterRep = embed(plotterRep, rep);
+        
+        generate(plotterRep, data);
+        
+        if is_verbose(obj),
+            fprintf('[done]\n\n');
+        end
+        
+    end
+    
+end
 
 
 end

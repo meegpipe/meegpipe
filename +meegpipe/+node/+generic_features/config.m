@@ -15,6 +15,7 @@ classdef config < meegpipe.node.abstract_config
         % considerably the computation of the features when all feature
         % extractors share some preliminary steps.
         AuxVars           = {}; 
+        Plotter = {physioset.plotter.snapshots.snapshots('WinLength', 20)};
         
     end
     
@@ -51,6 +52,24 @@ classdef config < meegpipe.node.abstract_config
     end
     
     methods
+        
+        function obj = set.Plotter(obj, value)
+            
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value), value = {}; end 
+            
+            if ~iscell(value),
+                value = {value};
+            end
+            
+            if ~all(cellfun(@(x) isa(x, 'report.gallery_plotter'), value)),
+                throw(InvalidPropValue('Plotter', ...
+                    'Must be a cell array of gallery_plotter objects'));
+            end
+           
+            obj.Plotter = value;
+        end
         
         function obj = set.TargetSelector(obj, value)
             

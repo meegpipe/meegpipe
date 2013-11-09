@@ -47,11 +47,12 @@ for i = 1:numel(sensObj)
     sensLabels  = labels(sensObj{i});
     
     firstTime = false;
-    if ~iscell(runtimeSel) && all(isnan(runtimeSel))
+    
+    if isempty(runtimeSel),
+        thisUsrSel = [];
+    elseif ~iscell(runtimeSel) && all(isnan(runtimeSel))
         thisUsrSel = NaN;
         firstTime = true;
-    elseif isempty(runtimeSel),
-        thisUsrSel = [];
     else
         thisUsrSel = find(ismember(sensLabels, runtimeSel));
     end

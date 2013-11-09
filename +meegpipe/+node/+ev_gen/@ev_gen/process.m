@@ -38,9 +38,6 @@ if isempty(evArray), return; end
 
 add_event(data, evArray);
 
-if verbose, fprintf('[done]\n\n'); end
-
-
 if verbose,
     fprintf([verboseLabel ...
         'Writing events properties to log file %s ...'], ...

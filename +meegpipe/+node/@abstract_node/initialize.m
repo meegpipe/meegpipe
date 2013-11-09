@@ -58,16 +58,7 @@ if isempty(get_parent(obj))
     fName = catfile(obj.RootDir_, 'input.mat');
     builtin('save', fName, 'data');
     obj.SavedInput_ = fName;
-    
-    % Keep a backup of the previous submodule revisions, just in case
-    if exist(obj.VersionFile_, 'file'),
-        [path, name, ext] = fileparts(obj.VersionFile_);
-        copyfile(...
-            obj.VersionFile_, ...
-            catfile(path, [name '_' datestr(now, 'yymmddHHMMSS') ext]), ...
-            'f');
-    end
-    
+  
     fid = safefid.fopen(obj.VersionFile_, 'w');    
     fprintf(fid, meegpipe.version);
 

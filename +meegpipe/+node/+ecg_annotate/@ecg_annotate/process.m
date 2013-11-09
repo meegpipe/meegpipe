@@ -90,7 +90,7 @@ else
             fprintf(fid, formatStr, feat(i,:));
         end
     else
-        formatStr =['%s,' formatStr(1:end-1) '\n'];
+        formatStr =['%s,' formatStr];
         for i = 1:size(feat,1)
             if all(isnan(feat(i,:))), continue; end
             fprintf(fid, formatStr, rowName{i}, feat(i,:));

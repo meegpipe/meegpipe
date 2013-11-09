@@ -9,10 +9,11 @@ import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
 import oge.has_oge;
+import mperl.config.inifiles.inifile;
 
 MEh     = [];
 
-initialize(10);
+initialize(11);
 
 %% Create a new session
 try
@@ -55,6 +56,88 @@ try
     myCrit = criterion.var.var('NN', 20);
     myNode = bad_channels('Criterion', myCrit);
     ok(get_config(get_config(myNode, 'Criterion'), 'NN') == 20, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% user-defined behavior
+try
+    
+    name = 'user-defined behavior';
+    
+    data = sample_data;
+    
+    crit = meegpipe.node.bad_channels.criterion.var.var('MinCard', 3, ...
+        'MaxCard', 3);
+    dataSel = pset.selector.sensor_class('Class', 'eeg');
+    myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel, ...
+        'GenerateReport', false);
+    run(myNode, data);
+    
+    badSel = find(is_bad_channel(data));
+    
+    badChanLabels = {'EEG 73', 'EEG 153', 'EEG 241'};
+    badLabels = labels(subset(sensors(data), badSel));
+    condition = (numel(badSel) == 3 & all(badSel == [10 20 31]) & ...
+        all(ismember(badLabels, badChanLabels)));
+    
+    if condition, 
+        cfgFile = catfile(get_full_dir(myNode, data), 'bad_channels.ini');
+        cfg = inifile(cfgFile);
+        newBadChanSel = {'EEG 73', 'EEG 249', 'EEG 241'};
+        setval(cfg, 'channels', 'reject', newBadChanSel{:});
+        
+        % Now run the node again: it should remember the manual selection
+        clear myNode ans;       
+        myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel, ...
+            'GenerateReport', false);
+        clear_bad_channel(data);
+        run(myNode, data);
+        
+        badSel = find(is_bad_channel(data));
+        condition = ...
+            condition & numel(badSel) == 3 & all(badSel == [10 31 32]);
+        
+        % now run it again, manual selection should still be there
+         clear myNode ans;       
+        myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel, ...
+            'GenerateReport', false);
+        clear_bad_channel(data);
+        run(myNode, data);
+        
+        badSel = find(is_bad_channel(data));
+        condition = ...
+            condition & numel(badSel) == 3 & all(badSel == [10 31 32]);
+        
+        % delete runtime config: it should return to the
+        % automatic selection
+        delval(cfg, 'channels', 'reject');
+        myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel, ...
+            'GenerateReport', false);
+        clear_bad_channel(data);
+        run(myNode, data);
+        
+        badSel = find(is_bad_channel(data));
+        condition = condition & ...
+            (numel(badSel) == 3 & all(badSel == [10 20 31]) & ...
+            all(ismember(badLabels, badChanLabels)));
+        
+        
+        % empty selection
+        setval(cfg, 'channels', 'reject', '');
+        myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel, ...
+            'GenerateReport', false);
+        clear_bad_channel(data);
+        run(myNode, data);
+        
+        condition = condition & ~any(is_bad_channel(data));
+    end
+    
+    ok(condition, name);
     
 catch ME
     
@@ -186,6 +269,8 @@ try
         'DataSelector', dataSel);
     
     run(myNode, data);
+    
+    pause(0.5);
     
     ok( exist(get_output_filename(myNode, data), 'file')>0 ...
         && all(find(is_bad_channel(data)) ==  [10 20 40]), ...

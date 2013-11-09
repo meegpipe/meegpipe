@@ -14,9 +14,6 @@ function value = get_runtime(obj, varargin)
 %
 % See also: +pset/+node/@abstract_node/get_runtime
 
-% Documentation: abstract_node
-% Description: Get runtime node parameters
-
 if isempty(obj.RunTime_),
     obj.RunTime_ = get_runtime_config(obj);
 end
