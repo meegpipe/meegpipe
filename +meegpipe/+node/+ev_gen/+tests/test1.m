@@ -194,7 +194,8 @@ try
             data{i} = import(physioset.import.matrix, 2+randn(10, 1000));
         end        
        
-        myNode = ev_gen.new('OGE', true, 'Queue', 'short.q');
+        myNode = ev_gen.new('OGE', true, 'Queue', 'short.q', ...
+            'Save', true);
         dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic

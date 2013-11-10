@@ -166,8 +166,7 @@ try
         % create 3 random physioset objects
         data = cell(1, 3);
         for i = 1:3,
-            data{i} = import(physioset.import.matrix, randn(10, 1000));
-           
+            data{i} = import(physioset.import.matrix, randn(2, 100));
         end
         myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', ...
             'OGE', true, 'Save', true);

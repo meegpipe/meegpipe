@@ -8,7 +8,9 @@ if ~isempty(get_config(obj, 'Filename')),
     
 else
     
-    [path, name, ext] = fileparts(get_datafile(inFileName));
+    [~, name, ext] = fileparts(get_datafile(inFileName));
+    
+    path = get_full_dir(obj, inFileName);
     
     if ~isempty(get_config(obj, 'Path')),
         path = get_config(obj, 'Path');
