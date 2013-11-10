@@ -8,7 +8,7 @@ classdef ecg_annotate < meegpipe.node.abstract_node
     end
     
     methods (Access = private)
-        [info, hrvInfo] = ecgpuwave(obj, data);
+        [info, hrvInfo, evArray] = ecgpuwave(obj, data);
     end
     
     % from meegpipe.node.abstract_node

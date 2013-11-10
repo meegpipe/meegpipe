@@ -1,4 +1,4 @@
-function [info, hrvInfo] = ecgpuwave(obj, data)
+function [info, hrvInfo, evArray] = ecgpuwave(obj, data)
 % ecgpuwave - QRS detection and ECG delineation as in [1]
 %
 % ````matlab
@@ -149,6 +149,7 @@ if isempty(sel),
     hrvInfo = io.wfdb.hrv.read(hrvFile);
     
 else
+    evArray = cell(1, numel(sel));
     hrvInfo = cell(1, numel(sel));
     ev = get_event(data);
     for i = 1:numel(sel)
@@ -195,6 +196,7 @@ else
         [~, ~] = system(cmd);
         cd(currDir);
         
+        evArray{i} = thisEv; 
         hrvInfo{i} = io.wfdb.hrv.read(hrvFile);
         
     end

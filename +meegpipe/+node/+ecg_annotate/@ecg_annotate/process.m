@@ -22,7 +22,7 @@ if is_verbose(obj),
     fprintf([verboseLabel 'Running ecgpuwave ...\n\n']);
 end
 
-[info, hrvInfo] = ecgpuwave(obj, data);
+[info, hrvInfo, evArray] = ecgpuwave(obj, data);
 
 obj.HRVFeatures_ = hrvInfo;
 
@@ -94,18 +94,15 @@ else
         evFormatStr = repmat('%s,', 1, numel(evFeatName));
         formatStr   = [evFormatStr formatStr];
         evFeat      = get_config(obj, 'EventFeatures');
-        evArray     = get_event(data);
-        evSel       = get_config(obj, 'EventSelector');
         for i = 1:size(feat,1)
             if all(isnan(feat(i,:))), continue; end
-            thisEv = select(evSel{i}, evArray);
-            for k = 1:numel(thisEv)
-                evFeatVal = cell(1, numel(evFeat));
-                for j = 1:numel(evFeat)
-                    evFeatVal{j} = any2str(evFeat{j}(thisEv(k)));
-                end
-                fprintf(fid, formatStr, evFeatVal{:}, feat(i,:));
+            
+            evFeatVal = cell(1, numel(evFeat));
+            for j = 1:numel(evFeat)
+                evFeatVal{j} = any2str(evFeat{j}(evArray{i}));
             end
+            fprintf(fid, formatStr, evFeatVal{:}, feat(i,:));
+            
         end
     end
 
