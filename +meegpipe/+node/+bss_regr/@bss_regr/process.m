@@ -85,7 +85,13 @@ print_title(rep, 'Principal Component Analysis', ...
     get_level(rep) + 2);
 
 % Print a PCA report
-fprintf(rep, pca);
+if do_reporting(obj),
+    fprintf(rep, pca);
+else
+    fprintf(rep, pca, [], false);
+end
+
+print_paragraph(rep, 'Selected %d principal components', pca.DimOut);
 
 print_title(rep, 'Blind Source Separation', ...
     get_level(rep) + 2);
@@ -155,10 +161,21 @@ for segItr = 1:numel(bndy)-1
     
     % See whether user has manually overriden the selection
     section    = ['window ' num2str(segItr)];
-    runtimeSel = get_runtime(obj, section, 'selection');
+    runtimeSel = get_runtime(obj, section, 'selection', true);
+    if iscell(runtimeSel),
+        runtimeSel = cell2mat(runtimeSel);
+    end
     
-    if isempty(runtimeSel) || ...
-            (numel(runtimeSel) == 1 && isnan(runtimeSel)),
+    if isnumeric(runtimeSel) && numel(runtimeSel) == 1 && isnan(runtimeSel),
+        % If the user wants the manual selection of components to be
+        % ignored she can do either of three things:
+        %
+        % - Delete the .ini file: all windows' selections will be reset
+        % - Delete the "selection" parameter in the corresp. window
+        % - Delete the correspoding [window X] section completely.
+        
+        % THE NOTE BELOW IS NOW OBSOLETE. KEEP IT FOR A WHILE IN CASE
+        % SOMETHING BREAKS.
         % Important: Previously, a empty runtimeSel was considered to mean
         % "override automatic selection with an empty selection". However, 
         % such a behavior was leading to problems if the runtime
@@ -287,8 +304,10 @@ for segItr = 1:numel(bndy)-1
     end
     
     % Write selection .ini file
-    set_runtime(obj, section, 'selection', find(selected(sortedIdx)));
-    
+    idxSel  = find(selected(sortedIdx));
+    selArg  = num2cell(idxSel);    
+    set_runtime(obj, section, 'selection', selArg{:});
+     
     ics = proj(bssH{segItr}, thisPcs);
     
     %% Print summary information on selected components:
@@ -303,15 +322,22 @@ for segItr = 1:numel(bndy)-1
             msg = 'No components';
         else
             msg = ['Component(s) __[', ...
-                regexprep(num2str(find(selectedSorted(:)')), '\s+', ', ') ']__'];
+                regexprep(num2str(find(selectedSorted(:)')), ...
+                '\s+', ', ') ']__'];
         end
         
-        warnMsg = ['Note that this ' ...
+        if overriden(segItr),
+            warnMsg = 'This is a user-defined selection.';
+        else
+            warnMsg = [];
+        end
+
+        warnMsg = [warnMsg, ' Note that this ' ...
             ' selection may differ from the selection that the automatic ' ...
             ' criterion suggests, either because of the user having ' ...
             ' overriden the selection, or because property FixNbICs is' ...
-            ' in effect.'];
-        
+            ' in effect.']; %#ok<AGROW>
+      
         if reject,
             print_paragraph(rep, [msg ...
                 ' were __REJECTED__ in this analysis window. ' warnMsg]);
@@ -343,8 +369,10 @@ for segItr = 1:numel(bndy)-1
         
     end
     
-    
-    if nC(segItr) > 0,
+    if nC(segItr) < 1 && ~reject,
+        % We select the empty set so the output is just zeros
+        dataIn(:,:) = 0;
+    elseif nC(segItr) > 0,
         
         bssH{segItr} = deselect(bssH{segItr}, 'all');
         bssH{segItr} = select(bssH{segItr}, find(selected));

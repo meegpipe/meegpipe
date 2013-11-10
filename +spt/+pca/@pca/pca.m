@@ -38,7 +38,7 @@ classdef pca < spt.generic.generic
     % Methods declared and defined here
     methods
         
-        count = fprintf(fid, obj, gallery);
+        count = fprintf(fid, obj, gallery, makeFig);
         
     end
     

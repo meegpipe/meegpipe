@@ -91,7 +91,7 @@ try
         newBadChanSel = {'EEG 73', 'EEG 249', 'EEG 241'};
         setval(cfg, 'channels', 'reject', newBadChanSel{:});
         
-        % Now run the node again: it should remember the manual selection
+        % Run the node again: it should remember the manual selection
         clear myNode ans;       
         myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel, ...
             'GenerateReport', false);

@@ -1,4 +1,4 @@
-function count = fprintf(fid, obj, gallery)
+function count = fprintf(fid, obj, gallery, makeFig)
 % FPRINTF - Print remark report
 %
 % count = fprintf(fid, obj)
@@ -23,26 +23,31 @@ import plot2svg.plot2svg;
 import report.object.object;
 import inkscape.svg2png;
 
+if nargin < 4 || isempty(makeFig),
+    makeFig = true;
+end
+
 if nargin < 3 || isempty(gallery),
     gallery = report.gallery.gallery;
 end
 
+count = 0;
 
 % Information about the pca parameters
 targetFileName = fid2fname(fid);
 
-% IMPORTANT: The line below is necessary to prevent an infinite recursion.
-% Generating a report on a pca object calls fprintf on the same object.
-% This solution is ugly but will do for now
-%str = struct(obj);
 objectReport = object(obj, 'Title', 'Principal Components Analysis');
 objectReport = childof(objectReport, targetFileName);
 initialize(objectReport);
 generate(objectReport);
 pcaClass = class(obj);
 [~, repName] = fileparts(get_filename(objectReport));
-fprintf(fid, 'PCA performed using [%s][%s]\n', pcaClass, repName);
-fprintf(fid, '[%s]: [[Ref: %s]]\n\n', repName, [repName '.txt']);
+count = count + ...
+    fprintf(fid, 'PCA performed using [%s][%s]\n', pcaClass, repName);
+count = count + ...
+    fprintf(fid, '[%s]: [[Ref: %s]]\n\n', repName, [repName '.txt']);
+
+if ~makeFig, return; end
 
 visible = globals.get.VisibleFigures;
 
@@ -124,7 +129,7 @@ close;
 gallery = add_figure(gallery, fileName, caption);
 
 %% Print a gallery
-count = fprintf(fid, gallery);
+count = count + fprintf(fid, gallery);
 
 
 

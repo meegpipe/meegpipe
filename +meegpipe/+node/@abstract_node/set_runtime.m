@@ -8,11 +8,15 @@ if ~section_exists(cfg, section),
     add_section(cfg, section);
 end
 
+if isempty(varargin)
+    varargin = {''};
+end
+
 if exists(cfg, section, param),
-    setval(cfg, section, param, varargin{:}); 
-else
+    setval(cfg, section, param, varargin{:});
+else   
     newval(cfg, section, param, varargin{:});
 end
-    
+
 
 end

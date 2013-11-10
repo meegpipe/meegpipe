@@ -15,14 +15,23 @@ function value = get_runtime(obj, varargin)
 % See also: +pset/+node/@abstract_node/get_runtime
 
 if isempty(obj.RunTime_),
-    obj.RunTime_ = get_runtime_config(obj);
+    % The "true" means: force re-reading the config
+    obj.RunTime_ = get_runtime_config(obj, true);
 end
 
 if exists(obj.RunTime_, varargin{1:2}),
     value = val(obj.RunTime_, varargin{:});
     try
-        value = eval(value);
-    catch
+        if iscell(value),
+            evalValue = cell(size(value));
+            for i = 1:numel(value)
+                evalValue{i} = eval(value{i});
+            end
+            value = evalValue;
+        else
+            value = eval(value);
+        end
+    catch ME
         % do nothing;
     end
 else

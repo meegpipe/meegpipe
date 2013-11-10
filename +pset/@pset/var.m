@@ -35,7 +35,7 @@ if length(w) > 1 && any(w<0),
         'The elements of the weight vector must be nonnegative.');
 end
 
-y = x.^2;
+y = center(copy(x)).^2;
 y.Writable = true;
 
 if length(w) > 1,

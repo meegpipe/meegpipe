@@ -26,8 +26,10 @@ if ispset(b) && b.Transposed,
     transposed_flagb = true;
 end
 
-if ispset(a) || ispset(b),
-    y = pset.nan(size(a,1), size(a,2));
+if ispset(a),
+    y = a;
+elseif ispset(b),
+    y = b;
 else
     y = nan(size(a,1),size(a,2),a.Precision);
 end
