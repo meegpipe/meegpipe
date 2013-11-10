@@ -3,15 +3,73 @@ classdef config < meegpipe.node.abstract_config
     %
     % See: <a href="matlab:misc.md_help('meegpipe.node.ecg_annotate.config')">misc.md_help(''meegpipe.node.ecg_annotate.config'')</a>
     
+    
+    methods (Access = private)
+       
+        % Global consistency check
+        function check(obj)
+           
+            import exceptions.Inconsistent;
+            if numel(obj.EventFeatures) ~= numel(obj.EventFeatureNames),
+                throw(Inconsistent(['The number of event features must '  ...
+                    'match the number of feature names']));
+            end
+            
+        end
+        
+    end
+    
+    
     properties        
        
         EventSelector  = []; 
+        EventFeatures  = {@(ev) get_name(ev)};
+        EventFeatureNames = {'event_name'};
         RPeakEventSelector = physioset.event.class_selector('Class', 'qrs');
         
     end
     
     % Consistency checks
     methods
+        
+        function obj = set.EventFeatures(obj, value)
+           
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.EventFeatures = {};
+                return;
+            end
+            
+            if ~iscell(value), value = {value}; end
+            
+            if ~all(cellfun(@(x) isa(x, 'function_handle'), value)),
+                throw(InvalidPropValue('EventFeatures', ...
+                    'Must be a cell array of function handles'));
+            end            
+            
+            obj.EventFeatures = value;
+        end
+        
+        function obj = set.EventFeatureNames(obj, value)
+           
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.EventFeatureNames = {};
+                return;
+            end
+            
+            if ~iscell(value), value = {value}; end
+            
+            if ~all(cellfun(@(x) ischar(x), value)),
+                throw(InvalidPropValue('EventFeatureNames', ...
+                    'Must be a cell array of strings'));
+            end            
+            
+            obj.EventFeatureNames = value;
+            
+        end
        
         function obj = set.EventSelector(obj, value)
            
@@ -65,6 +123,7 @@ classdef config < meegpipe.node.abstract_config
             
             obj = obj@meegpipe.node.abstract_config(varargin{:});
             
+            check(obj);
         end
         
     end

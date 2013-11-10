@@ -5,6 +5,8 @@ import physioset.event.std.ecg_ann;
 import goo.globals;
 import misc.eta;
 import meegpipe.node.ecg_annotate.ecg_annotate;
+import mperl.join;
+import misc.any2str;
 
 dataNew = [];
 
@@ -12,14 +14,13 @@ verbose      = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);
 origVerboseLabel = globals.get.VerboseLabel;
 origVerbose      = globals.get.Verbose;
+
 globals.set('VerboseLabel', verboseLabel);
 globals.set('Verbose', verbose);
 
 if is_verbose(obj),
     fprintf([verboseLabel 'Running ecgpuwave ...\n\n']);
 end
-
-evSel    = get_config(obj, 'EventSelector');
 
 [info, hrvInfo] = ecgpuwave(obj, data);
 
@@ -55,7 +56,7 @@ else
     feat  = nan(nRows, nCols);
     
     if iscell(hrvInfo),
-        rowName = cellfun(@(x) get_name(x), evSel, 'UniformOutput', false);
+        evFeatName = get_config(obj, 'EventFeatureNames');
         for i = 1:numel(hrvInfo),
             if isempty(hrvInfo{i}),
                 continue;
@@ -65,7 +66,7 @@ else
             end
         end
     else
-        rowName = {};
+        evFeatName = {};
         for j = 1:numel(hrvFeats)
             feat(1, j) = hrvInfo(hrvFeats{j});
         end
@@ -76,28 +77,38 @@ else
     % Print a header and the data values
     formatStr = repmat('%s,', 1, numel(hrvFeats));
     formatStr = [formatStr(1:end-1) '\n'];
-    if isempty(rowName),
+    if isempty(evFeatName),
         fprintf(fid, formatStr, hrvFeats{:});
     else
         formatStr = ['%s,' formatStr];
-        fprintf(fid, formatStr, 'eventset', hrvFeats{:});
+        fprintf(fid, formatStr, join(',', evFeatName), hrvFeats{:});
     end
     formatStr = repmat('%5.3f,', 1, numel(hrvFeats));
     formatStr = [formatStr(1:end-1) '\n'];
-    if isempty(rowName),
+    if isempty(evFeatName),
         for i = 1:size(feat,1)
             if all(isnan(feat(i,:))), continue; end
             fprintf(fid, formatStr, feat(i,:));
         end
     else
-        formatStr =['%s,' formatStr];
+        evFormatStr = repmat('%s,', 1, numel(evFeatName));
+        formatStr   = [evFormatStr formatStr];
+        evFeat      = get_config(obj, 'EventFeatures');
+        evArray     = get_event(data);
+        evSel       = get_config(obj, 'EventSelector');
         for i = 1:size(feat,1)
             if all(isnan(feat(i,:))), continue; end
-            fprintf(fid, formatStr, rowName{i}, feat(i,:));
+            thisEv = select(evSel{i}, evArray);
+            for k = 1:numel(thisEv)
+                evFeatVal = cell(1, numel(evFeat));
+                for j = 1:numel(evFeat)
+                    evFeatVal{j} = any2str(evFeat{j}(thisEv(k)));
+                end
+                fprintf(fid, formatStr, evFeatVal{:}, feat(i,:));
+            end
         end
     end
-    
-    
+
     if verbose, fprintf('[done]\n\n'); end
 end
 
