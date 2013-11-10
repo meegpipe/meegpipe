@@ -65,7 +65,7 @@ try
         
         % Run the node again: it should remember the manual selection
         clear myNode ans;
-        myNode = bss_regr('Reject', false, 'GenerateReport', false);
+        myNode = bss_regr('Reject', true, 'GenerateReport', false);
         data = data + rand(size(data));
         run(myNode, data);
         
@@ -78,7 +78,7 @@ try
         if condition,
             % Run the node again: it should still remember!
             clear myNode ans;
-            myNode = bss_regr('Reject', false, 'GenerateReport', false);
+            myNode = bss_regr('Reject', true, 'GenerateReport', false);
             data = data + rand(size(data));
             run(myNode, data);
             
