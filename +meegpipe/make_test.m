@@ -89,7 +89,7 @@ moduleList = unique(moduleList);
 
 nbTests = numel(moduleList);
 
-tic;
+tinit = tic;
 
 status = make_test(moduleList{:});
 
@@ -115,7 +115,7 @@ else
     
 end
 
-toc;
+toc(tinit);
 
 
 end

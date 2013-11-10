@@ -145,7 +145,8 @@ try
     for i = 1:3,
         data{i} = import(physioset.import.matrix, randn(10, 1000));
     end
-    myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', 'OGE', false);
+    myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', ...
+        'OGE', false);
     run(myNode, data{:});
     ok(true, name);
     
@@ -169,7 +170,7 @@ try
            
         end
         myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', ...
-            'OGE', true);
+            'OGE', true, 'Save', true);
         dataFiles = run(myNode, data{:});
         pause(5); % give time for OGE to do its magic
         MAX_TRIES = 100;
