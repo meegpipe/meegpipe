@@ -111,22 +111,16 @@ end
 
 % Create a train of events to mark the transitions between protocol stages
 isStatus = cellfun(@(x) strcmp(x, 'status'), dataHdr);
-isRed    = cellfun(@(x) strcmp(x, 'red [0-255]'), protHdr);
-isBlue   = cellfun(@(x) strcmp(x, 'blue [0-255]'), protHdr);
-[~, transitionSampl] = unique(data(:, isStatus), 'first');
 
-seq = repmat('D', 7, 1);
-seq(prot(1:3:end, isRed)>0) = 'R';
-seq(prot(1:3:end, isBlue)>0) = 'B';
-transitionSampl = [transitionSampl(:); size(data,1)];
-
-myProtEvs = pupillator.block_events(...
-    transitionSampl, data(transitionSampl, isTime), seq);
+myProtEvs = pupillator.generate_block_events(prot, protHdr, data(:, isTime), ...
+    data(:, isStatus));
+    %transitionSampl, data(transitionSampl, isTime), seq);
 
 dataCols = cellfun(@(x) ismember(x, {'diameter [mm]', 'shapefactor'}), dataHdr);
 
-% Instead of using the actual times, we enforce the sampling period to be
-% constant
+% Instead of using the actual sampling times, we enforce the sampling
+% period to be constant. This is not exactly accurate, but makes our life
+% much easier.
 %time = data(:, isTime);
 t0 = data(1, isTime);
 time = t0:samplingPeriod:(t0+samplingPeriod*(size(data,1)-1));

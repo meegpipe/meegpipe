@@ -1,11 +1,12 @@
-function myProtEvs = block_events(transitionSampl, transitionTime, seq)
+function myProtEvs = block_events(transitionSampl, transitionTime, seq, isPVTBlock)
 
 
 blockDur = diff(transitionSampl)-1;
 isPre = true;
 isPost = false;
 myProtEvs = physioset.event.event(transitionSampl(1:end-1));
-pvtBlocks = 2:3:21;
+
+blockMetaProp = sprintf('Block_1_%d', numel(seq));
 
 for i = 1:numel(myProtEvs)
    
@@ -23,7 +24,7 @@ for i = 1:numel(myProtEvs)
    else
        thisType = [thisType 'dark'];
    end
-   if ismember(i, pvtBlocks),
+   if isPVTBlock(i),
        thisType = [thisType, '-pvt'];
    end
    
@@ -34,7 +35,7 @@ for i = 1:numel(myProtEvs)
        'Type',      thisType ...
        );
    
-   myProtEvs(i) = set_meta(myProtEvs(i), 'Block_1_7', ceil(i/3));
+   myProtEvs(i) = set_meta(myProtEvs(i), blockMetaProp, ceil(i/3));
    
 end
 
@@ -58,4 +59,6 @@ for i = 1:(numel(myProtEvs)-lastBlock)
     thisType = get(myProtEvs(lastBlock+i), 'Type');
     newType  = [thisType '-' num2str(i)];
     myProtEvs(lastBlock+i) = set(myProtEvs(lastBlock+i), 'Type', newType);
+end
+
 end
