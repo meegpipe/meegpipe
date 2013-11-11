@@ -51,14 +51,14 @@ classdef lasip < ...
             import misc.process_arguments;
             
             opt.Order            = 2;
-            opt.Gamma            = 1:0.2:4;
+            opt.Gamma            = 4:0.2:6;
             opt.Scales           = ceil([3 1.45.^(4:16)]);
             opt.WindowType       = ...
                 {'Gaussian', 'GaussianLeft', 'GaussianRight'};
             opt.WeightsMedian    = [1 1 1 3 1 1 1];
             opt.InterpMethod     = 'spline';
             opt.GetNoise         = false;
-            opt.Decimation       = 1;
+            opt.Decimation       = 10;
             opt.ExpandBoundary   = 2;
             opt.Verbose          = false;
             opt.Name             = 'lasip';
