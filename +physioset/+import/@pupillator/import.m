@@ -102,11 +102,15 @@ if verbose
 end
 
 % Create a train of PVT events to hold the PVT response times
-myEvs = event(evSampl, 'Type', 'PVT');
-for i = 1:numel(myEvs)
-    myEvs(i) = set(myEvs(i), ...
-        'Time',     evTime(i), ...
-        'Value',    respTime(i));        
+if isempty(evSampl),
+    myEvs = [];
+else
+    myEvs = event(evSampl, 'Type', 'PVT');
+    for i = 1:numel(myEvs)
+        myEvs(i) = set(myEvs(i), ...
+            'Time',     evTime(i), ...
+            'Value',    respTime(i));
+    end
 end
 
 % Create a train of events to mark the transitions between protocol stages

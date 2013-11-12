@@ -3,6 +3,9 @@ function [status, MEh] = test1()
 
 import mperl.file.spec.*;
 import meegpipe.node.copy.*;
+import meegpipe.node.physioset_import.physioset_import;
+import meegpipe.node.tfilter.tfilter;
+import meegpipe.node.pipeline.pipeline;
 import test.simple.*;
 import pset.session;
 import safefid.safefid;
@@ -14,7 +17,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(9);
+initialize(11);
 
 %% Create a new session
 try
@@ -85,6 +88,73 @@ catch ME
     
 end
 
+%% small pipeline (saving output)
+try
+    
+    name = 'small pipeline (saving output)';
+    data = import(physioset.import.matrix, randn(2, 500));
+    
+    save(data);
+    
+    myPipe = pipeline('NodeList', ...
+        { ...
+        physioset_import('Importer', physioset.import.physioset), ...
+        copy, ...
+        tfilter('Filter', filter.bpfilt('fp', [5 10]/125)) ...
+        }, 'Save', true);
+    
+    newData = run(myPipe, get_hdrfile(data));
+    
+    newData(1,:) = 0;
+    
+    condition1 = all(newData(1,:) < eps) & any(data(1,:)>0.1);
+    copyFile = get_datafile(newData);
+    condition2 = exist(copyFile, 'file') > 0;
+    clear newData; % the copy node output should be deleted
+    condition3 = ~exist(copyFile, 'file');
+    ok(condition1 & condition2 & condition3, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% small pipeline
+try
+    
+    name = 'small pipeline';
+    data = import(physioset.import.matrix, randn(2, 500));
+    
+    save(data);
+    
+    myPipe = pipeline('NodeList', ...
+        { ...
+        physioset_import('Importer', physioset.import.physioset), ...
+        copy, ...
+        tfilter('Filter', filter.bpfilt('fp', [5 10]/125)) ...
+        });
+    
+    newData = run(myPipe, get_hdrfile(data));
+    
+    newData(1,:) = 0;
+    
+    condition1 = all(newData(1,:) < eps) & any(data(1,:)>0.1);
+    copyFile = get_datafile(newData);
+    condition2 = exist(copyFile, 'file');
+    clear newData; % the copy node output should be deleted
+    condition3 = ~exist(copyFile, 'file');
+    ok(condition1 & condition2 & condition3, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+
 %% process sample data
 try
     
@@ -115,6 +185,7 @@ catch ME
     
 end
 
+
 %% save node output
 try
     
@@ -122,7 +193,7 @@ try
     myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', ...
         'Save', true);
     data = import(physioset.import.matrix, randn(10, 1000));
-    dataCopy = run(myNode, data);    
+    dataCopy = run(myNode, data);
     savePath = get_save_dir(myNode);
     [~, fileName, fileExt] = fileparts(get_datafile(dataCopy));
     savedFile = catfile(savePath, [fileName fileExt]);
