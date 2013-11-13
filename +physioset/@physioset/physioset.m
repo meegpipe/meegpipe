@@ -5,10 +5,7 @@ classdef physioset < ...
     % physioset - Data structure for physiological datasets
     %
     % See: <a href="matlab:misc.md_help('physioset.physioset')">misc.md_help(''physioset.physioset'')</a>
-    
-    
-    %% IMPLEMENTATION .....................................................
-    
+  
     
     properties (GetAccess = private, SetAccess = private)
         
@@ -176,7 +173,7 @@ classdef physioset < ...
         
     end
     
-    %% PUBLIC INTERFACE ...................................................
+ 
     
     properties (SetAccess = private)
         
@@ -496,7 +493,7 @@ classdef physioset < ...
         [sTime, absTime]   = sampling_time(obj);
         [sTime, absTime]   = get_sampling_time(obj, idx);
         
-        function absTime = get_abs_sampling_time(obj, idx)
+        function absTime   = get_abs_sampling_time(obj, idx)
             [~, absTime] = get_sampling_time(obj, idx);
         end
         

@@ -32,7 +32,7 @@ while i < numel(varargin)
         newCfg = cell(newCfg);
     end
     
-     methodCfg = obj.Config(methodName);
+     methodCfg = obj.MethodConfig(methodName);
     
     if isempty(methodCfg), methodCfg = mjava.hash; end
     
@@ -41,7 +41,7 @@ while i < numel(varargin)
        methodCfg(newCfg{j}) = newCfg{j+1};
     end
    
-    obj.Config(methodName) = methodCfg;
+    obj.MethodConfig(methodName) = methodCfg;
     
 end
 

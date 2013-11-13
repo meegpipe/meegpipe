@@ -1,11 +1,11 @@
 function cfg = get_method_config(obj, varargin)
 
 if isempty(varargin),
-    cfg = obj.Config;
+    cfg = obj.MethodConfig;
     return;
 end
 
-value = obj.Config(varargin{1});
+value = obj.MethodConfig(varargin{1});
 if isempty(value),
     cfg = {};
     return;

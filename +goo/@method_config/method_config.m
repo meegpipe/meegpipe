@@ -1,14 +1,11 @@
 classdef method_config
-
-    
+    % METHOD_CONFIG - Helper class for method_configurable classes
     
     properties (SetAccess = private, GetAccess = private)
         
-        Config = mjava.hash;
+        MethodConfig = mjava.hash;
         
     end
-    
-    %% PUBLIC INTERFACE ...................................................
     
     methods
         

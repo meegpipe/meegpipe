@@ -1,20 +1,34 @@
 classdef verbose
-    % VERBOSE - A simple interface for classes that display status messages
+    % VERBOSE - A simple class to handle verbosity levels
     %
     %
     %
     % See also: misc
     
-    % Documentation: class_misc_verbose.txt
-    % Description: Interface for classes that display status messages
-    
-   
+  
     properties (SetAccess = private, GetAccess = private)
         
         Verbose         = true;
         VerboseLabel    = @(obj, meth) ['(' class(obj) ') '];
         VerboseLevel    = 1;
         
+    end
+    
+    methods (Static, Access = protected)
+        function obj    = init_goo_verbose(obj, varargin)
+            
+            import misc.process_arguments;
+            opt.Verbose         = true;
+            opt.VerboseLabel    = '';
+            opt.VerboseLevel    = 1;
+            [~, opt] = process_arguments(opt, varargin);
+            
+            fNames = fieldnames(opt);
+            for i = 1:numel(fNames)
+                obj.(fNames{i}) = opt.(fNames{i});
+            end
+            
+        end
     end
     
     methods
@@ -36,9 +50,7 @@ classdef verbose
         end
         
     end
-    
-    % Public interface .....................................................
-    
+  
     methods
         
         function bool   = is_verbose(obj)
@@ -86,5 +98,17 @@ classdef verbose
         end
         
     end
+    
+    % Constructor
+    methods
+        function obj = verbose(varargin)
+            
+           if nargin < 1, return; end
+           obj = goo.verbose.init_goo_verbose(obj, varargin{:}); 
+        end
+        
+    end
+    
+    
     
 end

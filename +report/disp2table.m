@@ -1,15 +1,22 @@
 function  myTable = disp2table(dispOutput) 
-% disp2table - Attempts to create remark table from disp() output
+% DISP2TABLE - Attempts to create remark table from disp() output
+%
+% ## Usage synopsis:
 %
 % myTable = report.disp2table(dispOutput)
 %
 % Where `dispOutput` is the output produced by a call to disp(), as
 % captured by e.g. evalc().
 %
+%
 % See also: report.table
 
 import mperl.split;
 import report.table.table;
+
+if ~ischar(dispOutput),
+    dispOutput = evalc('disp(dispOutput)');
+end
 
 myTable = add_column(table, 'Property', 'Value');
 
@@ -29,7 +36,7 @@ end
 % Parse the object class, if present
 className = '';
 match = regexp(dispOutput{1}, ...
-    '<a href="matlab:help\s+(?<className>[^"]+)".+a>$', 'names');
+    '<a href="matlab:help\s+(?<className>[^"]+)".+a>.*$', 'names');
 if ~isempty(match),
     className = match.className;
 end
@@ -48,13 +55,15 @@ end
 % Parse the package info if present
 pkgName = '';
 match = regexp(dispOutput{1}, ...
-    '\s*Package\s*:\s*<a href="matlab:\s*help\s+(?<pkgName>[^"]+)".+a>$', 'names');
+    '\s*Package\s*:\s*<a href="matlab:\s*help\s+(?<pkgName>[^"]+)".+a>$', ...
+    'names');
 if ~isempty(match),
     pkgName = match.pkgName;
 end
 if isempty(pkgName),
     % try the simpler case that a hyperlink is not displayed
-    match = regexp(dispOutput{1}, '^\s*(?<pkgName>[^\s]+)\s*$', 'once');
+    match = regexp(dispOutput{1}, '^\s*Package:\s*(?<pkgName>[^\s]+)\s*$', ...
+        'names');
     if ~isempty(match) && isstruct(match) && isfield(match, 'pkgName'),
         pkgName = match.pkgName;
     end
@@ -68,7 +77,7 @@ end
 count = 0;
 found = false;
 while ~found && count < numel(dispOutput),
-    count = count + 1;
+    count = count + 1;    
     found = ~isempty(regexp(dispOutput{count}, '^[^:]+:[^:]+$', 'once'));
 end
 
@@ -78,6 +87,12 @@ count = 0;
 
 
 for i = 1:size(dispOutput,1)
+    
+    if ~isempty(strfind(dispOutput{i}, 'matlab:methods')) || ...
+            ~isempty(strfind(dispOutput{i}, 'matlab:superclasses')),
+        % We have reached the last disp line
+       return; 
+    end
     
     tmp = strfind(dispOutput{i}, ':');
     if isempty(tmp), continue; end

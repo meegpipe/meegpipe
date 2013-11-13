@@ -2,7 +2,7 @@ classdef abstract_named_object < goo.named_object
     
     
     properties
-       
+        
         Name;
         
     end
@@ -13,10 +13,25 @@ classdef abstract_named_object < goo.named_object
         function obj = set.Name(obj, name)
             import misc.isstring;
             if ~isstring(name),
-               error('The Name property must be a string'); 
+                error('The Name property must be a string');
             end
             
             obj.Name = name;
+            
+        end
+    end
+    
+    methods (Static, Access = protected)
+        function obj = init_goo_abstract_named_object(obj, varargin)
+            
+            import misc.process_arguments;
+            
+            if nargin < 1, return; end
+            
+            opt.Name = '';
+            [~, opt] = process_arguments(opt, varargin);
+            
+            obj.Name = opt.Name;
             
         end
     end
@@ -25,7 +40,7 @@ classdef abstract_named_object < goo.named_object
     methods
         
         function name = get_name(obj)
-           
+            
             import misc.strtrim;
             
             if isempty(obj.Name),
@@ -33,7 +48,7 @@ classdef abstract_named_object < goo.named_object
                 % Remove package info
                 if ~isempty(strfind(name, '.')),
                     name = regexprep(name, '^.+\.([^\.]+$)', '$1');
-                end                
+                end
             else
                 name = strtrim(obj.Name);
             end
@@ -41,14 +56,14 @@ classdef abstract_named_object < goo.named_object
             
         end
         
-        function name = get_full_name(obj)           
-         
+        function name = get_full_name(obj)
+            
             name = get_name(obj);
             
         end
         
         function obj = set_name(obj, name)
-
+            
             obj.Name = name;
             
         end
@@ -58,14 +73,11 @@ classdef abstract_named_object < goo.named_object
     % constructor
     methods
         
-        function obj = abstract_named_object(varargin)            
-            import misc.process_arguments;
-               
-            opt.Name = '';
-            [~, opt] = process_arguments(opt, varargin);
+        function obj = abstract_named_object(varargin)
             
-            obj.Name = opt.Name;
-                
+            if nargin < 1, return; end
+            
+            obj = goo.abstract_named_object.init_goo_abstract_named_object(obj, varargin{:});
             
         end
         
