@@ -21,9 +21,6 @@ function dataSel = data4learning(obj, data, varargin)
 %
 % See also: spt.generic.generic
 
-% Documentation: class_spt_abstract_spt
-% Description: Returns the data used for learning
-
 import misc.epoch_get;
 
 verbose      = is_verbose(obj);

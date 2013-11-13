@@ -8,11 +8,7 @@ classdef generic < ...
     %
     % See: <a href="matlab:misc.md_help('spt.generic')">misc.md_help(''spt.generic'')</a>
     
-    
    
-    
-    
-    %% IMPLEMENTATION .....................................................
     properties (SetAccess = private, GetAccess = private)
         MethodConfig = spt.generic.default_method_config;
     end
@@ -38,10 +34,7 @@ classdef generic < ...
         myTable = parse_disp(obj);
         
     end
-    
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+  
     properties (Dependent)
         
         DimOut;         % The dimensionality of the projected data
@@ -92,7 +85,7 @@ classdef generic < ...
     % spt.spt interface
     methods
         
-        %% Mutable abstract methods
+        % Mutable abstract methods
         
         obj          = learn(obj, data, ev, sr);
         
@@ -118,7 +111,7 @@ classdef generic < ...
         
         obj          = set_method_config(obj, varargin);
         
-        %% Inmutable (const) abstract methods
+        % Inmutable (const) abstract methods
         
         data         = data4learning(obj, data, varargin);
         

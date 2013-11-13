@@ -62,8 +62,7 @@ classdef abstract_bss < spt.generic.generic & spt.bss.bss
         
     end
     
-    
-    
+
     % Constructor
     methods
         

@@ -173,22 +173,6 @@ for segItr = 1:numel(bndy)-1
         % - Delete the .ini file: all windows' selections will be reset
         % - Delete the "selection" parameter in the corresp. window
         % - Delete the correspoding [window X] section completely.
-        
-        % THE NOTE BELOW IS NOW OBSOLETE. KEEP IT FOR A WHILE IN CASE
-        % SOMETHING BREAKS.
-        % Important: Previously, a empty runtimeSel was considered to mean
-        % "override automatic selection with an empty selection". However, 
-        % such a behavior was leading to problems if the runtime
-        % configuration of the node was cleared during node initialization
-        % (e.g. because a previous node config had changed, rendering
-        % invalid the runtime configs of any subsequent node). Thus, an
-        % empty runtimeSel now means "the runtime config has been cleared
-        % so ignore it!". To indicate that a user wants to select the empty
-        % set he should the selection to an integer greater than the number
-        % of spatial components that were estimated. Thus setting select to
-        % a very large number (e.g. 99999) will always have the effect of
-        % forcing an empty selection set.
-        % 
         ignoreRunTime = true;    
     else
         % selection=something
@@ -415,7 +399,7 @@ for segItr = 1:numel(bndy)-1
         
         % Remove residual noise using multiple-lag regression
         if reject && ~isempty(regrFilter),      
-            dataIn(:,:) = filter(regrFilter, thisData, ics(:,:));   
+            dataIn(:,:) = filter(regrFilter, thisData, ics);   
         else
             dataIn(:, :) = thisData;      
         end        
