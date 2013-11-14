@@ -7,9 +7,13 @@ classdef abstract_spt < ...
     % ABSTRACT_SPT - Common ancestor for all spatial transforms
     
     properties (SetAccess = private, GetAccess = private)
-               % Handling random state and random initialization
+        % Handling random state and random initialization
         RandState_;
         Init_;
+        
+        % History of components/dims selections
+        ComponentSelectionH = {};
+        DimSelectionH = {};
         
     end
     
@@ -18,22 +22,57 @@ classdef abstract_spt < ...
         W;                   % Projection matrix
         A;                   % Backprojection matrix
         ComponentSelection;  % Indices of selected components
-        DimSelection;        % Indices of selected data dimensions     
- 
+        DimSelection;        % Indices of selected data dimensions
+        
+    end
+    
+    properties (Dependent)
+        
+        DimIn;
+        DimOut;
+        
+    end
+    
+    methods 
+       
+        function val = get.DimIn(obj)            
+           val = numel(obj.DimSelection);           
+        end
+        
+        function val = get.DimOut(obj)
+            val = numel(obj.ComponentSelection);
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function obj = backup_selection(obj)
+            
+            if isempty(obj.DimSelection) && isempty(obj.ComponentSelection),
+                return;
+            end
+            
+            obj.DimSelectionH = [obj.DimSelectionH; {obj.DimSelection}];
+            obj.ComponentSelectionH = [obj.ComponentSelectionH; ...
+                {obj.ComponentSelection}];
+            
+        end
+        
+        
     end
     
     methods (Access = protected)
-       
+        
         function obj = set_properties(obj, opt, varargin)
-           
+            
             import misc.process_arguments;
             
-            [~, opt] = process_arguments(opt, varargin);
+            [~, opt] = process_arguments(opt, varargin, [], true);
             fNames = fieldnames(opt);
             for i = 1:numel(fNames)
                 obj.(fNames{i}) = opt.(fNames{i});
             end
-            
             
         end
     end
@@ -48,17 +87,22 @@ classdef abstract_spt < ...
         
         obj      = match_sources(source, target, varargin);
         
-        obj      = select_component(obj, idx, backup);
+        function obj = select_component(obj, idx, varargin)
+            obj = select(obj, idx, [], varargin{:});
+        end
         
-        obj      = select_dim(obj, idx, backup);
+        function obj = select_dim(obj, idx, varargin)
+            obj = select(obj, [], idx, varargin{:});
+        end
         
-        obj      = invert_component_selection(obj, backup);
+        obj      = select(obj, compIdx, dimIdx, backup);
         
-        obj      = invert_dim_selection(obj, backup);
+        function obj = clear_selection(obj)
+           obj.ComponentSelection = [];
+           obj.DimSelection = [];
+        end
         
-        obj      = clear_selection(obj);
-        
-        obj      = restore_selection(obj);
+        obj = restore_selection(obj);
         
         obj      = cascade(varargin);
         
@@ -66,27 +110,39 @@ classdef abstract_spt < ...
         % Inmutable abstract methods
         
         function W  = projmat(obj)
-           W = obj.W(obj.ComponentSelection, obj.DimSelection); 
+            W = obj.W(obj.ComponentSelection, obj.DimSelection);
         end
         
         function A  = bprojmat(obj)
-           A = obj.A(obj.DimSelection, obj.ComponentSelection); 
+            A = obj.A(obj.DimSelection, obj.ComponentSelection);
         end
         
         [data, I]   = proj(obj, data);
         
         [data, I]   = bproj(obj, data);
         
-        I           = component_selection(obj);
+        function I = component_selection(obj)
+            
+            I = obj.ComponentSelection;
+            
+        end
         
-        I           = dim_selection(obj);
+        function I = dim_selection(obj)
+            
+            I = obj.DimSelection;
+            
+        end
         
         function val = nb_dim(obj)
             val = size(obj.W, 2);
         end
         
         function val = nb_component(obj)
-            val = size(obj.W, 1);
+            if isempty(obj.ComponentSelection),
+                val = size(obj.W, 1);
+            else
+                val = numel(obj.ComponentSelection);
+            end
         end
         
         % Random state and initialization

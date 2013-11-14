@@ -13,9 +13,7 @@ classdef spt
         
         obj          = select_dim(obj, idx, backup);
         
-        obj          = invert_component_selection(obj, backup);
-        
-        obj          = invert_dim_selection(obj, backup);
+        obj          = select(obj, compIdx, dimIdx, backup);
         
         obj          = clear_selection(obj);
         

@@ -5,7 +5,7 @@ classdef physioset < ...
     % physioset - Data structure for physiological datasets
     %
     % See: <a href="matlab:misc.md_help('physioset.physioset')">misc.md_help(''physioset.physioset'')</a>
-  
+    
     
     properties (GetAccess = private, SetAccess = private)
         
@@ -173,7 +173,7 @@ classdef physioset < ...
         
     end
     
- 
+    
     
     properties (SetAccess = private)
         
@@ -631,12 +631,24 @@ classdef physioset < ...
         end
         
         function obj        = mtimes(varargin)
+            obj = [];
             for i = 1:nargin
                 if isa(varargin{i}, 'physioset.physioset'),
+                    if isempty(obj),
+                        obj = varargin{i};
+                    end
                     varargin{i} = varargin{i}.PointSet;
                 end
             end
-            obj = mtimes(varargin{:});
+            obj.PointSet = mtimes(varargin{:});
+            obj.Sensors  = sensors.dummy(obj.NbDims);
+            clear_selection(obj);
+            obj.EqWeights = [];
+            obj.EqWeightsOrig = [];
+            obj.PhysDimPrefixOrig = [];
+            obj.BadChan = false(1, obj.NbDims);
+            obj.RerefMatrix = [];
+            
         end
         
         function val        = ndims(obj, varargin)

@@ -81,7 +81,6 @@ classdef fastica < spt.abstract_spt
             
             obj = obj@spt.abstract_spt(varargin{:});
             
-            
             opt.Approach        = 'symm';
             opt.Nonlinearity    = 'pow3';
             opt.InitGuess       =  @(data) eye(size(data,1));
