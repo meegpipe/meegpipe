@@ -248,6 +248,7 @@ classdef pca < spt.abstract_spt
     methods
         
         function obj = pca(varargin)
+            import misc.set_properties;
             
             obj = obj@spt.abstract_spt(varargin{:});
             

@@ -3,16 +3,16 @@ classdef jade < spt.abstract_spt
     
     methods
         obj = learn_basis(obj, data, varargin);
-    end    
+    end
     
     methods
         
         function obj = jade(varargin)
-            
-            obj = obj@spt.abstract_spt(varargin{:});            
+            import misc.set_properties;
+            obj = obj@spt.abstract_spt(varargin{:});
             
             if isempty(get_name(obj)),
-                set_name(obj, 'jade');            
+                set_name(obj, 'jade');
             end
             
         end

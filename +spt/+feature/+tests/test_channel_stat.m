@@ -1,13 +1,13 @@
-function [status, MEh] = test_sgini()
-% TEST_sgini - Tests sgini criterion
+function [status, MEh] = test_channel_stat()
+% test_channel_stat - Tests channel_stat feature
 
 import mperl.file.spec.*;
 import pset.selector.*;
-import spt.criterion.sgini;
 import test.simple.*;
 import pset.session;
 import misc.rmdir;
 import datahash.DataHash;
+import filter.bpfilt;
 
 MEh     = [];
 
@@ -33,12 +33,11 @@ catch ME
 end
 
 
-%% default and static constructors
+%% default constructors
 try
     
     name = 'default constructor';
-    sgini.new;
-    sgini.emg;
+    spt.feature.channel_stat;    
     ok(true, name);
     
 catch ME
@@ -48,27 +47,26 @@ catch ME
     
 end
 
-%% test selection
+%% Sample feature extraction
 try
     
-    name = 'sample selections';
-  
-    % Create sample physioset
-    X = [randn(3, 50000);rand(1,50000)];    
-  
-    bssObj = learn(spt.bss.jade, X);
+    name = 'Sample feature extraction';
     
-    W = projmat(bssObj);
+    [data, A] = sample_data();
     
-    [~, idx] = max(abs(corr(W', [0 0 0 1]')));    
+    myFeat = spt.feature.channel_stat(...
+        'TargetSelector', sensor_class('Class', 'EEG'), ...
+        'AggregatingStat', @(x) max(x));
     
-    % Select sparse components
-    crit = sgini('MaxCard', 1, 'MinCard', 1);
-    selected = select(crit, bssObj);
-    selIdx = find(selected);
     
-    % Must be OK   
-    ok(numel(selIdx) == 1 && selIdx == idx, name);   
+    sptObj = learn(spt.bss.efica, data);
+    sptObj = match_sources(sptObj, A);
+    ics = proj(sptObj, data);
+    
+    featVal = extract_feature(myFeat, sptObj, ics);        
+    
+    
+    ok( all(diff(featVal)<0), name);
     
 catch ME
     
@@ -94,3 +92,24 @@ end
 
 %% Testing summary
 status = finalize();
+
+end
+
+
+function [data, A] = sample_data()
+
+
+X = rand(5, 1000);
+
+sensObj = sensors.eeg.dummy(5);
+
+A = misc.unit_norm(rand(5));
+
+for i = 1:size(A,2),
+    A(1,i) = 10*i;
+end
+
+data = import(physioset.import.matrix('Sensors', sensObj), A*X);
+
+
+end

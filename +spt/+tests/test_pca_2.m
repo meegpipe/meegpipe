@@ -12,7 +12,7 @@ import meegpipe.node.*;
 
 MEh     = [];
 
-initialize(14);
+initialize(15);
 
 %% Create a new session
 try
@@ -350,6 +350,35 @@ catch ME
     
 end
 
+%% reverse component sorting
+try
+    
+    name = 'Criterion=mibs';
+    
+    X = rand(5,1000);
+    myPCA = learn(spt.pca('Sphering', false), X);
+    
+    pcs = proj(myPCA, X);
+    
+    condition = all(diff(var(pcs, [], 2)) < 0);
+    
+    if condition,
+        myPCA = sort(myPCA, 5:-1:1);
+        
+        pcs = proj(myPCA, X);
+        
+        condition = all(diff(var(pcs, [], 2)) > 0);
+        
+    end
+
+    ok(condition, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
 
 %% Cleanup
 try

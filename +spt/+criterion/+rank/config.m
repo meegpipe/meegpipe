@@ -4,14 +4,12 @@ classdef config < spt.criterion.abstract_config
     % See: <a href="matlab:misc.md_help('spt.criterion.rank.config')">misc.md_help(''spt.criterion.rank.config'')</a>
     
     
-    properties
-        
-        Percentile  = [];
+    properties        
+       
         MaxCard     = Inf;
         MinCard     = 0;
         Min         = -Inf;
-        Max         = Inf;
-        MADs        = [Inf Inf];
+        Max         = Inf;        
         Filter      = [];
         
     end
@@ -36,50 +34,7 @@ classdef config < spt.criterion.abstract_config
             obj.Filter = value;                
             
          end      
-         
-         function obj = set.Percentile(obj, value)
-             
-            import exceptions.*
-            
-            if isempty(value),
-                obj.Percentile = [];
-                return;
-            end
-            
-            if numel(value) ~= 1 || ~isnumeric(value) || value < 0 || ...
-                    value > 100
-                throw(InvalidPropValue('Percentile', ...
-                    'Must be a percentile'));
-            end
-            
-            obj.Percentile = value;
-             
-         end
-         
-         function obj = set.MADs(obj, value)
-            
-             import exceptions.InvalidPropValue;
-             
-             if isempty(value),
-                 obj.MADs = [Inf Inf];
-                 return;
-             end             
-             
-             if numel(value) == 1,
-                 value = repmat(value, 1, 2);
-             end
-             
-             if numel(value) ~= 2 || ~isnumeric(value),
-                 throw(InvalidPropValue('MADs', ...
-                     'Must be a 1x2 numeric vector'));
-             end
-             
-             obj.MADs = reshape(value, 1, 2);
-             
-         end
-         
-         % more to come...
-         
+     
     end
     
    

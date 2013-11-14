@@ -8,13 +8,6 @@ classdef sgini < spt.criterion.rank.rank
         
     end    
     
-    % Static factories
-    methods (Static)
-        
-        obj = emg(varargin); 
-        
-    end
-        
     % Constructor
     methods
         

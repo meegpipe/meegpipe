@@ -1,13 +1,12 @@
 function [status, MEh] = test_xcorr()
-% TEST_XCORR - Tests xcorr criterion
+% TEST_XCORR - Tests xcorr feature extractor
 
 import mperl.file.spec.*;
-import pset.selector.*;
-import spt.criterion.xcorr.*;
 import test.simple.*;
 import pset.session;
 import misc.rmdir;
 import datahash.DataHash;
+import pset.selector.sensor_class;
 
 MEh     = [];
 
@@ -37,8 +36,8 @@ end
 try
     
     name = 'default constructor';
-    xcorr;
-    xcorr.bcg;
+    spt.feature.xcorr;
+    spt.feature.xcorr.bcg;
     ok(true, name);
     
 catch ME
@@ -51,14 +50,12 @@ end
 %% construction arguments
 try
     
-    name = 'construction arguments';
-    obj = xcorr('Selector', sensor_class('Type', 'CW'), 'Min', 0.5, ...
-        'SummaryFunc', @(x) x);
+    name = 'construction arguments';   
+    obj = spt.feature.xcorr(...
+        'RefSelector',     sensor_class('Type', 'CW'), ...
+        'AggregatingStat', @(x) max(x)); 
     
-    minVal = get_config(obj, 'Min');
-    fh     = get_config(obj, 'SummaryFunc');    
-    
-    ok( minVal == .5 && numel(fh(1:10)) == 10 && all(fh(1:10)==1:10), name);
+    ok(obj.AggregatingStat(1:10) == 10, name);
     
 catch ME
     
@@ -67,7 +64,7 @@ catch ME
     
 end
 
-%% test selection
+%% spt.xcorr.bcg
 try
     
     name = 'sensor_class (1)';
@@ -88,12 +85,11 @@ try
     data = import(physioset.import.matrix(250, 'Sensors', mySensors), X);
     
     % Select only those components correlating with the ECG channels   
-    myCrit = xcorr.bcg('MinCard', 4, 'MaxCard', 4);
-    selected = select(myCrit, [], X, [], [], [], data);
-    selIdx = find(selected);
+    feature = extract_feature(spt.feature.xcorr.bcg, [], data(:,:), data);
+    [~, I] = sort(feature, 'descend');
     
     % Must be OK   
-    ok(numel(selIdx) == 4 && all(selIdx == [ 1 3 6 7]), name);   
+    ok(isempty(setdiff(I(1:2), 6:7)), name);   
     
 catch ME
     

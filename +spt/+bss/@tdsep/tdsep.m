@@ -15,7 +15,7 @@ classdef tdsep < spt.abstract_spt
     methods
         
         function obj = tdsep(varargin)
-            
+            import misc.set_properties;
             
             obj = obj@spt.abstract_spt(varargin{:});
             

@@ -27,8 +27,6 @@ minRank = get_config(obj, 'Min');
 maxRank = get_config(obj, 'Max');
 minCard = get_config(obj, 'MinCard');
 maxCard = get_config(obj, 'MaxCard');
-MADs    = get_config(obj, 'MADs');
-perc    = get_config(obj, 'Percentile');
 
 if ~isempty(objSpt) && ~isa(objSpt, 'spt.spt'),
     error('A spt.spt object was expected as second input argument');
@@ -78,30 +76,6 @@ end
 % rankIndex = rankIndex./max(rankIndex);
 % rankIndex = rankIndex(:);
 
-% Percentile criterion
-if ~isempty(perc),
-    threshold = prctile(rankIndex, perc);
-    selected(rankIndex > threshold) = true;
-end
-
-% MADs
-if any(MADs < Inf),
-    rankMAD = mad(rankIndex);
-    rankMed = median(rankIndex);
-    
-    condition = (...
-        rankIndex > rankMed + MADs(2)*rankMAD | ...
-        rankIndex < rankMed - MADs(1)*rankMAD ...
-        ) & rankIndex < 1 & rankIndex > 0;
-    
-    % IMPORTANT: The MADs threshold is considered only if it applies to any
-    % time series that is not a extreme case (0 or 1). Otherwise, the MADs
-    % criterion will almost always select the 0 and/or 1 case if MADs(1)
-    % and/or MADs(2) is not infinity.
-    if any(condition),
-        selected(condition) = true;
-    end
-end
 
 % Min/Max cardinality
 [~, idx] = sort(rankIndex, 'descend');

@@ -22,7 +22,7 @@ classdef abstract_spt < ...
         W;                   % Projection matrix
         A;                   % Backprojection matrix
         ComponentSelection;  % Indices of selected components
-        DimSelection;        % Indices of selected data dimensions
+        DimSelection;        % Indices of selected data dimension
         
     end
     
@@ -60,26 +60,13 @@ classdef abstract_spt < ...
         end
         
         
-    end
-    
-    methods (Access = protected)
-        
-        function obj = set_properties(obj, opt, varargin)
-            
-            import misc.process_arguments;
-            
-            [~, opt] = process_arguments(opt, varargin, [], true);
-            fNames = fieldnames(opt);
-            for i = 1:numel(fNames)
-                obj.(fNames{i}) = opt.(fNames{i});
-            end
-            
-        end
-    end
+    end    
     
     methods
         
         % Mutable methods from spt.spt interface
+        
+        obj      = sort(obj, sortingFeature, varargin);
         
         % Method learn() is implemented in terms of learn_basis() which is to
         % be implemented by concrete classes that inherit from abstract_spt
@@ -98,8 +85,8 @@ classdef abstract_spt < ...
         obj      = select(obj, compIdx, dimIdx, backup);
         
         function obj = clear_selection(obj)
-           obj.ComponentSelection = [];
-           obj.DimSelection = [];
+           obj.ComponentSelection = 1:size(obj.W,1);
+           obj.DimSelection = 1:size(obj.A,1);
         end
         
         obj = restore_selection(obj);

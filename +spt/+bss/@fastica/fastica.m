@@ -78,7 +78,7 @@ classdef fastica < spt.abstract_spt
     % Constructor and invariant checks
     methods
         function obj = fastica(varargin)
-            
+            import misc.set_properties;
             obj = obj@spt.abstract_spt(varargin{:});
             
             opt.Approach        = 'symm';

@@ -5,6 +5,8 @@ classdef spt
         
         % Mutable abstract methods
         
+        obj          = sort(obj, sortingFeature, varargin);
+        
         obj          = learn(obj, data, ev, sr);
         
         obj          = match_sources(source, target, varargin);

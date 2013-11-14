@@ -28,7 +28,7 @@ classdef ewasobi < spt.abstract_spt
     % Constructor
     methods
         function obj = ewasobi(varargin)
-            
+            import misc.set_properties;
             obj = obj@spt.abstract_spt(varargin{:});
             
             opt.AROrder = 10;            

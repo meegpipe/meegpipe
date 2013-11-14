@@ -3,17 +3,13 @@ classdef abstract_configurable < ...
         goo.hashable & ...
         goo.reportable
     
-    
-    % IMPLEMENTATION .....................................................
-    
+  
     properties (GetAccess = private, SetAccess = private)
         
        Config; 
        
     end
-    
-    % PUBLIC INTERFACE ...................................................
-    
+  
     methods
         
         % goo.reportable interface

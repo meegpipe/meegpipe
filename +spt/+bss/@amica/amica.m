@@ -15,7 +15,7 @@ classdef amica < spt.abstract_spt
     
     methods
         function obj = amica(varargin)
-            
+            import misc.set_properties;
             obj = obj@spt.abstract_spt(varargin{:});
             
             opt.NbMixtures  = 3;

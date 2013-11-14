@@ -38,7 +38,7 @@ classdef runica < spt.abstract_spt
     % Constructor
     methods
         function obj = runica(varargin)
-            
+            import misc.set_properties;
             obj = obj@spt.abstract_spt(varargin{:});
             
             opt.Extended = true;

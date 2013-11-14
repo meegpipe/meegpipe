@@ -12,7 +12,7 @@ import meegpipe.node.*;
 
 MEh     = [];
 
-initialize(8);
+initialize(9);
 
 %% Create a new session
 try
@@ -32,6 +32,43 @@ catch ME
     
 end
 
+%% match_sources
+try
+    
+    name = 'match_sources';
+    
+    ics = rand(4,100000);
+    A = rand(size(ics,1));
+    
+    data = A*ics;
+    
+    myBSS = learn(spt.bss.efica, data);    
+   
+    myBSS = match_sources(myBSS, A);
+    
+    icsR = proj(myBSS, data);
+    
+    ics = ics - repmat(mean(ics,2), 1, size(ics,2));
+    ics = ics./repmat(sqrt(var(ics, [], 2)), 1, size(ics, 2));
+    
+    icsR = icsR - repmat(mean(icsR,2), 1, size(icsR,2));
+    icsR = icsR./repmat(sqrt(var(icsR, [], 2)), 1, size(icsR, 2));
+    
+    corrMat = ics*icsR';
+    
+    I = nan(1, size(corrMat,1));
+    for i = 1:size(corrMat, 1)
+       [~, I(i)] = max(corrMat(i,:)); 
+    end
+    
+    ok(all(I == [1 2 3 4]), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
 
 %% proj/bproj
 try
