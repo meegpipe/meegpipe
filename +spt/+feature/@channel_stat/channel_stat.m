@@ -11,12 +11,9 @@ classdef channel_stat < spt.feature.feature & goo.verbose
     
     methods
         
-        idx = extract_feature(obj, sptObj, tSeries, raw, varargin)
+        idx = extract_feature(obj, sptObj, tSeries, raw, varargin)     
         
-    end
-    
-    % Constructor
-    methods
+        % Constructor
         
         function obj = channel_stat(varargin)
             import misc.set_properties;
