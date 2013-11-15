@@ -1,12 +1,8 @@
-classdef channel_stat < spt.feature.feature & goo.verbose
-    
+classdef tkurtosis < spt.feature.feature & goo.verbose
+    % TKURTOSIS - Temporal kurtosis
     
     properties
-        
-        TargetSelector  = pset.selector.all_data;
-        ChannelStat     = @(x) var(x, [], 2);
-        AggregatingStat = @(x) mean(x);
-        
+       MedFiltOrder = 5;
     end
     
     methods
@@ -16,14 +12,12 @@ classdef channel_stat < spt.feature.feature & goo.verbose
         
         % Constructor
         
-        function obj = channel_stat(varargin)
+        function obj = tkurtosis(varargin)
             import misc.set_properties;
             
             if nargin < 1, return; end
             
-            opt.TargetSelector  = pset.selector.all_data;
-            opt.ChannelStat     = @(x) var(x, [], 2);
-            opt.AggregatingStat = @(x) mean(x);
+            opt.MedFiltOrder  = 5;
             obj = set_properties(obj, opt, varargin);
             
         end
