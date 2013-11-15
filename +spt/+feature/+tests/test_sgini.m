@@ -1,5 +1,5 @@
-function [status, MEh] = test_tgini()
-% TEST_TGINI - Tests tgini feature
+function [status, MEh] = test_sgini()
+% TEST_SGINI - Tests sgini feature
 
 import mperl.file.spec.*;
 import pset.selector.*;
@@ -11,7 +11,7 @@ import filter.bpfilt;
 
 MEh     = [];
 
-initialize(5);
+initialize(4);
 
 %% Create a new session
 try
@@ -37,7 +37,7 @@ end
 try
     
     name = 'default constructor';
-    spt.feature.tgini; 
+    spt.feature.sgini; 
     ok(true, name);
     
 catch ME
@@ -47,22 +47,25 @@ catch ME
     
 end
 
-%% Sample feature extraction
+%% sample feature extraction
 try
     
-    name = 'Sample feature extraction';
+    name = 'sample feature extraction';
     
-    % Create sample physioset
-    X = randn(4, 10000); 
-    
-    X(1,1:10:10000) = 10;
+    % Create sample BSS decomposition
+    X = rand(10, 15000); 
+    A = rand(10);
+    A(:,2) = zeros(10,1);
+    A(2,2) = 1;
+    myBSS = learn(spt.bss.efica, A*X);
+    myBSS = match_sources(myBSS, A);
     
     % Select sparse components
-    featVal = extract_feature(spt.feature.tgini, [], X);
+    featVal = extract_feature(spt.feature.sgini, myBSS);
    
     [~, I] = max(featVal);
     
-    ok( I == 1, name);
+    ok( I == 2, name);
     
 catch ME
     
@@ -70,33 +73,6 @@ catch ME
     MEh = [MEh ME];
     
 end
-
-%% Sample feature extraction from physioset
-try
-    
-    name = 'Sample feature extraction';
-    
-    % Create sample physioset
-    X = randn(4, 10000); 
-    
-    X(1,1:10:10000) = 10;
-    
-    data = import(physioset.import.matrix, X);
-    
-    % Select sparse components
-    featVal = extract_feature(spt.feature.tgini, [], data);
-   
-    [~, I] = max(featVal);
-    
-    ok( I == 1 & max(abs(data(1,:)-X(1,:))) < 0.01, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
 
 %% Cleanup
 try
