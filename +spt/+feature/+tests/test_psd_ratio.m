@@ -82,7 +82,7 @@ try
     X = randn(4, 10000);    
     data = import(physioset.import.matrix, X);
   
-    myFilter = filter.bpfilt('fp', myFeat.Band1(1,:)/(data.SamplingRate/2));
+    myFilter = filter.bpfilt('fp', myFeat.TargetBand(1,:)/(data.SamplingRate/2));
     data(2,:) = filter(myFilter, data(2,:));
     
     featVal = extract_feature(myFeat, [], data);
@@ -107,7 +107,7 @@ try
     X = randn(4, 10000);    
     data = import(physioset.import.matrix, X);
   
-    myFilter = filter.bpfilt('fp', myFeat.Band1(1,:)/(data.SamplingRate/2));
+    myFilter = filter.bpfilt('fp', myFeat.TargetBand(1,:)/(data.SamplingRate/2));
     data(2,:) = filter(myFilter, data(2,:));
     
     featVal = extract_feature(myFeat, [], data);
