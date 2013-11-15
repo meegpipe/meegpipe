@@ -15,7 +15,9 @@ import physioset.event.class_selector;
 MEh     = [];
 
 % Number of tests that should run if everything goes OK
-initialize(13);
+initialize(14)
+
+ 
 
 %% Create a new session
 try
@@ -70,6 +72,28 @@ try
     chanStat = get_config(crit, 'ChannelStat');
     epochStat = get_config(crit, 'EpochStat');
     ok(chanStat(10) == 10 && epochStat(10) == 100, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% process sample data with bad samples
+try
+    
+    name = 'process sample data with bad samples';
+
+    data = my_sample_data();
+     
+    myNode = my_sample_node();
+    
+    set_bad_sample(data, 101:300);
+    
+    run(myNode, data);
+    
+    ok(numel(find(is_bad_sample(data))) == 250+200, name);
     
 catch ME
     
