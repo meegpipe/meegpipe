@@ -10,26 +10,41 @@ if isempty(obj.Feature),
     throw(InvalidObject('Property ''Feature'' needs to be specified'));
 end
 
-featVal = extract_feature(obj.Feature, objSpt, tSeries, varargin{:});
+featVal = nan(size(tSeries,1), numel(obj.Feature));
+
+for featItr = 1:numel(obj.Feature),
+    thisFeat = extract_feature(obj.Feature{featItr}, objSpt, tSeries, ...
+        varargin{:});
+    featVal(:, featItr) = thisFeat(:);
+end
 
 selected = false(1,size(tSeries,1));
 
-
-if isa(obj.Max, 'function_handle'),
-    maxTh = obj.Max(featVal);
-else
-    maxTh = obj.Max;
+maxTh = nan(1, numel(obj.Feature));
+for featItr = 1:numel(obj.Feature),
+    if isa(obj.Max{featItr}, 'function_handle'),
+        maxTh(featItr) = obj.Max{featItr}(featVal(:, featItr));
+    else
+        maxTh(featItr) = obj.Max{featItr};
+    end
+    selected(featVal(:, featItr) > maxTh(featItr)) = true;
 end
-selected(featVal > maxTh) = true;
 
-if isa(obj.Min, 'function_handle'),
-    minTh = obj.Min(featVal);
-else
-    minTh = obj.Min;
+minTh = nan(1, numel(obj.Feature));
+for featItr = 1:numel(obj.Feature),
+    if isa(obj.Min{featItr}, 'function_handle'),
+        minTh(featItr) = obj.Min{featItr}(featVal(:, featItr));
+    else
+        minTh(featItr) = obj.Min{featItr};
+    end
+    selected(featVal(:, featItr) < minTh(featItr)) = true;
 end
-selected(featVal < minTh) = true;
 
-[~, idx] = sort(featVal, 'descend');
+% Sort components by their distance to the hypercube delimited by the
+% various thresholds
+maxTh = repmat(maxTh, size(tSeries, 1), 1);
+minTh = repmat(minTh, size(tSeries, 1), 1);
+[~, idx] = sort(max(max(featVal-maxTh, minTh-featVal), [], 2), 'descend');
 
 if isa(obj.MinCard, 'function_handle')
     minCard = obj.MinCard(featVal);

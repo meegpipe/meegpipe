@@ -8,7 +8,7 @@ import datahash.DataHash;
 
 MEh     = [];
 
-initialize(8);
+initialize(12);
 
 %% Create a new session
 try
@@ -144,6 +144,86 @@ catch ME
     
 end
 
+%% multiple features
+try
+    
+    name = 'multiple features';
+    
+    myCrit = spt.criterion.threshold(...
+        'Feature',  {spt.feature.tkurtosis, spt.feature.tkurtosis}, ...
+        'MaxCard',  2, ...
+        'Max',      {0, 0});
+   
+    selected = select(myCrit, [], rand(4, 1000));
+    
+    ok( numel(find(selected)) == 2, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% multiple features (cont'd)
+try
+    
+    name = 'multiple features (cont''d)';
+    
+    myCrit = spt.criterion.threshold(...
+        'Feature',  {spt.feature.tkurtosis, spt.feature.thilbert}, ...      
+        'Max',      {2, 0});
+   
+    selected = select(myCrit, [], rand(4, 1000));
+    
+    ok( numel(find(selected)) == 4, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% multiple features (cont'd)
+try
+    
+    name = 'multiple features (cont''d)';
+    
+    myCrit = spt.criterion.threshold(...
+        'Feature',  {spt.feature.tkurtosis, spt.feature.thilbert}, ...      
+        'Max',      {5, .1});
+   
+    selected = select(myCrit, [], rand(4, 1000));
+    
+    ok( numel(find(selected)) == 4, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% multiple features (cont'd)
+try
+    
+    name = 'multiple features (cont''d)';
+    
+    myCrit = spt.criterion.threshold(...
+        'Feature',  {spt.feature.tkurtosis, spt.feature.thilbert}, ...      
+        'Max',      {5, 1});
+   
+    selected = select(myCrit, [], rand(4, 1000));
+    
+    ok( ~any(selected), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
 
 %% Cleanup
 try

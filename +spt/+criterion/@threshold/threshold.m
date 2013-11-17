@@ -4,7 +4,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose
     
     properties
         Negated = false;
-        Feature = [];;
+        Feature = {};           % One or more feature objects
         Min     = -Inf;
         Max     = +Inf;
         MinCard = 0;
@@ -14,6 +14,25 @@ classdef threshold < spt.criterion.criterion & goo.verbose
     
     methods
         %% Consistency checks
+        function check(obj)
+            import exceptions.Inconsistent;
+            
+            if isempty(obj.Feature), return; end
+            
+            if (numel(obj.Feature) > 1 && numel(obj.Min) > 1) && ...
+                    numel(obj.Feature) ~= numel(obj.Min),
+               throw(Inconsistent(['There must be one Min threshold per ', ...
+               'feature']));              
+            end
+            
+            if (numel(obj.Feature) > 1 && numel(obj.Max) > 1) && ...
+                    numel(obj.Feature) ~= numel(obj.Max),
+               throw(Inconsistent(['There must be one Max threshold per ', ...
+               'feature']));              
+            end
+            
+        end
+        
         function obj = set.Negated(obj, value)
             import exceptions.InvalidPropValue;
             if isempty(value),
@@ -32,15 +51,64 @@ classdef threshold < spt.criterion.criterion & goo.verbose
             import exceptions.InvalidPropValue;
             
             if isempty(value),
-                obj.Feature = [];
+                obj.Feature = {};
                 return;
             end
             
-            if numel(value) ~= 1 || ~isa(value, 'spt.feature.feature'),
+            if ~iscell(value),
+                value = {value};
+            end
+            
+            if ~all(cellfun(@(x) isa(x, 'spt.feature.feature'), value)),
                 throw(InvalidPropValue('Feature', ...
-                    'Must be a spt.feature.feature'));
+                    'Must be a cell array of spt.feature.feature'));
             end
             obj.Feature = value;
+            
+        end
+        
+        function obj = set.Min(obj, value)
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.Min = -Inf;
+                return;
+            end
+            
+            if ~iscell(value),
+                value = {value};
+            end
+            
+            if ~all(cellfun(@(x) isa(x, 'function_handle') | ...
+                    (isnumeric(x) & numel(x) == 1), ...
+                    value)),
+                throw(InvalidPropValue('Min', ...
+                    'Must be a cell array of function_handle or scalars'));
+            end
+            obj.Min = value;
+            
+        end
+        
+        
+        function obj = set.Max(obj, value)
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.Max = Inf;
+                return;
+            end
+            
+            if ~iscell(value),
+                value = {value};
+            end
+            
+            if ~all(cellfun(@(x) isa(x, 'function_handle') | ...
+                    (isnumeric(x) & numel(x) == 1), ...
+                    value)),
+                throw(InvalidPropValue('Max', ...
+                    'Must be a cell array of function_handle or scalars'));
+            end
+            obj.Max = value;
             
         end
         
@@ -62,14 +130,29 @@ classdef threshold < spt.criterion.criterion & goo.verbose
             
             if nargin < 1, return; end
             
-            opt.Negated = false;
-            opt.Feature = [];
+            % First input arg can be a feature object
+            if isa(varargin{1}, 'spt.feature.feature'),
+                opt.Feature = varargin{1};
+                varargin = varargin(2:end);
+            else
+                opt.Feature = {};
+            end            
+            opt.Negated = false;            
             opt.Min     = -Inf;
             opt.Max     = +Inf;
             opt.MinCard = 0;
             opt.MaxCard = Inf;
             obj = set_properties(obj, opt, varargin);
             
+            if numel(obj.Feature) > 1 && numel(obj.Min) == 1,
+               obj.Min = repmat(obj.Min, 1, numel(obj.Feature)); 
+            end
+            
+            if numel(obj.Feature) > 1 && numel(obj.Max) == 1,
+               obj.Max = repmat(obj.Max, 1, numel(obj.Feature)); 
+            end
+            
+            check(obj);
         end
         
     end
