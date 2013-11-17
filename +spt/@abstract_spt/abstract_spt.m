@@ -25,6 +25,11 @@ classdef abstract_spt < ...
         DimSelection;        % Indices of selected data dimension
         
     end
+ 
+    properties
+        LearningFilter;     % Pre-processing filter before learning
+    end
+    
     
     properties (Dependent)
         
@@ -32,7 +37,7 @@ classdef abstract_spt < ...
         DimOut;
         
     end
-    
+
     methods 
        
         function val = get.DimIn(obj)            
@@ -41,6 +46,23 @@ classdef abstract_spt < ...
         
         function val = get.DimOut(obj)
             val = numel(obj.ComponentSelection);
+        end
+        
+        function obj = set.LearningFilter(obj, value)
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.LearningFilter = [];
+                return;
+            end
+            
+            if numel(value) ~=1 || ~isa(value, 'filter.dfilt'),
+                throw(InvalidPropValue('LearningFilter', ...
+                    'Must be a filter.dfilt object'));
+            end
+            
+            obj.LearningFilter = value;            
+            
         end
         
     end

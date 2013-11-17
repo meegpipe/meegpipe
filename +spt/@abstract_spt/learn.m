@@ -20,6 +20,13 @@ if verbose,
         size(data,1), class(obj));
 end
 
+if ~isempty(obj.LearningFilter),
+   if isa(data, 'pset.mmappset'),
+       data = copy(data);      
+   end
+   data = filter(obj.LearningFilter, data);    
+end
+
 obj = learn_basis(obj, data);
 
 if verbose,
