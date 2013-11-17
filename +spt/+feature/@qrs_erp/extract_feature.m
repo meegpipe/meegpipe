@@ -18,6 +18,24 @@ else
     sr = data.SamplingRate;
 end
 
+if ~isempty(obj.Filter)
+    if verbose,
+        fprintf([verboseLabel ...
+            'Pre-filtering before extracting qrs_erp features ...\n\n']);
+    end
+    if isa(tSeries, 'pset.mmappset'),
+        tSeries = copy(tSeries);
+    end
+    
+    if isa(obj.Filter, 'function_handle'),
+        filtObj = obj.Filter(sr);
+    else
+        filtObj = obj.Filter;
+    end
+    
+    tSeries = filter(filtObj, tSeries);   
+end
+    
 if verbose,
     fprintf([verboseLabel 'Extracting qrs_erp features ...']);
 end
@@ -81,7 +99,6 @@ for j = 1:size(tSeries,1)
 end
 
 if verbose, fprintf('\n\n'); end
-
 
 
 end

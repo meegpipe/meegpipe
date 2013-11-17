@@ -39,6 +39,24 @@ if ~isempty(obj.Duration),
     ev = set(ev, 'Duration', ceil(sr*obj.Duration));
 end
 
+if ~isempty(obj.Filter),
+    if verbose,
+        fprintf([verboseLabel ...
+            'Pre-filtering before computing terp features ...\n\n']);
+    end
+    if isa(tSeries, 'pset.mmappset'),
+        tSeries = copy(tSeries);
+    end
+    if isa(obj.Filter, 'function_handle'),
+        filtObj = obj.Filter(sr);
+    else
+        filtObj = obj.Filter;
+    end
+    
+    tSeries = filter(filtObj, tSeries);
+    
+end
+
 
 if is_verbose(obj),
     fprintf([verboseLabel 'Computing terp rank for %d time series...'], ...
@@ -50,8 +68,8 @@ if verbose,
     clear +misc/eta;
 end
 
-for tsIter = 1:size(tSeries,1)    
-   
+for tsIter = 1:size(tSeries,1)
+    
     x = tSeries(tsIter, :);
     x = squeeze(epoch_get(x, ev));
     x = x - repmat(mean(x), size(x,1), 1);
@@ -69,7 +87,7 @@ for tsIter = 1:size(tSeries,1)
     end
     
     trialCorr = trialCorr/size(x,1);
-
+    
     featVal(tsIter) = median(abs(trialCorr));
     
     if is_verbose(obj),

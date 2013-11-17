@@ -3,19 +3,15 @@ classdef config < meegpipe.node.abstract_config
     %
     % See: <a href="matlab:misc.md_help('meegpipe.node.bss_regr.config')">misc.md_help(''meegpipe.node.bss_regr.config'')</a>
     
-    
-    
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+   
     properties
         
-        PCA             = spt.pca.pca('Criterion', 'aic', 'Var', [0.95 0.9999], 'MaxDimOut', 50);
-        BSS             = spt.bss.multicombi.multicombi;
+        PCA             = spt.pca('Criterion', 'aic', 'RetainedVar', 99.99, 'MaxCard', 50);
+        BSS             = spt.bss.multicombi;
         RegrFilter      = [];
         ChopSelector    = physioset.event.class_selector('Class', 'chop_begin');
         Overlap         = 25;
-        Criterion       = spt.criterion.dummy.dummy;
+        Criterion       = spt.criterion.dummy;
         Reject          = true;
         FixNbICs        = [];
         Filter          = [];
@@ -37,7 +33,7 @@ classdef config < meegpipe.node.abstract_config
             
             if ~isa(value, 'filter.rfilt'),
                 throw(InvalidPropValue('Filter', ...
-                    'Must be a filter.dfilt objects'));
+                    'Must be a filter.rfilt objects'));
             end
             
             obj.RegrFilter = value;
@@ -66,12 +62,13 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.*;
             
             if isempty(value),
-                value = [];
+                obj.PCA = [];
+                return;
             end
             
-            if ~isa(value, 'spt.pca.pca'),
+            if ~isa(value, 'spt.pca'),
                 throw(InvalidPropValue('PCA', ...
-                    'Must be a spt.pca.pca object'));
+                    'Must be a spt.pca object'));
             end
             
             obj.PCA = value;
@@ -83,13 +80,13 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.*;
             
             if isempty(value),
-                obj.BSS = spt.bss.multicombi.multicombi;
+                obj.BSS = spt.bss.multicombi;
                 return;
             end
             
-            if ~isa(value, 'spt.bss.bss'),
+            if ~isa(value, 'spt.spt'),
                 throw(InvalidPropValue('BSS', ...
-                    'Must be a spt.bss.bss object'));
+                    'Must be a spt.spt object'));
             end
             
             obj.BSS = value;

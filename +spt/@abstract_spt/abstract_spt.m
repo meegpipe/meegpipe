@@ -56,9 +56,10 @@ classdef abstract_spt < ...
                 return;
             end
             
-            if numel(value) ~=1 || ~isa(value, 'filter.dfilt'),
+            if numel(value) ~=1 || (~isa(value, 'filter.dfilt') && ...
+                    ~isa(value, 'function_handle')),
                 throw(InvalidPropValue('LearningFilter', ...
-                    'Must be a filter.dfilt object'));
+                    'Must be a filter.dfilt object or a function_handle'));
             end
             
             obj.LearningFilter = value;            
@@ -208,12 +209,21 @@ classdef abstract_spt < ...
     methods
         
         function obj = abstract_spt(varargin)
+            import misc.process_arguments;
+            import misc.split_arguments;
+            import misc.set_properties;
             
             if nargin < 1, return; end
             
             obj = goo.abstract_named_object.init_goo_abstract_named_object(obj, varargin{:});
             
             obj = goo.verbose.init_goo_verbose(obj, varargin{:});
+            
+            parentArgs = {'Name', 'Verbose', 'VerboseLabel', 'VerboseLevel'};
+            [~, thisArgs] = split_arguments(parentArgs, varargin);
+            
+            opt.LearningFilter = [];
+            obj = set_properties(obj, opt, thisArgs{:});
             
         end
         

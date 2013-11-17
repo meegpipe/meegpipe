@@ -6,6 +6,36 @@ classdef qrs_erp < spt.feature.feature & goo.verbose
         % For building the ERP
         Duration   = 0.4;  % in seconds
         Offset     = 0.08; % in seconds
+        Filter     = [];   % A pre-processind digital filter
+        
+    end
+    
+    methods
+        
+        function obj = set.Filter(obj, value)
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.Filter = [];
+                return;
+            end
+            
+            if numel(value) ~= 1 || (~isa(value, 'filter.dfilt') && ...
+                    ~isa(value, 'function_handle')),
+                throw(InvalidPropValue('Filter', ...
+                    'Must be a filter.dfilt or a function_handle'));
+            end
+            
+            if isa(value, 'function_handle'),
+                testVal = value(500);
+                if ~isa(testVal, 'filter.dfilt'),
+                    throw(InvalidPropValue('Filter', ...
+                        'Must evaluate to a filter.dfilt object'));
+                end
+            end
+            
+            obj.Filter = value;
+        end
         
     end
     
@@ -24,6 +54,7 @@ classdef qrs_erp < spt.feature.feature & goo.verbose
             % For building the ERP
             opt.Duration   = 0.4;  % in seconds
             opt.Offset     = 0.08; % in seconds
+            opt.Filter     = [];
             obj = set_properties(obj, opt, varargin);
         end
         

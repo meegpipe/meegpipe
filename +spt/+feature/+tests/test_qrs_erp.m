@@ -12,7 +12,7 @@ import mperl.file.spec.catfile;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Create a new session
 try
@@ -103,6 +103,32 @@ catch ME
     
 end
 
+%% pre-filtering
+try
+    
+    name = 'pre-filtering';
+    
+    tmp = load(catfile(meegpipe.data.root_path, 'ecg.mat'));
+    ecg = tmp.ecg;
+    data = import(physioset.import.matrix, randn(4,size(ecg,2)));
+    data(2,:) = ecg;
+    
+    myFilt = @(sr) filter.lpfilt('fc', 40/(sr/2));
+    myFeat = spt.feature.qrs_erp('Filter', myFilt);
+    featVal = extract_feature(myFeat, [], data);        
+
+    [~, I] = max(featVal);
+    
+    ok( I == 2 & featVal(I) > 0.75 & ...
+        all(featVal(setdiff(1:4, I)) < 0.5), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 %% identifying ECG component
 try
     
@@ -127,8 +153,6 @@ catch ME
     MEh = [MEh ME];
     
 end
-
-
 
 
 %% Cleanup

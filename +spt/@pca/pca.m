@@ -104,7 +104,6 @@ classdef pca < spt.abstract_spt
         
         function obj = set.MaxCard(obj, value)
             import exceptions.InvalidPropValue;
-            import misc.isnatural;
             
             if isempty(value),
                 obj.MaxCard = Inf;
@@ -122,8 +121,7 @@ classdef pca < spt.abstract_spt
                         'Invalid function_handle'));
                 end
             elseif numel(value) ~= 1 || ...
-                    (~isinf(value) && ~isnatural(value) && ...
-                    ~isa(value, 'function_handle')),
+                    (~isnumeric(value) && ~isa(value, 'function_handle')),
                 throw(InvalidPropValue('MaxCard', ...
                     'Must be a natural scalar or a function_handle'));
             end
@@ -134,7 +132,6 @@ classdef pca < spt.abstract_spt
         
         function obj = set.MinCard(obj, value)
             import exceptions.InvalidPropValue;
-            import misc.isnatural;
             
             if isempty(value),
                 obj.MinCard = Inf;
@@ -144,14 +141,12 @@ classdef pca < spt.abstract_spt
             
             if isa(value, 'function_handle'),
                 testVal = value(100);
-                if numel(testVal) ~= 1 || (~isinf(testVal) && ...
-                        ~isnatural(testVal))
+                if numel(testVal) ~= 1 || ~isnumeric(testVal)
                     throw(InvalidPropValue('MinCard', ...
                         'Invalid function_handle'));
                 end
             elseif numel(value) ~= 1 || ...
-                    (~isinf(value) && ~isnatural(value) && ...
-                    ~isa(value, 'function_handle')),
+                    (~isnumeric(value) && ~isa(value, 'function_handle')),
                 throw(InvalidPropValue('MinCard', ...
                     'Must be a natural scalar or a function_handle'));
             end
@@ -249,9 +244,8 @@ classdef pca < spt.abstract_spt
         
         function obj = pca(varargin)
             import misc.set_properties;
-            
-            obj = obj@spt.abstract_spt(varargin{:});
-            
+            import misc.split_arguments;
+           
             opt.MinSamplesPerParamRatio = 0;
             opt.CovEstimator =   @(x) cov(x);
             opt.RetainedVar  =   99;
@@ -260,7 +254,13 @@ classdef pca < spt.abstract_spt
             opt.Criterion    =  'NONE';
             opt.Sphering     =  true;
             opt.MaxCond      =  Inf;
-            obj = set_properties(obj, opt, varargin{:});
+            
+            [thisArgs, parentArgs] = ...
+                split_arguments(fieldnames(opt), varargin);
+            
+            obj = obj@spt.abstract_spt(parentArgs{:});            
+            
+            obj = set_properties(obj, opt, thisArgs{:});
             
             if isempty(get_name(obj)),
                 obj = set_name(obj, 'pca');
