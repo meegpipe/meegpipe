@@ -74,13 +74,13 @@ try
   
     name = 'process sample data: simple case';
     
-    X = rand(8, 20000);
+    X = rand(5, 10000);
     
     warning('off', 'sensors:InvalidLabel');
     eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
     warning('on', 'sensors:InvalidLabel');
     
-    eegSensors   = subset(eegSensors, 1:32:256);
+    eegSensors   = subset(eegSensors, 1:5);
     
     importer = physioset.import.matrix(250, 'Sensors', eegSensors);
     

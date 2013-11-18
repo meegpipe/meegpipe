@@ -47,11 +47,11 @@ try
     myCrit = spt.criterion.topo_ratio.new(...
         'SensorsNumLeft',   sensLabels, ...
         'SensorsDen',       othersLabels, ...
-        'Max', @(r) median(r) + 2*mad(r));
+        'Max',              30);
     
     snrOrig = signal_to_noise(data, S);
     myNode = bss_regr.eog('Criterion', myCrit, 'Var', 100, ...
-        'GenerateReport', false);
+        'GenerateReport', true);
     
     run(myNode, data);
     snrNew = signal_to_noise(data, S);
@@ -90,21 +90,22 @@ function [data, S, sensIdx] = sample_data()
 
 sens = sensors.eeg.from_template('egi256');
 
-sens = subset(sens, 1:10);
+sens = subset(sens, 1:8);
 
-S = rand(8, 10000);
+S = rand(6, 10000);
 S = S - repmat(mean(S,2), 1, size(S,2));
 
 t = 0:size(S,2)-1;
 N = 0.5*[cos(2*pi*(1/500)*t).*sin(2*pi*(1/1000)*t); cos(2*pi*(1/750)*t)];
 N = N - repmat(mean(N,2), 1, size(N,2));
+N = N + 0.5*rand(size(N));
 
 % Sensors where the EOG artifact will be greatest
-tmp = randperm(10);
+tmp = randperm(8);
 sensIdx = sort(tmp(1:2));
 
 % Mixing matrix
-A = rand(10);
+A = rand(8);
 
 % Ensure that the projection of the EOG sources is maximal to the EOG sens
 A(sensIdx,1:size(N,1)) = ...

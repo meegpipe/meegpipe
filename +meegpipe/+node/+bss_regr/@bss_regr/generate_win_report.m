@@ -186,7 +186,8 @@ if any(idx)
     bss = deselect(bss, 'all');
     bss = select(bss, idx);
     select(ics, idx);
-    data = physioset.physioset.from_pset(bproj(bss, ics), 'Sensors', sensorsObj);
+    data = physioset.physioset.from_pset(bproj(bss, ics), ...
+        'Sensors', sensorsObj, 'SamplingRate', ics.SamplingRate);
     
     % Snapshots of top-variance channels
     print_title(rep, 'Backprojected SPCs', get_level(rep) + 1);
