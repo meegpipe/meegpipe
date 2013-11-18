@@ -1,5 +1,5 @@
 classdef config < ...
-        spt.generic.config & ...
+        goo.abstract_setget_handle  & ...
         goo.reportable_handle
     % CONFIG.TOPOGRAPHY - Configuration for pset.plot.topography
     %
@@ -134,15 +134,8 @@ classdef config < ...
     methods
         
         function obj = config(varargin)
-            
-            obj = obj@spt.generic.config(varargin{:});
-            
-            if nargin < 2,
-                % Copy constructor
-                return;
-            end
-            
-            obj = set(obj, varargin{:});
+       
+            obj = obj@goo.abstract_setget_handle(varargin{:});
             
         end
     end

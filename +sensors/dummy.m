@@ -74,11 +74,7 @@ classdef dummy < sensors.abstract_sensors
             if isempty(idx),
                 obj = [];
                 return;
-            end            
-            sortedIdx = sort(idx);            
-            if any(sortedIdx ~= idx),
-                error('Indices must be sorted');
-            end            
+            end                      
             if ~isempty(obj.Label),
                 obj.Label = obj.Label(idx);
             end     

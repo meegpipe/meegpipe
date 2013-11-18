@@ -232,13 +232,17 @@ classdef pca < spt.abstract_spt
         
     end
     
-    % from spt.abstract_spt
+    
     methods
         
+        % from spt.abstract_spt
         obj = learn_basis(obj, data)
         
+        % redefinition 
+        count = fprintf(fid, obj, gallery, makeFig);
+        
     end
-    
+   
     % constructor
     methods
         

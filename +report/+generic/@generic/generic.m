@@ -305,7 +305,7 @@ classdef generic < report.report
             if nargin < 1, return; end
             
             if nargin == 1 && pkgisa(varargin{1}, 'report.report'),
-                %% Copy constructor
+              %% Copy constructor
                 % Note: FileName and FID are not copied. 
                 fNames = {'RootPath', 'Parent', ...
                     'CloseFID', 'Level', 'Title'};

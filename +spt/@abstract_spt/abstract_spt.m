@@ -116,6 +116,15 @@ classdef abstract_spt < ...
         
         obj      = cascade(varargin);
         
+        function obj = reorder_component(obj, idx)
+           
+            obj.W = obj.W(idx,:);
+            obj.A = obj.A(:, idx);
+            selected = false(1, nb_component(obj));
+            selected(obj.ComponentSelection) = true;
+            obj.ComponentSelection = find(selected(idx));
+            
+        end
         
         % Inmutable abstract methods
         

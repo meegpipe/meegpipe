@@ -28,18 +28,16 @@ if isa(filtObj, 'function_handle'),
     filtObj = filtObj(dataIn.SamplingRate);
 end
 
-isEmbedded  = is_delay_embedded(pca) || is_delay_embedded(bss);
-
-%% Filtering + PCA + chopping
-dataCopy = copy(dataIn, 'Temporary', true);
 sr = dataIn.SamplingRate;
 
-dataMean = mean(dataCopy, 2);
-center(dataCopy);
+%% Filtering + PCA + chopping
+center(dataIn);
 
 % PCA
-pca = learn(pca, dataCopy);
-pcs = proj(pca, dataCopy);
+pca = learn(pca, dataIn);
+
+% Careful here: dataCopy and pcs are aliases of the same thing!
+pcs = proj(pca, copy(dataIn));
 
 % Find chop boundaries
 
@@ -129,13 +127,13 @@ for segItr = 1:numel(bndy)-1
         
         pMp = squeeze(pW(:,:,segItr-1));
         % Initialize at the point where we left it in the prev. window
-        bss = learn(bss, pMp*[prevPcs thisPcs nextPcs], get_event(dataIn), sr);
+        bss = learn(bss, pMp*[prevPcs thisPcs nextPcs]);
         bss = rmap(bss, pMp);
         bss = match_sources(bss, squeeze(pinv(pW(:, : , segItr-1))));
         
     else
         
-        bss = learn(bss, [prevPcs thisPcs nextPcs], get_event(dataIn), sr);
+        bss = learn(bss, [prevPcs thisPcs nextPcs]);
         
     end
     
@@ -146,7 +144,8 @@ for segItr = 1:numel(bndy)-1
     ics = proj(bss, thisPcs);
     
     % Events within the analysis window (might be needed by the criterion)
-    bssEmbedded = embed_pca(bss, pca);
+    %bssEmbedded = embed_pca(bss, pca);
+    bssEmbedded = cascade(pca, bss);
     if ~isempty(dataIn.Event),
         events = get_event(dataIn); % Takes care of selections
     else
@@ -154,8 +153,8 @@ for segItr = 1:numel(bndy)-1
     end
     
     % Automatic ranking and selection of components
-    [selected, rankIdx] = select(criterion, bssEmbedded, ics(:,:), ...
-        sr, events, winRep{segItr}, dataIn);
+    [selected, rankIdx] = select(criterion, bssEmbedded, ics(:,:), dataIn, ...
+        winRep{segItr});
     
     [rankIdx, sortedIdx] = sort(rankIdx, 'descend');
     
@@ -173,14 +172,14 @@ for segItr = 1:numel(bndy)-1
         % - Delete the .ini file: all windows' selections will be reset
         % - Delete the "selection" parameter in the corresp. window
         % - Delete the correspoding [window X] section completely.
-        ignoreRunTime = true;    
+        ignoreRunTime = true;
     else
         % selection=something
         ignoreRunTime = false;
         overriden(segItr) = ~isempty(setxor(runtimeSel, find(selected)));
     end
     
-    if ~ignoreRunTime && overriden(segItr) 
+    if ~ignoreRunTime && overriden(segItr)
         runtimeSel = intersect(runtimeSel, 1:size(ics,1));
         if verbose,
             fprintf([ get_verbose_label(obj) ...
@@ -289,9 +288,9 @@ for segItr = 1:numel(bndy)-1
     
     % Write selection .ini file
     idxSel  = find(selected(sortedIdx));
-    selArg  = num2cell(idxSel);    
+    selArg  = num2cell(idxSel);
     set_runtime(obj, section, 'selection', selArg{:});
-     
+    
     ics = proj(bssH{segItr}, thisPcs);
     
     %% Print summary information on selected components:
@@ -315,13 +314,13 @@ for segItr = 1:numel(bndy)-1
         else
             warnMsg = [];
         end
-
+        
         warnMsg = [warnMsg, ' Note that this ' ...
             ' selection may differ from the selection that the automatic ' ...
             ' criterion suggests, either because of the user having ' ...
             ' overriden the selection, or because property FixNbICs is' ...
             ' in effect.']; %#ok<AGROW>
-      
+        
         if reject,
             print_paragraph(rep, [msg ...
                 ' were __REJECTED__ in this analysis window. ' warnMsg]);
@@ -354,7 +353,7 @@ for segItr = 1:numel(bndy)-1
     end
     
     if nC(segItr) < 1 && ~reject,
-        % We select the empty set so the output is just zeros
+        % We select the empty set
         dataIn(:,:) = 0;
     elseif nC(segItr) > 0,
         
@@ -366,6 +365,7 @@ for segItr = 1:numel(bndy)-1
         [~, loc] = ismember(find(selected), sortedIdx);
         [~, idx] = sort(loc, 'ascend');
         ics = ics(idx,:);
+        
         if ~isempty(filtObj),
             
             if do_reporting(obj),
@@ -385,24 +385,18 @@ for segItr = 1:numel(bndy)-1
         ics(idx,:) = ics(:,:);
         pcsNoise = bproj(bssH{segItr}, ics);
         
-        if reject,
-            if isEmbedded,
-                % Delay-embedded data is tricky so do only the regression
-                thisData = dataIn;
-            else
-                % The filtered data was only for learning PCA/BSS
-                thisData = dataIn(:,:) - bproj(pca, pcsNoise);
-            end
+        if reject,          
+            thisData = dataIn(:,:) - bproj(pca, pcsNoise);         
         else
             thisData = bproj(pca, pcsNoise);
         end
         
         % Remove residual noise using multiple-lag regression
-        if reject && ~isempty(regrFilter),      
-            dataIn(:,:) = filter(regrFilter, thisData, ics);   
+        if reject && ~isempty(regrFilter),
+            dataIn(:,:) = filter(regrFilter, thisData, ics);
         else
-            dataIn(:, :) = thisData;      
-        end        
+            dataIn(:, :) = thisData;
+        end
         
     end
     
@@ -427,23 +421,6 @@ for segItr = 1:numel(bndy)-1
     
 end % End of segment iterator
 
-% Add the mean back
-if verbose,
-    clear +misc/eta
-    tinit = tic;
-    fprintf([verboseLabel 'Adding back data mean...']);
-end
-for i = 1:size(dataIn,1)
-    dataIn(i, :) = dataIn(i, :) + dataMean(i);
-    if verbose,
-        eta(tinit, size(dataIn, 1), i);
-    end
-end
-
-if verbose,
-    clear +misc/eta;
-    fprintf('\n\n');
-end
 
 end
 

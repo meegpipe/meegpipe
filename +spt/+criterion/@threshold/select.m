@@ -71,6 +71,9 @@ if negated(obj),
     selected = ~selected;
 end
 
+obj.Selected = selected;
+obj.FeatVals = featVal;
+
 if verbose,
     fprintf([verboseLabel 'Selected %d components using criterion'  ...
         '%s on feature %s\n\n'], ...

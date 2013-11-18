@@ -21,8 +21,10 @@ classdef spt
         
         obj          = restore_selection(obj);
         
-        obj          = cascade(varargin);        
+        obj          = cascade(varargin);  
         
+        obj          = reorder_component(obj, idx);
+  
        
         % Inmutable abstract methods
         

@@ -9,7 +9,7 @@ import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
 import oge.has_oge;
-import spt.bss.jade.jade;
+import spt.bss.jade;
 import mperl.config.inifiles.inifile;
 
 MEh     = [];

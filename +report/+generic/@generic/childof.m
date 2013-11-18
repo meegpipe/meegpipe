@@ -10,8 +10,6 @@ function obj = childof(obj, parent)
 %
 % See also: get_parent, remark
 
-% Description: Define parent report
-% Documentation: class_remark.txt
 
 import mperl.file.spec.abs2rel;
 import exceptions.*;
@@ -37,7 +35,5 @@ if isempty(get_rootpath(obj)),
 end
 
 obj.Parent = abs2rel(parent, get_rootpath(obj));
-
-%initialize(obj);
 
 end

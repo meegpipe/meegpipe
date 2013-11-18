@@ -1,4 +1,4 @@
-classdef dummy < spt.criterion.criterion & goo.verbose
+classdef dummy < spt.criterion.criterion & goo.verbose & goo.abstract_named_object
     % DUMMY - A dummy selection criterion that selects no components
     
     

@@ -1,6 +1,10 @@
-classdef threshold < spt.criterion.criterion & goo.verbose
+classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_object
     % THRESHOLD - Select components that exceed a threshold
     
+    properties (SetAccess = private, GetAccess = private)
+        FeatVals;
+        Selected;
+    end
     
     properties
         Negated = false;
@@ -13,7 +17,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose
     
     
     methods
-        %% Consistency checks
+        % Consistency checks
         function check(obj)
             import exceptions.Inconsistent;
             
@@ -21,14 +25,14 @@ classdef threshold < spt.criterion.criterion & goo.verbose
             
             if (numel(obj.Feature) > 1 && numel(obj.Min) > 1) && ...
                     numel(obj.Feature) ~= numel(obj.Min),
-               throw(Inconsistent(['There must be one Min threshold per ', ...
-               'feature']));              
+                throw(Inconsistent(['There must be one Min threshold per ', ...
+                    'feature']));
             end
             
             if (numel(obj.Feature) > 1 && numel(obj.Max) > 1) && ...
                     numel(obj.Feature) ~= numel(obj.Max),
-               throw(Inconsistent(['There must be one Max threshold per ', ...
-               'feature']));              
+                throw(Inconsistent(['There must be one Max threshold per ', ...
+                    'feature']));
             end
             
         end
@@ -113,7 +117,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose
         end
         
         
-        %% spt.criterion.criterion interface
+        % spt.criterion.criterion interface
         [selected, featVal] = select(obj, objSpt, tSeries, varargin)
         
         function obj = not(obj)
@@ -124,7 +128,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose
             bool = obj.Negated;
         end
         
-        %% Constructor
+        % Constructor
         function obj = threshold(varargin)
             import misc.set_properties;
             
@@ -136,8 +140,8 @@ classdef threshold < spt.criterion.criterion & goo.verbose
                 varargin = varargin(2:end);
             else
                 opt.Feature = {};
-            end            
-            opt.Negated = false;            
+            end
+            opt.Negated = false;
             opt.Min     = -Inf;
             opt.Max     = +Inf;
             opt.MinCard = 0;
@@ -145,11 +149,11 @@ classdef threshold < spt.criterion.criterion & goo.verbose
             obj = set_properties(obj, opt, varargin);
             
             if numel(obj.Feature) > 1 && numel(obj.Min) == 1,
-               obj.Min = repmat(obj.Min, 1, numel(obj.Feature)); 
+                obj.Min = repmat(obj.Min, 1, numel(obj.Feature));
             end
             
             if numel(obj.Feature) > 1 && numel(obj.Max) == 1,
-               obj.Max = repmat(obj.Max, 1, numel(obj.Feature)); 
+                obj.Max = repmat(obj.Max, 1, numel(obj.Feature));
             end
             
             check(obj);
