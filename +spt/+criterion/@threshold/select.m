@@ -1,4 +1,4 @@
-function [selected, featVal] = select(obj, objSpt, tSeries, varargin)
+function [selected, featVal, obj] = select(obj, objSpt, tSeries, varargin)
 % SELECT - Selects criterion matching components
 
 import exceptions.InvalidObject;

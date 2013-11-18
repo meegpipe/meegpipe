@@ -4,7 +4,7 @@ classdef criterion
     
     methods (Abstract)
         
-        [selection, rankIndex] = select(obj, spt, ics, raw, rep, varargin);
+        [selection, rankIndex, obj] = select(obj, spt, ics, raw, rep, varargin);
         
         obj = not(obj);
         

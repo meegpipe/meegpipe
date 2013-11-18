@@ -5,10 +5,11 @@ import test.simple.*;
 import pset.session;
 import misc.rmdir;
 import datahash.DataHash;
+import safefid.safefid;
 
 MEh     = [];
 
-initialize(12);
+initialize(13);
 
 %% Create a new session
 try
@@ -63,6 +64,31 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% fprintf
+try
+    
+    name = 'Max';
+    
+    myCrit = spt.criterion.threshold(...
+        'Feature',  spt.feature.tkurtosis, ...
+        'Max',      2);
+   
+    [~, ~, myCrit] = select(myCrit, [], rand(4, 1000));
+    
+    tmpFile = [tempname(session.instance) '.txt'];
+    fid = safefid.fopen(tmpFile, 'w');
+    count = fprintf(fid, myCrit);
+    
+    ok( count > 0, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% MaxCard
 try

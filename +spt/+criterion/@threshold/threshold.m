@@ -13,10 +13,18 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
         Max     = +Inf;
         MinCard = 0;
         MaxCard = Inf;
+        FeatPlotStats = spt.criterion.threshold.default_plot_stats;
+    end
+    
+    methods (Static)
+       
+        hashObj = default_plot_stats();
+        
     end
     
     
     methods
+        
         % Consistency checks
         function check(obj)
             import exceptions.Inconsistent;
@@ -34,6 +42,24 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
                 throw(Inconsistent(['There must be one Max threshold per ', ...
                     'feature']));
             end
+            
+        end
+        
+        function obj = set.FeatPlotStats(obj, value)
+            
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.FeatPlotStats = [];
+                return;
+            end
+            
+            if ~isa(value, 'mjava.hash'),
+                throw(InvalidPropValue('FeatPlotStats', ...
+                    'Must be an mjava.hash object'));
+            end
+           
+            obj.FeatPlotStats = value;
             
         end
         
@@ -92,8 +118,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
             obj.Min = value;
             
         end
-        
-        
+         
         function obj = set.Max(obj, value)
             import exceptions.InvalidPropValue;
             
@@ -118,7 +143,9 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
         
         
         % spt.criterion.criterion interface
-        [selected, featVal] = select(obj, objSpt, tSeries, varargin)
+        [selected, featVal, obj] = select(obj, objSpt, tSeries, varargin)
+        
+        count = fprintf(fid, critObj, varargin)
         
         function obj = not(obj)
             obj.Negated = ~obj.Negated;
