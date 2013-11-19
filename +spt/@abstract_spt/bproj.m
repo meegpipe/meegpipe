@@ -8,7 +8,7 @@ y = A*data;
 I = dim_selection(obj);
 
 if isa(y, 'physioset.physioset'),
-    restore_sensors(data);
+    restore_sensors(data, obj);
 end
 
 

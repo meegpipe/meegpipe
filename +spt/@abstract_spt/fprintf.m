@@ -38,6 +38,10 @@ import mperl.file.spec.rel2abs;
 import mperl.file.spec.catfile;
 import misc.code2multiline;
 import misc.unique_filename;
+import misc.obj2struct; 
+import misc.dimtype_str;
+import report.struct2xml;
+import mperl.file.spec.abs2rel;
 
 opt.ParseDisp  = true;
 opt.SaveBinary = false;
@@ -47,8 +51,11 @@ defCfg = get_method_config(obj, 'fprintf');
 
 count = 0;
 if opt.ParseDisp
-    myTable = disp2table(obj);
-    count = count + fprintf(fid, myTable);
+    subRep = report.object.new(obj);
+    childof(subRep, fid);
+    generate(subRep);
+    [~, name] = fileparts(get_filename(subRep));
+    fprintf(fid, '[%s](%s)\n\n', class(obj), [name '.htm']);
 end
 
 if opt.SaveBinary

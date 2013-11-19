@@ -6,6 +6,7 @@ classdef pca < spt.abstract_spt
         
         Samples;      % # of samples used for training the PCA
         Cov;          % The estimated covariance matrix
+        CovRank;      % The column rank of the covariance matrix
         Eigenvectors;
         Eigenvalues;  % Eigenvalues of the estimated cov matrix
         MIBS;
@@ -13,7 +14,7 @@ classdef pca < spt.abstract_spt
         MDL;
         MIBSOrder;
         AICOrder;
-        MDLOrder;
+        MDLOrder;        
         
     end
     

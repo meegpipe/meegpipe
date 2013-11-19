@@ -1,4 +1,4 @@
-function count = fprintf(fid, obj, gallery, makeFig)
+function count = fprintf(fid, obj, gallery, makeFig, varargin)
 % FPRINTF - Print pca object to remark report
 %
 % count = fprintf(fid, obj)
@@ -34,18 +34,7 @@ end
 count = 0;
 
 % Information about the pca parameters
-targetFileName = fid2fname(fid);
-
-objectReport = object(obj, 'Title', 'Principal Components Analysis');
-objectReport = childof(objectReport, targetFileName);
-initialize(objectReport);
-generate(objectReport);
-pcaClass = class(obj);
-[~, repName] = fileparts(get_filename(objectReport));
-count = count + ...
-    fprintf(fid, 'PCA performed using [%s][%s]\n', pcaClass, repName);
-count = count + ...
-    fprintf(fid, '[%s]: [[Ref: %s]]\n\n', repName, [repName '.txt']);
+count = count + fprintf@spt.abstract_spt(fid, obj, varargin{:});
 
 if ~makeFig, return; end
 
@@ -100,25 +89,26 @@ line([obj.DimOut obj.DimOut], [yLim(1) yLim(2)], ...
     'LineStyle', '-', 'Color', 'Blue');
 
 
-str = sprintf('rank = %d', nb_component(obj));
-hT = text(nb_component(obj)-1, yLim(1)+0.1*diff(yLim), str);
+str = sprintf('rank = %d', obj.CovRank);
+hT = text(obj.CovRank-0.15, yLim(1)+0.1*diff(yLim), str);
 set(hT, ...
-    'FontWeight',   'bold',  ...
-    'Rotation',     90 ...
+    'FontWeight',       'bold',  ...
+    'Rotation',         90, ...
+    'BackgroundColor', 'white' ...
     );
 
 str = sprintf('#comp = %d ', obj.DimOut);
-hT = text(obj.DimOut-1, yLim(1)+0.1*diff(yLim), str);
+hT = text(obj.DimOut-0.15, yLim(1)+0.5*diff(yLim), str);
 set(hT, ...
     'FontWeight',   'bold',  ...
-    'Rotation',     90 ...
+    'Rotation',     90, ...
+    'BackgroundColor', 'white' ...
     );
 
-
 % Print to .svg and .png format
-rootPath = fileparts(targetFileName);
+rootPath = fileparts(fid2fname(fid));
 
-fileName = catfile(rootPath, [repName '.svg']);
+fileName = unique_filename(catfile(rootPath, 'pca.svg'));
 
 caption = sprintf(['Eigenvalues of the PCA decomposition. The red line' ...
     ' marks the boundary between selected and unselected principal ' ...

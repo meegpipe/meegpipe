@@ -6,6 +6,11 @@ import misc.process_arguments;
 import report.table.table;
 import report.gallery.gallery;
 import misc.dimtype_str;
+import misc.obj2struct;
+import report.struct2xml;
+import misc.dimtype_str;
+import report.disp2table;
+import misc.fid2fname;
 
 generate@report.generic.generic(obj);
 
@@ -68,25 +73,15 @@ for i = 1:numel(obj.Objects)
         fprintf(fid, myTable);  
         
     else
-        
-        % Try converting the object to a struct and report on that
+        name = dimtype_str(thisObj);
+        rootDir = fileparts(fid2fname(fid));
         warning('off', 'MATLAB:structOnObject');
-        strVal = struct(thisObj);
-        strVal.Class_ = class(thisObj);
-        [~, thisRef] = pval2str(obj, strVal);
+        [ref, refTarget] = struct2xml(rootDir, struct(thisObj)); 
         warning('on', 'MATLAB:structOnObject');
-        
-        if isa(thisObj, 'report.named_object') || ...
-                isa(thisObj, 'report.named_object_handle'),
-            name = get_name(thisObj);
-        else
-            name = dimtype_str(thisObj);
-        end
-        
-        ref = regexprep(name, '[^\w]+', '-');
-        print_paragraph(obj, 'See [%s][%s]', name, ref);
-        print_link(obj, thisRef{2}, ref);
-
+        print_paragraph(obj, '[%s][%s]', name, ref);
+        print_link(obj, refTarget, ref);
+        myTable = disp2table(thisObj);
+        fprintf(fid, myTable);
     end
     
     fprintf(fid, '\n\n');

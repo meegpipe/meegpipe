@@ -15,15 +15,17 @@ Lambda              = diag(D);
 V                   = V(:,I);
 sortedLambda        = Lambda(I);
 
-V(:, rank(C)+1:end)         = [];
-sortedLambda(rank(C)+1:end) = [];
+obj.CovRank = rank(C);
+V(:, obj.CovRank+1:end)         = [];
+sortedLambda(obj.CovRank+1:end) = [];
+
+
 
 if obj.Sphering,
     W = diag(sortedLambda.^(-.5))*V';
 else
     W = diag(sortedLambda.^(.5))*V';
 end
-
 
 A = pinv(W);
 

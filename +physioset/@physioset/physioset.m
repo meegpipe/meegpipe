@@ -24,6 +24,7 @@ classdef physioset < ...
         Config = physioset.default_method_config;
         ProcHistory = {};
         TimeOrig;
+        ProjectionHistory;       % Keep track of the projection operators in order to find the right item in SensorHistory
         SensorsHistory;          % To keep track of proj/bproj
         RerefMatrix;
         MetaMapper;
@@ -463,9 +464,9 @@ classdef physioset < ...
             backup_projection(obj.PointSet);
         end
         
-        obj = restore_sensors(obj);
+        obj = restore_sensors(obj, projOperator);
         
-        obj = backup_sensors(obj);
+        obj = backup_sensors(obj, projOperator);
         
         sensObj = retrieve_sensors_history(obj, idx);
         

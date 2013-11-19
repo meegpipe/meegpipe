@@ -45,10 +45,6 @@ classdef abstract_named_object < goo.named_object
             
             if isempty(obj.Name),
                 name = class(obj);
-                % Remove package info
-                if ~isempty(strfind(name, '.')),
-                    name = regexprep(name, '^.+\.([^\.]+$)', '$1');
-                end
             else
                 name = strtrim(obj.Name);
             end

@@ -20,14 +20,13 @@ classdef criterion
             % Default implementation simply prints the criterion props into
             % a separate sub-report
             count = 0;
-            objRep = report.object.new(critObj, ...
-                'Title', sprintf('Criterion %s',class(critObj)));
+            objRep = report.object.new(critObj);
             objRep = childof(objRep, fid2fname(fid));
             initialize(objRep);
             generate(objRep);
             [~, repName] = fileparts(get_filename(objRep));
             count = count + ...
-                fprintf(fid, '[%s](%s)', class(critObj), [repName '.txt']);
+                fprintf(fid, '[%s](%s)', class(critObj), [repName '.htm']);
         end
         
         

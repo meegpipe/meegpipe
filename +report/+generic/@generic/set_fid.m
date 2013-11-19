@@ -7,13 +7,12 @@ function set_fid(obj, fid)
 %
 % See also: get_fid, abstract_generator
 
-% Description: Associate report to open file handle
-% Documentation: class_abstract_generator.txt
+import misc.fid2fname;
 
 obj.FID = fid;
 
 if ~isempty(fid),
-    set_filename(obj, fid.FileName);
+    set_filename(obj, fid2fname(fid));
 end
 
 end

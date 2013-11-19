@@ -28,9 +28,9 @@ classdef spt
        
         % Inmutable abstract methods
         
-        W           = projmat(obj);
+        W           = projmat(obj, fullMatrix);
         
-        A           = bprojmat(obj);
+        A           = bprojmat(obj, fullMatrix);
         
         [data, I]   = proj(obj, data);
         

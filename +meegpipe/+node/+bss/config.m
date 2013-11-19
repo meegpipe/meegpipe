@@ -4,17 +4,40 @@ classdef config < meegpipe.node.abstract_config
    
     properties
         
-        PCA             = spt.pca('Criterion', 'aic', 'RetainedVar', 99.99, 'MaxCard', 50);
+        PCA             = spt.pca('Criterion', 'none', 'RetainedVar', 99.99, 'MaxCard', 50);
         BSS             = spt.bss.multicombi;
         RegrFilter      = [];
         Criterion       = spt.criterion.dummy;
         Reject          = true;
         Filter          = [];
         
+        SnapshotPlotter    = meegpipe.node.bss.default_spc_snapshot_plotter;
+        TopoPlotter        = meegpipe.node.bss.default_topo_plotter;
+        PSDPlotter         = meegpipe.node.bss.default_psd_plotter;        
+        
     end
     
     % Consistency checks
     methods
+        
+        function obj = set.SnapshotPlotter(obj, value)
+            
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.SnapshotPlotter = ...
+                    meegpipe.node.bss.default_snapshot_plotter;
+                return;
+            end
+            
+            if numel(value) ~= 1 || ~isa(value, 'report.gallery_plotter'),
+                throw(InvalidPropValue('SnapshotPlotter', ...
+                    'Must be a report.gallery_plotter'));
+            end
+            
+            obj.SnapshotPlotter = value;
+            
+        end
         
         function obj = set.RegrFilter(obj, value)
             
@@ -40,7 +63,8 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.*;
             
             if isempty(value),
-                value = [];
+                obj.Criterion = spt.criterion.dummy;
+                return;
             end
             
             if ~isa(value, 'spt.criterion.criterion'),
@@ -57,7 +81,8 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.*;
             
             if isempty(value),
-                obj.PCA = [];
+                obj.PCA = spt.pca('Criterion', 'none', ...
+                    'RetainedVar', 99.99, 'MaxCard', 50);
                 return;
             end
             

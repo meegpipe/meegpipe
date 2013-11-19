@@ -1,6 +1,12 @@
-function obj = backup_sensors(obj)
+function obj = backup_sensors(obj, proj)
 
+import datahash.DataHash;
 
-obj.SensorsHistory = [obj.SensorsHistory;{obj.Sensors}];
+if nargin < 2 || isempty(proj),
+    proj = rand;
+end
+
+obj.ProjectionHistory = [obj.ProjectionHistory;{DataHash(proj)}];
+obj.SensorsHistory    = [obj.SensorsHistory;{obj.Sensors}];
 
 end

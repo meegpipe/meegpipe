@@ -2,8 +2,8 @@ function obj = cascade(varargin)
 
 obj = varargin{1};
 
-W = eye(nb_dim(obj));
-A = eye(nb_component(obj));
+W = projmat(obj);
+A = bprojmat(obj);
 for i = 2:nargin
     W = projmat(varargin{i})*W;
     A = A*bprojmat(varargin{i});    

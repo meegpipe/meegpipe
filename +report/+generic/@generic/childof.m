@@ -12,22 +12,18 @@ function obj = childof(obj, parent)
 
 
 import mperl.file.spec.abs2rel;
+import misc.fid2fname;
 import exceptions.*;
 
-if isa(parent, 'report.report'),
-    
+if isa(parent, 'report.report'),   
     if ~initialized(parent), initialize(parent); end
     parentRoot = get_rootpath(parent);
-    parent     = get_abs_filename(parent);   
-    
-elseif ischar(parent) && exist(parent, 'file'),
-  
-    parentRoot = fileparts(parent);
-   
+    parent     = get_abs_filename(parent);      
+elseif ischar(parent) && exist(parent, 'file'), 
+    parentRoot = fileparts(parent);  
 else
-    
-    throw(InvalidArgValue('parent', ['Must be a report.report object or the ' ...
-        'name of an existing file']));
+    parent = fid2fname(parent);
+    parentRoot = fileparts(parent);
 end
 
 if isempty(get_rootpath(obj)),

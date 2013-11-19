@@ -128,12 +128,28 @@ classdef abstract_spt < ...
         
         % Inmutable abstract methods
         
-        function W  = projmat(obj)
-            W = obj.W(obj.ComponentSelection, obj.DimSelection);
+        function W  = projmat(obj, fullMatrix)
+            if nargin < 2 || isempty(fullMatrix),
+                fullMatrix = false;
+            end
+            
+            if fullMatrix,
+                W = obj.W;
+            else
+                W = obj.W(obj.ComponentSelection, obj.DimSelection);
+            end            
         end
         
-        function A  = bprojmat(obj)
-            A = obj.A(obj.DimSelection, obj.ComponentSelection);
+        function A  = bprojmat(obj, fullMatrix)
+            if nargin < 2 || isempty(fullMatrix),
+                fullMatrix = false;
+            end
+            
+            if fullMatrix,
+                A = obj.A;
+            else
+                A = obj.A(obj.DimSelection, obj.ComponentSelection);
+            end
         end
         
         [data, I]   = proj(obj, data);

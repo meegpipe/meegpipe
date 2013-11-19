@@ -28,10 +28,7 @@ classdef safefid < handle
     %
     % See also: fopen, fprintf, fseek, ftell, ferror, fgetl, fgets, fread,
     % fscanf, fseek, fwrite
-    
-    % Documentation: class_io_safeid.txt
-    % Description: A safe wrapper for low-level MATLAB file handles
-    
+ 
     %% Properties
     properties
         Temporary = false;

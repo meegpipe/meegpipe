@@ -1,15 +1,13 @@
 classdef bss < meegpipe.node.abstract_node
     
-    methods (Static, Access = private)
-        
-        generate_win_report(subRep, sensors, bss, ics, idx, rej);
-        generate_rank_report(subRep, critObj, rankIdx, nbSelComp);
-        generate_filt_report(subRep, icsIn, icsOut);
-        
+    methods (Static, Access = private)       
+        make_filtering_report(rep, filtObj, icsIn, icsOut);        
     end
     
     methods (Access = private)
-        make_pca_report(obj, myPCA);
+        count = make_pca_report(obj, myPCA);
+        count = make_criterion_report(obj, critObj, icSel, isAutoSel);
+        bssRep = make_bss_report(obj, bssObj, ics, data);
     end
     
     methods

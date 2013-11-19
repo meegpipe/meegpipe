@@ -8,9 +8,6 @@ function obj = finalize(obj)
 %
 % See also: initialize, generic
 
-% Documentation: class_report.txt
-% Description: Finalize report
-
 import misc.is_valid_fid;
 
 fid = get_fid(obj);

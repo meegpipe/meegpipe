@@ -38,6 +38,7 @@ switch S(1).type
                 otherwise
                     warning('off', 'MATLAB:structOnObject');
                     B = struct(B);
+                    warning('on', 'MATLAB:structOnObject');
                     obj.FieldNames.put(S(1).subs{1}, fieldnames(B));
                     B = struct2cell(B);
             end

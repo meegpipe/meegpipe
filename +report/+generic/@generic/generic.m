@@ -87,7 +87,7 @@ classdef generic < report.report
                 return;
             end
             
-            if ~isa(value, 'safefid.safefid') || ~value.Valid,
+            if isa(value, 'safefid.safefid') && ~value.Valid,
                 throw(InvalidPropValue('FID', ...
                     'Must be a valid safefid.safefid object'));
             end

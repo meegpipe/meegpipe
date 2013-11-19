@@ -11,9 +11,6 @@ function obj = generate(obj)
 %
 % See also: initialize, finalize, generic
 
-% Documentation: class_generic.txt
-% Description: Generate report content
-
 
 if ~initialized(obj), initialize(obj); end
 
