@@ -28,9 +28,7 @@ classdef sensor_idx < pset.selector.abstract_selector
     % ok(size(data,1) == 7 && max(abs(data(:) - X(:)))<1e-3);
     %
     % See also: selector 
-    
-    % Documentation: pkg_selector.txt
-    % Description: Select one or more sensors by index
+
     
     properties (SetAccess = private, GetAccess = private)
         
@@ -62,7 +60,13 @@ classdef sensor_idx < pset.selector.abstract_selector
                 emptySel = false;
             end
             
-            select(data, obj.SensorIdx, [], remember);
+            selIdx = obj.SensorIdx;
+            
+            if obj.Negated,
+                selIdx = setdiff(1:size(data,1), selIdx);
+            end
+            
+            select(data, selIdx, [], remember);
             
         end
         

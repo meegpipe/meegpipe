@@ -51,6 +51,10 @@ else
     radius = max(arrayfun(@(x) x.radius, elecPnt));
 end
 
+% topoplot() only accepts radius between 0.15 and 1
+radius = max(0.16, radius);
+raduis = min(1, radius);
+
 % We use evalc to avoid displaying messages from EEGLAB's topoplot
 args = topoplot_args(h); %#ok<NASGU>
 evalc(['topoplot(double(data), elecPnt, args{:}, ', ...
