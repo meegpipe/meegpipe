@@ -6,9 +6,9 @@ title = get_title(obj);
 
 if isempty(title),
     
-    warning('off', 'JSimon:DataHash:BadDataType');
+    warning('off', 'JSimon:BadDataType');
     ref = DataHash(struct(obj));
-    warning('on', 'JSimon:DataHash:BadDataType');
+    warning('on', 'JSimon:BadDataType');
     
 elseif ~initialized(obj),
     

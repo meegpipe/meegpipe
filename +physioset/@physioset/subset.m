@@ -1,4 +1,4 @@
-function obj = subset(obj, varargin)
+function newObj = subset(obj, varargin)
 % subset - Create physioset as a subset of another physioset
 %
 % See: <a href="matlab:misc.md_help('+physioset/@physioset/subset.md')">misc.md_help(''+physioset/@physioset/subset.md'')</a>
@@ -56,7 +56,7 @@ psetObj = subset(obj.PointSet, dimSel, pntSel, varargin{:});
 
 args = construction_args(obj);
 
-obj = physioset.from_pset(psetObj, args{:}, ...
+newObj = physioset.from_pset(psetObj, args{:}, ...
     'Sensors',              sensObj, ...
     'Event',                event, ...
     'SamplingTime',         samplingTime, ...
@@ -66,11 +66,13 @@ obj = physioset.from_pset(psetObj, args{:}, ...
     'BadChannel',           badChan, ...
     'BadSample',            badSample);
 
+newObj.ProjectionHistory = obj.ProjectionHistory;
+newObj.SensorsHistory    = obj.SensorsHistory;
 
 % Add discontinuity events at the discontinuities
 discPos = find(diff(pntSel) > 1);
 if ~isempty(discPos),
-    add_event(obj, discontinuity(discPos));
+    add_event(newObj, discontinuity(discPos));
 end
 
 end

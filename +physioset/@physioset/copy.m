@@ -107,22 +107,7 @@ y = physioset(new_name, obj.PointSet.NbDims, ...
     'Transposed',       opt.transposed, ...
     'Writable',         opt.writable);
 
-%% Manually copy private properties
-y.EqWeights         = obj.EqWeights;
-y.EqWeightsOrig     = obj.EqWeightsOrig;
-y.PhysDimPrefixOrig = obj.PhysDimPrefixOrig;
-y.BadChan           = obj.BadChan;
-y.BadSample         = obj.BadSample;
-y.ProcHistory       = obj.ProcHistory;
-
-set_name(y, get_full_name(obj));
-
-if ~isempty(obj.PntSelection) || ~isempty(obj.DimSelection),
-    select(y, obj.DimSelection, obj.PntSelection);
-end
-
-%% Copy meta-properties
-set_meta(y, get_meta(obj));
+copy_everything(obj, y);
 
 if verbose,
     fprintf('[done]\n\n');

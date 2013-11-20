@@ -24,8 +24,7 @@ function mline = code2multiline(code, lineLength, prefix, postfix)
 % ## Disclaimer:
 %
 % * This function is extremely fragile and has been tested only with few
-%   very simple toy examples. It is in the TO-DO list to make this function
-%   more robust.
+%   very simple toy examples. 
 %
 % See also: str2multiline, misc
 
@@ -101,7 +100,7 @@ end
 
 % last line
 mline = regexprep(mline, ...
-    ['(''\s*\.\.\.' char(10) ')(\s*)([^'']+?)''(.*)$'], ...
+    ['(''\s*\.\.\.' char(10) ')(\s+)([^'']+?)''(.*)$'], ...
     '$1$2''$3'']$4');  
 
 % a quick fix for the case that we have something like:

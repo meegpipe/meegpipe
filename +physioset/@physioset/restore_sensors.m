@@ -12,7 +12,9 @@ if nargin < 2 || isempty(proj),
     proj = rand;
 end
 
+warning('off', 'JSimon:BadDataType');
 projIdx = find(ismember(obj.ProjectionHistory, DataHash(proj)));
+warning('on', 'JSimon:BadDataType');
 
 if numel(projIdx) > 1,
     warning('physioset:MultipleIdenticalProjections', ...
@@ -33,8 +35,8 @@ end
 
 obj.Sensors = obj.SensorsHistory{projIdx};
 
-obj.SensorsHistory{projIdx} = [];
-obj.ProjectionHistory{projIdx} = [];
+obj.SensorsHistory(projIdx) = [];
+obj.ProjectionHistory(projIdx) = [];
 
 
 end

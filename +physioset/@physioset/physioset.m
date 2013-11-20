@@ -24,8 +24,8 @@ classdef physioset < ...
         Config = physioset.default_method_config;
         ProcHistory = {};
         TimeOrig;
-        ProjectionHistory;       % Keep track of the projection operators in order to find the right item in SensorHistory
-        SensorsHistory;          % To keep track of proj/bproj
+        ProjectionHistory = {};       % Keep track of the projection operators in order to find the right item in SensorHistory
+        SensorsHistory = {};          % To keep track of proj/bproj
         RerefMatrix;
         MetaMapper;
         EventMapper;
@@ -84,6 +84,8 @@ classdef physioset < ...
     end
     
     methods (Access = private)
+        
+        copy_everything(x, y); % from x to y
         
         check(obj);
         

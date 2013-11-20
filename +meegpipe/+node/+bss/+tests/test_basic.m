@@ -97,6 +97,40 @@ catch ME
     
 end
 
+%% threshold criterion
+try    
+  
+    name = 'threshold criterion';
+    
+    X = rand(4, 5000);
+    
+    warning('off', 'sensors:InvalidLabel');
+    eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
+    warning('on', 'sensors:InvalidLabel');
+    
+    eegSensors   = subset(eegSensors, 1:4);
+    
+    importer = physioset.import.matrix(250, 'Sensors', eegSensors);
+    
+    data = import(importer, X);
+    
+    myCrit = spt.criterion.threshold(spt.feature.tkurtosis, ...
+        'Max', @(kurt) median(kurt));
+    myNode = meegpipe.node.bss.new(...
+        'GenerateReport',   true, ...
+        'Criterion',        myCrit);
+    run(myNode, data);
+    
+    ok(max(abs(data(:)-X(:))) < 1e-2, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+
 
 %% multiple sensor groups, bad samples, bad channels
 try

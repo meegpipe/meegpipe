@@ -7,7 +7,10 @@ import safefid.safefid;
 import misc.fid2fname;
 import datahash.DataHash;
 
+% Just in case some of the struct fields contain objects
+warning('off', 'JSimon:BadDataType');
 ref        = DataHash(pValue);
+warning('on', 'JSimon:BadDataType');
 refTarget  = catfile(rootDir, [ref '.xml']);
 
 % Write struct contents to .xml file

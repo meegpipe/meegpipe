@@ -70,7 +70,7 @@ if opt.SaveBinary
     save(newDataFile, 'sptObj');    
    
     count = count + fprintf(fid, '\n%-20s: [%s][%s]\n\n', ...
-        'Binary BSS object', [dataName '.mat'], [dataName '-data']);
+        'Binary SPT object', [dataName '.mat'], [dataName '-data']);
     
     count = count + fprintf(fid, '[%s]: %s\n', [dataName '-data'], ...
         [dataName '.mat']);
@@ -84,12 +84,17 @@ if opt.SaveBinary
     count = count + fprintf(fid, '%s\n\n', code);
     
     count = count + fprintf(fid, ...
-        '\n\nThen, to get the estimated mixing and separating matrices:\n\n');
+        '\n\nThen, to get the projection and backprojection matrices:\n\n');
     
-    count = count + fprintf(fid, '\t%% The mixing (backprojection) matrix:\n');
+    count = count + fprintf(fid, '\t%% The backprojection matrix:\n');
     count = count + fprintf(fid, '\tA = bprojmat(bss.sptObj);\n\t\n');
-    count = count + fprintf(fid, '\t%% The separating (projection) matrix:\n');
-    count = count + fprintf(fid, '\tW = projmat(bss.sptObj);\n\n');
+    count = count + fprintf(fid, '\t%% The forward projection matrix:\n');
+    count = count + fprintf(fid, '\tW = projmat(bss.sptObj);\n\n\n');
+    
+    % Try to overcome a problem in remark when a code snippet is followed
+    % by a gallery
+    count = count + fprintf(fid, '&nbsp;&nbsp;\n');
+    
 end
 
 

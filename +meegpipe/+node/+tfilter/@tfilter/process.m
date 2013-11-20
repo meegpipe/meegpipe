@@ -208,13 +208,12 @@ for segItr = 1:numel(evSample)
             segItr, numel(evSample));
         
         eta(tinit, numel(evSample), segItr, 'remaintime', true);
-   
+        fprintf('\n\n');
     end
     
 end
 
 if verbose,
-    fprintf('\n\n');
     clear +misc/eta.m;
 end
 

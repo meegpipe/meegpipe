@@ -11,7 +11,7 @@ import datahash.DataHash;
 
 MEh     = [];
 
-initialize(14);
+initialize(15);
 
 %% Create a new session
 try
@@ -132,7 +132,7 @@ catch ME
     
 end
 
-%% process multiple files
+%% sensor_idx
 try
     
     name = 'sensor_idx';
@@ -143,21 +143,45 @@ try
     sg2 = dummy(5);
     sg3 = dummy(5);
     
-    % Put them together into a mixed sensor array
     mySensors = mixed(sg1, sg2, sg3);
     
-    % Create sample physioset
+    X = randn(15, 1000);
+    importer = physioset.import.matrix( 250, 'Sensors', mySensors);
+    data = import(importer, X);
+
+    mySelector = sensor_idx(1:7);
+    select(mySelector, data);
+
+    X = X(1:7,:);
+    ok(size(data,1) == 7 && max(abs(data(:) - X(:)))<1e-3, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% ~sensor_idx
+try
+    
+    name = '~sensor_idx';
+
+    sg1 = sensors.dummy(5);
+    sg2 = sensors.dummy(5);
+    sg3 = sensors.dummy(5);
+
+    mySensors = sensors.mixed(sg1, sg2, sg3);
+    
     X = randn(15, 1000);
     importer = physioset.import.matrix( 250, 'Sensors', mySensors);
     data = import(importer, X);
     
-    % Select only the first 7 channels
-    mySelector = sensor_idx(1:7);
-    select(mySelector, data);
-    
-    % Must be OK
-    X = X(1:7,:);
-    ok(size(data,1) == 7 && max(abs(data(:) - X(:)))<1e-3, name);
+    mySelector = pset.selector.sensor_idx(1:7);
+    select(~mySelector, data);
+
+    X = X(8:end,:);
+    ok(size(data,1) == 8 && max(abs(data(:) - X(:)))<1e-3, name);
     
 catch ME
     

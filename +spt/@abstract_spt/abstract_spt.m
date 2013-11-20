@@ -114,7 +114,7 @@ classdef abstract_spt < ...
         
         obj = restore_selection(obj);
         
-        obj      = cascade(varargin);
+        varargout = cascade(varargin);
         
         function obj = reorder_component(obj, idx)
            

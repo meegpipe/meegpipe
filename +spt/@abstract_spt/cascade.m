@@ -1,4 +1,4 @@
-function obj = cascade(varargin)
+function varargout = cascade(varargin)
 
 obj = varargin{1};
 
@@ -9,12 +9,18 @@ for i = 2:nargin
     A = A*bprojmat(varargin{i});    
 end
 
-obj.W = W;
-obj.A = A;
-obj.ComponentSelection = 1:size(W,1);
-obj.DimSelection = 1:size(A,1);
-obj.ComponentSelectionH = {};
-obj.DimSelectionH = {};
+varargout = varargin;
+
+for i = 1:nargout
+    
+    varargout{i}.W = W;
+    varargout{i}.A = A;
+    varargout{i}.ComponentSelection = 1:size(W,1);
+    varargout{i}.DimSelection = 1:size(A,1);
+    varargout{i}.ComponentSelectionH = {};
+    varargout{i}.DimSelectionH = {};
+    
+end
 
 
 end

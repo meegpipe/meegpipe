@@ -1,15 +1,33 @@
 function rep = make_bss_report(obj, myBSS, ics, data)
 
 import goo.globals;
+import misc.rnd_line_format;
+import misc.unique_filename;
+import mperl.file.spec.catfile;
+import plot2svg.plot2svg;
+import inkscape.svg2png;
 
 verbose      = globals.get.Verbose;
 verboseLabel = globals.get.VerboseLabel;
 
+visible = globals.get.VisibleFigures;
+if visible,
+    visibleStr = 'on';
+else
+    visibleStr = 'off';
+end
+
 globals.set('Verbose', false);
+
+if verbose,
+    fprintf([verboseLabel 'Generating BSS report ...\n\n']);
+end
 
 parentRep = get_report(obj);
 
-rep = childof(report.generic.new, parentRep);
+rep = report.generic.new('Title', 'Blind Source Separation report');
+
+rep = childof(rep, parentRep);
 
 %% Binary file storing the ICs
 print_title(rep, 'Spatial components'' activations', get_level(rep) + 1);
@@ -18,7 +36,7 @@ fprintf(rep, ics);
 
 %% The BSS object
 print_title(rep, 'BSS decomposition', get_level(rep) + 1);
-set_method_config(bss, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
+set_method_config(myBSS, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
 fprintf(rep, myBSS);
 
 %% Snapshots of all ICs
@@ -26,7 +44,7 @@ if verbose
     fprintf( [verboseLabel, '\tGenerating SPCs snapshots...']);
 end
 
-snapshotRep = plotter(...
+snapshotRep = report.plotter.new(...
     'Plotter',  get_config(obj, 'SnapshotPlotter'), ...
     'Title',    'Activations'' snapshots');
 
@@ -40,17 +58,78 @@ generate(snapshotRep, ics);
 
 if verbose, fprintf('[done]\n\n'); end
 
+%% SPCs explained variance
+
+[sensorArray, sensorIdx] = sensor_groups(sensors(data));
+
+spcVarStats = get_config(obj, 'SPCVarStats');
+% The full back-projection matrix (including non-selected components)
+A = bprojmat(myBSS, true);
+
+
+if ~isempty(spcVarStats)
+    if verbose
+        fprintf( [verboseLabel, '\tGenerating backprojected variance report ...']);
+    end
+    
+    varStatKeys = keys(spcVarStats);
+    varStats = nan(size(A,2), numel(varStatKeys));
+    
+    print_title(rep, 'SPC''s backprojected variance', get_level(rep)+1);
+    
+    for i = 1:numel(sensorArray),
+        
+        subTitle = sprintf('Sensor set #%d (%d %s sensors)', ...
+            i, nb_sensors(sensorArray{i}), class(sensorArray{i}));
+        print_title(rep, subTitle, get_level(rep)+2);
+        
+        select(data, sensorIdx{i});
+        rawVar = var(data, [], 2);
+        for j = 1:size(A,2)
+            for k = 1:numel(varStatKeys)
+                fh = spcVarStats(varStatKeys{k});
+                varStats(j, k) = fh(A(:,j).^2, rawVar);
+            end
+        end
+        restore_selection(data);
+
+        figure('Visible', visibleStr);
+        for k = 1:size(varStats, 2)
+            plot(varStats(:,k), rnd_line_format(k), ...
+                'LineWidth', 2);
+            hold on;
+        end
+        legend(varStatKeys{:});
+        xlabel('SPC index');
+        set(gca, 'XTick', 1:size(A,2));
+        
+        % Print to a disk file and then to the report
+        
+        rDir = get_rootpath(rep);
+        fileName = unique_filename(catfile(rDir, 'bp_variance.svg'));
+        evalc('plot2svg(fileName, gcf);');
+        svg2png(fileName);
+        close;
+        myGallery = report.gallery.new;
+        caption = 'Backprojected variance statistics (across all channels) for each SPC';
+
+        add_figure(myGallery, fileName, caption);
+        fprintf(rep, myGallery);
+        
+    end
+   
+    
+    if verbose,
+        fprintf('[done]\n\n');
+    end
+end
+
 %% Topographies of all ICs
 if verbose
     fprintf( [verboseLabel, '\tGenerating SPCs topographies...']);
 end
 
-[sensorArray, sensorIdx] = sensor_groups(sensors(data));
-
-% The full backprojection matrix
-A = bprojmat(myBSS, true);
-
-if rej,
+if get_config(obj, 'Reject'),
     rejStr = ' (REJECTED)';
 else
     rejStr = ' (ACCEPTED)';
@@ -58,41 +137,46 @@ end
 
 selectedSPCs = component_selection(myBSS);
 
-for i = 1:numel(sensorArray),  
+for i = 1:numel(sensorArray),
     
     sensorClass = regexprep(class(sensorArray{i}), '^sensors\.', '');
     sensorClass = upper(sensorClass);
     
     if ~ismember(sensorClass, {'EEG', 'MEG'}) || numel(sensorIdx{i}) < 2,
         continue;
-    end    
-
+    end
+    
     topoNames = num2cell((1:size(A,2))');
     
-    topoNames = cellfun(@(x) ...
-        ['SPC #' num2str(x) ' (sensor set ' num2str(i) ')'], topoNames, ...
-        'UniformOutput', false);
-    
-    for k = 1:numel(topoNames)        
+    for k = 1:numel(topoNames)
+        topoNames{k} = sprintf('SPC #%d from sensor set %d', k, i);
         if ismember(k, selectedSPCs),
             topoNames{k} = [topoNames{k} rejStr];
-        end        
-    end    
-   
-    thisSensors = subset(sensorsObj, sensorIdx{i});
+        end
+        if ~isempty(spcVarStats),
+            topoNames{k} = [topoNames{k} '('];
+            for m = 1:numel(varStatKeys),
+                topoNames{k} = sprintf('%s%s=%d;', topoNames{k}, ...
+                    varStatKeys{m}, round(varStats(k, m)));
+            end
+            topoNames{k} = [topoNames{k}(1:end-1) ')'];
+        end
+    end
+    
+    thisSensors = subset(sensors(data), sensorIdx{i});
     
     if any(any(isnan(cartesian_coords(thisSensors)))),
         warning('bss:MissingCoordinates', ...
             'Missing sensor coordinates: skipping topographies');
         continue;
-    end    
+    end
     
     repTitle = sprintf('%s topographies (channels %d-%d)', ...
         sensorClass, sensorIdx{i}(1), sensorIdx{i}(end));
     
-    topoRep = plotter(...
+    topoRep = report.plotter.new(...
         'Plotter',  get_config(obj, 'TopoPlotter'), ...
-        'Gallery',  gallery('NoLinks', true),  ...
+        'Gallery',  report.gallery.new('NoLinks', true),  ...
         'Title',    repTitle);
     
     topoRep = embed(topoRep, rep);
@@ -112,7 +196,7 @@ if verbose
     fprintf( [verboseLabel, '\tGenerating SPCs PSDs...']);
 end
 
-psdRep = plotter(...
+psdRep = report.plotter.new(...
     'Plotter',  get_config(obj, 'PSDPlotter'), ...
     'Title',    'Activations PSDs');
 
@@ -127,16 +211,16 @@ if verbose, fprintf('\n\n'); end
 if ~isempty(selectedSPCs)
     if verbose
         fprintf( [verboseLabel, '\tBackprojecting selected SPCs...']);
-    end    
-   
-    selICs = subset(ics, selectedSPCs);    
-    data = physioset.physioset.from_pset(bproj(myBSS, selICs));
- 
+    end
+    
+    selICs = subset(ics, selectedSPCs);
+    selICs = bproj(myBSS, selICs);
+    
     % Snapshots of top-variance channels
     print_title(rep, 'Backprojected SPCs', get_level(rep) + 1);
     
-    dataVar = var(data, 0, 2);
-      
+    dataVar = var(selICs, 0, 2);
+    
     [~, chanIdx] = sort(dataVar, 'descend');
     
     snapshotPlotter = physioset.plotter.snapshots.new(...
@@ -145,28 +229,28 @@ if ~isempty(selectedSPCs)
         'NbBadEpochs',  0, ...
         'NbGoodEpochs', 3);
     
-    snapshotsRep = plotter(...
+    snapshotsRep = report.plotter.new(...
         'Plotter',  snapshotPlotter, ...
         'Title',    'Time-course at top-variance channels');
     
     print_title(rep, 'Time-course at top-variance channels', get_level(rep) + 2);
     
-    chanIdx = sort(chanIdx(1:min(size(data,1), 5)), 'ascend');
-    select(data, chanIdx);
-    generate(embed(snapshotsRep, rep), data);
-    restore_selection(data);
+    chanIdx = sort(chanIdx(1:min(size(selICs,1), 5)), 'ascend');
+    select(selICs, chanIdx);
+    generate(embed(snapshotsRep, rep), selICs);
+    restore_selection(selICs);
     
-    % PSDs of top-variance channels   
-    psdRep = plotter(...
+    % PSDs of top-variance channels
+    psdRep = report.plotter.new(...
         'Plotter',  get_config(obj, 'PSDPlotter'), ...
         'Title',    'PSD across top-variance channels');
     
     print_title(rep, 'PSD across top-variance channels', get_level(rep) + 2);
     
-    generate(embed(psdRep, rep), data);    
+    generate(embed(psdRep, rep), selICs);
     
     % Power topograhy for the selected components
-    [sensorArray, sensorIdx] = sensor_groups(sensors(data));
+    [sensorArray, sensorIdx] = sensor_groups(sensors(selICs));
     
     for i = 1:numel(sensorArray),
         
@@ -181,7 +265,7 @@ if ~isempty(selectedSPCs)
             continue;
         end
         
-        thisSensors = subset(sensorsObj, sensorIdx{i});
+        thisSensors = subset(sensors(selICs), sensorIdx{i});
         
         if any(any(isnan(cartesian_coords(thisSensors)))),
             warning('bss_regr:MissingCoordinates', ...
@@ -191,9 +275,9 @@ if ~isempty(selectedSPCs)
         
         repTitle = sprintf('%s power topographies (channels %d-%d)', ...
             sensorClass, sensorIdx{i}(1), sensorIdx{i}(end));
-        topoRep = plotter(...
+        topoRep = report.plotter.new(...
             'Plotter',  get_config(obj, 'TopoPlotter'), ...
-            'Gallery',  gallery('NoLinks', true),  ...
+            'Gallery',  report.gallery.new('NoLinks', true),  ...
             'Title',    repTitle);
         
         topoRep = embed(topoRep, rep);
@@ -206,7 +290,7 @@ if ~isempty(selectedSPCs)
             'Power-weighted average SPC topography', ...
             };
         
-        topoVals = [dataVar(sensorIdx{i}), sum(A(sensorIdx{i}, idx), 2)];
+        topoVals = [dataVar(sensorIdx{i}), sum(A(sensorIdx{i}, selectedSPCs), 2)];
         generate(topoRep, thisSensors, topoVals, topoName);
         
         if verbose, fprintf('.'); end
@@ -215,6 +299,8 @@ if ~isempty(selectedSPCs)
     
     if verbose, fprintf('\n\n'); end
 end
+
+print_title(parentRep, 'Blind Source Separation', get_level(parentRep)+2);
 
 print_link2report(parentRep, rep);
 

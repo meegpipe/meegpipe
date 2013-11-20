@@ -2,6 +2,7 @@ function [selected, featVal, obj] = select(obj, objSpt, tSeries, varargin)
 % SELECT - Selects criterion matching components
 
 import exceptions.InvalidObject;
+import mperl.join;
 
 verbose         = is_verbose(obj);
 verboseLabel    = get_verbose_label(obj);
@@ -75,9 +76,10 @@ obj.Selected = selected;
 obj.FeatVals = featVal;
 
 if verbose,
+    featNames = cellfun(@(x) class(x), obj.Feature, 'UniformOutput', false);
     fprintf([verboseLabel 'Selected %d components using criterion'  ...
         '%s on feature %s\n\n'], ...
-        sum(selected), class(obj), class(obj.Feature));
+        sum(selected), class(obj), join(',', featNames));
 end
 
 

@@ -21,7 +21,7 @@ classdef spt
         
         obj          = restore_selection(obj);
         
-        obj          = cascade(varargin);  
+        varargout    = cascade(varargin);  
         
         obj          = reorder_component(obj, idx);
   

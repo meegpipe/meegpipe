@@ -5,18 +5,13 @@ classdef abstract_setget_handle < ...
     % ABSTRACT_SETGET - Simple implementation of the setget interface
     %
     % See also: goo.setget
-    
-    
-    % IMPLEMENTATION ......................................................
-    
+
     properties (GetAccess = private, SetAccess = private)
         
         Info = struct;
         
     end
-    
-    % PUBLIC INTERFACE ....................................................
-    
+
     % setget interface
     methods (Sealed)
         

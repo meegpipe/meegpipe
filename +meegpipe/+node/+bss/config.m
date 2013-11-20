@@ -11,9 +11,10 @@ classdef config < meegpipe.node.abstract_config
         Reject          = true;
         Filter          = [];
         
-        SnapshotPlotter    = meegpipe.node.bss.default_spc_snapshot_plotter;
+        SnapshotPlotter    = meegpipe.node.bss.default_snapshot_plotter;
         TopoPlotter        = meegpipe.node.bss.default_topo_plotter;
-        PSDPlotter         = meegpipe.node.bss.default_psd_plotter;        
+        PSDPlotter         = meegpipe.node.bss.default_psd_plotter;    
+        SPCVarStats        = meegpipe.node.bss.default_spc_var_stats;
         
     end
     

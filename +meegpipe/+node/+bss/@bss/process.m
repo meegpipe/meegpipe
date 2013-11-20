@@ -48,11 +48,12 @@ ics   = proj(myBSS, pcs);
 set_name(ics, [get_name(myBSS), ' activations']);
 add_event(ics, get_event(data));
 
-myBSS = cascade(myPCA, myBSS);
+[~, myBSS] = cascade(myPCA, myBSS);
 
 [selected, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
 [~, sortedIdx] = sort(rankVal, 'descend');
 myBSS = reorder_component(myBSS, sortedIdx);
+myBSS = select(myBSS, selected(sortedIdx));
 ics   = select(ics, sortedIdx);
 
 % Has the user made a manual selection?
@@ -111,13 +112,11 @@ else
         end                
     end    
     
-    select(ics, icSel);
-    myBSS = select(myBSS, icSel);
+    select(ics, icSel);    
     bpPCs = bproj(myBSS, ics);
     restore_selection(ics);
     
     if reject,
-        
         data = data - bproj(myPCA, bpPCs);
     else
         data = bproj(myPCA, bpPCs);

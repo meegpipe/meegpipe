@@ -49,7 +49,7 @@ end
 figure('Visible', visibleStr);
 
 % We plot only the relevant eigenvalues and a bit more
-eigenValues = flipud(obj.Eigenvalues(:));
+eigenValues = obj.Eigenvalues(:);
 eigenValues(nb_component(obj)+2:end) = [];
 if ~strcmpi(obj.Criterion, 'none'),
     critVals = obj.(upper(obj.Criterion));
@@ -77,7 +77,6 @@ else
     ylabel('Normalized eigenvalue');
 end
 
-% Instead we avoid transparent elements and just plot a line
 grid on;
 yLim = get(gca, 'YLim');
 axis([1 numel(eigenValues)+0.25 yLim(1) yLim(2)]);

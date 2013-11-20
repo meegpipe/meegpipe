@@ -16,15 +16,8 @@ classdef topography < ...
         
         function obj = topography(varargin)
            
-           import spt.plotter.topography.*;
-            
-           if nargin < 1,
-               obj = set_config(obj, config);
-           elseif nargin == 1,
-               obj = set_config(obj, varargin{1});
-           else
-               obj = set_config(obj, config(varargin{:}));
-           end
+           obj = obj@report.abstract_gallery_plotter(varargin{:});
+           
         end
         
     end
