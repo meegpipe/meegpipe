@@ -379,5 +379,4 @@ myNode = bad_epochs(...
     varargin{:});
 
 
->>>>>>> master
 end
