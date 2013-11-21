@@ -141,7 +141,7 @@ classdef pca < spt.abstract_spt
             
             
             if isa(value, 'function_handle'),
-                testVal = value(100);
+                testVal = value(rand(1,10));
                 if numel(testVal) ~= 1 || ~isnumeric(testVal)
                     throw(InvalidPropValue('MinCard', ...
                         'Invalid function_handle'));

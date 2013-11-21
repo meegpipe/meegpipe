@@ -86,6 +86,7 @@ try
     myNode = meegpipe.node.bss.new('GenerateReport', true);
     run(myNode, data);
     
+    X = X - repmat(mean(X, 2), 1, size(X,2));
     ok(max(abs(data(:)-X(:))) < 1e-2, name);
     
 catch ME
@@ -261,14 +262,14 @@ try
         'Criterion',        myCrit, ...
         'GenerateReport',   false, ...
         'Reject',           false);
-    run(myNode, data);
-   
-    condition = max(abs(data(:)-X(:))) > 0.001;
-    outputFileName = get_output_filename(myNode, data);
-    clear data ans;
+    data = run(myNode, data);
     
-    ok( condition & ...
-        exist(outputFileName, 'file') > 0, name);
+    dataVar = var(data, [], 2);
+    
+    [~, Imax] = max(dataVar);
+    varRatios = dataVar(Imax)./dataVar(setdiff(1:size(data,1), Imax));
+    
+    ok( all(varRatios > 100), name);
     
 catch ME
     
@@ -289,54 +290,15 @@ try
         data{i} = import(physioset.import.matrix, randn(10, 1000));
     end
     
-    myNode = bss.new('Save', true, 'Parallelize', false);
+    myNode = meegpipe.node.bss.new(...
+        'Save',             true, ...
+        'Parallelize',      false, ...
+        'GenerateReport',   false);
     run(myNode, data{:});
-    
-    MAX_TRIES = 20;
-    tries = 0;
-    while tries < MAX_TRIES && ~all(cellfun(@(x) ...
-            exist(get_output_filename(myNode, x), 'file') > 0, data))
-        pause(2); % give time to the file system to put things in place
-        tries = tries + 1;
-    end
     
     ok(all(cellfun(@(x) ...
         exist(get_output_filename(myNode, x), 'file') > 0, data)), ...
         name);
-    
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-%% EOG correction
-try
-
-    name = 'EOG correction';
-    
-    X = randn(10, 50000);
-    
-    warning('off', 'sensors:InvalidLabel');
-    eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
-    warning('on', 'sensors:InvalidLabel');
-    
-    eegSensors   = subset(eegSensors, 1:32:256);
-    dummySensors = sensors.dummy(2);
-    allSensors   = sensors.mixed(eegSensors, dummySensors);
-    
-    importer = physioset.import.matrix(250, 'Sensors', allSensors);
-    data = import(importer, X);
-    
-    set_bad_sample(data, 50:2500);
-    set_bad_channel(data, 1:3);
-    
-    myNode = bss.eog('Var', 99.9);
-    run(myNode, data);
-    
-    ok(max(abs(data(:)-X(:))) > 1e-3, name);
     
     
 catch ME
@@ -374,7 +336,7 @@ try
             
         end
         
-        myNode = bss_regr.new('Save', true);
+        myNode = bss.new('Save', true);
         dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic

@@ -24,7 +24,12 @@ if ~isempty(obj.LearningFilter),
    if isa(data, 'pset.mmappset'),
        data = copy(data);      
    end
-   data = filter(obj.LearningFilter, data);    
+   if isa(obj.LearningFilter, 'function_handle'),
+       myFilter = obj.LearningFilter(data.SamplingRate);
+   else
+       myFilter = obj.LearningFilter;
+   end
+   data = filter(myFilter, data);    
 end
 
 obj = learn_basis(obj, data);

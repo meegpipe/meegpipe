@@ -64,13 +64,18 @@ maxDimCond = find(sortedLambda(1)./sortedLambda < obj.MaxCond, 1, 'last');
 
 maxDim = min(maxDim, maxDimCond);
 
-
-if size(W,1) < obj.MinCard,
-    error(['Covariance matrix does not have enough rank to produce ' ...
-        '%d components'], obj.MinCard);
+if isa(obj.MinCard, 'function_handle'),
+    minCard = obj.MinCard(Lambda);
+else
+    minCard = obj.MinCard;
 end
 
-nbDims = max(obj.MinCard, maxDim);
+if size(W,1) < minCard,
+    error(['Covariance matrix does not have enough rank to produce ' ...
+        '%d components'], minCard);
+end
+
+nbDims = max(minCard, maxDim);
 
 obj.Eigenvectors = V;
 obj.Eigenvalues = sortedLambda;
