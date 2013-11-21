@@ -97,10 +97,10 @@ catch ME
     
 end
 
-%% threshold criterion
+%% threshold criterion with kurtosis feature
 try    
   
-    name = 'threshold criterion';
+    name = 'threshold criterion with kurtosis feature';
     
     X = rand(4, 5000);
     
@@ -137,7 +137,7 @@ try
 
     name = 'multiple sensor groups, bad samples, bad channels';
     
-    X = rand(10, 20000);
+    X = rand(10, 20000)-repmat(0.5, 10, 20000);
     
     warning('off', 'sensors:InvalidLabel');
     eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
@@ -153,7 +153,7 @@ try
     set_bad_sample(data, 50:2500);
     set_bad_channel(data, 1:3);
     
-    myNode = meegpipe.node.bss.new('Reject', false);
+    myNode = bss.new('Reject', false);
     run(myNode, data);
     
     ok(max(abs(data(:)-X(:))) < 1e-3, name);
@@ -184,7 +184,7 @@ try
     
     myFilter = filter.lpfilt('fc', .5);
     myBSS    = spt.bss.jade('LearningFilter', myFilter);
-    myNode = bss_regr('BSS', myBSS, 'Save', true);
+    myNode = bss.new('BSS', myBSS, 'Save', true);
     run(myNode, data);
     
     ok( exist(get_output_filename(myNode, data), 'file')>0, name);
@@ -208,7 +208,7 @@ try
         data{i} = import(physioset.import.matrix, randn(10, 1000));
     end
     
-    myNode = bss_regr.new('Save', true, 'Parallelize', false);
+    myNode = bss.new('Save', true, 'Parallelize', false);
     run(myNode, data{:});
     
     MAX_TRIES = 20;
@@ -252,7 +252,7 @@ try
     set_bad_sample(data, 50:2500);
     set_bad_channel(data, 1:3);
     
-    myNode = bss_regr.eog('Var', 99.9);
+    myNode = bss.eog('Var', 99.9);
     run(myNode, data);
     
     ok(max(abs(data(:)-X(:))) > 1e-3, name);

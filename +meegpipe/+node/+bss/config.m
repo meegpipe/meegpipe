@@ -15,6 +15,7 @@ classdef config < meegpipe.node.abstract_config
         TopoPlotter        = meegpipe.node.bss.default_topo_plotter;
         PSDPlotter         = meegpipe.node.bss.default_psd_plotter;    
         SPCVarStats        = meegpipe.node.bss.default_spc_var_stats;
+        SaveActivations    = true;
         
     end
     
