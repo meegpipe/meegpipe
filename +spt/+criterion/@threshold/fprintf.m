@@ -89,8 +89,7 @@ for featItr = 1:numel(obj.Feature)
     fileName = catfile(rootPath, 'rank-report.svg');
     fileName = unique_filename(fileName);
     caption = sprintf(['Feature value for each spatial component.' ...
-        ' The red line marks the boundary between selected and unselected' ...
-        ' components ']);
+        ' Red lines mark the Min/Max thresholds (if applicable).']);
     evalc('plot2svg(fileName, gcf);');
     svg2png(fileName);
     close;

@@ -1,9 +1,7 @@
 classdef bss < meegpipe.node.abstract_node
     
-    methods (Static, Access = private)       
-        
-        make_filtering_report(rep, filtObj, icsIn, icsOut);  
-        
+    methods (Static, Access = private)
+        make_filtering_report(rep, icsIn, icsOut);
     end
     
     methods (Access = private)
@@ -28,6 +26,7 @@ classdef bss < meegpipe.node.abstract_node
             verb, verbLabel);
         
         make_backprojection_report(obj, bss, ics, rep, verb, verbLabel);
+        
     end
     
     methods

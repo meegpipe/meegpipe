@@ -106,20 +106,17 @@ else
         if do_reporting(obj),            
             icsIn = copy(ics);
         end
-        filtfilt(filtObj, ics);
+        filtfilt(myFilt, ics);
         if do_reporting(obj),           
-            make_filtering_report(bssRep, filtObj, icsIn, ics);
+            bss.make_filtering_report(bssRep, icsIn, ics);
         end                
     end    
     
     select(ics, icSel);    
-    bpPCs = bproj(myBSS, ics);
-    restore_selection(ics);
-    
     if reject,
-        data = data - bproj(myPCA, bpPCs);
+        data = data - bproj(myBSS, ics);
     else
-        data = bproj(myPCA, bpPCs);
+        data = assign_values(data, bproj(myBSS, ics));
     end
     
     % Remove residual noise using a regression filter

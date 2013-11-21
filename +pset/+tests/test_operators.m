@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(4);
+initialize(8);
 
 %% Create a new session
 try
@@ -61,6 +61,82 @@ try
     
     ok(max(abs(trueVar-psetVar)) < 0.1 & ...
         max(abs(origData(:)-data(:))) < 0.01, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% plus()
+try
+    
+    name = 'plus()';
+    data1 = pset.pset.randn(5,3000);
+    data2 = pset.pset.randn(5,3000);
+    sumVal = data1(:,:) + data2(:,:);
+    
+    data1 = data1 + data2;
+    
+    ok(max(abs(data1(:)-sumVal(:))) < 0.01, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% plus() with selections
+try
+    
+    name = 'plus() with selections';
+    data1 = pset.pset.randn(5,3000);
+    data2 = pset.pset.randn(5,3000);
+    sumVal = data1(1:2,:) + data2(4:5,:);
+    
+    select(data1, 1:2);
+    select(data2, 4:5);
+    data1 = data1 + data2;
+    
+    ok(max(abs(data1(:)-sumVal(:))) < 0.01, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% assign_values
+try
+    
+    name = 'assign_values';
+    data1 = pset.pset.randn(5,3000);
+    data2 = pset.pset.randn(5,3000);
+    data1 = assign_values(data1, data2);
+    ok(max(abs(data1(:)-data2(:))) < 0.01, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% assign_values with selections
+try
+    
+    name = 'assign_values with selections';
+    data1 = pset.pset.randn(5,3000);
+    data2 = pset.pset.randn(5,3000);
+    select(data1, 1:2);
+    select(data2, 4:5);
+    data1 = assign_values(data1, data2);
+    clear_selection(data1);
+    clear_selection(data2);
+    ok(max(max(abs(data1(1:2,:)-data2(4:5,:)))) < 0.01, name);
     
 catch ME
     

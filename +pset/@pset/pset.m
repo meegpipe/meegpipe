@@ -257,6 +257,8 @@ classdef pset < pset.mmappset & ...
         
         obj = backup_projection(obj);
         
+        obj = assign_values(obj, otherObj);
+        
         [y, pIdx] = get_chunk(obj, chunk_index);
         
         function bool = is_temporary(obj)

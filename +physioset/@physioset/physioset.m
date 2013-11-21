@@ -658,6 +658,12 @@ classdef physioset < ...
             val = ndims(obj.PointSet, varargin{:});
         end
         
+        function obj        = assign_values(obj, otherObj)
+           
+            obj.PointSet = assign_values(obj.PointSet, otherObj.PointSet);
+            
+        end
+        
         function obj        = plus(varargin)
             for i = 1:nargin
                 if isa(varargin{i}, 'physioset.physioset'),

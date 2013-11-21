@@ -36,9 +36,9 @@ for i = 1:a.NbChunks
         end
     end    
     if a.Transposed,        
-        s.subs = {index, 1:a.NbDims};        
+        s.subs = {index, 1:nb_dim(a)};        
     else
-        s.subs = {1:a.NbDims, index};        
+        s.subs = {1:nb_dim(a), index};        
     end
     s.type = '()';
     y = subsasgn(y, s, dataa + datab);

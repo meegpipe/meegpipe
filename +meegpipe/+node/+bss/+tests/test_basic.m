@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(10);
+initialize(12);
 
 %% Create a new session
 try
@@ -74,11 +74,9 @@ try
     name = 'process sample data: simple case';
     
     X = rand(4, 5000);
-    
-    warning('off', 'sensors:InvalidLabel');
+   
     eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
-    warning('on', 'sensors:InvalidLabel');
-    
+   
     eegSensors   = subset(eegSensors, 1:4);
     
     importer = physioset.import.matrix(250, 'Sensors', eegSensors);
@@ -121,7 +119,7 @@ try
         'Criterion',        myCrit);
     run(myNode, data);
     
-    ok(max(abs(data(:)-X(:))) < 1e-2, name);
+    ok(max(abs(data(:)-X(:))) > 1e-2, name);
     
 catch ME
     
@@ -137,11 +135,8 @@ try
 
     name = 'multiple sensor groups, bad samples, bad channels';
     
-    X = rand(10, 20000)-repmat(0.5, 10, 20000);
-    
-    warning('off', 'sensors:InvalidLabel');
+    X = rand(10, 20000);
     eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
-    warning('on', 'sensors:InvalidLabel');
     
     eegSensors   = subset(eegSensors, 1:32:256);
     dummySensors = sensors.dummy(2);
@@ -153,10 +148,18 @@ try
     set_bad_sample(data, 50:2500);
     set_bad_channel(data, 1:3);
     
-    myNode = bss.new('Reject', false);
-    run(myNode, data);
+    center(data);
     
-    ok(max(abs(data(:)-X(:))) < 1e-3, name);
+    myNode = meegpipe.node.bss.new('Reject', true, 'GenerateReport', false);
+    run(myNode, data);
+
+    isBadSample = is_bad_sample(data);
+    isBadChan   = is_bad_channel(data);
+    origData = import(physioset.import.matrix, X);
+    select(origData, ~isBadChan, ~isBadSample);
+    center(origData);
+    select(pset.selector.good_data, data);
+    ok(max(max(abs(data(:,:)-origData(:,:)))) < 1e-3, name);
     
     
 catch ME
@@ -166,17 +169,13 @@ catch ME
     
 end
 
-%% filtering and saving node output
+%% learning filter and saving node output
 try    
 
-    name = 'filtering and saving node output';
+    name = 'learning filter and saving node output';
     
-    X = rand(8, 20000);
-    
-    warning('off', 'sensors:InvalidLabel');
+    X = rand(8, 20000); 
     eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
-    warning('on', 'sensors:InvalidLabel');
-    
     eegSensors = subset(eegSensors, 1:32:256);
     
     importer = physioset.import.matrix(250, 'Sensors', eegSensors);
@@ -184,10 +183,92 @@ try
     
     myFilter = filter.lpfilt('fc', .5);
     myBSS    = spt.bss.jade('LearningFilter', myFilter);
-    myNode = bss.new('BSS', myBSS, 'Save', true);
+    myNode = meegpipe.node.bss.new(...
+        'BSS',              myBSS, ...
+        'Save',             true, ...
+        'GenerateReport',   true);
     run(myNode, data);
+   
+    X = X - repmat(mean(X,2), 1, size(X,2));
+    condition = max(abs(data(:)-X(:))) < 0.001;
+    outputFileName = get_output_filename(myNode, data);
+    clear data ans;
     
-    ok( exist(get_output_filename(myNode, data), 'file')>0, name);
+    ok( condition & ...
+        exist(outputFileName, 'file') > 0, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% filtering spcs activations
+try    
+
+    name = 'filtering spcs activations';
+    
+    X = rand(8, 20000); 
+    eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
+    eegSensors = subset(eegSensors, 1:32:256);
+    
+    importer = physioset.import.matrix(250, 'Sensors', eegSensors);
+    data = import(importer, X);
+    
+    myFilter = filter.hpfilt('fc', .1);
+    myCrit   = spt.criterion.threshold(spt.feature.tgini, ...
+        'Max', @(gini) median(gini));
+    myNode = meegpipe.node.bss.new(...
+        'Filter',           myFilter, ...
+        'Criterion',        myCrit, ...
+        'Save',             true, ...
+        'GenerateReport',   true);
+    run(myNode, data);
+   
+    X = X - repmat(mean(X,2), 1, size(X,2));
+    condition = max(abs(data(:)-X(:))) > 0.001;
+    outputFileName = get_output_filename(myNode, data);
+    clear data ans;
+    
+    ok( condition & ...
+        exist(outputFileName, 'file') > 0, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% reject=false
+try    
+
+    name = 'reject=false';
+    
+    X = rand(3, 10000);
+    X = X - repmat(mean(X,2), 1, size(X,2));
+    eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
+    eegSensors = subset(eegSensors, 1:3);
+    
+    importer = physioset.import.matrix(250, 'Sensors', eegSensors);
+    data = import(importer, X);
+  
+    myCrit   = spt.criterion.threshold(spt.feature.tgini, ...
+        'MinCard',  1, ...
+        'MaxCard',  1);
+    myNode = meegpipe.node.bss.new(...
+        'Criterion',        myCrit, ...
+        'GenerateReport',   false, ...
+        'Reject',           false);
+    run(myNode, data);
+   
+    condition = max(abs(data(:)-X(:))) > 0.001;
+    outputFileName = get_output_filename(myNode, data);
+    clear data ans;
+    
+    ok( condition & ...
+        exist(outputFileName, 'file') > 0, name);
     
 catch ME
     
