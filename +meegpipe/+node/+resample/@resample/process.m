@@ -133,6 +133,15 @@ dataOut = physioset.from_pset(dataOut, ...
 
 set_meta(dataOut, get_meta(dataIn));
 
+% Keep also the processing history
+% VERY IMPORTANT: Don't know why (yet) but if you don't do this then the
+% report of the pipeline that contains the current resample node will have
+% its FID closed
+procH = get_processing_history(dataIn);
+for i = 1:numel(procH)
+    add_processing_history(dataOut, procH{i});
+end
+
 if verbose,
     fprintf( '[done]\n\n');
 end

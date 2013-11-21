@@ -108,7 +108,7 @@ else
     print_paragraph(rep, 'All events: [%s][evlog]', evLogName);
     print_paragraph(rep, 'Bad events: [%s][badevlog]', badEvLogName);
     print_link(rep, ['../' evLogName], 'evlog');
-    print_link(rep, ['../' evLogName], 'badevlog');
+    print_link(rep, ['../' badEvLogName], 'badevlog');
     
 end
 

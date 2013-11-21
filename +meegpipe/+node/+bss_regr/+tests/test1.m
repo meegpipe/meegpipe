@@ -2,13 +2,14 @@ function [status, MEh] = test1()
 % TEST1 - Tests basic node functionality
 
 import mperl.file.spec.*;
-import meegpipe.node.*;
+import meegpipe.node.bss_regr.*;
 import test.simple.*;
 import pset.session;
 import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
 import oge.has_oge;
+import spt.bss.jade.jade;
 
 MEh     = [];
 
@@ -38,7 +39,7 @@ end
 try
     
     name = 'constructor';
-    bss_regr.new;
+    bss_regr;
     ok(true, name);
     
 catch ME
@@ -54,7 +55,7 @@ try
     name = 'construction with key/values';
    
     regrFilter = filter.mlag_regr('Order', 5);
-    myNode = bss_regr.new('RegrFilter', regrFilter);    
+    myNode = bss_regr('RegrFilter', regrFilter);    
 
     regrFilter = get_config(myNode, 'RegrFilter');
     ok( ...
@@ -73,19 +74,19 @@ try
   
     name = 'process sample data: simple case';
     
-    X = rand(8, 20000);
+    X = rand(5, 10000);
     
     warning('off', 'sensors:InvalidLabel');
     eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
     warning('on', 'sensors:InvalidLabel');
     
-    eegSensors   = subset(eegSensors, 1:32:256);
+    eegSensors   = subset(eegSensors, 1:5);
     
     importer = physioset.import.matrix(250, 'Sensors', eegSensors);
     
     data = import(importer, X);
     
-    myNode = bss_regr.new;
+    myNode = bss_regr('Reject', false);
     run(myNode, data);
     
     ok(max(abs(data(:)-X(:))) < 1e-2, name);
@@ -119,7 +120,7 @@ try
     set_bad_sample(data, 50:2500);
     set_bad_channel(data, 1:3);
     
-    myNode = bss_regr.new('Reject', false);
+    myNode = bss_regr('Reject', false);
     run(myNode, data);
     
     ok(max(abs(data(:)-X(:))) < 1e-3, name);
@@ -149,7 +150,7 @@ try
     data = import(importer, X);
     
     myFilter = filter.lpfilt('fc', .5);
-    myBSS    = spt.bss.jade('LearningFilter', myFilter);
+    myBSS    = jade('Filter', myFilter);
     myNode = bss_regr('BSS', myBSS, 'Save', true);
     run(myNode, data);
     
@@ -174,7 +175,7 @@ try
         data{i} = import(physioset.import.matrix, randn(10, 1000));
     end
     
-    myNode = bss_regr.new('Save', true, 'Parallelize', false);
+    myNode = bss_regr('Save', true, 'Parallelize', false);
     run(myNode, data{:});
     
     MAX_TRIES = 20;
@@ -218,7 +219,7 @@ try
     set_bad_sample(data, 50:2500);
     set_bad_channel(data, 1:3);
     
-    myNode = bss_regr.eog('Var', 99.9);
+    myNode = eog('Var', 99.9);
     run(myNode, data);
     
     ok(max(abs(data(:)-X(:))) > 1e-3, name);
@@ -259,7 +260,7 @@ try
             
         end
         
-        myNode = bss_regr.new('Save', true);
+        myNode = bss_regr('Save', true);
         dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic
@@ -298,4 +299,5 @@ catch ME
 end
 
 %% Testing summary
+
 status = finalize();
