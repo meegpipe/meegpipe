@@ -25,7 +25,7 @@ for bandItr = 1:numel(obj.LpFilter)
     elseif isempty(obj.HpFilter{bandItr}),
         
         count = count + 1;
-        H{count} = obj.LpFilter{bandItr};
+        H{count} = mdfilt(obj.LpFilter{bandItr});
         persistentMem = persistentMem || ...
             obj.LpFilter{bandItr}.PersistentMemory;
         
@@ -33,7 +33,7 @@ for bandItr = 1:numel(obj.LpFilter)
     elseif isempty(obj.LpFilter{bandItr}),
         
         count = count + 1;
-        H{count} = obj.HpFilter{bandItr};
+        H{count} = mdfilt(obj.HpFilter{bandItr});
         persistentMem = persistentMem || ...
             obj.HpFilter{bandItr}.PersistentMemory;
         

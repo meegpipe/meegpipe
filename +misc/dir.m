@@ -54,7 +54,7 @@ if strcmp(regex, '.+') && negated,
     return;
 end
 
-fileList = dir(path);
+fileList = builtin('dir', path);
 
 % Remove . and .. and maybe just all directories altogether
 if noDirs, 

@@ -23,8 +23,7 @@ classdef physioset < ...
         % Method configuration options
         Config = physioset.default_method_config;
         ProcHistory = {};
-        TimeOrig;
-        ProjectionHistory = {};       % Keep track of the projection operators in order to find the right item in SensorHistory
+        TimeOrig;       
         SensorsHistory = {};          % To keep track of proj/bproj
         RerefMatrix;
         MetaMapper;
@@ -431,6 +430,14 @@ classdef physioset < ...
             bool = has_selection(obj.PointSet);
         end
         
+        function bool = has_pnt_selection(obj)
+            bool = has_pnt_selection(obj.PointSet);            
+        end
+        
+        function bool = has_dim_selection(obj)
+            bool = has_dim_selection(obj.PointSet);
+        end
+        
         function dimSel = dim_selection(obj)
             dimSel = dim_selection(obj.PointSet);
         end
@@ -526,6 +533,8 @@ classdef physioset < ...
     
     % Mutable public methods
     methods
+        
+        obj             = set_sensors(obj, index);
         
         obj             = set_bad_channel(obj, index);
         
@@ -642,15 +651,18 @@ classdef physioset < ...
                     end
                     varargin{i} = varargin{i}.PointSet;
                 end
-            end
+            end 
+            
             obj.PointSet = mtimes(varargin{:});
-            obj.Sensors  = sensors.dummy(obj.NbDims);
-            clear_selection(obj);
-            obj.EqWeights = [];
-            obj.EqWeightsOrig = [];
-            obj.PhysDimPrefixOrig = [];
-            obj.BadChan = false(1, obj.NbDims);
-            obj.RerefMatrix = [];
+            % Important: do not clear the selections of obj. See
+            % pset.pset.mtimes() to understand why it is ok like it is.
+            obj.Sensors             = sensors.dummy(obj.NbDims);
+            obj.EqWeights           = [];
+            obj.EqWeightsOrig       = [];
+            obj.PhysDimPrefixOrig   = [];
+            obj.BadChan             = false(1, obj.NbDims);
+            obj.RerefMatrix         = [];
+            set_name(obj, [get_name(obj) '_backprojected']);
             
         end
         

@@ -43,7 +43,7 @@ classdef tfd < spt.feature.feature & goo.verbose
                 cfg.ws = obj.WindowShift;
             end
             
-            featVal = nan(1, size(tSeries,1));
+            featVal = nan(size(tSeries,1), 1);
             for i = 1:size(tSeries,1)
                 featVal(i) = fd(tSeries(i,:)', cfg);
             end

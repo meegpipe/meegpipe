@@ -66,7 +66,6 @@ newObj = physioset.from_pset(psetObj, args{:}, ...
     'BadChannel',           badChan, ...
     'BadSample',            badSample);
 
-newObj.ProjectionHistory = obj.ProjectionHistory;
 newObj.SensorsHistory    = obj.SensorsHistory;
 
 % Add discontinuity events at the discontinuities

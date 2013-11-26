@@ -1,4 +1,4 @@
-function count = fprintf(fid, obj, varargin)
+function count = fprintf(fid, obj, labels, varargin)
 
 import meegpipe.node.globals;
 import misc.fid2fname;
@@ -6,6 +6,9 @@ import mperl.file.spec.catfile;
 import misc.unique_filename;
 import plot2svg.plot2svg;
 import inkscape.svg2png;
+import misc.cell2char;
+
+if nargin < 3, labels = []; end
 
 gallery = clone(globals.get.Gallery);
 
@@ -17,7 +20,7 @@ else
     visibleStr = 'off';
 end
 
-for featItr = 1:numel(obj.Feature)    
+for featItr = 1:numel(obj.Feature)
     figure('Visible', visibleStr);
     
     featVals = obj.FeatVals(:, featItr);
@@ -25,6 +28,10 @@ for featItr = 1:numel(obj.Feature)
     plot(featVals, 'k', 'LineWidth', 1.5*globals.get.LineWidth);
     hold on;
     plot(featVals, 'ok');
+    set(gca, 'XTick', 1:numel(featVals));
+    if ~isempty(labels),
+        set(gca, 'XTickLabel', cell2char(labels(:)));
+    end
     hold on;
     grid on;
     
@@ -36,7 +43,6 @@ for featItr = 1:numel(obj.Feature)
     yMax = yLim(2);
     
     if ~isempty(obj.FeatPlotStats),
-        
         statNames = keys(obj.FeatPlotStats);
         statVal  = zeros(1, numel(statNames));
         pos = round(linspace(1, numel(featVals), numel(statNames)+2));
@@ -49,7 +55,7 @@ for featItr = 1:numel(obj.Feature)
             plot([0.75  numel(featVals)+0.25], repmat(statVal(i), 1, 2), 'g');
         end
     end
-      
+    
     % Plot the min/max thresholds, if they fall in view
     minVal = obj.Min{featItr};
     maxVal = obj.Max{featItr};
@@ -60,7 +66,7 @@ for featItr = 1:numel(obj.Feature)
     end
     if minVal > yMin,
         plot([0.75  numel(featVals)+0.25], repmat(minVal, 1, 2), 'r');
-    end      
+    end
     
     if ~isempty(obj.FeatPlotStats),
         % Add the texts at the end to prevent the lines writing over them
@@ -71,32 +77,32 @@ for featItr = 1:numel(obj.Feature)
         R = (yMax - yMin);
         axis([0.75 numel(featVals)+0.25 yMin-0.05*abs(R) yMax+0.05*R]);
     end
-  
+    
     nbSel = numel(find(obj.Selected));
     if nbSel > 1,
         plot(find(obj.Selected), featVals(obj.Selected), 'ro', ...
             'MarkerFaceColor', 'Red');
     end
     xlabel('SPC index');
-    if numel(obj.Feature) == 1,
-        ylabel(class(obj.Feature{1}));
-    else
-        ylabel('Feature value');
-    end
+    
+    yLabelStr = class(obj.Feature{featItr});
+    yLabelStr = strrep(yLabelStr, '_', '\_');
+    ylabel(yLabelStr);
+    
     set(gca, 'XTick', 1:numel(featVals));
     
     rootPath = fileparts(fid2fname(fid));
     fileName = catfile(rootPath, 'rank-report.svg');
     fileName = unique_filename(fileName);
-    caption = sprintf(['Feature value for each spatial component.' ...
-        ' Red lines mark the Min/Max thresholds (if applicable).']);
+    caption = sprintf(['Value of feature %s for each spatial component.' ...
+        ' Red lines mark the Min/Max thresholds (if applicable).'], ...
+        class(obj.Feature{featItr}));
     evalc('plot2svg(fileName, gcf);');
     svg2png(fileName);
     close;
+    
+    gallery = add_figure(gallery, fileName, caption);
 end
-
-
-gallery = add_figure(gallery, fileName, caption);
 
 % Information about the criterion
 count = 0;

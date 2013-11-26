@@ -99,12 +99,11 @@ for segItr = 1:numel(evSample)
             fprintf([verboseLabel 'PCA decomposition...\n\n']);
         end
         pca = learn(pca, data);
-        pcs = proj(pca, data);
+        pcs = proj(pca, copy(data));
     else
         pcs = copy(data);
     end
-    restore_selection(data);
-    
+ 
     %% Filter every principal component
     if verbose,
         if isempty(pca),
@@ -136,21 +135,21 @@ for segItr = 1:numel(evSample)
     
     %% Filter the actual data channels
     if ~isempty(pca),
-        % the bproj method displays status messages so no need here
         pcs = bproj(pca, pcs);
     end
     
-    if verbose,
-        fprintf([verboseLabel 'Updating data values in %d channels...'], ...
-            size(data,1));
-    end
-    tinit2 = tic;
-    for i = 1:size(data,1)
-        
-        thisData = data(i, first:last);
-        filtData = pcs(i, :);
-        
-        if do_reporting(obj) && ismember(i, channelSel),
+    if do_reporting(obj),
+        if verbose,
+            fprintf([verboseLabel 'Generating report for %d channels ...'], ...
+                numel(channelSel));
+        end
+        tinit2 = tic;
+        chanCount = 0;
+        for i = channelSel
+            
+            select(data, i);
+            select(pcs, i);
+            
             % Select a subset of data for the report
             sr = data.SamplingRate;
             epochDur = floor(epochDurRep*sr);
@@ -162,42 +161,44 @@ for segItr = 1:numel(evSample)
                 lastRepSampl  = firstRepSampl + epochDur - 1;
             end
             
-            % Get the being/end time for the reported epoch
-            samplRange = first:last;
-            samplTime = get_sampling_time(data, ...
-                samplRange(firstRepSampl:lastRepSampl));
+            % Get the begin/end time for the reported epoch
+            samplTime = get_sampling_time(data, firstRepSampl:lastRepSampl);
             
             attach_figure(obj);
             galleryObj = tfilter.generate_filt_plot(thisRep, ...
                 i, ...
-                thisData(firstRepSampl:lastRepSampl), ...
-                filtData(firstRepSampl:lastRepSampl), ...
+                data, ...
+                pcs, ...
                 samplTime, ...
                 galleryObj, ...
                 showDiffRep ...
                 );
+            
+            restore_selection(data);
+            restore_selection(pcs);
+            
+            chanCount = chanCount + 1;
+            if verbose,
+                eta(tinit2, numel(channelSel), chanCount, 'remaintime', true);
+            end
+            
         end
-        
-        if retRes,
-            thisData = thisData - filtData;
-        else
-            thisData = filtData;
-        end
-        
-        data(i,first:last) = thisData;
-        
-        if verbose,
-            eta(tinit2, size(pcs,1), i, 'remaintime', true);
-        end
-        
     end
+    
+    if retRes,
+        data = data - pcs;
+    else
+        data = assign_values(data, pcs);
+    end
+    
+    restore_selection(data);
+
     if verbose, fprintf('\n\n'); end
     
     if do_reporting(obj)
         fprintf(thisRep, galleryObj);
     end
-    
-    
+
     if verbose && numel(evSample) > 1,
         clear +misc/eta.m;
         verboseLabel = origVerboseLabel;

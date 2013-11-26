@@ -235,6 +235,10 @@ classdef pset < pset.mmappset & ...
         
         bool = has_selection(obj);
         
+        bool = has_dim_selection(obj);
+        
+        bool = has_pnt_selection(obj);
+        
         rowIdx = dim_selection(obj);
         
         colIdx = pnt_selection(obj);

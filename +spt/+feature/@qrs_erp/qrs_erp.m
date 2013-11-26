@@ -4,9 +4,10 @@ classdef qrs_erp < spt.feature.feature & goo.verbose
     properties
         
         % For building the ERP
-        Duration   = 0.4;  % in seconds
-        Offset     = 0.08; % in seconds
-        Filter     = [];   % A pre-processind digital filter
+        Duration            = 0.4;  % in seconds
+        Offset              = 0.08; % in seconds
+        Filter              = [];   % A pre-processind digital filter
+        CorrAggregationStat = @(x) prctile(x, 75);
         
     end
     
@@ -55,6 +56,7 @@ classdef qrs_erp < spt.feature.feature & goo.verbose
             opt.Duration   = 0.4;  % in seconds
             opt.Offset     = 0.08; % in seconds
             opt.Filter     = [];
+            opt.CorrAggregationStat = @(x) prctile(x, 75);
             obj = set_properties(obj, opt, varargin);
         end
         

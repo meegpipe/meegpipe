@@ -2,30 +2,39 @@ classdef bss < meegpipe.node.abstract_node
     
     methods (Static, Access = private)
         make_filtering_report(rep, icsIn, icsOut);
+        
+        % Used by make_bss_report()
+        [maxVar, meanVar] = make_explained_var_report(rep, bss, ics, data, verb, verbL);
+        
     end
     
     methods (Access = private)
         
         count = make_pca_report(obj, myPCA);
         
-        count = make_criterion_report(obj, critObj, icSel, isAutoSel);
+        count = make_criterion_report(obj, critObj, labels, icSel, isAutoSel);
         
         bssRep = make_bss_report(obj, bssObj, ics, data);
         
         % These are called by make_bss_report()
-        make_bss_object_report(obj, bss, ics, rep, verb, verbLabel);
+        make_bss_object_report(obj, bss, ics, rep, verb, verbL);
         
-        make_spcs_snapshots_report(obj, ics, rep, verb, verbLabel);
+        make_spcs_snapshots_report(obj, ics, rep, verb, verbL);        
+       
+        make_spcs_psd_report(obj, ics, rep, verb, verbL);  
         
-        [statKeys, statVals] = make_explained_var_report(obj, bss, ...
-            data, rep, verb, verbLabel);
+        make_spcs_topography_report(obj, bss, ics, data, rep, maxVar, maxAbsVar, verb, verbL);
         
-        make_spcs_psd_report(obj, ics, rep, verb, verbLabel);  
+        make_backprojection_report(obj, bss, ics, rep, verb, verbL);
         
-        make_spcs_topography_report(obj, bss, data, rep, statKeys, statVals, ...
-            verb, verbLabel);
+    end
+    
+    methods (Access = protected)
         
-        make_backprojection_report(obj, bss, ics, rep, verb, verbLabel);
+        % override from abstract_node
+        function bool = has_runtime_config(~)
+            bool = true;
+        end
         
     end
     

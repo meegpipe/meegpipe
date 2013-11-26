@@ -12,6 +12,8 @@ classdef sgini < spt.feature.feature & goo.verbose
             
             featVal = gini_idx(M);
             
+            featVal = featVal(:);
+            
         end
         
     end

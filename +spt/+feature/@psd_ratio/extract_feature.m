@@ -32,7 +32,7 @@ if verbose,
     fprintf([verboseLabel 'Computing spectral ratios...']);
 end
 
-featVal = zeros(1, size(tSeries,1));
+featVal = zeros(size(tSeries,1), 1);
 
 for sigIter = 1:size(tSeries, 1)
     % Normalized PSD  

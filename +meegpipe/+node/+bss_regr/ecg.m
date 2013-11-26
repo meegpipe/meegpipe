@@ -41,7 +41,6 @@ obj = bss_regr(...
     'PCA',              pcaObj, ...
     'BSS',              opt.BSS);
 
-
 obj = set_name(obj, 'bss_regression.ecg');
 
 

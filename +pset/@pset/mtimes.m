@@ -43,13 +43,19 @@ if ~ispset(a),
 end
 
 % Initialize output
-if transpose_flag,    
-    y = pset.zeros(size(b,2), size(a,1));
-    y.Transposed = a.Transposed;
-else    
-    %y = pset.zeros(size(b,2),size(a,1));
-    y = pset.zeros(size(a,1),size(b,2));
-    %y.Transposed = true;    
+if all(size(b,1) == size(b,2)),
+    % Special case, the output physioset has the same dimensions as the
+    % input physioset, so we can reuse it to hold the result
+    y = a;
+else
+    if transpose_flag,
+        y = pset.zeros(size(b,2), size(a,1));
+        y.Transposed = a.Transposed;
+    else
+        %y = pset.zeros(size(b,2),size(a,1));
+        y = pset.zeros(size(a,1),size(b,2));
+        %y.Transposed = true;
+    end
 end
 
 for i = 1:a.NbChunks
@@ -89,7 +95,7 @@ if transpose_flag && ispset(y),
 elseif transpose_flag,
     y = y';
 end
-if transpose_flag,
+if transpose_flag && size(b,1)~=size(b,2),
     a.Transposed = ~a.Transposed;
 end
 

@@ -30,6 +30,9 @@ refs = cell(1,2);
 refs{1,1} = sprintf('pValue-%s',id);
 refs{1,2} = [name '_pval-' id '.xml'];
 fileName  = unique_filename(catfile(path, refs{1,2}));
+[~, name] = fileparts(fileName);
+refs{1,1} = name;
+refs{1,2} = [name '.xml'];
 
 % In Windows, we may need to use extended paths. See:
 % http://msdn.microsoft.com/en-us/library/aa365247%28VS.85%29.aspx#maxpath

@@ -65,7 +65,7 @@ classdef topo_template < spt.feature.feature & goo.verbose
     
     methods
         
-        idx = extract_feature(obj, sptObj, tSeries, raw, varargin);
+        featVal = extract_feature(obj, sptObj, varargin)
         
         % Constructor
         function obj = topo_template(varargin)

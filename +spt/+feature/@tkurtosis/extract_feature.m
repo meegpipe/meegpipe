@@ -1,6 +1,6 @@
 function featVal = extract_feature(obj, ~, tSeries, varargin)
 
-featVal = nan(1, size(tSeries,1));
+featVal = nan(size(tSeries,1), 1);
 
 for i = 1:size(tSeries,1)
     this = tSeries(i,:);    

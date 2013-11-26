@@ -1,5 +1,5 @@
-function [status, MEh] = test_linear_combination()
-% TEST_LINEAR_COMBINATION - Tests linear_combination feature extractor
+function [status, MEh] = test_feature_aggregation()
+% TEST_FEATURE_AGGREGATION - Tests feature_aggregation feature extractor
 
 import mperl.file.spec.*;
 import test.simple.*;
@@ -36,7 +36,7 @@ end
 try
     
     name = 'default constructor';
-    spt.feature.linear_combination;
+    spt.feature.feature_aggregation;
     ok(true, name);
     
 catch ME
@@ -50,12 +50,12 @@ end
 try
     
     name = 'construction arguments';   
-    obj = spt.feature.linear_combination(...
+    obj = spt.feature.feature_aggregation(...
         'Features',     {spt.feature.erp, spt.feature.thilbert}, ...
-        'Weights',      [0.5 0.5] ...
+        'Aggregator',   @(x) mean(x) ...
         );
     
-    ok(all(obj.Weights == [0.5 0.5]) & ...
+    ok(obj.Aggregator([0 2]) == 1 & ...
         isa(obj.Features{1}, 'spt.feature.erp'), name);
     
 catch ME
@@ -70,9 +70,9 @@ try
     
     name = 'sample feature extraction';
     
-    myFeat = spt.feature.linear_combination(...
+    myFeat = spt.feature.feature_aggregation(...
         'Features',     {spt.feature.tkurtosis, spt.feature.thilbert}, ...
-        'Weights',      [0.5 0.5] ...
+        'Aggregator',   @(x) mean(x) ...
         );
     X = randn(4, 1000);
     feature = extract_feature(myFeat, [], X);

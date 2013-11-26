@@ -6,13 +6,20 @@ classdef criterion
         
         [selection, rankIndex, obj] = select(obj, spt, ics, raw, rep, varargin);
         
-        obj = not(obj);
+        obj  = not(obj);
         
         bool = negated(obj);
-        
+ 
     end
     
     methods
+        
+        function obj  = reorder(obj, ~)  %#ok<MANU>
+           
+            import exceptions.NotImplemented;
+            throw(NotImplemented);
+            
+        end
         
         function count = fprintf(fid, critObj, varargin)
             import misc.fid2fname;

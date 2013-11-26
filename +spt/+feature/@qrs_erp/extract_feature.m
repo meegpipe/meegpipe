@@ -7,7 +7,7 @@ import misc.epoch_get;
 
 % Duration and number of sample analysis windows
 WIN_DUR = 40; % In seconds
-NB_WIN  = 5;
+NB_WIN  = 10;
 
 verbose         = is_verbose(obj);
 verboseLabel    = get_verbose_label(obj);
@@ -33,9 +33,9 @@ if ~isempty(obj.Filter)
         filtObj = obj.Filter;
     end
     
-    tSeries = filter(filtObj, tSeries);   
+    tSeries = filter(filtObj, tSeries);
 end
-    
+
 if verbose,
     fprintf([verboseLabel 'Extracting qrs_erp features ...']);
 end
@@ -48,12 +48,13 @@ dur = floor(obj.Duration*sr);
 % that would prevent reproducing any results that use qrs_erp features.
 winDur = sr*WIN_DUR;
 init = 1:winDur:size(tSeries,2)-winDur;
+if isempty(init), init = 1; end
 idx  = round(linspace(1, numel(init), NB_WIN + 1));
 idx  = unique(idx);
 init = init(idx);
 
 if verbose, tinit = tic; end
-featVal = zeros(1, size(tSeries,1));
+featVal = zeros(size(tSeries,1), 1);
 for j = 1:size(tSeries,1)
     
     winStatVal = nan(1, numel(init));
@@ -74,13 +75,13 @@ for j = 1:size(tSeries,1)
         erp   = squeeze(erp);
         erp   = erp - repmat(mean(erp), size(erp,1), 1);
         erp   = erp./repmat(sqrt(var(erp)), size(erp, 1), 1);
-        
+         
         % Compute xcorr between ERP and individual trials
         erpAvg  = mean(erp, 2);
         erpAvg  = erpAvg - mean(erpAvg);
         erpAvg  = erpAvg./sqrt(var(erpAvg));
         corrVal = erpAvg'*squeeze(erp)/numel(erpAvg);
-        winStatVal(i) = median(corrVal);
+        winStatVal(i) = obj.CorrAggregationStat(corrVal);
         
         % Penalize windows where the median RR is too large or too small
         medRR = median(diff(peakLocs))/sr;

@@ -8,10 +8,9 @@ if verbose
     fprintf( [verboseLabel, '\tBackprojecting selected SPCs...']);
 end
 
-selICs = subset(ics, selectedSPCs);
-selICs = bproj(myBSS, selICs);
+selICs = bproj(myBSS, ics);
 
-% Snapshots of top-variance channels
+%% Snapshots of top-variance channels
 print_title(rep, 'Backprojected SPCs', get_level(rep) + 1);
 
 dataVar = var(selICs, 0, 2);
@@ -35,17 +34,31 @@ select(selICs, chanIdx);
 generate(embed(snapshotsRep, rep), selICs);
 restore_selection(selICs);
 
-% PSDs of top-variance channels
+
+%% PSDs of top-variance channels
+
+% This will ensure that one plot will be generated for each top-var chan
+myPlotter = get_config(obj, 'PSDPlotter');
+set_config(myPlotter, 'Channels', num2cell(1:numel(chanIdx)));
+
 psdRep = report.plotter.new(...
-    'Plotter',  get_config(obj, 'PSDPlotter'), ...
+    'Plotter',  myPlotter, ...
     'Title',    'PSD across top-variance channels');
 
 print_title(rep, 'PSD across top-variance channels', get_level(rep) + 2);
 
+select(selICs, chanIdx);
 generate(embed(psdRep, rep), selICs);
+restore_selection(selICs);
 
-% Power topograhy for the selected components
+
+%% Power topograhy for the selected components
+
+print_title(rep, 'Power topography and average SPC topography', get_level(rep) + 2);
 [sensorArray, sensorIdx] = sensor_groups(sensors(selICs));
+
+% The full back-projection matrix
+A = bprojmat(myBSS, true);
 
 for i = 1:numel(sensorArray),
     
@@ -77,15 +90,14 @@ for i = 1:numel(sensorArray),
     
     topoRep = embed(topoRep, rep);
     
-    print_title(rep, 'Power topography and average SPC topography', ...
-        get_level(rep) + 2);
-    
     topoName = {...
-        'Power topography of selected SPCs', ...
-        'Power-weighted average SPC topography', ...
+        'Joint power topography of selected SPCs', ...
+        'Joint power-weighted average SPC topography', ...
         };
     
+    
     topoVals = [dataVar(sensorIdx{i}), sum(A(sensorIdx{i}, selectedSPCs), 2)];
+    
     generate(topoRep, thisSensors, topoVals, topoName);
     
     if verbose, fprintf('.'); end

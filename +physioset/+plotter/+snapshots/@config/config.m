@@ -114,6 +114,7 @@ classdef config < goo.abstract_setget_handle
             'Visible', goo.globals.get.VisibleFigures ...
             );
         Resolution      = goo.globals.get.ImageResolution;
+        MaxNbVertices   = 100000;
         
     end
     

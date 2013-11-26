@@ -76,7 +76,7 @@ classdef dummy < sensors.abstract_sensors
                 return;
             end                      
             if ~isempty(obj.Label),
-                obj.Label = obj.Label(idx);
+                obj.Label = obj.Label(idx);   
             end     
         end
     end

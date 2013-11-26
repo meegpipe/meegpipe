@@ -53,9 +53,9 @@ if opt.ParseDisp,
 end
 
 if opt.SaveBinary && is_temporary(obj),    
-    fName = rel2abs(fid2fname(fid));
-    [rPath, fName] = fileparts(fName);
+    rPath = fileparts(rel2abs(fid2fname(fid)));
  
+    fName = strrep(get_name(obj), '.', '_');
     newDataFile = catfile(rPath, fName);
 
     if ~exist([newDataFile dataFileExt], 'file'),
@@ -63,7 +63,6 @@ if opt.SaveBinary && is_temporary(obj),
     end
     save(obj);
 end
-
 
 if ~is_temporary(obj)  
     dataName    = get_name(obj);

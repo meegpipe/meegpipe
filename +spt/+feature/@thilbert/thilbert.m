@@ -27,7 +27,7 @@ classdef thilbert < spt.feature.feature & goo.verbose
                 filtObj = obj.Filter;
             end
             
-            featVal = nan(1, size(tSeries,1));
+            featVal = nan(size(tSeries,1), 1);
             for i = 1:size(tSeries,1)
                this = tSeries(i,:) - mean(tSeries(i,:));
                this = this./sqrt(var(this));

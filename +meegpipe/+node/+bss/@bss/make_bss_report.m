@@ -1,35 +1,34 @@
 function rep = make_bss_report(obj, myBSS, ics, data)
 
 import goo.globals;
+import meegpipe.node.bss.bss;
 
-verbose      = globals.get.Verbose;
-verboseLabel = globals.get.VerboseLabel;
+verb      = globals.get.Verbose;
+verbLabel = globals.get.VerboseLabel;
 
 globals.set('Verbose', false);
 
-if verbose,
-    fprintf([verboseLabel 'Generating BSS report ...\n\n']);
+if verb,
+    fprintf([verbLabel 'Generating BSS report ...\n\n']);
 end
 parentRep = get_report(obj);
 rep = report.generic.new('Title', 'Blind Source Separation report');
 rep = childof(rep, parentRep);
 
-make_bss_object_report(obj, myBSS, ics, rep, verbose, verboseLabel);
+make_bss_object_report(obj, myBSS, ics, rep, verb, verbLabel);
 
-make_spcs_snapshots_report(obj, ics, rep, verbose, verboseLabel);
+make_spcs_snapshots_report(obj, ics, rep, verb, verbLabel);
 
-[statKeys, statVals] = make_explained_var_report(obj, myBSS, data, rep, ...
-    verbose, verboseLabel);
+[maxVar, maxAbsVar] = bss.make_explained_var_report(rep, myBSS, ics, data, verb, verbLabel);
 
-make_spcs_topography_report(obj, myBSS, data, rep, statKeys, statVals, ...
-    verbose, verboseLabel);
+make_spcs_topography_report(obj, myBSS, ics, data, rep, maxVar, maxAbsVar, verb, verbLabel);
 
-make_spcs_psd_report(obj, ics, rep, verbose, verboseLabel);
+make_spcs_psd_report(obj, ics, rep, verb, verbLabel);
 
-make_backprojection_report(obj, myBSS, ics, rep, verbose, verboseLabel);
+make_backprojection_report(obj, myBSS, ics, rep, verb, verbLabel);
 
 print_title(parentRep, 'Blind Source Separation', get_level(parentRep)+2);
 print_link2report(parentRep, rep);
-globals.set('Verbose', verbose);
+globals.set('Verbose', verb);
 
 end

@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Create a new session
 try
@@ -132,7 +132,23 @@ catch ME
     MEh = [MEh ME];
 end
 
-
+%% set_sensors
+try
+    name ='set_sensors';
+    X = randn(5, 100);
+    data = import(physioset.import.matrix, X);
+    select(data, [2 1 3 5 4]);
+    set_sensors(data, sensors.dummy(5));
+    clear_selection(data);
+    sensLabels = labels(sensors(data));
+    idx = cellfun(@(x) str2double(x), sensLabels);
+    ok(all(idx == [2 1 3 5 4]'), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+end
 
 %% Cleanup
 try

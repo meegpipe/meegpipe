@@ -57,6 +57,10 @@ fName = unique_filename([filename dataFileExt]);
 
 [path, name] = fileparts(fName);
 
+if ~exist(path, 'dir'),
+    mkdir(path);
+end
+
 filename = catfile(path, name);
 
 fid = safefid([filename dataFileExt], 'w');

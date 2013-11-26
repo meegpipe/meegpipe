@@ -19,7 +19,7 @@ for featItr = 1:numel(obj.Feature),
     featVal(:, featItr) = thisFeat(:);
 end
 
-selected = false(1,size(tSeries,1));
+selected = false(numel(obj.Feature),size(tSeries,1));
 
 maxTh = nan(1, numel(obj.Feature));
 for featItr = 1:numel(obj.Feature),
@@ -28,7 +28,7 @@ for featItr = 1:numel(obj.Feature),
     else
         maxTh(featItr) = obj.Max{featItr};
     end
-    selected(featVal(:, featItr) > maxTh(featItr)) = true;
+    selected(featItr, featVal(:, featItr) > maxTh(featItr)) = true;
 end
 
 minTh = nan(1, numel(obj.Feature));
@@ -38,7 +38,7 @@ for featItr = 1:numel(obj.Feature),
     else
         minTh(featItr) = obj.Min{featItr};
     end
-    selected(featVal(:, featItr) < minTh(featItr)) = true;
+    selected(featItr, featVal(:, featItr) < minTh(featItr)) = true;
 end
 
 % Sort components by their distance to the hypercube delimited by the
@@ -51,6 +51,15 @@ if isa(obj.MinCard, 'function_handle')
     minCard = obj.MinCard(featVal);
 else
     minCard = obj.MinCard;
+end
+
+% Aggregate each feature
+if numel(obj.Feature) > 1,
+    aggrSel = selected(1, :);
+    for i = 1:numel(obj.Feature)
+        aggrSel = and(aggrSel, selected(i,:));
+    end
+    selected = aggrSel;
 end
 
 if minCard > 0,

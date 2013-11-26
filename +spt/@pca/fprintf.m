@@ -50,7 +50,7 @@ figure('Visible', visibleStr);
 
 % We plot only the relevant eigenvalues and a bit more
 eigenValues = obj.Eigenvalues(:);
-eigenValues(nb_component(obj)+2:end) = [];
+eigenValues(nb_component(obj)+5:end) = [];
 if ~strcmpi(obj.Criterion, 'none'),
     critVals = obj.(upper(obj.Criterion));
     critVals(nb_component(obj)+2:end) = [];
@@ -81,20 +81,19 @@ grid on;
 yLim = get(gca, 'YLim');
 axis([1 numel(eigenValues)+0.25 yLim(1) yLim(2)]);
 plot(nb_component(obj), eigenValues(nb_component(obj)), 'ro', 'MarkerFaceColor', 'Red');
-plot(obj.DimOut, eigenValues(obj.DimOut), 'bo', 'MarkerFaceColor', 'Blue');
 line([nb_component(obj) nb_component(obj)], [yLim(1) yLim(2)], ...
     'LineStyle', ':', 'Color', 'Red');
-line([obj.DimOut obj.DimOut], [yLim(1) yLim(2)], ...
-    'LineStyle', '-', 'Color', 'Blue');
 
 
-str = sprintf('rank = %d', obj.CovRank);
-hT = text(obj.CovRank-0.15, yLim(1)+0.1*diff(yLim), str);
-set(hT, ...
-    'FontWeight',       'bold',  ...
-    'Rotation',         90, ...
-    'BackgroundColor', 'white' ...
-    );
+if obj.CovRank < numel(eigenValues),
+    str = sprintf('rank = %d', obj.CovRank);
+    hT = text(obj.CovRank-0.15, yLim(1)+0.1*diff(yLim), str);
+    set(hT, ...
+        'FontWeight',       'bold',  ...
+        'Rotation',         90, ...
+        'BackgroundColor', 'white' ...
+        );
+end
 
 str = sprintf('#comp = %d ', obj.DimOut);
 hT = text(obj.DimOut-0.15, yLim(1)+0.5*diff(yLim), str);

@@ -7,7 +7,7 @@ import misc.epoch_align;
 verboseLabel = get_verbose_label(obj);
 verbose      = is_verbose(obj);
 
-featVal = zeros(1, size(tSeries,1));
+featVal = zeros(size(tSeries,1), 1);
 
 if nargin < 4 || isempty(raw),
     sr = tSeries.SamplingRate;

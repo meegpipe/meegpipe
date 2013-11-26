@@ -1,5 +1,5 @@
-function make_spcs_topography_report(obj, myBSS, data, rep, statKeys, ...
-    statVals, verbose, verboseLabel)
+function make_spcs_topography_report(obj, myBSS, ics, data, rep, maxVar, ...
+        maxAbsVar, verbose, verboseLabel)
 
 if verbose
     fprintf( [verboseLabel, '\tGenerating SPCs topographies...']);
@@ -18,6 +18,8 @@ selectedSPCs = component_selection(myBSS);
 % The full back-projection matrix (including non-selected components)
 A = bprojmat(myBSS, true);
 
+icLabels = labels(sensors(ics));
+
 for i = 1:numel(sensorArray),
     
     sensorClass = regexprep(class(sensorArray{i}), '^sensors\.', '');
@@ -30,18 +32,16 @@ for i = 1:numel(sensorArray),
     topoNames = num2cell((1:size(A,2))');
     
     for k = 1:numel(topoNames)
-        topoNames{k} = sprintf('SPC #%d from sensor set %d', k, i);
+        topoNames{k} = sprintf('SPC %s backproject on sensor set %d', ...
+            icLabels{k}, i);
+        topoNames{k} = sprintf(...
+            '%s (max rel. var=%d%%; max abs. log-var=%d dB) ', ...
+            topoNames{k}, ...
+            round(maxVar(k)), ...
+            round(maxAbsVar(k)));
         if ismember(k, selectedSPCs),
             topoNames{k} = [topoNames{k} rejStr];
-        end
-        if ~isempty(get_config(obj, 'SPCVarStats')),
-            topoNames{k} = [topoNames{k} '('];
-            for m = 1:numel(statKeys),
-                topoNames{k} = sprintf('%s%s=%d;', topoNames{k}, ...
-                    statKeys{m}, round(statVals(k, m)));
-            end
-            topoNames{k} = [topoNames{k}(1:end-1) ')'];
-        end
+        end       
     end
     
     thisSensors = subset(sensors(data), sensorIdx{i});

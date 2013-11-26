@@ -44,13 +44,6 @@ import datahash.DataHash;
 import plotter.cell2ticks;
 import misc.num2strcell;
 
-% Should the data be downsampled before plotting it? This can prevent
-% errors in the conversion of the svg files to .png as well as speeding up
-% the conversion process. Obviously the downside is the loss of accuracy in
-% the images, but this is usually affordable for EEG data that is typically
-% considerably oversampled.
-DOWNSAMPLING = 2;
-
 %% Error checking
 if ~pkgisa(data, 'physioset'),
     error('DATA must be a physioset object');
@@ -163,9 +156,6 @@ end
 %% Determine the data epochs that will be plotted
 winrej = eeglab_winrej(data);
 
-if DOWNSAMPLING > 1 && ~isempty(winrej),
-    winrej(:,1:2) = winrej(:,1:2)/DOWNSAMPLING;
-end
 if isempty(config.Epochs),
     epochLength = config.WinLength*data.SamplingRate;
     [epochs, groupNames] = snapshots.summary_epochs(epochLength, ...
@@ -173,6 +163,33 @@ if isempty(config.Epochs),
 else
     epochs = {config.Epochs};
     groupNames = {repmat('', numel(config.Epochs), 1)};
+end
+
+%% Decice the downsampling factor
+% It is often necessary to downsample the data in order to be able to
+% produce a .svg file of reasonable size. Moreover, certain versions of
+% inkscape cannot handle too large .svg files
+maxEpochLength = 0;
+for i = 1:numel(epochs)
+   maxEpochLength = max(maxEpochLength, max(diff(epochs{i}'))); 
+end
+nbPointsSnapshot   = numel(chanIdx)*maxEpochLength;
+maxNbVertices      = get_config(obj, 'MaxNbVertices');
+downsamplingFactor = ceil(nbPointsSnapshot/maxNbVertices);
+if downsamplingFactor > 8
+    warning('snapshots:TooManyVertices', ...
+        [...
+        'Too many data points in snapshops. You may consider downsampling\n' ...
+        'the data to prevent potential inkscape crashes.' ...
+        ], ...
+        downsamplingFactor);
+    downsamplingFactor = 8;
+end
+
+
+%% Downsample winrej
+if downsamplingFactor > 1 && ~isempty(winrej),
+    winrej(:,1:2) = winrej(:,1:2)/downsamplingFactor;
 end
 
 %% Convert sensObj to EEGLAB's format
@@ -184,7 +201,7 @@ else
     sensObj = [];
 end
 arguments = {...
-    'srate',        round(data.SamplingRate/DOWNSAMPLING), ...
+    'srate',        round(data.SamplingRate/downsamplingFactor), ...
     'winlength',    config.WinLength, ...
     'eloc_file',    sensObj};
 
@@ -243,8 +260,8 @@ for groupItr = 1:numel(epochs)
 
             if ~isempty(thisEvents),
                 thisEvents = shift(thisEvents, -firstSample+1);
-                if DOWNSAMPLING > 1,
-                    thisEvents = resample(thisEvents, 1, DOWNSAMPLING);
+                if downsamplingFactor > 1,
+                    thisEvents = resample(thisEvents, 1, downsamplingFactor);
                 end
                 % The second argument to eeglab indicates that trial_begin
                 % events should dealt with as if they were normal events
@@ -256,10 +273,10 @@ for groupItr = 1:numel(epochs)
         
         %% Do the plotting
         tmp = get_config(obj, 'Plotter');
-        
-        if DOWNSAMPLING > 1,
+
+        if downsamplingFactor > 1,
             for i = 1:numel(thisEpoch)
-                thisEpoch{i} = downsample(thisEpoch{i}', DOWNSAMPLING)';
+                thisEpoch{i} = downsample(thisEpoch{i}', downsamplingFactor)';
             end
         end
         
@@ -299,7 +316,7 @@ for groupItr = 1:numel(epochs)
         lastTime  = floor(lastSample/data.SamplingRate);
         firstMark = firstTime - tInit;            
         lastMark  = lastTime - tInit;
-        tickPos   = (firstMark:1:lastMark)*data.SamplingRate/DOWNSAMPLING;
+        tickPos   = (firstMark:1:lastMark)*data.SamplingRate/downsamplingFactor;
         tickTimes = firstTime:1:lastTime;
         tickLabel = cell2ticks(num2strcell(tickTimes));
         set_axes(eegplotObj, ...

@@ -8,8 +8,7 @@ function data = postprocess(obj, data)
 import goo.pkgisa;
 
 if has_runtime_config(obj)
-    % Information on how to modify the automatic selection
-    
+    % Information on how to modify the automatic selection  
     ini = get_ini_filename(obj);
     rep = get_report(obj);
     
@@ -22,8 +21,7 @@ if has_runtime_config(obj)
     
     print_paragraph(rep, ['Note that you may need to edit the absolute ' ...
         'path above if this report has been moved from its original ' ...
-        'location']);
-    
+        'location']);   
 end
 
 

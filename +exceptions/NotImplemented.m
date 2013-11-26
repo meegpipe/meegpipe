@@ -6,8 +6,12 @@ end
 
 [st, i] = dbstack;
 
-st   = st(i+1);
-name = strrep(st.name, '.', ':');
+if numel(st) > i,
+    st   = st(i+1);
+    name = strrep(st.name, '.', ':');
+else
+    name = 'base';
+end
 
 obj = MException([name ':NotImplemented'], ...
     'Not implemented feature: %s', msg);

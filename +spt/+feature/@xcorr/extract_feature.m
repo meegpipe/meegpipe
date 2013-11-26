@@ -3,7 +3,7 @@ function featVal = extract_feature(obj, ~, tSeries,  data, varargin)
 
 import misc.eta;
 
-featVal = zeros(1, size(tSeries,1));
+featVal = zeros(size(tSeries,1), 1);
 
 if isa(tSeries, 'pset.mmappset'),
     tSeries = copy(tSeries);

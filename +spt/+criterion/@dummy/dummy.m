@@ -1,6 +1,6 @@
 classdef dummy < spt.criterion.criterion & goo.verbose & goo.abstract_named_object
     % DUMMY - A dummy selection criterion that selects no components
-    
+   
     
     properties
         Negated = false;
@@ -24,7 +24,7 @@ classdef dummy < spt.criterion.criterion & goo.verbose & goo.abstract_named_obje
         end
         
         function [selected, featVal, obj] = select(obj, ~, tSeries, varargin)
-            featVal = zeros(1, size(tSeries, 1));
+            featVal = zeros(size(tSeries, 1), 1);
             selected = false(1, size(tSeries, 1));
             if obj.Negated,
                 selected = ~selected;
@@ -37,6 +37,11 @@ classdef dummy < spt.criterion.criterion & goo.verbose & goo.abstract_named_obje
         
         function bool = negated(obj)
             bool = obj.Negated;
+        end
+        
+        function obj = reorder(obj, ~)
+            % do nothing
+           
         end
         
         % Constructor

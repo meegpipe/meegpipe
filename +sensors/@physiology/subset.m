@@ -19,12 +19,6 @@ if isempty(idx),
     return;
 end
 
-sortedIdx = sort(idx);
-
-if any(sortedIdx ~= idx),
-   error('Indices must be sorted'); 
-end
-
 if ~isempty(obj.TransducerType),
     obj.TransducerType = obj.TransducerType(idx);
 end

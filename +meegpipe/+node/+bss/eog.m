@@ -8,11 +8,12 @@ import pset.selector.good_data;
 import pset.selector.cascade;
 
 %% Default criterion
-myFeat = spt.feature.psd_ratio.eog;
-myCrit = spt.criterion.threshold(myFeat, ...
-    'Max',      25, ...
+myFeat1 = spt.feature.psd_ratio.eog;
+myFeat2 = spt.feature.bp_var;
+myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2}, ...
+    'Max',      {25 10}, ...
     'MinCard',  2, ...
-    'MaxCard',  @(d) ceil(0.25*d));
+    'MaxCard',  @(d) ceil(0.25*length(d)));
 
 %% Process input arguments
 opt.RetainedVar     = 99.5;

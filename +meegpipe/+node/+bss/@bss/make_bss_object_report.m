@@ -14,6 +14,14 @@ end
 
 % The BSS object
 print_title(rep, 'BSS decomposition', get_level(rep) + 1);
+
+objRep = report.object.new(myBSS);
+objRep = childof(objRep, rep);
+generate(objRep);
+[~, repName] = fileparts(get_filename(objRep));
+fprintf(rep, 'BSS performed using algorithm [%s](%s)\n\n', class(myBSS), ...
+    [repName '.htm']);
+
 set_method_config(myBSS, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
 fprintf(rep, myBSS);
 

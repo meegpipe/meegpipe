@@ -4,11 +4,15 @@ function obj = pwl(varargin)
 
 import misc.process_arguments;
 import misc.split_arguments;
+import pset.selector.sensor_class;
+import pset.selector.good_data;
+import pset.selector.cascade;
 
 %% Process user arguments
 opt.MaxPCs          = 40;
-opt.MinPCs          = 5;
+opt.MinPCs          = 3;
 opt.RetainedVar     = 99.75;
+opt.BSS             = spt.bss.multicombi;
 
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 
@@ -30,6 +34,17 @@ myCrit = spt.criterion.threshold(myFeat, ...
     'Max',      30, ...
     'MaxCard',  2, ...
     'MinCard',  0);
+
+%% Build the bss node
+dataSel = cascade(sensor_class('Class', {'MEG', 'EEG'}), good_data);
+obj = meegpipe.node.bss.new(...
+    'DataSelector',         dataSel, ...
+    'Criterion',            myCrit, ...
+    'PCA',                  myPCA, ...
+    'BSS',                  opt.BSS, ...
+    'Name',                 'bss.pwl', ...
+    varargin{:});
+    
 
 
 end

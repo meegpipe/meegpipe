@@ -6,7 +6,6 @@ y.PhysDimPrefixOrig = x.PhysDimPrefixOrig;
 y.BadChan           = x.BadChan;
 y.BadSample         = x.BadSample;
 y.ProcHistory       = x.ProcHistory;
-y.ProjectionHistory = x.ProjectionHistory;
 y.SensorsHistory    = x.SensorsHistory;
 y.RerefMatrix       = x.RerefMatrix;
 y.EventMapper       = x.EventMapper;

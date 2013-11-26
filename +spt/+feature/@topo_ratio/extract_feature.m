@@ -68,17 +68,17 @@ end
 if isempty(numSet),
     warning('topo_ratio:EmptyNumSet', ...
         'No sensor labels match the numerator regex');
-    featVal = ones(1, size(tSeries,1));
+    featVal = ones(size(tSeries,1), 1);
     return;
 end
 if ~any(denSet),
     warning('topo_ratio:EmptyDenSet', ...
         'No sensor labels match the denominator regex');
-    featVal = ones(1, size(tSeries,1));
+    featVal = ones(size(tSeries,1), 1);
     return;
 end
 
-featVal = zeros(1, size(tSeries,1));
+featVal = zeros(size(tSeries,1), 1);
 asymFactor = ones(1, size(tSeries,1));
 if symm && ~isempty(numSetL),
     if verbose,

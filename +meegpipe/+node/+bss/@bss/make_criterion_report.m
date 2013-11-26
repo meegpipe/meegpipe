@@ -1,4 +1,6 @@
-function count = make_criterion_report(obj, myCrit, icSel, isAutoSel)
+function count = make_criterion_report(obj, myCrit, labels, icSel, isAutoSel)
+
+import mperl.join;
 
 rep = get_report(obj);
 
@@ -6,15 +8,13 @@ count = 0;
 count = count + ...
     print_title(rep, 'Component selection criterion', get_level(rep) + 2);
 
-count = count + fprintf(rep, myCrit);
+count = count + fprintf(rep, myCrit, labels);
 count = count + fprintf(rep, '\n\n');
 
 if ~any(icSel),
     msg = 'No components';
 else
-    msg = ['Component(s) __[', ...
-        regexprep(num2str(icSel(:)'), ...
-        '\s+', ', ') ']__'];
+    msg = ['Component(s) __[' join(',', icSel) ']__'];
 end
 
 if ~isAutoSel

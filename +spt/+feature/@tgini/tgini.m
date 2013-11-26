@@ -8,7 +8,7 @@ classdef tgini < spt.feature.feature & goo.verbose
             
             import misc.gini_idx;
            
-            featVal = nan(1, size(tSeries,1));
+            featVal = nan(size(tSeries,1), 1);
             for i = 1:size(tSeries,1)
                featVal(i) = gini_idx(tSeries(i,:)');
             end

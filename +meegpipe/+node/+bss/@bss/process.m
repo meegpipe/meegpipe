@@ -24,6 +24,11 @@ sr = data.SamplingRate;
 if isa(myFilt, 'function_handle'),
     myFilt = myFilt(sr);
 end
+if ~isempty(myFilt),
+    % Some filters (e.g. LASIP) take a long while to compute. It is a good
+    % idea to activate the filter verbose feature.
+    myFilt = set_verbose(myFilt, verbose);
+end
 
 % Random seed for BSS algorithms that require it
 seed = get_runtime(obj, 'bss', 'seed');
@@ -36,7 +41,7 @@ set_runtime(obj, 'bss', 'init', get_init(myBSS, nb_component(myPCA)));
 % Perform a global PCA on the whole dataset
 center(data);
 myPCA = learn(myPCA, data);
-pcs   = proj(myPCA, copy(data));
+pcs   = proj(myPCA, subset(data));
 
 if verbose,
     fprintf( [verboseLabel 'Learning %s basis ...\n\n'], class(myBSS));
@@ -51,11 +56,21 @@ add_event(ics, get_event(data));
 [~, myBSS] = cascade(myPCA, myBSS);
 
 [selected, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
-[~, sortedIdx] = sort(rankVal, 'descend');
-myBSS = reorder_component(myBSS, sortedIdx);
+
+% For convenience, we will sort everything in decreasing rank value
+% This also means renaming the ICs so that IC #1 corresponds to the highest
+% ranked component and so on.
+% rankVal can have multiple columns (multiple features!)
+[~, sortedIdx] = sort(rankVal(:,1), 'descend');
+
+myBSS  = reorder_component(myBSS, sortedIdx);
+myCrit = reorder(myCrit, sortedIdx);
+
 myBSS = select(myBSS, selected(sortedIdx));
 ics   = select(ics, sortedIdx);
+ics   = set_sensors(ics, sensors.dummy(size(ics,1)));
 
+selected = selected(sortedIdx);
 % Has the user made a manual selection?
 % If the user wants the manual selection of components to be
 % ignored she can do either of three things:
@@ -65,9 +80,9 @@ ics   = select(ics, sortedIdx);
 % - Delete the correspoding [window X] section completely.
 userSel = get_runtime(obj, 'bss', 'selection', true);
 if iscell(userSel), userSel = cell2mat(userSel); end
-autoSel = find(selected(sortedIdx));
+autoSel = find(selected);
 
-if ~isnan(userSel) && ~isempty(setxor(userSel, autoSel))
+if ~all(isnan(userSel)) && ~isempty(setxor(userSel, autoSel))
     userSel = intersect(userSel, 1:size(ics,1));
     if verbose,
         fprintf([ get_verbose_label(obj) ...
@@ -92,36 +107,49 @@ set_runtime(obj, 'bss', 'selection', selArg{:});
 % Generate the HTML report
 make_pca_report(obj, myPCA);
 if do_reporting(obj)
-   bssRep = make_bss_report(obj, myBSS, ics, data);    
+   % Wee need to copy the ics or otherwise some of the reports may modify
+   % them (e.g. by back-projecting them to the sensors).
+   bssRep = make_bss_report(obj, myBSS, copy(ics), data);    
 end
-make_criterion_report(obj, myCrit, icSel, isAutoSel);
+make_criterion_report(obj, myCrit, [], icSel, isAutoSel);
  
 if isempty(icSel) && ~reject,
     % We select the empty set
     data(:,:) = 0;
 elseif isempty(icSel) && reject,
     % Leave data untouched    
-else   
-    if ~isempty(myFilt),        
+else      
+    if ~isempty(myFilt),  
+        select(ics, icSel);    
         if do_reporting(obj),            
             icsIn = copy(ics);
         end
+        if verbose,
+            fprintf([verboseLabel 'Filtering SPCs using %s ...\n\n'], ...
+                class(myFilt));
+        end 
         filtfilt(myFilt, ics);
         if do_reporting(obj),           
             bss.make_filtering_report(bssRep, icsIn, ics);
-        end                
-    end    
-    
-    select(ics, icSel);    
+        end  
+        restore_selection(ics);
+    end 
+
     if reject,
+        if ~isempty(myRegrFilter),
+            % Wee need to keep a backup copy of the original ics.
+            select(ics, icSel);
+            rejectedICs = subset(ics);
+            restore_selection(ics);
+        end
         data = data - bproj(myBSS, ics);
     else
         data = assign_values(data, bproj(myBSS, ics));
     end
     
     % Remove residual noise using a regression filter
-    if reject && ~isempty(myRegrFilter),
-       filter(myRegrFilter, thisData, ics);    
+    if reject && ~isempty(myRegrFilter),       
+        filter(myRegrFilter, data, rejectedICs);
     end
     
 end

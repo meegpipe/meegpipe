@@ -5,8 +5,6 @@ function [chanGroups, chanClasses, chanTypes] = ...
 % 
 % See also: pset.plotter.space.psd
 
-% Description: Default channel grouping for plotting
-% Documentation: pkt_pset_plotter.txt
 
 import mperl.join;
 import goo.pkgisa;
