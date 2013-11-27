@@ -9,12 +9,7 @@ classdef jade < spt.abstract_spt
         
         function obj = jade(varargin)
             import misc.set_properties;
-            obj = obj@spt.abstract_spt(varargin{:});
-            
-            if isempty(get_name(obj)),
-                set_name(obj, 'jade');
-            end
-            
+            obj = obj@spt.abstract_spt(varargin{:}); 
         end
         
     end

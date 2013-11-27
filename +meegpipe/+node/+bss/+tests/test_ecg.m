@@ -12,7 +12,7 @@ import mperl.config.inifiles.inifile;
 
 MEh     = [];
 
-initialize(0);
+initialize(4);
 
 %% Create a new session
 try
@@ -85,9 +85,9 @@ try
         'Criterion',        myCrit, ...
         'GenerateReport',   true, ...
         'IOReport',         report.plotter.io);
-    warning('on', 'snapshots:TooManyVertices');
-    newData = run(myNode, dataCopy);
     warning('off', 'snapshots:TooManyVertices');
+    newData = run(myNode, dataCopy);
+    warning('on', 'snapshots:TooManyVertices');
     
     center(data);
     

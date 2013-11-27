@@ -31,9 +31,6 @@ function pErr = amari_index(P, varargin)
 %
 % See also: spt
 
-% Documentation: pkg_spt.txt
-% Description: Amari performance index
-
 import misc.process_arguments;
 
 opt.range = [];

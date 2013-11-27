@@ -85,11 +85,7 @@ classdef fastica < spt.abstract_spt
             opt.Nonlinearity    = 'pow3';
             opt.InitGuess       =  @(data) eye(size(data,1));
             obj = set_properties(obj, opt, varargin{:});
-            
-            if isempty(get_name(obj)),
-                obj = set_name(obj, 'fastica');
-            end
-            
+           
         end
         
         

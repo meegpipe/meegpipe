@@ -25,11 +25,7 @@ classdef amica < spt.abstract_spt
             opt.IterWin     = 50;
             opt.DoNewton    = true;
             obj = set_properties(obj, opt, varargin{:});
-            
-            if isempty(get_name(obj)),
-                obj = set_name(obj, 'amica');
-            end
-            
+      
         end
     end
     

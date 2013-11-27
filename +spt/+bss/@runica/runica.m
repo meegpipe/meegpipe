@@ -43,11 +43,7 @@ classdef runica < spt.abstract_spt
             
             opt.Extended = true;
             obj = set_properties(obj, opt, varargin{:});
-            
-            if isempty(get_name(obj))
-                obj = set_name(obj, 'runica');
-            end
-            
+           
         end
     end
     

@@ -33,11 +33,7 @@ classdef ewasobi < spt.abstract_spt
             
             opt.AROrder = 10;            
             obj = set_properties(obj, opt, varargin{:});
-            
-            if isempty(get_name(obj)),
-                obj = set_name(obj, 'ewasobi');
-            end
-            
+        
         end
         
     end
