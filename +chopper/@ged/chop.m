@@ -6,7 +6,7 @@ import misc.delay_embed;
 import misc.eta;
 import misc.peakdet;
 import goo.globals;
-import spt.pca.pca;
+import spt.pca;
 
 % How many tries at finding peaks in the chopping index
 MAX_TRIES = 20;

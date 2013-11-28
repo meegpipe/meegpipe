@@ -12,7 +12,6 @@ classdef verbose_handle < handle
         
         Verbose         = true;
         VerboseLabel    = '';
-        VerboseLevel    = 1;
         
     end
     
@@ -24,15 +23,7 @@ classdef verbose_handle < handle
             end
             obj.Verbose = value;
         end
-        
-        function set.VerboseLabel(obj, value)
-            import misc.is_string;
-            if ~is_string(value) && ~isa(value, 'function_handle'),
-                error('Property VerboseLabel must be a string');
-            end
-            obj.VerboseLabel = value;
-        end
-        
+  
     end
     
     %% PUBLIC INTERFACE ....................................................
@@ -45,7 +36,13 @@ classdef verbose_handle < handle
         end
         
         function level  = get_verbose_level(obj)
-            level = obj.VerboseLevel;
+            if is_verbose(obj),
+                level = 1;
+            elseif ~is_verbose(obj) && obj.Verbose,
+                level = 2;
+            else
+                level = 0;
+            end
         end
         
         function label  = get_verbose_label(obj)

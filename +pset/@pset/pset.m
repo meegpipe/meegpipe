@@ -59,7 +59,7 @@ classdef pset < pset.mmappset & ...
         % For storing previous selections
         DimSelectionH;
         PntSelectionH;
-        
+       
         % For storing previous spatial maps
         DimMapH;
         DimInvMapH;        
@@ -241,7 +241,11 @@ classdef pset < pset.mmappset & ...
         
         rowIdx = dim_selection(obj);
         
+        rowIdx = relative_dim_selection(obj);
+        
         colIdx = pnt_selection(obj);
+        
+        colIdx = relative_pnt_selection(obj);
         
         function obj = set_dim_selection(obj, sel)
             obj.DimSelection = sel;

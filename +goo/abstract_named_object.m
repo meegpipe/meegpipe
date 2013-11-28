@@ -43,11 +43,13 @@ classdef abstract_named_object < goo.named_object
             
             import misc.strtrim;
             
+          
             if isempty(obj.Name),
                 name = class(obj);
             else
                 name = strtrim(obj.Name);
             end
+           
             name = regexprep(name, '[^\w\.]+', '-');
             
         end

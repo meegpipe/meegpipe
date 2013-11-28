@@ -10,6 +10,7 @@ verboseLabel    = get_verbose_label(obj);
 
 goo.globals.set('Verbose', false);
 
+featVal = nan(size(tSeries, 1), 1);
 
 % The full back-projection matrix
 A = bprojmat(sptObj, true);
@@ -17,10 +18,15 @@ A = bprojmat(sptObj, true);
 if verbose,
     fprintf([verboseLabel 'Computing raw data variance ...']);
 end
-select(obj.DataSelector, raw);
+[~, emptySel] = select(obj.DataSelector, raw);
+if emptySel,
+    warning('bp_var:EmptySelection', ...
+        'Cannot calculate BP variance on an empty set');
+    return;
+end
 hasSelection = has_pnt_selection(raw);
 rawDataVar = var(raw, [], 2);
-A = A(dim_selection(raw), :);
+A = A(relative_dim_selection(raw), :);
 restore_selection(raw);
 if verbose,
     fprintf('[done]\n\n');
@@ -30,7 +36,6 @@ if verbose,
     fprintf([verboseLabel 'Computing channel statistics ...']);
 end
 
-featVal = nan(size(tSeries, 1), 1);
 if hasSelection,
     error('Not implemented');
 else

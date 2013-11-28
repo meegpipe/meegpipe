@@ -12,5 +12,4 @@ obj.PntSelection = obj.PntSelectionH{end};
 obj.DimSelectionH(end) = [];
 obj.PntSelectionH(end) = [];
 
-
 end

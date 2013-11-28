@@ -13,14 +13,14 @@ classdef multicombi < spt.abstract_spt
         
         function obj = multicombi(varargin)
             import misc.set_properties;
-            obj = obj@spt.abstract_spt(varargin{:});
+            import misc.split_arguments;
             
             opt.AROrder = 10;
-            obj = set_properties(obj, opt, varargin{:});
+            [thisArgs, argsParent] = split_arguments(fieldnames(opt), varargin);
             
-            if isempty(get_name(obj))
-                obj = set_name(obj, 'multicombi');
-            end
+            obj = obj@spt.abstract_spt(argsParent{:});
+            
+            obj = set_properties(obj, opt, thisArgs);
             
         end
         

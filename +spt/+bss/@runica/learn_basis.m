@@ -9,17 +9,14 @@ else
     verbose = 'off';
 end
 
-randSeed = get_seed(obj);
-warning('off', 'MATLAB:RandStream:ActivatingLegacyGenerators');
+obj = apply_seed(obj);
 
 [a,b] = runica(data(:,:), ...
     'verbose',      verbose, ...
-    'randstate',    randSeed, ...
+    'randstate',    get_seed(obj), ...
     'extended',     obj.Extended);
 
 warning('on', 'MATLAB:RandStream:ActivatingLegacyGenerators');
-
-obj = set_seed(obj, randSeed);
 
 W     = a*b;
 A     = pinv(W);

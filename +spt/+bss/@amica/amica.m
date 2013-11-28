@@ -16,7 +16,7 @@ classdef amica < spt.abstract_spt
     methods
         function obj = amica(varargin)
             import misc.set_properties;
-            obj = obj@spt.abstract_spt(varargin{:});
+            import misc.split_arguments;
             
             opt.NbMixtures  = 3;
             opt.MaxIter     = 500;
@@ -24,8 +24,12 @@ classdef amica < spt.abstract_spt
             opt.MinLL       = 1e-8;
             opt.IterWin     = 50;
             opt.DoNewton    = true;
-            obj = set_properties(obj, opt, varargin{:});
-      
+            [thisArgs, argsParent] = split_arguments(fieldnames(opt), varargin);
+            
+            obj = obj@spt.abstract_spt(argsParent{:});
+            
+            obj = set_properties(obj, opt, thisArgs);
+            
         end
     end
     

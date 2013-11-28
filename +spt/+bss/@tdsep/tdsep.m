@@ -16,11 +16,14 @@ classdef tdsep < spt.abstract_spt
         
         function obj = tdsep(varargin)
             import misc.set_properties;
-            
-            obj = obj@spt.abstract_spt(varargin{:});
+            import misc.split_arguments;
             
             opt.Lag = 1;
-            obj = set_properties(obj, opt, varargin{:});
+            [thisArgs, argsParent] = split_arguments(fieldnames(opt), varargin);
+            
+            obj = obj@spt.abstract_spt(argsParent{:});            
+            
+            obj = set_properties(obj, opt, thisArgs{:});
          
         end
         

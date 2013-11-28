@@ -206,6 +206,15 @@ classdef abstract_spt < ...
             
         end
         
+        function obj = apply_seed(obj)            
+            randSeed = get_seed(obj);
+            warning('off', 'MATLAB:RandStream:ActivatingLegacyGenerators');
+            rand('state',  randSeed); %#ok<RAND>
+            randn('state', randSeed); %#ok<RAND>
+            warning('on', 'MATLAB:RandStream:ActivatingLegacyGenerators');
+            obj = set_seed(obj, randSeed);                        
+        end
+        
         function init = get_init(obj, ~)
             
             init = obj.Init_;

@@ -147,7 +147,7 @@ if isempty(sel),
     cd(currDir);
     
     hrvInfo = io.wfdb.hrv.read(hrvFile);
-    
+    evArray = {};
 else
     evArray = cell(1, numel(sel));
     hrvInfo = cell(1, numel(sel));

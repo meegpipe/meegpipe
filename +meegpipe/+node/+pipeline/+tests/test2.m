@@ -23,7 +23,7 @@ for i = 1:numel(templates)
     try
         
         name = templates{i};
-        feval(['meegpipe.node.pipeline.' templates{i}], 250);
+        feval(['meegpipe.node.pipeline.' templates{i}]);
         ok(true, name);
         
     catch ME

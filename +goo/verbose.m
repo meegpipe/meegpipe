@@ -10,8 +10,7 @@ classdef verbose
         
         Verbose         = true;
         VerboseLabel    = @(obj, meth) ['(' class(obj) ') '];
-        VerboseLevel    = 1;
-        
+       
     end
     
     methods (Static, Access = protected)
@@ -20,7 +19,6 @@ classdef verbose
             import misc.process_arguments;
             opt.Verbose         = true;
             opt.VerboseLabel    = '';
-            opt.VerboseLevel    = 1;
             [~, opt] = process_arguments(opt, varargin);
             
             fNames = fieldnames(opt);
@@ -39,16 +37,8 @@ classdef verbose
                 error('Property Verbose must be a logical scalar');
             end
             obj.Verbose = value;
-        end
-        
-        function obj = set.VerboseLabel(obj, value)
-            import misc.is_string;
-            if ~is_string(value) && ~isa(value, 'function_handle'),
-                error('Property VerboseLabel must be a string');
-            end
-            obj.VerboseLabel = value;
-        end
-        
+        end        
+     
     end
   
     methods
@@ -56,10 +46,16 @@ classdef verbose
         function bool   = is_verbose(obj)
             import goo.globals;
             bool = globals.get.Verbose & obj.Verbose;
-        end
+        end       
         
         function level  = get_verbose_level(obj)
-            level = obj.VerboseLevel;
+            if is_verbose(obj),
+                level = 1;
+            elseif ~is_verbose(obj) && obj.Verbose,
+                level = 2;
+            else
+                level = 0;
+            end
         end
         
         function label  = get_verbose_label(obj)

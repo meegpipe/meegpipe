@@ -2,12 +2,7 @@ function obj = learn_basis(obj, data, varargin)
 
 import efica.efica; 
 
-randSeed = get_seed(obj);
-warning('off', 'MATLAB:RandStream:ActivatingLegacyGenerators');
-rand('state',  randSeed); %#ok<RAND>
-randn('state', randSeed); %#ok<RAND>
-warning('on', 'MATLAB:RandStream:ActivatingLegacyGenerators');
-obj = set_seed(obj, randSeed);
+obj = apply_seed(obj);
 
 W = efica(data(:,:));
 A = pinv(W);

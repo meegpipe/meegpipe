@@ -87,7 +87,10 @@ try
         'Criterion',        myCrit, ...
         'GenerateReport',   true, ...          
         'IOReport',         report.plotter.io);
+    
+    warning('off', 'snapshots:TooManyVertices');
     newData = run(myNode, dataCopy);
+    warning('on', 'snapshots:TooManyVertices');
     
     center(data);
     

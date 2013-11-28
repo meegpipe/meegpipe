@@ -16,7 +16,7 @@ if verbose,
     fprintf([verboseLabel ...
         'Learning from %s data\n\n'], dimtype_str(data));
     fprintf(...
-        [verboseLabel 'Learning %d spatial basis functions with %s...'], ...
+        [verboseLabel 'Learning %d spatial basis functions with %s...\n\n'], ...
         size(data,1), class(obj));
 end
 
@@ -35,7 +35,7 @@ end
 obj = learn_basis(obj, data);
 
 if verbose,
-     fprintf('[learned %d basis]\n\n', nb_component(obj));
+     fprintf([verboseLabel 'Learned %d %s basis\n\n'], nb_component(obj), class(obj));
 end
 
 globals.set('VerboseLabel', origVerboseLabel);

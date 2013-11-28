@@ -3,12 +3,7 @@ function obj = learn_basis(obj, data, varargin)
 import fastica.fastica;
 
 % Set the random number generator state
-randSeed = get_seed(obj);
-warning('off', 'MATLAB:RandStream:ActivatingLegacyGenerators');
-rand('state',  randSeed); %#ok<RAND>
-randn('state', randSeed); %#ok<RAND>
-warning('on', 'MATLAB:RandStream:ActivatingLegacyGenerators');
-obj = set_seed(obj, randSeed);
+obj = apply_seed(obj);
 
 initGuess = get_init(obj, data);
 

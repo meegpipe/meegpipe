@@ -3,10 +3,7 @@ function obj = learn_basis(obj, data, varargin)
 import amica.amica;
 
 
-% Set the random number generator state
-randSeed = get_seed(obj);
-rand('state', randSeed); %#ok<RAND>
-randn('state', randSeed); %#ok<RAND>
+obj = apply_seed(obj);
 
 W = amica(data(:,:), 1, ...
     obj.NbMixtures, ...
@@ -20,7 +17,6 @@ W = amica(data(:,:), 1, ...
 
 A = pinv(W);
 selection = 1:size(W,1);
-obj = set_seed(obj, randSeed);
 
 obj.W = W;
 obj.A = A;

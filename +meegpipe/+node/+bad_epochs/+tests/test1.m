@@ -15,7 +15,7 @@ import physioset.event.class_selector;
 MEh     = [];
 
 % Number of tests that should run if everything goes OK
-initialize(14)
+initialize(14);
 
  
 

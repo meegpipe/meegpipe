@@ -1,8 +1,6 @@
 function x = filter(obj, x, varargin)
 
 import misc.eta;
-import spt.pca.pca;
-
 
 verbose         = is_verbose(obj) && size(x,1) > 10;
 verboseLabel 	= get_verbose_label(obj);

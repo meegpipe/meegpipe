@@ -10,7 +10,7 @@ import pset.selector.cascade;
 
 %% Process user arguments
 opt.MaxPCs          = 40;
-opt.MinPCs          = 3;
+opt.MinPCs          = 6;
 opt.RetainedVar     = 99.75;
 opt.BSS             = spt.bss.multicombi;
 

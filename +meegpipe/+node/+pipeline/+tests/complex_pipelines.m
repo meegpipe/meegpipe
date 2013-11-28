@@ -15,7 +15,7 @@ import misc.get_hostname;
 
 MEh     = [];
 
-initialize(3);
+initialize(4);
 
 %% Create a new session
 try
@@ -35,6 +35,37 @@ catch ME
     return;
     
 end
+
+%% copy+eog+chan_interp
+try
+    data = get_real_data;
+    
+    set_bad_channel(data, [10 18 21 192]);
+    set_bad_sample(data, randi(size(data,2), 1, 1125));
+    data = subset(data, 1:192);
+    
+    save(data);
+    dataFile = get_hdrfile(data);
+    
+    myPipe = pipeline.new('NodeList', {...
+        physioset_import.new('Importer', physioset.import.physioset), ...
+        copy.new, ...
+        bss.eog, ...
+        chan_interp.new ...
+        }, ...
+        'Save', true, 'GenerateReport', true, 'Name', 'sample');
+    
+    run(myPipe, dataFile);
+
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% copy+resample+filter+reref+bad_channels+bad_epochs
 try
@@ -74,19 +105,18 @@ try
     myEvSel = physioset.event.class_selector('Type', '_DummyEpochOnset');
     
     badEpochsNode  = bad_epochs.new(...
-    'Criterion',        badEpochsCrit, ...
-    'EventSelector',    myEvSel);
-% 
-%    bad_channels.new('Criterion', badChanCrit1, 'DataSelector', badChanDataSel), ...
-%         bad_channels.new('Criterion', badChanCrit2, 'DataSelector', badChanDataSel), ...
-%         ev_gen.new('EventGenerator', myEvGen), ...
-%         badEpochsNode, ...
-%tfilter.new('Filter', @(sr) filter.bpfilt('fp', [0.25 40]/(sr/2))), ...  
-  %copy.new, ...         
-myPipe = pipeline.new(...
+        'Criterion',        badEpochsCrit, ...
+        'EventSelector',    myEvSel);
+    myPipe = pipeline.new(...
+        bad_channels.new('Criterion', badChanCrit1, 'DataSelector', badChanDataSel), ...
+        bad_channels.new('Criterion', badChanCrit2, 'DataSelector', badChanDataSel), ...
+        ev_gen.new('EventGenerator', myEvGen), ...
+        badEpochsNode, ...
+        tfilter.new('Filter', @(sr) filter.bpfilt('fp', [0.25 40]/(sr/2))), ...
+        copy.new, ...
         physioset_import.new('Importer', physioset.import.physioset), ...
-        resample.new('OutputRate', 125), ...    
-        'Save', true, 'GenerateReport', true);    
+        resample.new('OutputRate', 125), ...
+        'Save', true, 'GenerateReport', true);
     
     if ~strcmp(get_hostname, 'somerenserver'),
         myImporter = physioset.import.matrix(...
@@ -129,3 +159,23 @@ end
 
 %% Testing summary
 status = finalize();
+
+
+end
+
+
+function dataCopy = get_real_data()
+
+if exist('20131121T171325_647f7.pseth', 'file') > 0,
+    data = pset.load('20131121T171325_647f7.pseth');
+else
+    % Try downloading the file
+    url = 'http://kasku.org/data/meegpipe/20131121T171325_647f7.zip';
+    unzipDir = catdir(session.instance.Folder, '20131121T171325_647f7');
+    unzip(url, unzipDir);
+    fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
+    data = pset.load(fileName);
+end
+dataCopy = copy(data);
+
+end

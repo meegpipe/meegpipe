@@ -23,7 +23,7 @@ classdef config < meegpipe.node.abstract_config
     properties        
        
         EventSelector  = []; 
-        EventFeatures  = {@(ev) get_name(ev)};
+        EventFeatures  = {@(ev) get_name(ev(1))};
         EventFeatureNames = {'event_name'};
         RPeakEventSelector = physioset.event.class_selector('Class', 'qrs');
         
