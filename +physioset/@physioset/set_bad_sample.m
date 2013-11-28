@@ -13,8 +13,6 @@ function obj = set_bad_sample(obj, idx)
 %
 % See also: clear_bad_sample, set_bad_channel, physioset
 
-% Description: Marks bad samples
-% Documentations: class_physioset.txt
 
 import misc.isnatural;
 import exceptions.*
@@ -27,7 +25,7 @@ if ~isempty(idx) && ~isnatural(idx),
     throw(InvalidArgValue('idx', 'Sample index must be a natural number'));
 end
 
-if any(idx > obj.NbPoints),
+if any(idx > nb_pnt(obj)),
     throw(InvalidArgValue('idx', ...
         sprintf('Sample index (%d) exceeds number of samples (%d)', ...
         idx(find(idx(:) > nb_pnt(obj), 1, 'first')), nb_pnt(obj))));

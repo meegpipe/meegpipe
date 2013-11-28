@@ -55,6 +55,11 @@ if ~isempty(obj.SensorType)
     
 end
 
+if isempty(obj.SensorClass) && isempty(obj.SensorType),
+    % select everything
+    isSelected = ~isSelected;
+end
+
 if ~any(isSelected),
     emptySel = true;    
 else

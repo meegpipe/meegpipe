@@ -24,7 +24,7 @@ if emptySel,
         'Cannot calculate BP variance on an empty set');
     return;
 end
-hasSelection = has_pnt_selection(raw);
+
 rawDataVar = var(raw, [], 2);
 A = A(relative_dim_selection(raw), :);
 restore_selection(raw);
@@ -36,12 +36,9 @@ if verbose,
     fprintf([verboseLabel 'Computing channel statistics ...']);
 end
 
-if hasSelection,
-    error('Not implemented');
-else
-    for i = 1:size(tSeries,1)
-        featVal(i) = obj.AggregatingStat(A(:,i).^2, rawDataVar);
-    end
+% We ignore point selections for simplicity and speed!!! 
+for i = 1:size(tSeries,1)
+    featVal(i) = obj.AggregatingStat(A(:,i).^2, rawDataVar);
 end
 
 if verbose,

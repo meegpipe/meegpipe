@@ -46,7 +46,6 @@ try
     
     save(data);
     dataFile = get_hdrfile(data);
-    
     myPipe = pipeline.new('NodeList', {...
         physioset_import.new('Importer', physioset.import.physioset), ...
         copy.new, ...
@@ -164,7 +163,7 @@ status = finalize();
 end
 
 
-function dataCopy = get_real_data()
+function data = get_real_data()
 
 if exist('20131121T171325_647f7.pseth', 'file') > 0,
     data = pset.load('20131121T171325_647f7.pseth');
@@ -176,6 +175,6 @@ else
     fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
     data = pset.load(fileName);
 end
-dataCopy = copy(data);
+data = copy(data);
 
 end

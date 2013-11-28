@@ -142,9 +142,11 @@ else
             rejectedICs = subset(ics);
             restore_selection(ics);
         end
-        data = data - bproj(myBSS, ics);
+        noise = bproj(myBSS, ics);
+        data = data - noise;
     else
-        data = assign_values(data, bproj(myBSS, ics));
+        signal = bproj(myBSS, ics);
+        data = assign_values(data, signal);
     end
     
     % Remove residual noise using a regression filter

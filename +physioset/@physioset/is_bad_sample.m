@@ -12,9 +12,6 @@ function value = is_bad_sample(obj, idx)
 %
 % See also: is_bad_channel, physioset
 
-% Documentation: class_physioset.txt
-% Description: Bad sample markings
-
 import misc.isnatural;
 import exceptions.*
 
@@ -37,8 +34,6 @@ if ~isempty(obj.PntSelection),
     idx = obj.PntSelection(idx);
 end
 
-
 value = obj.BadSample(idx);
-
 
 end

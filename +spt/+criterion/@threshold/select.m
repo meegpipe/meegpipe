@@ -45,7 +45,7 @@ end
 % various thresholds
 maxTh = repmat(maxTh, size(tSeries, 1), 1);
 minTh = repmat(minTh, size(tSeries, 1), 1);
-[~, idx] = sort(max(max(featVal-maxTh, minTh-featVal), [], 2), 'descend');
+[~, idx] = sort(min(max(featVal-maxTh, minTh-featVal), [], 2), 'descend');
 
 if isa(obj.MinCard, 'function_handle')
     minCard = obj.MinCard(featVal);

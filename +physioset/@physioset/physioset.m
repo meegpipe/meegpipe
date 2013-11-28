@@ -632,10 +632,13 @@ classdef physioset < ...
         
         function obj        = minus(varargin)
             
+            obj = [];
             for i = 1:nargin
                 if isa(varargin{i}, 'physioset.physioset'),
-                    obj = varargin{i};
-                    varargin{i} = obj.PointSet;
+                    if isempty(obj),
+                        obj = varargin{i};
+                    end
+                    varargin{i} = varargin{i}.PointSet;
                 end
             end
             obj.PointSet = minus(varargin{:});
@@ -670,7 +673,6 @@ classdef physioset < ...
             obj.PhysDimPrefixOrig   = [];
             obj.BadChan             = false(1, obj.NbDims);
             obj.RerefMatrix         = [];
-            set_name(obj, [get_name(obj) '_backprojected']);
             
         end
         
@@ -685,10 +687,13 @@ classdef physioset < ...
         end
         
         function obj        = plus(varargin)
+            obj = [];
             for i = 1:nargin
                 if isa(varargin{i}, 'physioset.physioset'),
-                    obj = varargin{i};
-                    varargin{i} = obj.PointSet;
+                    if isempty(obj),
+                        obj = varargin{i};
+                    end
+                    varargin{i} = varargin{i}.PointSet;
                 end
             end
             obj.PointSet = plus(varargin{:});
@@ -699,10 +704,13 @@ classdef physioset < ...
         end
         
         function obj        = rdivide(varargin)
+            obj = [];
             for i = 1:nargin
                 if isa(varargin{i}, 'physioset.physioset'),
-                    obj = varargin{i};
-                    varargin{i} = obj.PointSet;
+                    if isempty(obj),
+                        obj = varargin{i};
+                    end
+                    varargin{i} = varargin{i}.PointSet;
                 end
             end
             obj.PointSet = rdivide(varargin{:});
@@ -743,10 +751,13 @@ classdef physioset < ...
         end
         
         function obj        = times(varargin)
+            obj = [];
             for i = 1:nargin
                 if isa(varargin{i}, 'physioset.physioset'),
-                    obj = varargin{i};
-                    varargin{i} = obj.PointSet;
+                    if isempty(obj),
+                        obj = varargin{i};
+                    end
+                    varargin{i} = varargin{i}.PointSet;
                 end
             end
             obj.PointSet = times(varargin{:});

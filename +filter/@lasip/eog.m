@@ -10,7 +10,7 @@ function fObj = eog(varargin)
 % See also: filter
 
 
-fObj = filter.lasip('Gamma', 3:0.25:5, 'Q',2, varargin{:});
+fObj = filter.lasip('Gamma', 3.5:0.25:5.5, 'Decimation',5, varargin{:});
 
 
 end
