@@ -54,6 +54,7 @@ try
     
     myNode = bss.new(...
         'Reject',           true, ...
+        'Criterion',        ~spt.criterion.dummy, ...
         'GenerateReport',   false);
     
     run(myNode, data);
@@ -68,7 +69,10 @@ try
         
         % Run the node again: it should remember the manual selection
         clear myNode ans;
-        myNode = bss.new('Reject', true, 'GenerateReport', false);
+        myNode = bss.new(...
+            'Reject',           true, ...
+            'GenerateReport',   false, ...
+            'Criterion',        ~spt.criterion.dummy);
         data = data + rand(size(data));
         run(myNode, data);
         
@@ -81,7 +85,10 @@ try
         if condition,
             % Run the node again: it should still remember!
             clear myNode ans;
-            myNode = bss.new('Reject', true, 'GenerateReport', false);
+            myNode = bss.new(...
+                'Reject',           true, ...
+                'GenerateReport',   false, ...
+                'Criterion',        ~spt.criterion.dummy);
             data = data + rand(size(data));
             run(myNode, data);
             
@@ -122,7 +129,10 @@ try
     
     data = import(importer, X);
     
-    myNode = bss.new('Reject', false, 'GenerateReport', false);
+    myNode = bss.new(...
+        'Reject',           false, ...
+        'Criterion',        ~spt.criterion.dummy, ...
+        'GenerateReport',   false);
     run(myNode, data);
     
     condition = max(abs(data(:)-X(:))) < 1e-2;
@@ -149,7 +159,10 @@ try
             setval(cfg, 'bss', 'selection', '');
             % Run the node again: it should remember the manual selection
             clear myNode ans;
-            myNode = bss.new('Reject', false, 'GenerateReport', false);
+            myNode = bss.new(...
+                'Reject',           false, ...
+                'Criterion',        ~spt.criterion.dummy, ...
+                'GenerateReport',   false);
             
             % This should select no component: output should be zero
             run(myNode, data);
@@ -161,7 +174,10 @@ try
                 delval(cfg, 'bss', 'selection');
                 % Run the node again: it should reset to the automatic sel.
                 clear myNode ans;
-                myNode = bss.new('Reject', false, 'GenerateReport', false);
+                myNode = bss.new(...
+                    'Reject',           false, ...
+                    'Criterion',        ~spt.criterion.dummy, ...
+                    'GenerateReport',   false);
                 data = data+randn(size(data));
                 run(myNode, data);
                 
