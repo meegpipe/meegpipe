@@ -97,7 +97,9 @@ try
     
     myPCA = learn(spt.pca('MaxCard', 5), data);
     
-    myBSS = learn(myBSS, data);
+    pcs = proj(myPCA, data);
+    
+    myBSS = learn(myBSS, pcs);
     
     error = bprojmat(myBSS)*projmat(myBSS)-eye(size(data,1));
     

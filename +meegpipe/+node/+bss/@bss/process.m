@@ -85,14 +85,14 @@ selected = selected(sortedIdx);
 % If the user wants the manual selection of components to be
 % ignored she can do either of three things:
 %
-% - Delete the .ini file: all windows' selections will be reset
-% - Delete the "selection" parameter in the corresp. window
-% - Delete the correspoding [window X] section completely.
+% - Delete the .ini file
+% - Delete the "selection" parameter in section bss
+% - Set selection=NaN
 userSel = get_runtime(obj, 'bss', 'selection', true);
 if iscell(userSel), userSel = cell2mat(userSel); end
 autoSel = find(selected);
 
-if ~all(isnan(userSel)) && ~isempty(setxor(userSel, autoSel))
+if isempty(userSel) || ~all(isnan(userSel)) && ~isempty(setxor(userSel, autoSel))
     userSel = intersect(userSel, 1:size(ics,1));
     if verbose,
         fprintf([ get_verbose_label(obj) ...

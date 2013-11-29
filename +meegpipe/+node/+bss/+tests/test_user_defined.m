@@ -146,7 +146,10 @@ try
         
         % Run the node again: it should remember the manual selection
         clear myNode ans;
-        myNode = bss.new('Reject', false, 'GenerateReport', false);
+        myNode = bss.new(...
+            'Reject',           false, ...
+            'Criterion',        ~spt.criterion.dummy, ...
+            'GenerateReport',   false);
         run(myNode, data);
         
         cfg = inifile(cfgFile);
