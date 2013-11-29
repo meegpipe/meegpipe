@@ -57,6 +57,16 @@ add_event(ics, get_event(data));
 
 [selected, ~, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
 
+if verbose,
+    if  reject,
+        str = 'rejected';
+    else
+        str = 'accepted';
+    end
+    fprintf([verboseLabel '%d components will be %s ...\n\n'], ...
+        numel(find(selected)), str);         
+end
+
 % For convenience, we will sort everything in decreasing rank value
 % This also means renaming the ICs so that IC #1 corresponds to the highest
 % ranked component and so on.
@@ -116,7 +126,8 @@ make_criterion_report(obj, myCrit, [], icSel, isAutoSel);
 if isempty(icSel) && ~reject,
     % We select the empty set
     data(:,:) = 0;
-elseif isempty(icSel) && reject,
+elseif (isempty(icSel) && reject) || ...
+        (numel(icSel) == size(ics, 1) && ~reject),
     % Leave data untouched    
 else      
     if ~isempty(myFilt),  

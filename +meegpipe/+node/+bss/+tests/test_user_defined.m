@@ -135,10 +135,11 @@ try
         'GenerateReport',   false);
     run(myNode, data);
     
+    X = X - repmat(mean(X,2), 1, size(X,2));
     condition = max(abs(data(:)-X(:))) < 1e-2;
     
     if condition,
-        cfgFile = catfile(get_full_dir(myNode, data), 'bss.new.ini');
+        cfgFile = catfile(get_full_dir(myNode, data), [get_name(myNode) '.ini']);
         cfg = inifile(cfgFile);
         newSelection = num2cell([1 3]);
         setval(cfg, 'bss', 'selection', newSelection{:});
