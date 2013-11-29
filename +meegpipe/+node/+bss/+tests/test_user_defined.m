@@ -10,6 +10,7 @@ import misc.rmdir;
 import oge.has_oge;
 import spt.bss.jade;
 import mperl.config.inifiles.inifile;
+import meegpipe.node.*;
 
 MEh     = [];
 

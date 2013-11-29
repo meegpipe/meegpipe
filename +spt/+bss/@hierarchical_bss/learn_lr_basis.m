@@ -40,20 +40,26 @@ while overlapCounter < numel(obj.Overlap) && ...
     
     if verbLevel > 0,
         fprintf([verboseLabel ...
-            'Learning %s basis from %d surrogates and two windows ' ...
-            'with %d%% overlap ...'], class(obj.BSS), ...
-            obj.ParentSurrogates, round(obj.Overlap(overlapCounter)));
+            'Learning %s basis from %d surrogates on two windows ' ...
+            '(L=%d samples, %d%% overlap) ...'], class(obj.BSS), ...
+            obj.ParentSurrogates, round(size(data,2)/2), ...
+            round(obj.Overlap(overlapCounter)));
     end
     
     tinit = tic;
+    surrogator = obj.Surrogator;
+    
     for surrIter = 1:obj.ChildrenSurrogates
         
-        dataSurr = surrogate(obj.Surrogator, dataLeft);
-        bssLeft{surrIter}  = learn(parentBSS, dataSurr);
-        bssLeft{surrIter} = cascade(parentBSS, bssLeft{surrIter});
+        surrogator = set_seed(surrogator, get_seed(obj) + surrIter*100);
+        dataSurr = surrogate(surrogator, dataLeft);
+        bssLeft{surrIter} = learn(parentBSS, dataSurr);
+        bssLeft{surrIter} = match_sources(bssLeft{surrIter}, eye(nb_dim(parentBSS)));
+        bssLeft{surrIter} = cascade(parentBSS, bssLeft{surrIter});        
         
-        dataSurr = surrogate(obj.Surrogator, dataRight);
-        bssRight{surrIter}  = learn(parentBSS, dataSurr);
+        dataSurr = surrogate(surrogator, dataRight);
+        bssRight{surrIter} = learn(parentBSS, dataSurr);
+        bssRight{surrIter}  = match_sources(bssRight{surrIter}, eye(nb_dim(parentBSS)));
         bssRight{surrIter} = cascade(parentBSS, bssRight{surrIter});
         if verbLevel > 0
             misc.eta(tinit, obj.ChildrenSurrogates, surrIter);
@@ -76,11 +82,10 @@ while overlapCounter < numel(obj.Overlap) && ...
         childrenDist = Inf;
     else
         distVal = distance(bssLeft, bssRight, obj.DistanceMeasure);
-        [distVal, rowI] = min(distVal);
-        bssLeft = bssLeft{rowI};
-        [~, colI] = min(distVal);
-        bssRight  = bssRight{colI};
-        childrenDist = obj.DistanceMeasure(bssLeft, bssRight);
+        [childrenDist, I] = min(distVal(:));
+        [i,j]  = ind2sub(size(distVal), I);
+        bssLeft  = bssLeft{i};
+        bssRight = bssRight{j};             
     end
     
 end

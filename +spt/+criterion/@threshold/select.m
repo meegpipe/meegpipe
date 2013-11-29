@@ -1,4 +1,4 @@
-function [selected, featVal, obj] = select(obj, objSpt, tSeries, varargin)
+function [selected, featVal, rankIdx, obj] = select(obj, objSpt, tSeries, varargin)
 % SELECT - Selects criterion matching components
 
 import exceptions.InvalidObject;
@@ -45,7 +45,8 @@ end
 % various thresholds
 maxTh = repmat(maxTh, size(tSeries, 1), 1);
 minTh = repmat(minTh, size(tSeries, 1), 1);
-[~, idx] = sort(min(max(featVal-maxTh, minTh-featVal), [], 2), 'descend');
+rankIdx = min(max(featVal-maxTh, minTh-featVal), [], 2);
+[~, idx] = sort(rankIdx, 'descend');
 
 if isa(obj.MinCard, 'function_handle')
     minCard = obj.MinCard(featVal);

@@ -143,7 +143,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
         
         
         % spt.criterion.criterion interface
-        [selected, featVal, obj] = select(obj, objSpt, tSeries, varargin)
+        [selected, featVal, rankIdx, obj] = select(obj, objSpt, tSeries, varargin)
         
         count = fprintf(fid, critObj, varargin)
         

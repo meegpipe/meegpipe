@@ -25,7 +25,7 @@ classdef abstract_spt < ...
         DimSelection;        % Indices of selected data dimension
         
     end
- 
+    
     properties
         LearningFilter;     % Pre-processing filter before learning
     end
@@ -37,11 +37,11 @@ classdef abstract_spt < ...
         DimOut;
         
     end
-
-    methods 
-       
-        function val = get.DimIn(obj)            
-           val = numel(obj.DimSelection);           
+    
+    methods
+        
+        function val = get.DimIn(obj)
+            val = numel(obj.DimSelection);
         end
         
         function val = get.DimOut(obj)
@@ -62,7 +62,7 @@ classdef abstract_spt < ...
                     'Must be a filter.dfilt object or a function_handle'));
             end
             
-            obj.LearningFilter = value;            
+            obj.LearningFilter = value;
             
         end
         
@@ -83,7 +83,7 @@ classdef abstract_spt < ...
         end
         
         
-    end    
+    end
     
     methods
         
@@ -108,8 +108,8 @@ classdef abstract_spt < ...
         obj      = select(obj, compIdx, dimIdx, backup);
         
         function obj = clear_selection(obj)
-           obj.ComponentSelection = 1:size(obj.W,1);
-           obj.DimSelection = 1:size(obj.A,1);
+            obj.ComponentSelection = 1:nb_component(obj);
+            obj.DimSelection = 1:nb_dim(obj);
         end
         
         obj = restore_selection(obj);
@@ -117,7 +117,7 @@ classdef abstract_spt < ...
         varargout = cascade(varargin);
         
         function obj = reorder_component(obj, idx)
-           
+            
             obj.W = obj.W(idx,:);
             obj.A = obj.A(:, idx);
             selected = false(1, nb_component(obj));
@@ -137,7 +137,7 @@ classdef abstract_spt < ...
                 W = obj.W;
             else
                 W = obj.W(obj.ComponentSelection, obj.DimSelection);
-            end            
+            end
         end
         
         function A  = bprojmat(obj, fullMatrix)
@@ -169,15 +169,11 @@ classdef abstract_spt < ...
         end
         
         function val = nb_dim(obj)
-            val = size(obj.W, 2);
+            val = size(projmat(obj), 2);
         end
         
         function val = nb_component(obj)
-            if isempty(obj.ComponentSelection),
-                val = size(obj.W, 1);
-            else
-                val = numel(obj.ComponentSelection);
-            end
+            val = size(projmat(obj), 1);
         end
         
         % Random state and initialization
@@ -206,13 +202,13 @@ classdef abstract_spt < ...
             
         end
         
-        function obj = apply_seed(obj)            
+        function obj = apply_seed(obj)
             randSeed = get_seed(obj);
             warning('off', 'MATLAB:RandStream:ActivatingLegacyGenerators');
             rand('state',  randSeed); %#ok<RAND>
             randn('state', randSeed); %#ok<RAND>
             warning('on', 'MATLAB:RandStream:ActivatingLegacyGenerators');
-            obj = set_seed(obj, randSeed);                        
+            obj = set_seed(obj, randSeed);
         end
         
         function init = get_init(obj, ~)

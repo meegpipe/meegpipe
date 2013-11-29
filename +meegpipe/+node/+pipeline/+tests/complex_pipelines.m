@@ -38,6 +38,8 @@ end
 
 %% copy+eog+chan_interp
 try
+    
+    name = 'copy+eog+chan_interp';
     data = get_real_data;
     
     set_bad_channel(data, [10 18 21 192]);
@@ -55,7 +57,7 @@ try
         'Save', true, 'GenerateReport', true, 'Name', 'sample');
     
     run(myPipe, dataFile);
-
+    
     ok(true, name);
     
 catch ME
@@ -69,7 +71,7 @@ end
 %% copy+resample+filter+reref+bad_channels+bad_epochs
 try
     
-    name = 'process sample data';
+    name = 'copy+resample+filter+reref+bad_channels+bad_epochs';
     
     centralchannels= pset.selector.sensor_idx(sort([257, 81, 132, 186,9,45, 8, 198, 185, 144, 131, 90, 80, 53, 44, 17]));
     badChanDataSel = not(centralchannels);
@@ -81,10 +83,10 @@ try
         'NN',  20 ... % Number of nearest neighbors
         );
     badChanCrit2 = bad_channels.criterion.xcorr.new(...
-    'MinCard',  0,  ...
-    'MaxCard',  @(dim)ceil(0.05*dim), ...
-    'Min',      @(corrVals) prctile(corrVals,5) ...
-    );
+        'MinCard',  0,  ...
+        'MaxCard',  @(dim)ceil(0.05*dim), ...
+        'Min',      @(corrVals) prctile(corrVals,5) ...
+        );
     
     fh = @(sampl, idx, data) physioset.event.event(sampl, ...
         'Type', '_DummyEpochOnset', 'Duration', 2*data.SamplingRate);
@@ -107,26 +109,22 @@ try
         'Criterion',        badEpochsCrit, ...
         'EventSelector',    myEvSel);
     myPipe = pipeline.new(...
+        physioset_import.new('Importer', physioset.import.physioset), ...
         bad_channels.new('Criterion', badChanCrit1, 'DataSelector', badChanDataSel), ...
         bad_channels.new('Criterion', badChanCrit2, 'DataSelector', badChanDataSel), ...
         ev_gen.new('EventGenerator', myEvGen), ...
         badEpochsNode, ...
         tfilter.new('Filter', @(sr) filter.bpfilt('fp', [0.25 40]/(sr/2))), ...
-        copy.new, ...
-        physioset_import.new('Importer', physioset.import.physioset), ...
+        copy.new, ...       
         resample.new('OutputRate', 125), ...
         'Save', true, 'GenerateReport', true);
     
-    if ~strcmp(get_hostname, 'somerenserver'),
-        myImporter = physioset.import.matrix(...
-            'Sensors', sensors.eeg.from_template('egi256'));
-        myData = import(myImporter, rand(257, 10000));
-        save(myData);   
-        myData = get_hdrfile(myData);
-    else
-        myData = 'ssmd_0104_eeg_rs-ec_ssmd-rs.pseth';
-    end
-   
+    myImporter = physioset.import.matrix(...
+        'Sensors', sensors.eeg.from_template('egi256'));
+    myData = import(myImporter, rand(257, 10000));
+    save(myData);
+    myData = get_hdrfile(myData);
+    
     run(myPipe, myData);
     
     ok(true, name);
@@ -164,6 +162,10 @@ end
 
 
 function data = get_real_data()
+
+import pset.session;
+import mperl.file.spec.catfile;
+import mperl.file.spec.catdir;
 
 if exist('20131121T171325_647f7.pseth', 'file') > 0,
     data = pset.load('20131121T171325_647f7.pseth');

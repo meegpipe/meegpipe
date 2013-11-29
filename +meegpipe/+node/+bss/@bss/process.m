@@ -55,7 +55,7 @@ add_event(ics, get_event(data));
 
 [~, myBSS] = cascade(myPCA, myBSS);
 
-[selected, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
+[selected, ~, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
 
 % For convenience, we will sort everything in decreasing rank value
 % This also means renaming the ICs so that IC #1 corresponds to the highest

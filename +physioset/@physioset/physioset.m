@@ -481,6 +481,8 @@ classdef physioset < ...
             backup_projection(obj.PointSet);
         end
         
+        obj = copy_sensors_history(obj, otherObj);
+        
         obj = restore_sensors(obj, projOperator);
         
         obj = backup_sensors(obj, projOperator);

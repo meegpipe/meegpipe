@@ -1,13 +1,14 @@
 classdef hierarchical_bss < spt.abstract_spt
     
     methods (Access = private)
-       
+        
         [bssArray, winBndry] = learn_lr_basis(obj, data, bssCentroid, winBndry);
         
     end
     
     properties (SetAccess = private, GetAccess = private)
         WinBoundary = [];
+        BSSwin    = {};
     end
     
     properties
@@ -18,8 +19,8 @@ classdef hierarchical_bss < spt.abstract_spt
         ParentSurrogates   = 10;
         ChildrenSurrogates = 20;
         Surrogator         = surrogates.shuffle;
-        MaxWindowLength    = @(sr) 20*sr;
-        FixNbComponents    = @(nbComponents) max(nbComponents);
+        MaxWindowLength    = @(sr) 60*sr;
+        FixNbComponents    = @(nbComponents) ceil(prctile(nbComponents, 75));
         Overlap            = [0 5 10 25 50];
     end
     
@@ -51,13 +52,19 @@ classdef hierarchical_bss < spt.abstract_spt
         % Redefinitions of abstract_spt methods
         W = projmat(obj, full);
         A = bprojmat(obj, full);
+        [y, I] = proj(obj, data);
+        [y, I] = bproj(obj, data);
         
         % Declared and defined here
-        bndry = window_boundary(obj);
+        function bndry = window_boundary(obj)
+            bndry = obj.WinBoundary;
+        end
+
+        W     = projmat_win(obj, varargin);
+        A     = bprojmat_win(obj, varargin);
     end
     
     methods
-        
         function obj = hierarchical_bss(varargin)
             import misc.set_properties;
             import misc.split_arguments;
@@ -74,8 +81,8 @@ classdef hierarchical_bss < spt.abstract_spt
             opt.ParentSurrogates   = 10;
             opt.ChildrenSurrogates = 20;
             opt.Surrogator         = surrogates.shuffle;
-            opt.MaxWindowLength    = @(sr) 20*sr;
-            opt.FixNbComponents    = @(nbComponents) max(nbComponents);
+            opt.MaxWindowLength    = @(sr) 60*sr;
+            opt.FixNbComponents    = @(nbComponents) ceil(prctile(nbComponents, 75));
             opt.Overlap            = [0 5 10 25 50];
             [thisArgs, argsParent] = split_arguments(fieldnames(opt), varargin);
             
@@ -83,7 +90,6 @@ classdef hierarchical_bss < spt.abstract_spt
             
             obj = set_properties(obj, opt, thisArgs);
         end
-        
     end
     
 end

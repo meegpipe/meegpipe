@@ -1,13 +1,7 @@
 function A = bprojmat(obj, varargin)
 
-A = cell(1, numel(obj.BSSwin));
+A = bprojmat_win(obj, varargin{:});
 
-for i = 1:numel(obj.BSSwin)
-   A{i} = bprojmat(obj.BSSwin{i}, varargin); 
-end
-
-if numel(A) == 1,
-    A = A{1};
-end
+A = median(A, 3);
 
 end

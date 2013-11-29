@@ -20,14 +20,18 @@ nbSelected = nan(1, obj.ParentSurrogates);
 allRankIdx = nan(size(data, 1), obj.ParentSurrogates);
 bssObj     = cell(1, obj.ParentSurrogates);
 
+
+surrogator = obj.Surrogator;
+
 for surrIter = 1:obj.ParentSurrogates  
     
-    dataSurr = surrogate(obj.Surrogator, data(:,:));    
+    surrogator = set_seed(surrogator, get_seed(obj) + surrIter*100);
+    dataSurr = surrogate(surrogator, data(:,:));    
   
     bssObj{surrIter} = learn_basis(obj.BSS, dataSurr, varargin{:});
     ics = proj(bssObj{surrIter}, dataSurr);
     
-    [selection, rankIdx] = select(obj.SelectionCriterion, ...
+    [selection, ~, rankIdx] = select(obj.SelectionCriterion, ...
         bssObj{surrIter}, ics, data); 
     
     allRankIdx(:, surrIter) = rankIdx;
@@ -65,6 +69,12 @@ proj(bssCentroid, data);
 for i = 1:numel(bssArray)
     bssArray{i} = match_sources(bssArray{i}, bprojmat(bssCentroid));
 end
+
+obj.BSSwin = bssArray;
+obj.WinBoundary = winBoundary;
+
+obj.ComponentSelection = 1:nb_component(bssArray{1});
+obj.DimSelection       = 1:nb_dim(bssArray{1});
 
 end
 

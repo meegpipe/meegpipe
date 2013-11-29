@@ -12,7 +12,7 @@ import meegpipe.node.*;
 
 MEh     = [];
 
-initialize(5);
+initialize(6);
 
 %% Create a new session
 try
@@ -48,16 +48,54 @@ catch ME
     
 end
 
-%% single level (window) usage with efica
+%% random data - dummy criterion
 try
     
-    name = 'single level (window) usage with efica';
+    name = 'random data - dummy criterion';
     
     mySensors = subset(sensors.eeg.from_template('egi256'), 1:3);
     myImporter = physioset.import.matrix('Sensors', mySensors);
-    data =  import(myImporter, rand(3, 50000));
+    data =  import(myImporter, rand(3, 10000));
     
-    myBSS = spt.bss.hierarchical_bss(spt.bss.efica);
+    myBSS = spt.bss.hierarchical_bss(spt.bss.efica, 'Verbose', false);
+    
+    myBSS = learn(myBSS, data);
+    
+    ics = proj(myBSS, data);
+    
+    data2 = bproj(myBSS, ics);
+    
+    error = bprojmat(myBSS)*projmat(myBSS)-eye(size(data,1));
+    
+    ok(...
+        cond(projmat(myBSS)*eye(size(data,1))) < 2 & ...
+        max(max(abs(error))) < 0.1 & ...
+        max(abs(data(:)-data2(:))) < 0.01, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% real data - eog criterion
+try
+    
+    name = 'real data - eog criterion';
+    
+    data = get_real_data;
+    
+    myNode = meegpipe.node.bss.eog;
+    
+    myCrit = get_config(myNode, 'Criterion');
+    
+    myBSS = spt.bss.hierarchical_bss(spt.bss.efica, ...
+        'Verbose',              false, ...
+        'SelectionCriterion',   myCrit, ...
+        'DistanceThreshold',    2);
+    
+    myPCA = learn(spt.pca('MaxCard', 5), data);
     
     myBSS = learn(myBSS, data);
     
@@ -65,7 +103,7 @@ try
     
     ok(...
         cond(projmat(myBSS)*eye(size(data,1))) < 2 & ...
-        max(max(abs(error))) < 0.01, name);
+        max(max(abs(error))) < 0.1, name);
     
 catch ME
     
@@ -75,18 +113,17 @@ catch ME
 end
 
 
-
-%% reproducibility of amica
+%% reproducibility
 try
     
-    name = 'reproducibility of amica';
+    name = 'reproducibility';
     
-    X = rand(3, 15000);
+    X = import(physioset.import.matrix, rand(3, 15000));
     
     isCool = true;
     for i = 1:10,
         
-        obj = spt.bss.amica;
+        obj = spt.bss.hierarchical_bss(spt.bss.jade, 'Verbose', false);
         
         obj = learn(obj, X);
         
@@ -134,12 +171,22 @@ status = finalize();
 
 end
 
+function data = get_real_data()
 
-function data = sample_data()
+import pset.session;
+import mperl.file.spec.catfile;
+import mperl.file.spec.catdir;
 
-
-mySensors = subset(sensors.eeg.from_template('egi256'), 1:5);
-myImporter = physioset.import.matrix('Sensors', mySensors);
-data =  import(myImporter, rand(5, 10000));
+if exist('20131121T171325_647f7.pseth', 'file') > 0,
+    data = pset.load('20131121T171325_647f7.pseth');
+else
+    % Try downloading the file
+    url = 'http://kasku.org/data/meegpipe/20131121T171325_647f7.zip';
+    unzipDir = catdir(session.instance.Folder, '20131121T171325_647f7');
+    unzip(url, unzipDir);
+    fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
+    data = pset.load(fileName);
+end
+data = copy(data);
 
 end

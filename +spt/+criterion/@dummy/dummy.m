@@ -23,8 +23,9 @@ classdef dummy < spt.criterion.criterion & goo.verbose & goo.abstract_named_obje
             obj.Negated = value;
         end
         
-        function [selected, featVal, obj] = select(obj, ~, tSeries, varargin)
+        function [selected, featVal, rankIdx, obj] = select(obj, ~, tSeries, varargin)
             featVal = zeros(size(tSeries, 1), 1);
+            rankIdx = zeros(size(tSeries, 1), 1);
             selected = false(1, size(tSeries, 1));
             if obj.Negated,
                 selected = ~selected;
