@@ -62,7 +62,7 @@ try
     condition = max(var(data, [], 2)) < 1e-2;
     
     if condition,
-        cfgFile = catfile(get_full_dir(myNode, data), 'bss_regr.ini');
+        cfgFile = catfile(get_full_dir(myNode, data), [get_name(myNode) '.ini']);
         cfg = inifile(cfgFile);
         newSelection = num2cell([1 2]);
         setval(cfg, 'bss', 'selection', newSelection{:});
