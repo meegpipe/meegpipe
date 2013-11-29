@@ -19,27 +19,33 @@ for featItr = 1:numel(obj.Feature),
     featVal(:, featItr) = thisFeat(:);
 end
 
-selected = false(numel(obj.Feature),size(tSeries,1));
+selected = false(1, size(tSeries,1));
 
 maxTh = nan(1, numel(obj.Feature));
+maxSelected = false(numel(obj.Feature),size(tSeries,1));
 for featItr = 1:numel(obj.Feature),
     if isa(obj.Max{featItr}, 'function_handle'),
         maxTh(featItr) = obj.Max{featItr}(featVal(:, featItr));
     else
         maxTh(featItr) = obj.Max{featItr};
     end
-    selected(featItr, featVal(:, featItr) > maxTh(featItr)) = true;
+    maxSelected(featItr, featVal(:, featItr) > maxTh(featItr)) = true;
 end
+maxSelected = obj.SelectionAggregator(maxSelected);
+selected(maxSelected) = true;
 
 minTh = nan(1, numel(obj.Feature));
+minSelected = false(numel(obj.Feature),size(tSeries,1));
 for featItr = 1:numel(obj.Feature),
     if isa(obj.Min{featItr}, 'function_handle'),
         minTh(featItr) = obj.Min{featItr}(featVal(:, featItr));
     else
         minTh(featItr) = obj.Min{featItr};
     end
-    selected(featItr, featVal(:, featItr) < minTh(featItr)) = true;
+    minSelected(featItr, featVal(:, featItr) < minTh(featItr)) = true;
 end
+minSelected = obj.SelectionAggregator(minSelected);
+selected(minSelected) = true;
 
 % Sort components by their distance to the hypercube delimited by the
 % various thresholds
@@ -52,15 +58,6 @@ if isa(obj.MinCard, 'function_handle')
     minCard = obj.MinCard(featVal);
 else
     minCard = obj.MinCard;
-end
-
-% Aggregate each feature
-if numel(obj.Feature) > 1,
-    aggrSel = selected(1, :);
-    for i = 1:numel(obj.Feature)
-        aggrSel = and(aggrSel, selected(i,:));
-    end
-    selected = aggrSel;
 end
 
 if minCard > 0,

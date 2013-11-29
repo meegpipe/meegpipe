@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(5);
+initialize(6);
 
 %% Create a new session
 try
@@ -33,10 +33,50 @@ catch ME
     
 end
 
+%% topo_ratio with real data
+try
+    
+    name = 'topo_ratio with real data';
+    data = get_real_data;  
+    
+    myNode = bss.eog_egi256_hcgsn1('GenerateReport',   true);
+    
+    run(myNode, data);
+ 
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    status = finalize();
+    return;
+    
+end
+
+%% topo_ratio with real data (eyes closed)
+try
+    
+    name = 'topo_ratio with real data (eyes closed)';
+    data = get_real_data_ec;  
+    
+    myNode = bss.eog_egi256_hcgsn1('GenerateReport',   true);
+    
+    run(myNode, data);
+ 
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    status = finalize();
+    return;
+    
+end
+
 %% topo_ratio feature
 try
     
-    name = 'topo_ratio feature';
+    name = 'topo_ratio';
     [data, S, sensIdx] = sample_data;
     
     othersIdx = sort(setdiff(1:size(data,1), sensIdx));
@@ -56,7 +96,7 @@ try
         'Criterion',        myCrit, ...
         'RetainedVar',      100, ...
         'GenerateReport',   true);
-   
+    
     run(myNode, data);
     
     snrNew = signal_to_noise(data, S);
@@ -70,6 +110,7 @@ catch ME
     return;
     
 end
+
 
 %% process random data: no EOG components
 try
@@ -111,17 +152,7 @@ try
     
     name = 'process real EEG data';
     
-    if exist('20131121T171325_647f7.pseth', 'file') > 0,
-        data = pset.load('20131121T171325_647f7.pseth');
-    else
-        % Try downloading the file
-        url = 'http://kasku.org/data/meegpipe/20131121T171325_647f7.zip';
-        unzipDir = catdir(session.instance.Folder, '20131121T171325_647f7');
-        unzip(url, unzipDir);
-        fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
-        data = pset.load(fileName);
-    end
-    dataCopy = copy(data);
+    data = get_real_data;
     
     myCrit = get_config(meegpipe.node.bss.eog, 'Criterion');
     myCrit.Max = {20 15};
@@ -214,5 +245,39 @@ for i = 1:size(X,1)
     snr = snr + var(S(i,:))/var(X(i,:)-S(i,:));
 end
 snr = 10*log10(snr/size(X,1));
+
+end
+
+
+function dataCopy = get_real_data()
+
+if exist('20131121T171325_647f7.pseth', 'file') > 0,
+    data = pset.load('20131121T171325_647f7.pseth');
+else
+    % Try downloading the file
+    url = 'http://kasku.org/data/meegpipe/20131121T171325_647f7.zip';
+    unzipDir = catdir(session.instance.Folder, '20131121T171325_647f7');
+    unzip(url, unzipDir);
+    fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
+    data = pset.load(fileName);
+end
+dataCopy = copy(data);
+
+end
+
+function dataCopy = get_real_data_ec()
+
+if exist('20131129T161654_a26da.pseth', 'file') > 0,
+    data = pset.load('20131121T171325_647f7.pseth');
+else
+    % Try downloading the file
+    url = 'http://kasku.org/data/meegpipe/20131129T161654_a26da.zip';
+    unzipDir = catdir(session.instance.Folder, '20131129T161654_a26da');
+    unzip(url, unzipDir);
+    fileName = catfile(unzipDir, '20131129T161654_a26da.pseth');
+    data = pset.load(fileName);
+end
+dataCopy = copy(data);
+
 
 end

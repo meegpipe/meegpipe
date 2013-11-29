@@ -153,7 +153,7 @@ for i = 1:numel(sensorArray),
     yDiff = diff(get(gca, 'YLim'));
     labelPos(2) = labelPos(2)-0.05*yDiff;
     set(hLabel, 'Position', labelPos);
-    ylabel('Explained log-variance statistis (dB)');
+    ylabel('log-variance statistis (dB)');
     
      % Print to a disk file and then to the report
     rDir = get_rootpath(rep);

@@ -123,7 +123,7 @@ end
 if verbose, fprintf('\n\n'); end
 
 if symm,
-    featVal = featVal.*asymFactor;
+    featVal = featVal(:).*asymFactor(:);
 end
 
 end

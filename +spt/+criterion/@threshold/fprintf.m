@@ -7,6 +7,7 @@ import misc.unique_filename;
 import plot2svg.plot2svg;
 import inkscape.svg2png;
 import misc.cell2char;
+import rotateticklabel.rotateticklabel;
 
 if nargin < 3, labels = []; end
 
@@ -89,7 +90,9 @@ for featItr = 1:numel(obj.Feature)
     yLabelStr = strrep(yLabelStr, '_', '\_');
     ylabel(yLabelStr);
     
-    set(gca, 'XTick', 1:numel(featVals));
+    set(gca, 'XTick', 1:numel(featVals), 'FontSize', 7);
+    th = rotateticklabel(gca, 90);
+    set(th, 'FontSize', 7);
     
     rootPath = fileparts(fid2fname(fid));
     fileName = catfile(rootPath, 'rank-report.svg');

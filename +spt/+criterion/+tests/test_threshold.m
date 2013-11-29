@@ -9,7 +9,7 @@ import safefid.safefid;
 
 MEh     = [];
 
-initialize(13);
+initialize(14);
 
 %% Create a new session
 try
@@ -74,7 +74,7 @@ try
         'Feature',  spt.feature.tkurtosis, ...
         'Max',      2);
    
-    [~, ~, myCrit] = select(myCrit, [], rand(4, 1000));
+    [~, ~, ~, myCrit] = select(myCrit, [], rand(4, 1000));
     
     tmpFile = [tempname(session.instance) '.txt'];
     fid = safefid.fopen(tmpFile, 'w');
@@ -222,7 +222,28 @@ try
    
     selected = select(myCrit, [], rand(4, 1000));
     
-    ok( numel(find(selected)) == 4, name);
+    ok( ~any(selected), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% multiple features - or aggregation
+try
+    
+    name = 'multiple features (cont''d)';
+    
+    myCrit = spt.criterion.threshold(...
+        'Feature', {spt.feature.tkurtosis, spt.feature.thilbert}, ...      
+        'Max', {5, .1}, ...
+        'SelectionAggregator', @(sel)sum(double(sel),1)>0);
+   
+    selected = select(myCrit, [], rand(4, 1000));
+    
+    ok( all(selected), name);
     
 catch ME
     

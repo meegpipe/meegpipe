@@ -1,4 +1,4 @@
-function obj = eog(varargin)
+function obj = eog_egi256_hcgsn1(varargin)
 % EOG - Default bss node configuration for EOG correction
 
 import misc.process_arguments;
@@ -10,8 +10,9 @@ import pset.selector.cascade;
 %% Default criterion
 myFeat1 = spt.feature.psd_ratio.eog;
 myFeat2 = spt.feature.bp_var;
-myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2}, ...
-    'Max',      {25 10}, ...
+myFeat3 =  spt.feature.topo_ratio.eog_egi256_hcgsn1;
+myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2, myFeat3}, ...
+    'Max',      {20 15 @(feat) prctile(feat, 70)}, ...
     'MinCard',  2, ...
     'MaxCard',  @(d) ceil(0.25*length(d)));
 

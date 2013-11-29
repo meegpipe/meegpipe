@@ -14,6 +14,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
         MinCard = 0;
         MaxCard = Inf;
         FeatPlotStats = spt.criterion.threshold.default_plot_stats;
+        SelectionAggregator = @(sel) prod(double(sel), 1) > 0; 
     end
     
     methods (Static)
@@ -173,6 +174,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
             opt.Max     = +Inf;
             opt.MinCard = 0;
             opt.MaxCard = Inf;
+            opt.SelectionAggregator = @(sel) prod(double(sel), 1) > 0; 
             obj = set_properties(obj, opt, varargin);
             
             if numel(obj.Feature) > 1 && numel(obj.Min) == 1,
