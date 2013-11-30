@@ -1,7 +1,8 @@
-function [y, I] = proj(obj, data)
+function [y, I] = proj(obj, data, fullMatrix)
 
+if nargin < 3 || isempty(fullMatrix), fullMatrix = false; end
 
-W        = projmat_win(obj);
+W        = projmat_win(obj, fullMatrix);
 winBndry = window_boundary(obj);
 
 y = pset.pset.nan(nb_component(obj), size(data,2));
@@ -18,9 +19,7 @@ end
 
 for i = 1:size(W,3)
     timeRange = winBndry(i,1):winBndry(i,2);
-    select(data, [], timeRange);
-    y(:, timeRange) = squeeze(W(:,:,i))*data(:,:);
-    restore_selection(data);
+    y(:, timeRange) = squeeze(W(:,:,i))*data(:,timeRange);
 end
 
 I = component_selection(obj);

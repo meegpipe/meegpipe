@@ -48,6 +48,43 @@ catch ME
     
 end
 
+%% real data - pwl criterion
+try
+    
+    name = 'real data - pwl criterion';
+    
+    data = get_real_data;
+    
+    myNode = meegpipe.node.bss.pwl;
+    
+    myCrit = get_config(myNode, 'Criterion');
+    myCrit.Max = {10};
+    
+    myBSS = spt.bss.hierarchical_bss(spt.bss.efica, ...
+        'Verbose',              true, ...
+        'SelectionCriterion',   myCrit, ...
+        'DistanceThreshold',    10);
+    
+    myPCA = learn(spt.pca('MaxCard', 40, 'RetainedVar', 99.5), data);
+    
+    pcs = proj(myPCA, data);
+    
+    myBSS = learn(myBSS, pcs);
+    
+    error = bprojmat(myBSS)*projmat(myBSS)-eye(size(data,1));
+    
+    ok(...
+        cond(projmat(myBSS)*eye(size(data,1))) < 2 & ...
+        max(max(abs(error))) < 0.1, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+
 %% random data - dummy criterion
 try
     
@@ -78,42 +115,6 @@ catch ME
     MEh = [MEh ME];
     
 end
-
-%% real data - eog criterion
-try
-    
-    name = 'real data - eog criterion';
-    
-    data = get_real_data;
-    
-    myNode = meegpipe.node.bss.eog;
-    
-    myCrit = get_config(myNode, 'Criterion');
-    
-    myBSS = spt.bss.hierarchical_bss(spt.bss.efica, ...
-        'Verbose',              false, ...
-        'SelectionCriterion',   myCrit, ...
-        'DistanceThreshold',    2);
-    
-    myPCA = learn(spt.pca('MaxCard', 5), data);
-    
-    pcs = proj(myPCA, data);
-    
-    myBSS = learn(myBSS, pcs);
-    
-    error = bprojmat(myBSS)*projmat(myBSS)-eye(size(data,1));
-    
-    ok(...
-        cond(projmat(myBSS)*eye(size(data,1))) < 2 & ...
-        max(max(abs(error))) < 0.1, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
 
 %% reproducibility
 try

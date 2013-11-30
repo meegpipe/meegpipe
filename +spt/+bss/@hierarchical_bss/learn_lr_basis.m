@@ -26,8 +26,8 @@ while overlapCounter < numel(obj.Overlap) && ...
     
     overlapCounter = overlapCounter + 1;
     
-    leftEnd    = floor((1+obj.Overlap(overlapCounter)/200)*size(data,2)/2);
-    rightBegin = ceil((1-obj.Overlap(overlapCounter)/200)*size(data,2)/2);
+    leftEnd    = floor((1+obj.Overlap(overlapCounter)/100)*size(data,2)/2);
+    rightBegin = ceil((1-obj.Overlap(overlapCounter)/100)*size(data,2)/2);
     winBndry   = [...
         winBndryIn(1) winBndryIn(1)+floor(size(data,2)/2);...
         winBndryIn(1)+floor(size(data,2)/2)+1 winBndryIn(2)];
@@ -42,7 +42,7 @@ while overlapCounter < numel(obj.Overlap) && ...
         fprintf([verboseLabel ...
             'Learning %s basis from %d surrogates on two windows ' ...
             '(L=%d samples, %d%% overlap) ...'], class(obj.BSS), ...
-            obj.ParentSurrogates, round(size(data,2)/2), ...
+            obj.ChildrenSurrogates, leftEnd, ...
             round(obj.Overlap(overlapCounter)));
     end
     
@@ -64,18 +64,23 @@ while overlapCounter < numel(obj.Overlap) && ...
         if verbLevel > 0
             misc.eta(tinit, obj.ChildrenSurrogates, surrIter);
         end
-    end
+    end   
     
-    if verbLevel > 0,
-        fprintf('\n\n');
-    end
     
     % Eliminate those estimates too far from the centroid
     distVal = distance({parentBSS}, bssRight, obj.DistanceMeasure);
+    minRightDist = min(distVal);
+    
     bssRight(distVal > obj.DistanceThreshold) = [];
     
     distVal = distance({parentBSS}, bssLeft, obj.DistanceMeasure);
+    minLeftDist = min(distVal);
     bssLeft(distVal > obj.DistanceThreshold) = [];
+    
+    if verbLevel > 0,
+        fprintf('[minLeftDist=%.2f, minRightDist=%.2f]\n\n', ...
+            minLeftDist, minRightDist);
+    end
     
     % Now pick the closest left/right decomposition
     if isempty(bssLeft) || isempty(bssRight),

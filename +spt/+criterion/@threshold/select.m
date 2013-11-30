@@ -52,6 +52,7 @@ selected(minSelected) = true;
 maxTh = repmat(maxTh, size(tSeries, 1), 1);
 minTh = repmat(minTh, size(tSeries, 1), 1);
 rankIdx = min(max(featVal-maxTh, minTh-featVal), [], 2);
+obj.RankIndex = rankIdx;
 [~, idx] = sort(rankIdx, 'descend');
 
 if isa(obj.MinCard, 'function_handle')

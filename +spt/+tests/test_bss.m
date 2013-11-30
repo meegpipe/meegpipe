@@ -304,7 +304,7 @@ try
     
     data = sample_data;
     
-    myBSS = spt.bss.efica('InitGuess', @(data) rand(size(data,1)));
+    myBSS = spt.bss.efica;
     
     myBSS = learn(myBSS, data);
     

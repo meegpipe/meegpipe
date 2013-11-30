@@ -3,7 +3,7 @@ classdef abstract_named_object < goo.named_object
     
     properties
         
-        Name;
+        Name = '';
         
     end
     
@@ -12,6 +12,12 @@ classdef abstract_named_object < goo.named_object
         
         function obj = set.Name(obj, name)
             import misc.isstring;
+            
+            if isempty(name),
+                obj.Name = '';
+                return;
+            end
+            
             if ~isstring(name),
                 error('The Name property must be a string');
             end

@@ -3,7 +3,7 @@ classdef abstract_named_object_handle < goo.named_object_handle
     
     properties (SetAccess = private, GetAccess = private)
         
-        Name;
+        Name = '';
         
     end
     

@@ -6,9 +6,5 @@ end
 
 history = obj.ProcHistory(idx);
 
-if numel(history) == 1,
-    history = history{1};
-end
-
 
 end

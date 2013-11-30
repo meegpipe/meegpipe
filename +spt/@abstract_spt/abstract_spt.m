@@ -152,9 +152,9 @@ classdef abstract_spt < ...
             end
         end
         
-        [data, I]   = proj(obj, data);
+        [data, I]   = proj(obj, data, full);
         
-        [data, I]   = bproj(obj, data);
+        [data, I]   = bproj(obj, data, full);
         
         function I = component_selection(obj)
             

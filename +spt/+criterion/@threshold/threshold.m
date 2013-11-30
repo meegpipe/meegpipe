@@ -4,6 +4,7 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
     properties (SetAccess = private, GetAccess = private)
         FeatVals;
         Selected;
+        RankIndex;
     end
     
     properties

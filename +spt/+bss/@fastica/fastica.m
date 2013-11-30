@@ -79,13 +79,17 @@ classdef fastica < spt.abstract_spt
     methods
         function obj = fastica(varargin)
             import misc.set_properties;
-            obj = obj@spt.abstract_spt(varargin{:});
-            
+            import misc.split_arguments;            
+          
             opt.Approach        = 'symm';
             opt.Nonlinearity    = 'pow3';
             opt.InitGuess       =  @(data) eye(size(data,1));
-            obj = set_properties(obj, opt, varargin{:});
-           
+            [thisArgs, argsParent] = split_arguments(fieldnames(opt), varargin);
+            
+            obj = obj@spt.abstract_spt(argsParent{:});
+            
+            obj = set_properties(obj, opt, thisArgs);
+            
         end
         
         

@@ -16,8 +16,8 @@ if verbLevel > 0,
         class(obj.BSS), obj.ParentSurrogates);
 end
 tinit = tic;
-nbSelected = nan(1, obj.ParentSurrogates);
-allRankIdx = nan(size(data, 1), obj.ParentSurrogates);
+%nbSelected = nan(1, obj.ParentSurrogates);
+%allRankIdx = nan(size(data, 1), obj.ParentSurrogates);
 bssObj     = cell(1, obj.ParentSurrogates);
 
 
@@ -29,14 +29,14 @@ for surrIter = 1:obj.ParentSurrogates
     dataSurr = surrogate(surrogator, data(:,:));    
   
     bssObj{surrIter} = learn_basis(obj.BSS, dataSurr, varargin{:});
-    ics = proj(bssObj{surrIter}, dataSurr);
+%    ics = proj(bssObj{surrIter}, dataSurr);
     
-    [selection, ~, rankIdx] = select(obj.SelectionCriterion, ...
-        bssObj{surrIter}, ics, data); 
+%     [selection, ~, rankIdx] = select(obj.SelectionCriterion, ...
+%         bssObj{surrIter}, ics, data); 
+%     
+%     allRankIdx(:, surrIter) = rankIdx;
     
-    allRankIdx(:, surrIter) = rankIdx;
-    
-    nbSelected(surrIter) = numel(find(selection));  
+%    nbSelected(surrIter) = numel(find(selection));  
    
     if verbLevel > 0
         misc.eta(tinit, obj.ParentSurrogates, surrIter);
@@ -47,19 +47,19 @@ if verbLevel > 0,
     fprintf('\n\n');
 end
 
-% Apply component selection to the bss objects
-nbSelected = obj.FixNbComponents(nbSelected);
-for surrIter = 1:obj.ParentSurrogates
-    [~, I] = sort(allRankIdx(:,surrIter), 'descend');
-    bssObj{surrIter} = select_component(bssObj{surrIter}, I(1:nbSelected));
-end
+% % Apply component selection to the bss objects
+% nbSelected = obj.FixNbComponents(nbSelected);
+% for surrIter = 1:obj.ParentSurrogates
+%     [~, I] = sort(allRankIdx(:,surrIter), 'descend');
+%     bssObj{surrIter} = select_component(bssObj{surrIter}, I(1:nbSelected));
+% end
 
 bssCentroid = centroid_spt(bssObj, obj.DistanceMeasure);
 
 %% Step 2: Apply centroid BSS to whole dataset
 data = copy(data);
 
-proj(bssCentroid, data);
+proj(bssCentroid, data, true);
 
 %% Step 3: Split the dataset into two sets
 [bssArray, winBoundary] = learn_lr_basis(obj, data, bssCentroid, ...

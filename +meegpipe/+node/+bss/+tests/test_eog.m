@@ -53,6 +53,7 @@ catch ME
     
 end
 
+
 %% topo_ratio with real data (eyes closed)
 try
     
@@ -165,7 +166,7 @@ try
         'GenerateReport',   true);
     
     warning('off', 'snapshots:TooManyVertices');
-    newData = run(myNode, dataCopy);
+    newData = run(myNode, data);
     warning('on', 'snapshots:TooManyVertices');
     
     center(data);
@@ -268,7 +269,7 @@ end
 function dataCopy = get_real_data_ec()
 
 if exist('20131129T161654_a26da.pseth', 'file') > 0,
-    data = pset.load('20131121T171325_647f7.pseth');
+    data = pset.load('20131129T161654_a26da.pseth');
 else
     % Try downloading the file
     url = 'http://kasku.org/data/meegpipe/20131129T161654_a26da.zip';

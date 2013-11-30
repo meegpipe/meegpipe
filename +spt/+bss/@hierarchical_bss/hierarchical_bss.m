@@ -15,13 +15,13 @@ classdef hierarchical_bss < spt.abstract_spt
         BSS                = spt.bss.jade;
         DistanceMeasure    = @(obj1, obj2, data) spt.amari_index(projmat(obj1)*bprojmat(obj2), 'range', [0 100]);
         SelectionCriterion = ~spt.criterion.dummy;
-        DistanceThreshold  = 1;
-        ParentSurrogates   = 10;
-        ChildrenSurrogates = 20;
+        DistanceThreshold  = 10;
+        ParentSurrogates   = 20;
+        ChildrenSurrogates = 40;
         Surrogator         = surrogates.shuffle;
         MaxWindowLength    = @(sr) 60*sr;
         FixNbComponents    = @(nbComponents) ceil(prctile(nbComponents, 75));
-        Overlap            = [0 5 10 25 50];
+        Overlap            = [15 30 50 75];
     end
     
     methods
@@ -52,8 +52,8 @@ classdef hierarchical_bss < spt.abstract_spt
         % Redefinitions of abstract_spt methods
         W = projmat(obj, full);
         A = bprojmat(obj, full);
-        [y, I] = proj(obj, data);
-        [y, I] = bproj(obj, data);
+        [y, I] = proj(obj, data, full);
+        [y, I] = bproj(obj, data, full);
         
         % Declared and defined here
         function bndry = window_boundary(obj)
@@ -77,13 +77,13 @@ classdef hierarchical_bss < spt.abstract_spt
             opt.BSS                = spt.bss.jade;
             opt.DistanceMeasure    = @(obj1, obj2, data) spt.amari_index(projmat(obj1)*bprojmat(obj2), 'range', [0 100]);
             opt.SelectionCriterion = ~spt.criterion.dummy;
-            opt.DistanceThreshold  = 1;
-            opt.ParentSurrogates   = 10;
-            opt.ChildrenSurrogates = 20;
+            opt.DistanceThreshold  = 10;
+            opt.ParentSurrogates   = 20;
+            opt.ChildrenSurrogates = 40;
             opt.Surrogator         = surrogates.shuffle;
             opt.MaxWindowLength    = @(sr) 60*sr;
             opt.FixNbComponents    = @(nbComponents) ceil(prctile(nbComponents, 75));
-            opt.Overlap            = [0 5 10 25 50];
+            opt.Overlap            = [15 30 50 75];
             [thisArgs, argsParent] = split_arguments(fieldnames(opt), varargin);
             
             obj = obj@spt.abstract_spt(argsParent{:});

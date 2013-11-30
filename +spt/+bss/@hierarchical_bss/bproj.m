@@ -1,7 +1,8 @@
-function [y, I] = bproj(obj, ics)
+function [y, I] = bproj(obj, ics, fullMatrix)
 
+if nargin < 3 || isempty(fullMatrix), fullMatrix = false; end
 
-A        = bprojmat_win(obj);
+A        = bprojmat_win(obj, fullMatrix);
 I        = dim_selection(obj);
 Ic       = component_selection(obj);
 winBndry = window_boundary(obj);
@@ -19,14 +20,18 @@ if isa(ics, 'physioset.physioset')
     copy_sensors_history(y, ics);
 end
 
-select(ics, Ic);
+if ~fullMatrix,
+    select(ics, Ic);
+end
 for i = 1:size(A,3)
     timeRange = winBndry(i,1):winBndry(i,2);
     select(ics, [], timeRange);
     y(:, timeRange) = squeeze(A(:,:,i))*ics(:,:);
     restore_selection(ics);
 end
-restore_selection(ics);
+if ~fullMatrix,
+    restore_selection(ics);
+end
 
 if isa(ics, 'physioset.physioset'),
     restore_sensors(y, obj);
