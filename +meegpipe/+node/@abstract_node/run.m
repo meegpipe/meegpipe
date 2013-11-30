@@ -4,7 +4,7 @@ import oge.has_oge;
 import oge.has_condor;
 import goo.pkgisa;
 import misc.exception2str;
-
+import mperl.file.spec.rel2abs;
 
 dataNew = [];
 
@@ -111,9 +111,14 @@ try
     end
     
     %% save processing history
-    if ~isa(obj, 'meegpipe.node.pipeline.pipeline'),
-        if ischar(dataIn),
-            add_processing_history(data, dataIn);
+    if ~isa(obj, 'meegpipe.node.pipeline.pipeline'),        
+        if ischar(dataIn),            
+            if exist(dataIn, 'file'),
+                inStr = rel2abs(dataIn);
+            else
+                inStr = dataIn;
+            end
+            add_processing_history(data, inStr);
         end
         if iscell(data),
             cellfun(@(x) isa(add_processing_history(x, obj), 'd'), data);

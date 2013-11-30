@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(6);
+initialize(7);
 
 %% Create a new session
 try
@@ -252,6 +252,10 @@ end
 
 function dataCopy = get_real_data()
 
+import pset.session;
+import mperl.file.spec.catfile;
+import mperl.file.spec.catdir;
+
 if exist('20131121T171325_647f7.pseth', 'file') > 0,
     data = pset.load('20131121T171325_647f7.pseth');
 else
@@ -267,6 +271,10 @@ dataCopy = copy(data);
 end
 
 function dataCopy = get_real_data_ec()
+
+import pset.session;
+import mperl.file.spec.catfile;
+import mperl.file.spec.catdir;
 
 if exist('20131129T161654_a26da.pseth', 'file') > 0,
     data = pset.load('20131129T161654_a26da.pseth');

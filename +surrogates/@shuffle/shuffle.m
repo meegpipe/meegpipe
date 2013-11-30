@@ -20,7 +20,7 @@ classdef shuffle < surrogates.surrogator
             obj = apply_seed(obj);
             
             nbPoints = min(size(data,2), nbPoints);
-            idx = randi(size(data,2), 1, nbPoints);
+            idx = randperm(size(data,2), nbPoints);
             idx = sort(idx, 'ascend');
             
             if isa(data, 'pset.mmappset'),

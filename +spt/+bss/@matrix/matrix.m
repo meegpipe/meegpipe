@@ -12,10 +12,14 @@ classdef matrix < spt.abstract_spt
         
         function obj = matrix(W, A, varargin)
             import misc.set_properties;
-            obj = obj@spt.abstract_spt(varargin{:}); 
+            if nargin < 2 || isempty(A),
+                A = pinv(W);
+            end
             
-            obj.W = W;
+            obj = obj@spt.abstract_spt(varargin{:});             
+            
             obj.A = A;
+            obj.W = W;
             obj.ComponentSelection = 1:size(W, 1);
             obj.DimSelection = 1:size(A,1);
         end

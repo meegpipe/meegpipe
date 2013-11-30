@@ -1,15 +1,15 @@
 classdef (Sealed) abp_onset < physioset.event.event
     
-     methods
+    methods
         
         function obj = abp_onset(pos, varargin)
             
-            if nargin < 1 || isempty(pos), 
+            if nargin < 1 || isempty(pos),
                 obj.Type = '__ABPOnset';
-                return; 
+                return;
             end
-			
-			if nargin == 1 && isa(pos, 'physioset.event.event'),
+            
+            if nargin == 1 && isa(pos, 'physioset.event.event'),
                 % Copy constructor
                 varargin = {...
                     'Type',     pos.Type, ...

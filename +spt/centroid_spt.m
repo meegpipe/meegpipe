@@ -1,4 +1,4 @@
-function [bssCentroid, centroidIdx] = centroid_spt(bssArray, distMeas)
+function [bssCentroid, centroidIdx, distVal] = centroid_spt(bssArray, distMeas)
 
 
 dMat = nan(numel(bssArray));
@@ -13,6 +13,9 @@ end
 [~, centroidIdx] = min(nanmean(dMat));
 
 bssCentroid = bssArray{centroidIdx};
+
+distVal = dMat(centroidIdx,:);
+distVal(centroidIdx) = 0;
 
 
 end

@@ -8,12 +8,13 @@ classdef hierarchical_bss < spt.abstract_spt
     
     properties (SetAccess = private, GetAccess = private)
         WinBoundary = [];
-        BSSwin    = {};
+        BSSwin      = {};
     end
     
     properties
         BSS                = spt.bss.jade;
-        DistanceMeasure    = @(obj1, obj2, data) spt.amari_index(projmat(obj1)*bprojmat(obj2), 'range', [0 100]);
+        DistanceMeasure    = @(obj1, obj2, data) ...
+            spt.amari_index(projmat(obj1)*bprojmat(obj2), 'range', [0 100]);
         SelectionCriterion = ~spt.criterion.dummy;
         DistanceThreshold  = 10;
         ParentSurrogates   = 20;
@@ -25,9 +26,7 @@ classdef hierarchical_bss < spt.abstract_spt
     end
     
     methods
-        
-        function obj = set.Surrogator(obj, value)
-            
+        function obj = set.Surrogator(obj, value)  
             import exceptions.InvalidPropValue;
             
             if isempty(value),
@@ -39,10 +38,8 @@ classdef hierarchical_bss < spt.abstract_spt
                 throw(InvalidPropValue('Surrogator', ...
                     'Must be a surrogates.surrogator object'));
             end
-            obj.Surrogator = value;
-            
-        end
-        
+            obj.Surrogator = value;    
+        end       
     end
     
     methods
@@ -75,7 +72,8 @@ classdef hierarchical_bss < spt.abstract_spt
             end
             
             opt.BSS                = spt.bss.jade;
-            opt.DistanceMeasure    = @(obj1, obj2, data) spt.amari_index(projmat(obj1)*bprojmat(obj2), 'range', [0 100]);
+            opt.DistanceMeasure    = @(obj1, obj2, data) ...
+                spt.amari_index(projmat(obj1)*bprojmat(obj2), 'range', [0 100]);
             opt.SelectionCriterion = ~spt.criterion.dummy;
             opt.DistanceThreshold  = 10;
             opt.ParentSurrogates   = 20;

@@ -25,7 +25,11 @@ end
 
 filename = rel2abs(filename);
 
+% Broken function_handles in the processing history generate 
+% ugly/useless warnings
+warning('off', 'MATLAB:dispatcher:UnresolvedFunctionHandle');
 tmp = load(filename, '-mat');
+warning('on', 'MATLAB:dispatcher:UnresolvedFunctionHandle');
 
 obj = tmp.obj;
 [path, name] = fileparts(filename);
