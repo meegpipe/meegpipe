@@ -55,13 +55,13 @@ try
     
     data = rand(4, 1000);
     
-    obj = surrogates.shuffle;
+    obj = surrogates.shuffle('NbPoints', 100);
     
     [data1, obj] = surrogate(obj, data);    
     
     data2 = surrogate(obj, data);
     
-    ok(max(abs(data(:)-data1(:))) > 0.01 & ...
+    ok(size(data1, 2) == 100 & ...
         max(abs(data2(:)-data1(:))) < 0.01, name);
     
 catch ME
@@ -79,13 +79,13 @@ try
        
     data = rand(4, 1000);
     
-    obj = surrogates.shuffle;
+    obj = surrogates.shuffle('NbPoints', 100);
     
     data1 = surrogate(obj, data);   
     
     data2 = surrogate(obj, data);
     
-    ok(max(abs(data(:)-data1(:))) > 0.01 & ...
+    ok(size(data1, 2) == 100 & ...
         max(abs(data2(:)-data1(:))) > 0.01, name);
     
 catch ME
@@ -103,7 +103,7 @@ try
        
     data = import(physioset.import.matrix, rand(4, 1000));
     
-    obj = surrogates.shuffle;
+    obj = surrogates.shuffle('NbPoints', 100);
     
     surrogate(obj, data);  
     
@@ -115,7 +115,7 @@ try
     data2 = data(:,:);    
     restore_selection(data);
     
-    ok(max(abs(data(:)-data1(:))) > 0.01 & ...
+    ok(size(data1, 2) == 100 & ...
         max(abs(data2(:)-data1(:))) > 0.01, name);
     
 catch ME
@@ -133,7 +133,7 @@ try
        
     data = import(physioset.import.matrix, rand(4, 1000));
     
-    obj = surrogates.shuffle;
+    obj = surrogates.shuffle('NbPoints', 100);
     
     [~, obj] = surrogate(obj, data);  
     
@@ -145,7 +145,7 @@ try
     data2 = data(:,:);    
     restore_selection(data);
     
-    ok(max(abs(data(:)-data1(:))) > 0.01 & ...
+    ok(size(data1, 2) == 100 & ...
         max(abs(data2(:)-data1(:))) < 0.01, name);
     
 catch ME
