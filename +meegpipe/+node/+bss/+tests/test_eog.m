@@ -166,7 +166,7 @@ try
         'GenerateReport',   true);
     
     warning('off', 'snapshots:TooManyVertices');
-    newData = run(myNode, data);
+    newData = run(myNode, copy(data));
     warning('on', 'snapshots:TooManyVertices');
     
     center(data);
