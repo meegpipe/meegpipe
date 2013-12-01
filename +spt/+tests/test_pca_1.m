@@ -207,7 +207,7 @@ try
     
     myPCA = spt.pca;
     try
-        myPCA.MinCard = -10;
+        myPCA.MinCard = 'a';
         condition = false;
     catch ME
         condition = strcmp(ME.identifier, ...
@@ -258,7 +258,7 @@ try
     
     myPCA = spt.pca;
     try
-        myPCA.MaxCard = -10;
+        myPCA.MaxCard = 'b';
         condition = false;
     catch ME
         condition = strcmp(ME.identifier, ...
