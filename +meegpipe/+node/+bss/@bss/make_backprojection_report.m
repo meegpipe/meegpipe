@@ -39,7 +39,7 @@ restore_selection(selICs);
 
 % This will ensure that one plot will be generated for each top-var chan
 myPlotter = get_config(obj, 'PSDPlotter');
-set_config(myPlotter, 'Channels', num2cell(1:numel(chanIdx)));
+set_config(myPlotter, 'Channels', {1:numel(chanIdx)});
 
 psdRep = report.plotter.new(...
     'Plotter',  myPlotter, ...

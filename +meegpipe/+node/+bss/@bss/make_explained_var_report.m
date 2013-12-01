@@ -31,7 +31,7 @@ print_title(rep, 'SPC''s backprojected variance', get_level(rep)+1);
 print_paragraph(rep, [...
     'The first figure below plots the percentage of variance explained by a ' ...
     'given component at the sensor where that component is strongest '   ...
-    '(red line). The black line depicts the average (across all sensors) ' ...
+    '(red line). The black line depicts the median (across all sensors) ' ...
     'variance that may be attributed to a given component.']);
 
 print_paragraph(rep, [...
@@ -59,7 +59,7 @@ for i = 1:numel(sensorArray),
         icVar = A(sensorIdx{i},j).^2;
         [varAtMax, maxSensor(j)] = max(icVar);
         maxVar(j) = varAtMax/rawVar(maxSensor(j));
-        meanVar(j) = mean(icVar)/mean(rawVar);
+        meanVar(j) = median(icVar)/mean(rawVar); % median, not mean!!!
     end          
     maxVar = floor(100*maxVar);
     meanVar = floor(100*meanVar);
@@ -72,7 +72,7 @@ for i = 1:numel(sensorArray),
     hold on;
     stem(maxVar, ':r');
 
-    legend('Mean', 'Max');
+    legend('Median', 'Max');
     set(gca, 'XTick', 1:size(A,2));
     set(gca, 'XTickLabel', cell2char(labels(sensors(ics))));    
     
