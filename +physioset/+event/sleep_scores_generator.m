@@ -4,11 +4,14 @@ classdef sleep_scores_generator < physioset.event.generator & ...
     
     methods (Static, Access = private)
         function fh = default_template()
-            fh = @(sampl, idx, scorer, data) physioset.event.std.sleep_score(sampl, ...
-                'Value', idx, 'Scorer', scorer);
+            fh = @(sampl, idx, score, scorer, frameL, data) ...
+                physioset.event.std.sleep_score(sampl, ...
+                'Value', idx, 'Scorer', scorer, 'Score', score, ...
+                'Duration', round(frameL*data.SamplingRate));
         end
         
         function sleepScoresFile = find_sleep_scores_file(data)
+            import mperl.file.spec.catfile;
             
             sleepScoresFile = '';
             procHist = get_processing_history(data);
@@ -23,6 +26,8 @@ classdef sleep_scores_generator < physioset.event.generator & ...
                     if exist(sleepScoresFile, 'file'),
                         % Found the associated sleep scores
                         break;
+                    else
+                        sleepScoresFile = '';
                     end
                 end
             end
@@ -53,7 +58,7 @@ classdef sleep_scores_generator < physioset.event.generator & ...
             end
             
             try
-                toy = value(10, 1, physioset.physioset);
+                toy = value(10, 1, 1, 'German', 30, physioset.physioset);
                 if ~isa(toy, 'physioset.event.event'),
                     throw(InvalidPropValue('Template', ...
                         'Template must evaluate to an event object'));
@@ -76,6 +81,7 @@ classdef sleep_scores_generator < physioset.event.generator & ...
         function evArray = generate(obj, data, varargin)
             
             import physioset.event.std.sleep_score;
+            import physioset.event.sleep_scores_generator;
             
             sleepScoresFile = ...
                 sleep_scores_generator.find_sleep_scores_file(data);
@@ -98,8 +104,9 @@ classdef sleep_scores_generator < physioset.event.generator & ...
             scores = info.score{1};           
             
             sampl = 1;
+            evArray = repmat(sleep_score, 1, numel(scores));
             for i = 1:numel(scores)                
-                evArray(i) = obj.Template(sampl, i, data);
+                evArray(i) = obj.Template(sampl, i, scores(i), scorer, frameLength, data);
                 sampl = sampl + round(frameLength*sr);
             end
             

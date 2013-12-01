@@ -66,6 +66,8 @@ classdef hierarchical_bss < spt.abstract_spt
             import misc.set_properties;
             import misc.split_arguments;
             
+            error('This algorithm is experimental and does not work yet!');
+            
             % Pick the BSS algorithm
             if nargin > 0 && isa(varargin{1}, 'spt.spt'),
                 varargin = [{'BSS'}, varargin];

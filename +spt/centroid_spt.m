@@ -1,5 +1,6 @@
-function [bssCentroid, centroidIdx, distVal] = centroid_spt(bssArray, distMeas)
+function [bssCentroid, centroidIdx, distVal] = centroid_spt(bssArray, distMeas, aggr)
 
+if nargin < 3 || isempty(aggr), aggr = @(dist) mean(dist); end
 
 dMat = nan(numel(bssArray));
 
@@ -10,7 +11,12 @@ for i = 1:numel(bssArray)
     end
 end
 
-[~, centroidIdx] = min(nanmean(dMat));
+aggrDist = nan(size(dMat,1), 1);
+for i = 1:size(dMat,1)
+   aggrDist(i) = aggr(dMat(i,:)); 
+end
+
+[~, centroidIdx] = min(aggrDist);
 
 bssCentroid = bssArray{centroidIdx};
 

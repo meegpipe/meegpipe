@@ -21,6 +21,7 @@ classdef (Sealed) sleep_score < physioset.event.event
                     'Duration', pos.Duration, ...
                     'Dims',     pos.Dims, ...
                     'Scorer',   get_meta(pos, 'Scorer'), ...
+                    'Score',    get_meta(pos, 'Score'), ...
                     };
                 pos = pos.Sample;
             end
@@ -29,7 +30,7 @@ classdef (Sealed) sleep_score < physioset.event.event
             
             varargin = ['Type', '__SleepScore', varargin];
             
-            metaProps = {'Scorer'};
+            metaProps = {'Scorer', 'Score'};
             
             [metaArgs, varargin] = split_arguments(metaProps, varargin);
             
