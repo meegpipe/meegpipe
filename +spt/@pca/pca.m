@@ -105,6 +105,7 @@ classdef pca < spt.abstract_spt
         
         function obj = set.MaxCard(obj, value)
             import exceptions.InvalidPropValue;
+            import misc.isnatural;
             
             if isempty(value),
                 obj.MaxCard = Inf;
