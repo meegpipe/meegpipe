@@ -12,11 +12,6 @@ if isempty(obj),
         'Cannot assign to an empty pset object.');
 end
 
-if isempty(b),
-    error('pset:pset:subsasgn:invalidRHS', ...
-        'Cannot assign an empty value. The size of a pset object is inmutable.');
-end
-
 if isempty(obj.MemoryMap) && strcmp(s(1).type, '()'),
     make_mmemmapfile(obj);    
 end

@@ -390,7 +390,13 @@ classdef pset < pset.mmappset & ...
             opt.Transposed   = get_config('pset', 'transposed');
             opt.Precision    = get_config('pset', 'precision');
             opt.Writable     = get_config('pset', 'writable');
+            
             opt.AutoDestroyMemMap = get_config('pset', 'auto_destroy_mem_map');
+            
+            if isempty(opt.AutoDestroyMemMap),
+                % Just in case...
+                opt.AutoDestroyMemMap = false;
+            end
             
             [~, opt] = process_arguments(opt, varargin);
             
