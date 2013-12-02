@@ -32,6 +32,36 @@ catch ME
     
 end
 
+%% cca
+try
+    
+    name = 'cca';
+    
+    data = sample_data;
+    
+    fc = linspace(0.1, 0.7, size(data,1));
+    for i = 1:size(data,1)
+        select(data, i);
+        filter(filter.lpfilt('fc', fc(i)), data);
+        restore_selection(data);
+    end
+    
+    myBSS = spt.bss.cca('Delay', 2);
+  
+    myBSS = learn(myBSS, data);    
+    
+    error = bprojmat(myBSS)*projmat(myBSS)-eye(size(data,1));
+    
+    ok(...
+        obj.Delay == 2, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 %% tdsep
 try
     

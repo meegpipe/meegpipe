@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(8);
+initialize(10);
 
 %% Create a new session
 try
@@ -28,8 +28,57 @@ catch ME
     
     ok(ME, name);
     MEh = [MEh ME];
-   
+    
 end
+
+%% mtimes()
+try
+    
+    name = 'mtimes()';
+    data = pset.pset.randn(2,3000);
+    A = rand(2);
+    origData = data(:,:);
+    dataNew = A*data;
+    condition = max(abs(dataNew(:) - data(:))) < 0.01 & ...
+        max(max(abs(A*origData - data(:,:)))) < 0.01;
+    ok(condition, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% A*B'
+try
+    
+    name = 'A*B''';
+    data1 = pset.pset.randn(2, 3000);
+    data2 = pset.pset.randn(2, 3000);
+    origData1 = data1(:,:);
+    origData2 = data2(:,:);
+    
+    dataNew = data1*transpose(data2);
+    
+    transpose(data2);
+    
+    condition = ...
+        max(abs(origData1(:) - data1(:))) < 0.01 & ...
+        max(abs(origData2(:) - data2(:))) < 0.01 & ...
+        max(max(abs(dataNew(:,:) - origData1*origData2'))) < 0.01 & ...
+        size(dataNew,1) == size(data1, 1) & ...
+        size(dataNew,2) == size(data2, 1);
+
+    ok(condition, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% pow()
 try

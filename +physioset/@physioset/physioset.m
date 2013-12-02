@@ -23,7 +23,7 @@ classdef physioset < ...
         % Method configuration options
         Config = physioset.default_method_config;
         ProcHistory = {};
-        TimeOrig;       
+        TimeOrig;
         SensorsHistory = {};          % To keep track of proj/bproj
         RerefMatrix;
         MetaMapper;
@@ -431,7 +431,7 @@ classdef physioset < ...
         end
         
         function bool = has_pnt_selection(obj)
-            bool = has_pnt_selection(obj.PointSet);            
+            bool = has_pnt_selection(obj.PointSet);
         end
         
         function bool = has_dim_selection(obj)
@@ -664,17 +664,24 @@ classdef physioset < ...
                     end
                     varargin{i} = varargin{i}.PointSet;
                 end
-            end 
+            end
             
-            obj.PointSet = mtimes(varargin{:});
-            % Important: do not clear the selections of obj. See
-            % pset.pset.mtimes() to understand why it is ok like it is.
-            obj.Sensors             = sensors.dummy(obj.NbDims);
-            obj.EqWeights           = [];
-            obj.EqWeightsOrig       = [];
-            obj.PhysDimPrefixOrig   = [];
-            obj.BadChan             = false(1, obj.NbDims);
-            obj.RerefMatrix         = [];
+            res = mtimes(varargin{:});
+            
+            if isa(res, 'pset.mmappset'),
+                obj.PointSet = res;
+                % Important: do not clear the selections of obj. See
+                % pset.pset.mtimes() to understand why it is ok like it is.
+                obj.Sensors             = sensors.dummy(obj.NbDims);
+                obj.EqWeights           = [];
+                obj.EqWeightsOrig       = [];
+                obj.PhysDimPrefixOrig   = [];
+                obj.BadChan             = false(1, obj.NbDims);
+                obj.RerefMatrix         = [];
+                
+            else
+                obj = res;
+            end
             
         end
         
@@ -683,7 +690,7 @@ classdef physioset < ...
         end
         
         function obj        = assign_values(obj, otherObj)
-           
+            
             obj.PointSet = assign_values(obj.PointSet, otherObj.PointSet);
             
         end

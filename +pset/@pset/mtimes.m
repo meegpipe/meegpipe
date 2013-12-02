@@ -17,12 +17,6 @@ import pset.pset;
 n_b = prod(size(b)); %#ok<*PSIZE>
 n_a = prod(size(a));
 
-% Check data dimensions
-if (ndims(b) > 2 && n_b > 1) || (ndims(a) > 2 && n_a > 1),
-    error('pset:pset:mtimes:wrongDimensions',...
-        'Imputs must be 2-D, or at least one input must be scalar.');
-end
-
 if n_b > 1 && n_a>1 && size(a,2)~=size(b,1)
     error('pset:pset:plus:dimensionMismatch', 'Data dimensions do not match.');
 end
@@ -49,12 +43,21 @@ if all(size(b,1) == size(b,2)),
     y = a;
 else
     if transpose_flag,
-        y = pset.zeros(size(b,2), size(a,1));
-        y.Transposed = a.Transposed;
+        if max(size(b,2), size(a,1)) < nb_pnt(a),
+            y = zeros(size(b,2), size(a,1));
+            if a.Transposed,
+                y = y';
+            end
+        else
+            y = pset.zeros(size(b,2), size(a,1));
+            y.Transposed = a.Transposed;
+        end
     else
-        %y = pset.zeros(size(b,2),size(a,1));
-        y = pset.zeros(size(a,1),size(b,2));
-        %y.Transposed = true;
+        if max(size(a,1), size(b,2)) < nb_pnt(a),
+            y = zeros(size(a,1),size(b,2));
+        else
+            y = pset.zeros(size(a,1),size(b,2));
+        end
     end
 end
 
