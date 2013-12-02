@@ -149,7 +149,7 @@ try
     [~, I] = sort(feat);
     
     ok( strcmp(id, 'topo_ratio:EmptyNumSet') & ...
-        all(I(1:2) == 1:2), name);
+        all(I(1:2)' == 1:2), name);
     
 catch ME
     

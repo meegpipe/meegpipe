@@ -53,9 +53,8 @@ try
     name = 'sample feature extraction';
     
     myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(4));
-    data = import(myImporter, rand(4, 100));
     A = rand(4);
-    data = A*data;
+    data = import(myImporter, A*rand(4, 100));
     
     myFeat = spt.feature.bp_var(...
         'DataSelector',     sensor_class('Class', 'EEG'), ...
@@ -63,7 +62,7 @@ try
     
     
     sptObj = learn(spt.bss.efica, data);
-    ics = proj(sptObj, data);
+    ics = proj(sptObj, copy(data));
     
     A2 = bprojmat(sptObj);
     
@@ -119,15 +118,14 @@ try
     name = 'another feature extraction';
     
     myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(4));
-    data = import(myImporter, rand(4, 100));
     A = rand(4);
-    data = A*data;
+    data = import(myImporter, A*rand(4, 100));
     
     myFeat = spt.feature.bp_var(...
         'DataSelector',     sensor_class('Class', 'EEG'));
     
     sptObj = learn(spt.bss.efica, data);
-    ics = proj(sptObj, data);
+    ics = proj(sptObj, copy(data));
     
     A2 = bprojmat(sptObj);
     
