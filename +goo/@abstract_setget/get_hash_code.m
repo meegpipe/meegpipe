@@ -18,10 +18,12 @@ for i = 1:numel(fNames),
         info.(fNames{i}) = get_hash_code(obj.(fNames{i}));
     elseif iscell(obj.(fNames{i})),
         info.(fNames{i}) = cell2hashcode(obj.(fNames{i}));
-    elseif isobject(obj.(fNames{i})),    
+    elseif isobject(obj.(fNames{i})),  
+        warning('off', 'JSimon:BadDataType');
         warning('off', 'MATLAB:structOnObject');
         info.(fNames{i}) = DataHash(struct(obj.(fNames{i})));
         warning('on', 'MATLAB:structOnObject');
+        warning('on', 'JSimon:BadDataType');
     else       
         warning('off', 'JSimon:BadDataType');
         info.(fNames{i}) = DataHash(obj.(fNames{i}));

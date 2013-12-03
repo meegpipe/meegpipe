@@ -1,5 +1,5 @@
 function [status, MEh] = test_sliding_window()
-% TEST_SLIDING_WINDOW - Tests sliding_window filter
+% TEST_SLIDING_WINDOW - Tests filter sliding_window
 
 import mperl.file.spec.*;
 import test.simple.*;
@@ -10,7 +10,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(3);
+initialize(4);
 
 %% Create a new session
 try
@@ -31,24 +31,63 @@ catch ME
 
 end
 
+%% constructor
+try
+    
+    name = 'constructor';
+    
+    myFilt = filter.sliding_window;
+    
+    cond = isa(myFilt, 'filter.sliding_window') & ...
+        isa(myFilt, 'filter.dfilt');
+    
+    myFilt = filter.sliding_window(...
+        'WindowLength', 10, ...
+        'WindowOverlap', 20, ...
+        'WindowFunction', @kaiser, ...
+        'Filter', filter.pca('Name', 'noname'));
+    
+    cond = cond & ...
+        myFilt.WindowLength == 10 & ...
+        myFilt.WindowOverlap == 20 & ...
+        mean(myFilt.WindowFunction(2)) > 0.9402 & ...
+        mean(myFilt.WindowFunction(2)) < 0.9404 & ...
+        strcmp(get_name(myFilt.Filter), 'noname');
+    
+    myFilt = filter.sliding_window(filter.tpca('Order', 5));
+    
+    cond = cond & myFilt.Filter.Order == 5;
+    
+    ok(cond, name);
+    
+catch ME
+    
+    ok(ME, name);
+    status = finalize();
+    return;
+    
+end
+
 %% Sample filtering
 try
     
     name = 'sample filtering';
     
-    [data, S, ~, R, snr] = sample_data();
-    myFilter = filter.sliding_window_regr( ...
-        'Filter',       filter.mlag_regr('Order', 1), ...
-        'WindowLength', 5000);
+    [data, ~, S, ~, snr] = sample_data();
+    myFilter = filter.pca('PCA', spt.pca('MaxCard', 4), ...
+        'PCFilter', filter.lpfilt('fc', 0.1));    
     
-    filter(myFilter, data, R);
+    mySlidingWindowFilter = filter.sliding_window(myFilter, ...
+        'WindowLength', 1000);
+    
+    filter(mySlidingWindowFilter, data);
     
     snrAfter = 0;
     for i = 1:size(data,1)
         snrAfter = snrAfter + var(S(i,:))/var(data(i,:)-S(i,:));
     end
     snrAfter = snrAfter/size(data,1);
-    ok(snrAfter > 100*snr, name);
+    ok(snrAfter > 50*snr, name);
     
 catch ME
     
@@ -85,7 +124,7 @@ function [data, S, N, R, snr] = sample_data()
 f = 1/100;
 snr = 0.25;
 
-S = randn(10, 100000);
+S = randn(10, 50000);
 N = zeros(size(S));
 
 t = 0:size(S,2)-1;

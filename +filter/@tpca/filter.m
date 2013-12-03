@@ -23,6 +23,9 @@ for i = 1:size(x,1),
     d   = signal2hankel(x(i,:), obj.Order);
     pca = learn(pca, d);
     d   = proj(pca, d);
+    if ~isempty(obj.PCFilter),
+        d   = filtfilt(obj.PCFilter, d);
+    end
     d   = bproj(pca, d);
     x(i,:) = d(dim,:);
     if verbose,

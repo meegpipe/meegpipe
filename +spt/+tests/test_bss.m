@@ -12,7 +12,7 @@ import meegpipe.node.*;
 
 MEh     = [];
 
-initialize(15);
+initialize(16);
 
 %% Create a new session
 try
@@ -39,6 +39,8 @@ try
     
     data = sample_data;
     
+    center(data);
+    
     fc = linspace(0.1, 0.7, size(data,1));
     for i = 1:size(data,1)
         select(data, i);
@@ -46,14 +48,25 @@ try
         restore_selection(data);
     end
     
-    myBSS = spt.bss.cca('Delay', 2);
+    myBSS1 = spt.bss.cca('Delay', 2);
   
-    myBSS = learn(myBSS, data);    
+    myBSS1 = learn(myBSS1, data);    
     
-    error = bprojmat(myBSS)*projmat(myBSS)-eye(size(data,1));
+    error1 = ...
+        max(max(abs(bprojmat(myBSS1)*projmat(myBSS1)-eye(size(data,1)))));
+    
+    myBSS2 = spt.bss.cca('Delay', 2);
+  
+    myBSS2 = learn(myBSS2, data(:,:));    
+    
+    error2 = ...
+        max(max(abs(bprojmat(myBSS2)*projmat(myBSS2)-eye(size(data,1)))));
+    
+    error3 = max(max(abs(projmat(myBSS1) - projmat(myBSS2))));
     
     ok(...
-        obj.Delay == 2, name);
+        error1 < 0.01 & error2 < 0.01 & error3 < 0.01, ...
+        name);
     
 catch ME
     

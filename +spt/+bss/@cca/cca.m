@@ -1,6 +1,10 @@
 classdef cca < spt.abstract_spt
     % CCA - BSS using Canonical Correlation Analysis
     
+    properties (SetAccess = private, GetAccess = private)
+       CorrVal = []; 
+    end
+    
     properties
         Delay = 1;
     end
@@ -36,14 +40,29 @@ classdef cca < spt.abstract_spt
             Cyx = (Cxy');
             invCyy = pinv(Cyy);
             
+            if isa(X, 'pset.mmappset'),
+                restore_selection(X);
+            end
+            
             % calculate W
             [W,r] = eig(pinv(Cxx)*Cxy*invCyy*Cyx);
             r = sqrt(abs(real(r)));
-            [~, I] = sort(diag(r),'descend');
+            [r, I] = sort(diag(r),'descend');
             obj.W = W(:,I)';
-            obj.A = pinv(A);
+            obj.A = pinv(obj.W);
             obj.ComponentSelection = 1:size(obj.W,1);
             obj.DimSelection       = 1:size(X,1);
+            obj.CorrVal = r;
+            
+        end
+        
+        function corrVal = get_component_correlation(obj, idx)
+            
+            if nargin < 2 || isempty(idx),
+                idx = 1:numel(obj.CorrVal);
+            end
+            
+            corrVal = obj.CorrVal(idx);
             
         end
         

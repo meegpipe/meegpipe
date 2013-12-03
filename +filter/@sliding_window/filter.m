@@ -1,12 +1,12 @@
-function y = filter(obj, x, d, varargin)
+function y = filter(obj, x, varargin)
 
 import misc.eta;
 
 verbose = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);
 
-origVerb = goo.globals.get.Verbose;
-goo.globals.set('Verbose', false);
+origVerboseLabel = goo.globals.get.VerboseLabel;
+goo.globals.set('VerboseLabel', verboseLabel);
 
 if isa(obj.WindowLength, 'function_handle')
     winLength = obj.WindowLength(x.SamplingRate);
@@ -21,6 +21,7 @@ winOnset(winOnset + winLength - 1 > size(x,2)) = [];
 
 win = window(obj.WindowFunction, winLength);
 win = reshape(win, 1, numel(win));
+win = repmat(win, size(x, 1), 1);
 
 if isa(x, 'pset.mmappset'),
     y = copy(x);
@@ -39,21 +40,20 @@ if verbose,
         round(obj.WindowOverlap));
 end
 tinit = tic;
+myFilt = set_verbose(obj.Filter, false);
 for i = 1:numel(winOnset)
     
     winTimeRange = winOnset(i):winOnset(i)+winLength-1;
     
-    for j = 1:size(x,1),
-        thisY = filter(obj.Filter, x(j, winTimeRange), d(:, winTimeRange));
-        
-        y(j, winTimeRange(winTimeRange > lastSample)) = 0;
-        
-        y(j, winTimeRange) = y(j, winTimeRange) + thisY.*win;
-    end
+    thisY = filter(myFilt, x(:, winTimeRange));
+    
+    y(:, winTimeRange(winTimeRange > lastSample)) = 0;
+    
+    y(:, winTimeRange) = y(:, winTimeRange) + thisY.*win;
     
     lastSample = winTimeRange(end);
     
-    unitVec(winTimeRange) = unitVec(winTimeRange) + win;
+    unitVec(winTimeRange) = unitVec(winTimeRange) + win(1,:);
     
     if verbose,
         eta(tinit, numel(winOnset), i);
@@ -71,6 +71,6 @@ if isa(x, 'pset.mmappset'),
     y = assign_values(x, y);
 end
 
-goo.globals.set('Verbose', origVerb);
+goo.globals.set('VerboseLabel', origVerboseLabel);
 
 end

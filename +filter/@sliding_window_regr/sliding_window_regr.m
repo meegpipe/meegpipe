@@ -1,4 +1,4 @@
-classdef sliding_window_regr < ...        
+classdef sliding_window_regr < ...
         filter.rfilt                & ...
         goo.verbose                 & ...
         goo.abstract_setget         & ...
@@ -13,7 +13,7 @@ classdef sliding_window_regr < ...
     end
     
     methods
-        [y, varargout] = filter(obj, x, d, varargin);       
+        [y, varargout] = filter(obj, x, d, varargin);
     end
     
     % Constructor
@@ -23,12 +23,18 @@ classdef sliding_window_regr < ...
             
             import misc.process_arguments;
             
-            opt.Filter        = filter.mlag_regr; % A filter.dfilt or filter.rfilt object
-            opt.WindowLength  = @(sr) round(30*sr); % In data samples
-            opt.WindowOverlap = 50;   % In percentage
+            if nargin < 1, return; end
+            
+            if isa(varargin{1}, 'filter.rfilt'),
+                varargin = [{'Filter'}, varargin];
+            end
+
+            opt.Filter         = filter.mlag_regr;   % A filter.dfilt or filter.rfilt object
+            opt.WindowLength   = @(sr) round(30*sr); % In data samples
+            opt.WindowOverlap  = 50;                 % In percentage
             opt.WindowFunction = @hamming;
-            opt.Name          = 'sliding_window';
-            opt.Verbose       = true;
+            opt.Name           = 'sliding_window_regr';
+            opt.Verbose        = true;
             
             [~, opt] = process_arguments(opt, varargin);
             
