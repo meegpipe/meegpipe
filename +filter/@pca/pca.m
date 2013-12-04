@@ -58,7 +58,4 @@ classdef pca < ...
         
     end
     
-    
-    
-    
 end

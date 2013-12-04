@@ -3,7 +3,7 @@ function [data, dataNew] = process(obj, data, varargin)
 
 import goo.globals;
 import misc.eta;
-import meegpipe.node.tfilter.tfilter;
+import meegpipe.node.filter.filter;
 
 dataNew = [];
 
@@ -111,28 +111,12 @@ for segItr = 1:numel(evSample)
         else
             pcsStr = 'principal component(s)';
         end
-        fprintf([verboseLabel 'Filtering %d %s with %s filter...'], ...
+        fprintf([verboseLabel 'Filtering %d %s with %s filter...\n\n'], ...
             size(pcs,1), pcsStr, class(filtObj));
     end
-      
-    tinit2 = tic;
     
-    for i = 1:size(pcs,1)
-        
-        thisData = pcs(i, :);
-        
-        pcs(i, :) = filtfilt(filtObj, thisData);
-        
-        if verbose,
-            eta(tinit2, size(pcs,1), i, 'remaintime', true);
-        end
-        
-    end
-    if verbose,
-        clear +misc/eta;
-        fprintf('\n\n');
-    end
-    
+    pcs = filtfilt(filtObj, pcs);
+
     %% Filter the actual data channels
     if ~isempty(pca),
         pcs = bproj(pca, pcs);
@@ -163,9 +147,10 @@ for segItr = 1:numel(evSample)
             
             % Get the begin/end time for the reported epoch
             samplTime = get_sampling_time(data, firstRepSampl:lastRepSampl);
-            
+            select(data, [], firstRepSampl:lastRepSampl);
+            select(pcs, [], firstRepSampl:lastRepSampl);
             attach_figure(obj);
-            galleryObj = tfilter.generate_filt_plot(thisRep, ...
+            galleryObj = filter.generate_filt_plot(thisRep, ...
                 i, ...
                 data, ...
                 pcs, ...
@@ -173,8 +158,10 @@ for segItr = 1:numel(evSample)
                 galleryObj, ...
                 showDiffRep ...
                 );
+            restore_selection(data); % plotted epoch time range
+            restore_selection(pcs);
             
-            restore_selection(data);
+            restore_selection(data);  % data channel
             restore_selection(pcs);
             
             chanCount = chanCount + 1;

@@ -33,8 +33,6 @@ print_paragraph(report, 'See [IO report][IOReport]');
     
 print_ref(report, get_filename(ioRep), 'IOReport');
 
-if verbose, fprintf('\n\n'); end
-
 % Return to original verbose mode
 globals.set('Verbose', verbose);
 

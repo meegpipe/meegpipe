@@ -72,9 +72,7 @@ classdef cca < ...
         end
         
         
-    end
+    end   
     
-    
-    
-    
+   
 end

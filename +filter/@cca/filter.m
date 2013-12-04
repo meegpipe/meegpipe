@@ -16,7 +16,7 @@ cca = set_verbose(cca, verbose);
 cca = learn(cca, x);
 d   = proj(cca, x);
 
-selected = false(1, size(d,1));
+selected = true(1, size(d,1));
 
 r = get_component_correlation(cca);
 
@@ -25,14 +25,14 @@ if isa(obj.MaxCorr, 'function_handle'),
 else
     maxTh = obj.MaxCorr;
 end
-selected(r > maxTh) = true;
+selected(r > maxTh) = false;
 
 if isa(obj.MinCorr, 'function_handle'),
     minTh = obj.MinCorr(r);
 else
     minTh = obj.MinCorr;
 end
-selected(r < minTh) = true;
+selected(r < minTh) = false;
 
 if obj.TopCorrFirst,
     [~, idx] = sort(r, 'descend');

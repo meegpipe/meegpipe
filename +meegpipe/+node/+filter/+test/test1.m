@@ -1,9 +1,10 @@
 function [status, MEh] = test1()
 % TEST1 - Tests basic node functionality
 
-import mperl.file.spec.*;
-import meegpipe.node.tfilter.*;
 import test.simple.*;
+
+import mperl.file.spec.*;
+import meegpipe.*;
 import pset.session;
 import safefid.safefid;
 import datahash.DataHash;
@@ -14,7 +15,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(10);
+initialize(12);
 
 %% Create a new session
 try
@@ -39,7 +40,7 @@ end
 try
     
     name = 'constructor';
-    tfilter; 
+    node.filter.new; 
     ok(true, name);
     
 catch ME
@@ -58,7 +59,7 @@ try
     data = import(physioset.import.matrix, randn(2,500));
     
     myFilter = filter.lasip('Gamma', 1, 'Scales', 1:10);
-    myNode = tfilter('Filter', myFilter); 
+    myNode = node.filter.new('Filter', myFilter); 
     run(myNode, data);
     
     ok(true, name);
@@ -78,7 +79,7 @@ try
     data = import(physioset.import.matrix, randn(2,500));
     
     myFilter = filter.lasip('Gamma', 1, 'Scales', 1:10);
-    myNode = tfilter('Filter', myFilter, 'IOReport', report.plotter.io); 
+    myNode = node.filter.new('Filter', myFilter, 'IOReport', report.plotter.io); 
     run(myNode, data);
     
     ok(true, name);
@@ -104,7 +105,7 @@ try
     add_event(data, chopEvents);
     
     import physioset.event.class_selector;
-    myNode = tfilter(...
+    myNode = node.filter.new(...
         'ChopSelector', class_selector('Class', 'chop_begin'), ...
         'Filter', filter.lasip('Gamma', 1, 'Scales', 1:10));
     run(myNode, data);
@@ -125,7 +126,7 @@ try
    
     data = import(physioset.import.matrix, randn(2,500));
     
-    myNode = tfilter(...
+    myNode = node.filter.new(...
         'Filter', filter.lasip('Gamma', 1, 'Scales', 1:10), 'Save', true);
     
     run(myNode, data);
@@ -150,7 +151,7 @@ try
     end
     myFilter = filter.lasip(...
         'Filter', filter.lasip('Gamma', 1, 'Scales', 1:10), 'OGE', false);
-    myNode = tfilter('Filter', myFilter); 
+    myNode = node.filter.new('Filter', myFilter); 
     origData = data{end}(1,:);
     run(myNode, data{:});
     ok(max(abs(data{end}(1,:)-origData)) > 1e-3, name);
@@ -175,7 +176,7 @@ try
             data{i} = import(physioset.import.matrix, randn(2,1000));
         end
         
-         myNode = tfilter(...
+         myNode = node.filter.new(...
              'Filter',  filter.lasip('Gamma', 1, 'Scales', 1:10), ...
              'OGE',     true, 'Queue', 'short.q');
         dataFiles = run(myNode, data{:});
@@ -216,7 +217,7 @@ try
             data{i} = import(physioset.import.matrix, randn(2,1000));
         end
         
-         myNode = tfilter(...
+         myNode = node.filter.new(...
              'Filter',          filter.lasip('Gamma', 1, 'Scales', 1:10), ...
              'Parallelize',     true, 'Queue', 'condor', 'Save', true);
         dataFiles = run(myNode, data{:});
@@ -246,6 +247,66 @@ catch ME
     
 end
 
+%% detrend
+try
+    
+    name = 'detrend';
+
+    myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(2));
+    data = import(myImporter, randn(2,500));
+    
+    myNode = node.filter.detrend; 
+    run(myNode, data);
+    
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+
+
+%% emg
+try
+    
+    name = 'pipeline + real data';
+    
+    fileName = kul_data;
+ 
+    nodeList = {};
+    
+    myNode = meegpipe.node.physioset_import.new(...
+        'Importer', physioset.import.eeglab);
+    
+    nodeList = [nodeList, {myNode}];
+    
+    myNode = meegpipe.node.filter.emg;
+    
+    nodeList = [nodeList, {myNode}];
+    
+    myPipe = meegpipe.node.pipeline.new(...
+        'NodeList', nodeList);
+    
+    warning('off', 'sensors:MissingPhysDim');
+    warning('off', 'sensors:InvalidLabel');
+    run(myPipe, fileName);
+    warning('on', 'sensors:MissingPhysDim');
+    warning('on', 'sensors:InvalidLabel');
+
+    
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    status = finalize();
+    return;
+    
+end
+
 
 %% Cleanup
 try
@@ -264,3 +325,24 @@ end
 
 %% Testing summary
 status = finalize();
+
+end
+
+
+function fileName = kul_data()
+
+import pset.session;
+import mperl.file.spec.catfile;
+import mperl.file.spec.catdir;
+
+fileName = catfile(session.instance.Folder, 'f1_750to810.set');
+
+if exist('f1_750to810.set', 'file') > 0,
+    copyfile('f1_750to810.set', fileName);
+else
+    % Try downloading the file
+    url = 'http://kasku.org/projects/eeg/data/kul/f1_750to810.set';
+    urlwrite(url, fileName);  
+end
+
+end

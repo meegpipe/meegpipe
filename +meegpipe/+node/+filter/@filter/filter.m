@@ -1,24 +1,5 @@
-classdef tfilter < meegpipe.node.abstract_node
-    % TFILTER - Constructor for time-domain filtering nodes
-    %
-    % ## Usage synosis:
-    %
-    % % Load some data
-    % myData = import(physioset.import.mff, 'myfile.mff');
-    %
-    % % Filter the data using a LASIP filter with polynomials of order 2,
-    % % Gamma parameter equal to 3
-    %
-    % import meegpipe.node.tfilter;
-    % myNode = tfilter('Filter', filter.lasip('Order', 2, 'Gamma', 3));
-    % process(myNode, myData);
-    %
-    %
-    % ## Accepted key/value pairs:
-    %
-    %   * All keys accepted by meegpipe.node.tfilter.config
-    %
-    % See also: config
+classdef filter < meegpipe.node.abstract_node
+    % FILTER - Apply digital filter to node input
     
     methods (Static, Access = private)
         
@@ -34,7 +15,7 @@ classdef tfilter < meegpipe.node.abstract_node
     
     % Constructor
     methods
-        function obj = tfilter(varargin)
+        function obj = filter(varargin)
             import misc.prepend_varargin;
             
             dataSel = pset.selector.good_data;
@@ -49,14 +30,14 @@ classdef tfilter < meegpipe.node.abstract_node
             if isempty(get_name(obj)),
                 filtObj = get_config(obj, 'Filter');
                 if isempty(filtObj),
-                    obj = set_name(obj, 'tfilter');
+                    obj = set_name(obj, 'filter');
                 elseif isa(filtObj, 'filter.dfilt') && ...
                         ~isempty(get_name(filtObj)),
-                    obj = set_name(obj, ['tfilter-' get_name(filtObj)]);
+                    obj = set_name(obj, ['filter-' get_name(filtObj)]);
                 elseif isa(filtObj, 'function_handle'),
                     % A function_handle of the input data sampling rate
                     tmpObj = filtObj(500);
-                    set_name(obj, ['tfilter-' get_name(tmpObj)]);
+                    set_name(obj, ['filter-' get_name(tmpObj)]);
                 end
             end
             

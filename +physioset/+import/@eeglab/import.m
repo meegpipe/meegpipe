@@ -15,6 +15,8 @@ import misc.decompress;
 import pset.file_naming_policy;
 import pset.globals;
 
+misc.check_dependency('eeglab');
+
 if numel(varargin) == 1 && iscell(varargin{1}),
     varargin = varargin{1};
 end
