@@ -10,7 +10,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(8);
+initialize(7);
 
 %% Create a new session
 try
@@ -168,31 +168,6 @@ catch ME
     
 end
 
-%% pipeline + real data
-try
-    
-    name = 'pipeline + real data';
-    
-    data = kul_data;
-    myFilter = filter.cca('MinCard', 2, 'MaxCard', 2);  
-    myFilter = filter.sliding_window(myFilter, ...
-        'WindowLength', 1000);
-    myFilter = filter.pca('PCFilter', myFilter, ...
-        'PCA', spt.pca('MaxCard', 15));
-    
-    filter(myFilter, data);
-
-    ok(true, name);
-    
-catch ME
-    
-    ok(ME, name);
-    status = finalize();
-    return;
-    
-end
-
-
 %% Cleanup
 try
 
@@ -262,21 +237,3 @@ dataCopy = copy(data);
 
 end
 
-
-function fileName = kul_data()
-
-import pset.session;
-import mperl.file.spec.catfile;
-import mperl.file.spec.catdir;
-
-fileName = catfile(session.instance.Folder, 'f1_750to810.set');
-
-if exist('f1_750to810.set', 'file') > 0,
-    copyfile('f1_750to810.set', fileName);
-else
-    % Try downloading the file
-    url = 'http://kasku.org/projects/eeg/data/kul/f1_750to810.set';
-    urlwrite(url, fileName);  
-end
-
-end
