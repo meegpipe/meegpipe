@@ -1,5 +1,5 @@
 classdef tpca < ...
-        filter.dfilt                & ...   
+        filter.dfilt                & ...
         goo.verbose                 & ...
         goo.abstract_setget         & ...
         goo.abstract_named_object
@@ -18,7 +18,7 @@ classdef tpca < ...
     %
     % Y is the filtered output (a KxM numeric matrix).
     %
-    % 
+    %
     % ## Acepted key/value pairs:
     %
     %       Order : A natural scalar. Default: 100
@@ -30,23 +30,33 @@ classdef tpca < ...
     %
     %
     % See also: filter
-
+    
     
     properties
-       
-        Order = 100;
-        PCA   = spt.pca.pca('MaxDimOut', 5);
+        
+        Order    = 50;
+        PCA      = spt.pca('MaxCard', 5);
+        PCFilter = []; % Should the PCs be filtered before back-projecting?
         
     end
     
-    % filter.dfilt interface
     methods
+        
+        % filter.dfilt interface
         [y, obj] = filter(obj, x, varargin);
         
         function [y, obj] = filtfilt(obj, x, varargin)
             
-             [y, obj] = filter(obj, x, varargin{:});
+            [y, obj] = filter(obj, x, varargin{:});
             
+        end
+        
+        % Redefinitions of methods from goo.verbose
+        function obj = set_verbose(obj, bool)
+            obj = set_verbose@goo.verbose(obj, bool);
+            if ~isempty(obj.PCFilter),
+                obj.PCFilter = set_verbose(obj.PCFilter, bool);
+            end
         end
     end
     
@@ -54,18 +64,20 @@ classdef tpca < ...
     methods
         
         function obj = tpca(varargin)
-           
+            
             import misc.process_arguments;
             
-            opt.Order   = 100;
-            opt.PCA     = spt.pca.pca('MaxDimOut', 5);
-            opt.Name    = 'tpca';
-            opt.Verbose = true;
+            opt.Order    = 50;
+            opt.PCA      = spt.pca('MaxCard', 5);
+            opt.PCFilter = [];
+            opt.Name     = 'filter.tpca';
+            opt.Verbose  = true;
             
             [~, opt] = process_arguments(opt, varargin);
             
-            obj.Order = opt.Order;
-            obj.PCA   = opt.PCA;
+            obj.PCFilter = opt.PCFilter;
+            obj.Order    = opt.Order;
+            obj.PCA      = opt.PCA;
             
             obj = set_name(obj, opt.Name);
             obj = set_verbose(obj, opt.Verbose);

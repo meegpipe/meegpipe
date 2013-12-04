@@ -17,6 +17,10 @@ import plotter.get_ch_handles;
 
 hc = plotter.psd.psd(get_config(h));
 
+if isempty(h.Figure),
+    return;
+end
+
 visible = get_config(hc, 'Visible');
 if visible, visible = 'on'; else visible = 'off'; end
 

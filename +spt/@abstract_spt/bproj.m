@@ -12,11 +12,17 @@ end
 Ic = component_selection(obj);
 
 if ~fullMatrix,
-    select(data, Ic);
+    if isa(data, 'pset.mmappset'),
+        select(data, Ic);
+    else
+        data = data(Ic,:);
+    end
 end
 y = A*data;
 if ~fullMatrix,
-    restore_selection(data);
+    if isa(data, 'pset.mmappset'),
+        restore_selection(data);
+    end
 end
 
 if isa(y, 'physioset.physioset'),

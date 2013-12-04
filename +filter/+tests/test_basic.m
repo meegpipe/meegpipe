@@ -1,5 +1,5 @@
 function [status, MEh] = test_basic()
-% test_basic - Tests basic package functionality
+% TEST_BASIC - Tests basic package functionality
 
 import mperl.file.spec.*;
 import filter.*;
