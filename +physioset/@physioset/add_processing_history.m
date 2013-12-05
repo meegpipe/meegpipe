@@ -13,6 +13,8 @@ function obj = add_processing_history(obj, item)
 
 import exceptions.*;
 
+if isempty(item), return; end
+
 if isa(item, 'meegpipe.node.node'),
     item = clone(item);
 elseif ~ischar(item),
