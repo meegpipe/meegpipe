@@ -10,39 +10,7 @@ import inkscape.dir;
 
 str = 'inkscape';
 
-% user ini file takes preference over all
-userIni  = catfile(root_path, '..', '..', 'meegpipe.ini');
-meegIni  = catfile(root_path, '..', '..', 'meegpipe', '+meegpipe','meegpipe.ini');
-thisIni = catfile(root_path, 'inkscape.ini');
-
-ini = [];
-if exist(userIni, 'file'),
-    tmpIni = inifile(userIni);
-    if section_exists(tmpIni, 'inkscape'),
-        ini = tmpIni;
-    end
-end
-
-if isempty(ini) && exist(meegIni, 'file'),
-    tmpIni = inifile(meegIni);
-    if section_exists(tmpIni, 'inkscape'),
-        ini = tmpIni;
-    end
-end
-
-if isempty(ini) && exist(thisIni, 'file')
-    tmpIni = inifile(meegIni);
-    if section_exists(tmpIni, 'inkscape'),
-        ini = tmpIni;
-    end
-end
-
-if isempty(ini),
-    ini = inifile(catfile(root_path, 'inkscape.ini'));
-end
-
-
-path = val(ini, 'inkscape', 'path', true);
+path = meegpipe.get_config('inkscape', 'path');
 
 for i = 1:numel(path)
     
