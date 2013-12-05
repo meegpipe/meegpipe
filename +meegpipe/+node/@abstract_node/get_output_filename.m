@@ -14,8 +14,6 @@ function fileName = get_output_filename(obj, data)
 % See also: meegpipe.node
 
 
-
-import goo.pkgisa;
 import meegpipe.node.globals;
 import mperl.file.spec.catfile;
 import exceptions.*;
@@ -26,7 +24,7 @@ import mperl.cwd.abs_path;
 savePath =  globals.get.SavePath;
 origFile = globals.get.OrigFile;
 
-if pkgisa(data, 'physioset.physioset') || ischar(data),
+if isa(data, 'physioset.physioset') || ischar(data)
     
     if isempty(origFile),
         if ischar(data),

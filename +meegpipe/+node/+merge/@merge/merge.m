@@ -20,6 +20,15 @@ classdef merge < meegpipe.node.abstract_node
             
         end
         
+        function fileName = get_output_filename(obj, data)
+            
+            if iscell(data),
+                data = data{1};
+            end
+            fileName = ...
+                get_output_filename@meegpipe.node.abstract_node(obj, data);
+        end
+        
     end
     
     
