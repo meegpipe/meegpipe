@@ -10,7 +10,7 @@ import inkscape.dir;
 
 str = 'inkscape';
 
-path = meegpipe.get_config('inkscape', 'path');
+path = meegpipe.get_config('inkscape', 'path', true);
 
 for i = 1:numel(path)
     

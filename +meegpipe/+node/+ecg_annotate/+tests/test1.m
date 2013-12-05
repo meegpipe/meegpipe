@@ -183,8 +183,8 @@ try
     end
     
     myNode1 = qrs_detect;
-    myNode2 = ecg_annotate('OGE', false);
-    myPipe = pipeline('NodeList', {myNode1,myNode2});
+    myNode2 = ecg_annotate;
+    myPipe = pipeline('NodeList', {myNode1,myNode2}, 'OGE', false);
     
     run(myPipe, data{:});
     
