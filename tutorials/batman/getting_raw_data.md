@@ -102,7 +102,7 @@ somsds_link2rec batman --subject 1,2 --modality eeg --folder analysis2
 The `--folder` argument tells `somsds_link2rec` to generate the links into
 a directory with a specific name (instead of the default name: `batman`). If
 after performing your two analyses you realize that they were useless, you could
-simply do:
+just delete them using:
 
 ````
 rm -rf analysis1
@@ -113,4 +113,6 @@ rm -rf analysis2
 [somsds]: http://www.germangh.com/somsds/
 
 
+## [Continue to the next step ...][splitting]
 
+[splitting]: ./splitting_raw_data.md
