@@ -76,10 +76,10 @@ You can treat these symbolic links as if they were the actual raw data files.
 [symboliclink]: http://en.wikipedia.org/wiki/Symbolic_link
 
 The advantage of using symbolic links instead of simply copying the raw data
-to our working directory is that the raw files are very large (almost 30 Gbytes
+to our working directory is that the raw files are very large (almost 30 Gb
 each). On the other hand, the size of the symbolic links is negligible. You can
 create as many symbolic links as you want. You can also delete them without ever
-risking delete the actual data files that they point to.
+risking deleting the actual data files that they point to.
 
 Consider the case that we would like to perform two different analyses on the
 same set of files. You can use `somsds_link2rec` to keep your two analyses into
@@ -88,8 +88,15 @@ two completely self-contained directories (named `analysis1` and `analysis2`):
 ````bash
 mkdir analysis1
 somsds_link2rec batman --subject 1,2 --modality eeg --folder analysis1
+# ...
+# go into analysis1 and perform the first analysis
+# ...
+
 mkdir analysis2
 somsds_link2rec batman --subject 1,2 --modality eeg --folder analysis2
+# ...
+# go into analysis2 and perform the second analysis
+# ...
 ````
 
 The `--folder` argument tells `somsds_link2rec` to generate the links into
