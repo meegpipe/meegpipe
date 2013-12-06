@@ -23,17 +23,18 @@ Description of the experimental protocol here...
 1. [Getting the relevant raw data files][getting_raw].
 
 2. [Splitting the large (20-30 Gb) files][splitting] into more manageable
-   single-block files.
+   smaller files.
 
 3. [Extract features from the Arterial Blood Pressure (ABP) data][abp-feat]
    contained in the BATMAN recordings. We want to get such features for each
-   experimental manipulation
+   experimental manipulation and experimental task (`Baseline`, `PVT`,
+   `RS`, and `RSQ`).
 
 4. [Extract heart-rate variability (HRV) features][hrv-feat] from the [ECG][ecg]
-   data, for each experimental manipulation.
+   data, for each experimental manipulation and experimental task.
 
 5. Getting [PVT response time statistics][pvt-feat] from the PVT response
-   events, for each experimental manipulation.
+   events, for each experimental manipulation and experimental task.
 
 [getting_raw]: ./getting_raw_data.md
 [splitting]: ./splitting_raw_data.md

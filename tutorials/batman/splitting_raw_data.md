@@ -72,10 +72,16 @@ myPipe = batman.split_files.splitting_pipeline(...
 % directory but has the advantage of saving valuable disk space.
 files = somsds.link2rec('batman', 'subject', [1 2], 'folder', OUTPUT_DIR);
 
-% files should not be a cell array containing the full paths to the generated
+% files should now be a cell array containing the full paths to the generated
 % symbolic links
 
 % This is kind of obvious...
 run(myPipe, files{:});
 
 ````
+
+
+## The splitting pipeline
+
+
+
