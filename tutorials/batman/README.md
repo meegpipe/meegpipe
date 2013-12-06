@@ -15,7 +15,7 @@ team of the [Netherlands Institute for Neuroscience][nin].
 
 Description of the experimental protocol here...
 
-![Experimental protocol](./batman-protocol.png "Experimental protocol")
+![Experimental protocol](./img/batman-protocol.png "Experimental protocol")
 
 
 ## Objectives/Roadmap
@@ -31,12 +31,13 @@ Description of the experimental protocol here...
 4. [Extract heart-rate variability (HRV) features][hrv-feat] from the [ECG][ecg]
    data.
 
-5. Getting [PVT response time statistics][pvt-feat] from the PVT response events
-   that are present in the BATMAN recordings.
+5. Getting [PVT response time statistics][pvt-feat] from the PVT response
+   events.
 
 [getting_raw]: ./getting_raw_data.md
 [splitting]: ./splitting_raw_data.md
 [abp-feat]: ./abp-feat.md
 [hrv-feat]: ./hrv-feat.md
 [pvt-feat]: ./pvt-feat.md
+[ecg]: http://en.wikipedia.org/wiki/Electrocardiography
 
