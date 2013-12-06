@@ -60,11 +60,6 @@ OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
 PARALELLIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
-% Generate links to the relevant data files into the output directory. This
-% step is equivalent to copying the relevant data files into the output
-% directory but has the advantage of not duplicating the data files.
-files = somsds.link2rec('batman', 'subject', [1 2], 'folder', OUTPUT_DIR);
-
 % Create an instance of your data splitting pipeline
 myPipe = batman.split_files.splitting_pipeline(...
     'GenerateReport', DO_REPORT, ...
@@ -72,7 +67,15 @@ myPipe = batman.split_files.splitting_pipeline(...
 
 % Note that we have not yet written function splitting_pipeline!
 
-% Run the pipeline on the relevant data files
+% Generate links to the relevant data files into the output directory. This
+% step is equivalent to copying the relevant data files into the output
+% directory but has the advantage of saving valuable disk space.
+files = somsds.link2rec('batman', 'subject', [1 2], 'folder', OUTPUT_DIR);
+
+% files should not be a cell array containing the full paths to the generated
+% symbolic links
+
+% This is kind of obvious...
 run(myPipe, files{:});
 
 ````
