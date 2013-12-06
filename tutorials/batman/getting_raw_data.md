@@ -23,7 +23,7 @@ below I will use my username (`gherrero`) for illustration purposes.
 ## Retrieving the experimental data
 
 In this tutorial we are going to work with a subset of the BATMAN dataset.
-Namely, we want to retrieve the EEG data files from subjects 1 and 2. In the
+Namely, we need to retrieve the EEG data files from subjects 1 and 2. In the
 shell window type:
 
 
@@ -55,9 +55,37 @@ be displayed in your shell window:
 somsds_link2rec command")
 
 
+## Where are my data files?
 
+The messages produced by the `somsds_link2rec` command give a clear indication
+of what has just happened. The command `somsds_link2rec` has generated
+two [symbolic links][symboliclink] under directory
+`/data1/projects/meegpipe/batman_tut/gherrero/batman` that point to
+two files located under `/data1/recordings/batman/subjects`. From now own you
+can treat these two symbolic links as if they were the raw data files you want
+to work with.
 
+The advantage of using symbolic links instead of simply copying the raw data
+to our working directory is that the raw files are very large (almost 30 Gbytes
+each). On the other hand, the size of the symbolic links is negligible. You can
+create as many symbolic links as you want. You can also delete them without ever
+risking delete the actual data files that they point to.
+
+Consider the case that we would like to perform two different analyses on the
+same set of files. You can use `somsds_link2rec` to keep your two analyses into
+two completely self-contained directories:
+
+````bash
+mkdir analysis1
+somsds_link2rec batman --subject 1,2 --modality eeg --folder analysis1
+mkdir analysis2
+somsds_link2rec batman --subject 1,2 --modality eeg --folder analysis2
+````
+
+The `--folder` argument tells `somsds_link2rec` to generate the links into
+a directory with a specific name (instead of the default name: `batman`).
 
 [somsds]: http://www.germangh.com/somsds/
+
 
 
