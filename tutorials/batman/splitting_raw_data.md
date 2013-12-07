@@ -421,3 +421,10 @@ myPipe = meegpipe.node.pipeline.new(...
 
 end``matlab
 ````
+
+Now you are finally ready to split all `.mff` files into single-block files that
+do not contain any EEG data by running:
+
+````matlab
+batman.split_files
+````
