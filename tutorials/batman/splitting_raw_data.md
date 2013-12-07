@@ -116,6 +116,13 @@ you have a schematic diagram of such a node:
 
 ![physioset_import node](./img/physioset_import_node.png "physioset_import node")
 
+__NOTE:__ In the diagram above I have depicted also the _data selection_ steps
+that take place before and after the actual node processing. These steps are
+common to all classes of processing nodes and, in the following, they will not
+be shown in the node diagrams. See the documentation of the generic [node][node]
+interface for more information.
+
+[node]: ../../+meegpipe/+node/README.md
 
 Nodes of class `physioset_import` admit only one configuration option,
 _Importer_. The user needs to set it to an object of one of the physioset
@@ -172,3 +179,17 @@ myImporter = physioset.import.mff('Precision', 'single');
 % Now, let's build a physioset_import node that uses the importer object above
 myNode = physioset_import.new('Importer', myImporter);
 ````
+
+And that's it for the first node in our file splitting pipeline. Let's move on
+to the next node.
+
+
+### Splitting a physioset
+
+Nodes of class [split][split_node] allow you to split a physioset object into
+several (possible overlapping) data subsets. Below you have the node schema:
+
+[split_node]: ../../+meegpipe/+node/+split/README.md
+
+
+![split node](./img/split_node.png "split node")
