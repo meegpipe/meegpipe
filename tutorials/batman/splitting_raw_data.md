@@ -117,3 +117,42 @@ you have a schematic diagram of such a node:
 ![physioset_import node](./img/physioset_import_node.png "physioset_import node")
 
 
+Nodes of class `physioset_import` admit only one configuration option,
+_Importer_. The user needs to set it to one of the physioset importer objects
+that are available in package [physioset.import][physioset_import_pkg]. For
+instance, you may use a `physioset.import.edfplus` object for
+importing files in [EDF+][edfplus_format] format. In our case, we are trying to
+import `.mff` files and thus we need a `physioset.import.mff` importer.
+
+Realize that, although the `physioset_import` node has just one configuraion
+option (_Importer_), the actual data importer object has several properties that
+allow you to specify various importing options. Let's build a _default_ mff
+importer object to find out what properties it has:
+
+[physioset_import_pkg]: ../../+physioset/+import/README.md
+[edfplus_format]: http://www.edfplus.info/
+
+````matlab
+>> physioset.import.mff
+
+ans =
+
+mff
+Package: physioset.import
+
+
+      ReadDataValues : true
+           Precision : double
+            Writable : true
+           Temporary : true
+           ChunkSize : 500000000
+   AutoDestroyMemMap : false
+          ReadEvents : true
+            FileName :
+          FileNaming : inherit
+             Sensors : []
+        EventMapping : [1x1 mjava.hash]
+          MetaMapper : @(data)regexp(get_name(data),'(?<subject_id>0+\d+)_.+','names')
+         EventMapper : []
+           StartTime :
+````
