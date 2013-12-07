@@ -289,7 +289,10 @@ Thus we can use the following strategy to split the files:
 2. For each event selected in 1., let's assume that the time of the event is `t`.
    Then, produce four splits:
 
-    2.1. The _Baseline_ split starts 9 `t` and has a duration of 9 mins.
-    2.2. The _PVT_ split starts at `t` and has a duration of 7 mins.
-    2.3. The _RS_ split starts 7 mins after `t` and has a duration of 5 mins.
-    2.4. The _RSQ_ split starts 12 mins after `t` and has a duration of 4 mins.
+Split name          | Offset from `t` (mins) | Duration (mins)
+------------------- | ---------------------- | ------------------
+`baseline_[block#]` | -9                     | 9
+`pvt_[block#]`      |  0                     | 7
+`rs_[block#]`       |  7                     | 5
+`rsq_[block#]`      | 12                     | 4
+
