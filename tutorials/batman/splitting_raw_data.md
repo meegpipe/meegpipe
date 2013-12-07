@@ -118,13 +118,13 @@ you have a schematic diagram of such a node:
 
 
 Nodes of class `physioset_import` admit only one configuration option,
-_Importer_. The user needs to set it to one of the physioset importer objects
-that are available in package [physioset.import][physioset_import_pkg]. For
-instance, you may use a `physioset.import.edfplus` object for
-importing files in [EDF+][edfplus_format] format. In our case, we are trying to
-import `.mff` files and thus we need a `physioset.import.mff` importer.
+_Importer_. The user needs to set it to an object of one of the physioset
+importer classes that are available in package [physioset.import][physioset_import_pkg].
+For instance, you may use a `physioset.import.edfplus` object for
+importing [EDF+][edfplus_format] files. In our case, the raw data files are in
+`.mff` format and thus we need a `physioset.import.mff` importer.
 
-Realize that, although the `physioset_import` node has just one configuraion
+Realize that, although the `physioset_import` node has just one configuration
 option (_Importer_), the actual data importer object has several properties that
 allow you to specify various importing options. Let's build a _default_ mff
 importer object to find out what properties it has:
@@ -155,4 +155,20 @@ Package: physioset.import
           MetaMapper : @(data)regexp(get_name(data),'(?<subject_id>0+\d+)_.+','names')
          EventMapper : []
            StartTime :
+````
+
+One property that you may often want to override is the `Precision` property,
+which determines the numeric precision that is used to store the values
+contained in the generated `physioset` object. The code below will create a
+`physioset_importer` node that will convert an `.mff` data file into
+a `physioset` object of `single` precision:
+
+````matlab
+import meegpipe.node.*; % Just to avoid writing fully qualified node class names
+
+% Let's build our data importer with a custom Precision value
+myImporter = physioset.import.mff('Precision', 'single');
+
+% Now, let's build a physioset_import node that uses the importer object above
+myNode = physioset_import.new('Importer', myImporter);
 ````
