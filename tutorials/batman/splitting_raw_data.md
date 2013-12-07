@@ -22,15 +22,14 @@ times considerably.
 ## Keeping your scripts organized
 
 We are going to wrap all the scripts necessary to perform the file splitting
-into a MATLAB package called `batman.split_files`. Open MATLAB and type:
+into a MATLAB package called `batman`. Open MATLAB and type:
 
 ````matlab
 cd /data1/projects/meegpipe/batman_tut/gherrero
 mkdir +batman
-mkdir +batman/+split_files
 ````
 
-From now on we will save all scripts under `+batman/+split_files`.
+From now on we will save all scripts under `+batman`.
 
 
 ## Main processing script
@@ -38,8 +37,8 @@ From now on we will save all scripts under `+batman/+split_files`.
 Before writing our data processing pipeline we are going to write the scheleton
 of our _main_ processing script where we perform the necessary preliminaries,
 and where we run the pipeline (which we will write later) on the relevant data
-files. Below you can see a profusely commented example of how such a `main.m`
-script may look like:
+files. Below you can see a profusely commented example of how such a
+`split_files.m` script may look like:
 
 ````matlab
 % Start in a completely clean state
@@ -61,7 +60,7 @@ PARALELLIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
 % Create an instance of your data splitting pipeline
-myPipe = batman.split_files.splitting_pipeline(...
+myPipe = batman.split_files_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
 
