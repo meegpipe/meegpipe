@@ -261,23 +261,18 @@ data = pset.load(['/Volumes/DATA/work/' ...
     'mytoydata_split1.pseth'])
 ````
 
-Indeed, the split worked as expected:
+Let's check whether the first split contains the expected values:
 
 ````matlab
-% The split should contain this data values:
-myManualSplit = myPhysioset(:, 100:599);
+% The first split should contain these data values:
+myManualSplit1 = myPhysioset(:, 100:599);
 
-assert(all(data(:)==myManualSplit(:)));
+% This should not throw an error if everything went OK
+assert(all(data(:)==myManualSplit1(:)));
 ````
 
 
 
-
-
-
-````matlab
-
-````
 
 #### Splitting strategy
 
