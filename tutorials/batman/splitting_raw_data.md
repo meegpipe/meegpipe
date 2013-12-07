@@ -106,12 +106,13 @@ Obviously, the first step in our processing pipeline needs to be converting the
 raw `.mff` files into [physioset][physioset] objects, which is the data
 structure that _meegpipe_'s processing nodes understand.
 
-[physioset]: ../../+physioset/@physioset
+[physioset]: ../../+physioset/@physioset/README.md
 
 Importing data from various disk file formats into a _physioset_ object is
 always performed with a [physioset_import][physioset_import_node] node. Below
 you have a schematic diagram of such a node:
 
+[physioset_import]: ../../+meegpipe/+node/+physioset_import/README.md
 
 ![physioset_import node](./img/physioset_import_node.png "physioset_import node")
 
