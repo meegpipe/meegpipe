@@ -112,7 +112,7 @@ Importing data from various disk file formats into a _physioset_ object is
 always performed with a [physioset_import][physioset_import_node] node. Below
 you have a schematic diagram of such a node:
 
-[physioset_import]: ../../+meegpipe/+node/+physioset_import/README.md
+[physioset_import_node]: ../../+meegpipe/+node/+physioset_import/README.md
 
 ![physioset_import node](./img/physioset_import_node.png "physioset_import node")
 
