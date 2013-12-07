@@ -193,3 +193,9 @@ several (possible overlapping) data subsets. Below you have the node schema:
 
 
 ![split node](./img/split_node.png "split node")
+
+
+#### Splitting strategy
+
+
+![splitting strategy](./img/batman_protocol_subblock.png "splitting strategy")
