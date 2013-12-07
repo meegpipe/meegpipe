@@ -1,48 +1,3 @@
-Splitting raw data files
-===
-
-The raw data files that we just [linked to in the previous step][getting_raw]
-of this tutorial are very large: about 30 GB each. It is certainly possible to
-use `meegpipe` to work with such large files directly, but it is generally
-a good idea to try to work with smaller chunks of your data at a time, if that
-makes sense for your particular analysis. Otherwise, you may need to wait a long
-for every processing stage to complete on a given file.
-
-In this tutorial we want to extract features for each experimental condition
-separately. Thus, it makes sense to split our original data files into 12
-single-block files, each containing just one experimental manipulation.
-`meegpipe` allows you to process files into parallel jobs and thus breaking
-your files into 12 smaller chunks has the potential of reducing computation
-times considerably.
-
-
-[getting_raw]: ./getting_raw_data.md
-
-
-## Keeping your scripts organized
-
-We are going to wrap all the scripts necessary to perform the file splitting
-into a MATLAB package called `batman`. Open MATLAB and type:
-
-````matlab
-cd /data1/projects/meegpipe/batman_tut/gherrero
-mkdir +batman
-````
-
-From now on we will save all scripts under `+batman`.
-
-
-## Main processing script
-
-Before writing our data processing pipeline we are going to write the scheleton
-of our _main_ processing script where we perform the necessary preliminaries,
-and where we run the pipeline (which we will write later) on the relevant data
-files. Below you can see a profusely commented example of how such a
-[split_files.m][split_files_m] script may look like:
-
-[split_files_m]: ./split_files.m
-
-````matlab
 % SPLIT_FILES - Split BATMAN's large .mff files into single-block files
 %
 % This is the first stage of the BATMAN processing chain. The input to this
@@ -80,7 +35,7 @@ myPipe = batman.split_files_pipeline(...
 % Generate links to the relevant data files into the output directory. This
 % step is equivalent to copying the relevant data files into the output
 % directory but has the advantage of saving valuable disk space. The
-% command below will only work at somerengrid.
+% command below will only work at somerengrid. 
 files = somsds.link2rec('batman', 'subject', [1 2], 'folder', OUTPUT_DIR);
 
 % files should now be a cell array containing the full paths to the files
@@ -89,10 +44,3 @@ files = somsds.link2rec('batman', 'subject', [1 2], 'folder', OUTPUT_DIR);
 
 % This is kind of obvious...
 run(myPipe, files{:});
-````
-
-
-## The splitting pipeline
-
-
-
