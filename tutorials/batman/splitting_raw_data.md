@@ -100,7 +100,7 @@ that took care of creating an instance of the data processing pipeline. It is
 now time to write that script.
 
 
-### Importing the `.mff` files
+### Node 1: Importing the `.mff` files
 
 Obviously, the first step in our processing pipeline needs to be converting the
 raw `.mff` files into [physioset][physioset] objects, which is the data
@@ -184,7 +184,7 @@ And that's it for the first node in our file splitting pipeline. Let's move on
 to the next node.
 
 
-### Splitting a physioset
+### Node 2: Splitting the imported physioset
 
 Nodes of class [split][split_node] allow you to split a physioset object into
 several (possible overlapping) data subsets. Below you have the node schema:

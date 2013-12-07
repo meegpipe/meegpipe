@@ -170,8 +170,13 @@ classdef inifile < handle & goo.hashable_handle
             elseif ~exist(value, 'file'),
                 fid = fopen(value, 'w');
                 if fid < 1,
-                    msg = sprintf('Unable to open/create file %s', value);
-                    throw(inifile.InvalidPropValue('File', msg));
+                    % wait a bit and try again...
+                    pause(2);
+                    fid = fopen(value, 'w');
+                    if fid < 1
+                        msg = sprintf('Unable to open/create file %s', value);
+                        throw(inifile.InvalidPropValue('File', msg));
+                    end
                 end
                 [~, name] = fileparts(value);
                 warning('inifile:CreatedIniFile', ...
