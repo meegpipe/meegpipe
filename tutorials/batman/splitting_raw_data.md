@@ -281,13 +281,14 @@ onset of the `PVT` sub-block:
 
 ![splitting strategy](./img/batman_protocol_subblock.png "splitting strategy")
 
-Thus we can define the use the following strategy to split the files:
+Thus we can use the following strategy to split the files:
 
 1. Select the first `PVT` event within every _PVT_ sub-block. This step should
-   produce a set of 12 such events.
+   produce 12 such events.
 
 2. For each event selected in 1., let's assume that the time of the event is `t`.
    Then, produce four splits:
+
     2.1. The _Baseline_ split starts 9 `t` and has a duration of 9 mins.
     2.2. The _PVT_ split starts at `t` and has a duration of 7 mins.
     2.3. The _RS_ split starts 7 mins after `t` and has a duration of 5 mins.
