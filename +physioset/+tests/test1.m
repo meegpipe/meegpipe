@@ -102,8 +102,10 @@ end
 try
     
     name = 'get all config options as hash';
-    allCfg = get_method_config(myPset, 'fprintf');
-    ok(iscell(allCfg) & numel(allCfg) == 4, name);
+    allCfg = get_method_config(myPset);
+    ok(isa(allCfg, 'mjava.hash') & ...
+        numel(keys(allCfg)) == 1 & ...
+        allCfg('fprintf','ParseDisp'), name);
     
 catch ME
     
