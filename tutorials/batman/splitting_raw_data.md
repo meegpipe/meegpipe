@@ -356,7 +356,7 @@ which create the pipeline that we need to split the BATMAN files as required.
 
 [split_files_pipeline]: ./+batman/split_files_pipeline.m
 
-````
+````matlab
 function myPipe = split_files_pipeline(varargin)
 % SPLIT_FILES_PIPELINE - Splits BATMAN .mff files into single sub-block files
 
