@@ -271,10 +271,24 @@ myManualSplit1 = myPhysioset(:, 100:599);
 assert(all(data(:)==myManualSplit1(:)));
 ````
 
+#### Splitting strategy for the BATMAN `.mff`
 
-
-
-#### Splitting strategy
-
+For various practical reasons related with issues that occured during the
+recordings of the BATMAN dataset, the only events that we can reliably use to
+produce the desired data splits in all files are the `PVT` events. Namely, the
+first `PVT` event within a given manipulation block can be used to determine the
+onset of the `PVT` sub-block:
 
 ![splitting strategy](./img/batman_protocol_subblock.png "splitting strategy")
+
+Thus we can define the use the following strategy to split the files:
+
+1. Select the first `PVT` event within every _PVT_ sub-block. This step should
+   produce a set of 12 such events.
+
+2. For each event selected in 1., let's assume that the time of the event is `t`.
+   Then, produce four splits:
+    2.1. The _Baseline_ split starts 9 `t` and has a duration of 9 mins.
+    2.2. The _PVT_ split starts at `t` and has a duration of 7 mins.
+    2.3. The _RS_ split starts 7 mins after `t` and has a duration of 5 mins.
+    2.4. The _RSQ_ split starts 12 mins after `t` and has a duration of 4 mins.
