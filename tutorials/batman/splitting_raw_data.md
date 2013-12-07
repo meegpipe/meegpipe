@@ -354,7 +354,7 @@ myNode = split.new(...
 Below the contents of function [split_files_pipeline.m][split_files_pipeline],
 which create the pipeline that we need to split the BATMAN files as required.
 
-[split_files_pipeline.m]: ./+batman/split_files_pipeline.m
+[split_files_pipeline]: ./+batman/split_files_pipeline.m
 
 ````matlab
 
