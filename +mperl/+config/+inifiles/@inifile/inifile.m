@@ -4,11 +4,7 @@ classdef inifile < handle & goo.hashable_handle
     %
     % obj = inifile(filename, 'key', value, ...)
     %
-    %
-    % % Documentation to be done
-    
-    %% IMPLEMENTATION .....................................................
-    
+
     properties (SetAccess = private, GetAccess = private)
         
        HashObject = mjava.hash; 
