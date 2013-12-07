@@ -179,7 +179,7 @@ contained in the generated `physioset` object. The code below will create a
 a `physioset` object of `single` precision:
 
 ````matlab
-import meegpipe.node.*; % Just to avoid writing fully qualified node class names
+
 
 % Let's build our data importer with a custom Precision value
 myImporter = physioset.import.mff('Precision', 'single');
@@ -271,7 +271,7 @@ myManualSplit1 = myPhysioset(:, 100:599);
 assert(all(data(:)==myManualSplit1(:)));
 ````
 
-#### Splitting strategy for the BATMAN `.mff`
+#### Splitting strategy for the BATMAN recordings
 
 For various practical reasons related with issues that occured during the
 recordings of the BATMAN dataset, the only events that we can reliably use to
@@ -289,10 +289,73 @@ Thus we can use the following strategy to split the files:
 2. For each event selected in 1., let's assume that the time of the event is `t`.
    Then, produce four splits:
 
-Split name          | Offset from `t` (mins) | Duration (mins)
-------------------- | ---------------------- | ------------------
-`baseline_[block#]` | -9                     | 9
-`pvt_[block#]`      |  0                     | 7
-`rs_[block#]`       |  7                     | 5
-`rsq_[block#]`      | 12                     | 4
+Split name                     | Offset from `t` (mins) | Duration (mins)
+------------------------------ | ---------------------- | ------------------
+`[dataName]_baseline_[block#]` | -9                     | 9
+`[dataName]_pvt_[block#]`      |  0                     | 7
+`[dataName]_rs_[block#]`       |  7                     | 5
+`[dataName]_rsq_[block#]`      | 12                     | 4
 
+
+#### Splitting strategy implementation
+
+The most complex aspect of our splitting strategy is how to robustly identify
+the first `PVT` event within a given _PVT_ sub-block. The details are beyond the
+scope of this tutorial, but suffice to say that function
+[pvt_selector][pvt_selector] implements an event selector that will do the job.
+You can use the latter as a model for your own custom event selectors.
+
+[pvt_selector]: ./+batman/pvt_selector.m
+
+One detail that is still missing is how to ensure that the produced splits are
+given meanigful names. E.g. we would like the _RS_ split for the second
+experimental manipulation block of file `batman_0001_eeg_all.mff` to be called
+`batman_0001_eeg_all_rs_2`. Node _split_ names the generated splits according to
+a user-defined naming function (configuration option `SplitNamingConvention`.
+Such a naming function is provided as arguments the physioset object that enters
+the `split` node, the relevant splitting event, and the index of such event
+within the set of all splitting events. For more details, you may take a look
+at function [split_naming_policy][split_naming].
+
+[split_naming]: ./+batman/split_naming_policy.m
+
+Using our custom event selector we could define a `split` node that would split
+away all _baseline_ sub-blocks as follows:
+
+
+````matlab
+% Create an instance of the custom event selector that selects the first PVT
+% event within every PVT sub-block.
+myEvSel = batman.pvt_selector;
+
+% Just trust me on this one...
+splitNaming = @(physObj, ev, evIdx) ...
+    batman.split_naming_policy(physObj, ev, evIdx, 'baseline');
+
+% This is not really required, but since in this tutorial we are not interested
+% in the EEG data, it is a good idea to select only non-EEG data when generating
+% the splits so that we have as small data splits as possible. Notice the
+% ~ symbol, which means: select everything except EEG data
+myDataSel = pset.selector.sensor_class('Class', 'EEG');
+
+% Create the split node. It is important to give a meaningful name to the node.
+myNode = split.new(...
+    'DataSelector',      myDataSel, ...
+    'EventSelector',     myEvSel, ...
+    'Offset',            -9*60, ...         % Must be in seconds
+    'Duration',          9*60, ...          % Also in seconds
+    'SplitNamingPolicy', splitNaming, ...
+    'Name',             'baseline', ...
+
+````
+
+### Putting it all together
+
+Below the contents of function [split_files_pipeline.m][split_files_pipeline],
+which create the pipeline that we need to split the BATMAN files as required.
+
+[split_files_pipeline.m]: ./+batman/split_files_pipeline.m
+
+````matlab
+
+````
