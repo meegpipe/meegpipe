@@ -309,10 +309,160 @@ myPipe = pipeline.new(...
 end
 ````
 
+At this point you are ready to extract the ABP features from all relevant files
+by running:
+
+````matlab
+batman.extract_abp_features
+````
+
 ## Aggregating features across single-block files
 
-## [Continue to the next step ...][hrv]
+We now have a large number of `.meegpipe` directories that contain the ABP
+features (in text format) for each experimental sub-block. Having all those
+features spread across such a large number of text files is inconvenient for
+futher analyses using statistical software such as [R][r]. It would be much
+better if we could have all ABP features in a single comma-separated file. At
+the same time, need to keep track whether a feature came from this or that
+experimental sub-block. Also, it would be very advantageous if we could
+incorporate into our feature table information regarding the experimental
+manipulation that took place in a given sub-block. Let's go step by step and
+start by writing a function that will translate block numbers and subject IDs to
+condition names:
 
-The link above is broken because the next step is still under preparation.
+[r]: http://www.r-project.org/
+
+````matlab
+function [condID, condName] = block2condition(subj, blockID)
+% BLOCK2CONDITION - Convert subject ID + block ID into a condition ID/name
+
+% ...
+% Ad-hoc stuff specific to the protocol that was used in the BATMAN study
+% ...
+
+end
+````
+If you want to know the implementation details, see function
+[block2condition][block2condition].
+
+[block2condition]: ./+batman/block2condition.m
+
+Given a subject ID and a block number we now know how to convert that
+information into an informative condition name. E.g. block 1 for subject 3
+corresponds to condition `light0_posture1_dpg2`:
+
+````matlab
+>> [condID, condName]=batman.block2condition(3, 1)
+
+condID =
+
+cond3
+
+
+condName =
+
+light0_posture1_dpg2
+````
+
+But to simplify the feature aggregation process what we need is to convert from
+an input file name (e.g. `batman_0007_eeg_all_pvt_1.pseth`) into a set of
+meta-info tags that identify uniquely the corresponding experimental sub-block,
+and that may be useful for grouping purposes in subsequent statistical analyses.
+The following function will perform such a translation for us:
+
+````matlab
+function meta = fname2meta(fName)
+% FNAME2META - Translate file names into meta-information tags
+
+import batman.block2condition;
+
+regex = 'batman_(?<subject>\d+)_eeg_all.*_(?<sub_block>[^_]+)_(?<block_1_14>\d+)';
+
+meta = regexp(fName, regex, 'names');
+
+meta.subject = meta.subject;
+
+[condID, condName] = block2condition(str2double(meta.subject), ...
+    str2double(meta.block_1_14));
+
+meta.cond_id   = condID;
+meta.cond_name = condName;
+
+end
+````
+
+Let's see how it works:
+
+````matlab
+>> batman.fname2meta('batman_0007_eeg_all_pvt_1.pseth')
+
+ans =
+
+       subject: '0007'
+     sub_block: 'pvt'
+    block_1_14: '1'
+       cond_id: 'cond3'
+     cond_name: 'light0_posture1_dpg2'
+````
+
+Now we have all the pieces we need to easily aggregate all feature files into
+a single table:
+
+
+````matlab
+function aggregate_abp_features
+% AGGREGATE_ABP_FEATURES - Aggregate all ABP features in a single .csv table
+
+% Some utilities that we use below
+import meegpipe.aggregate2;
+import misc.dir;
+import mperl.file.spec.catfile;
+
+% The directory where the .meegpipe directories are located
+OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output';
+
+% This is the function that we use to translate file names into meta-info tags
+FILENAME_TRANS = @batman.fname2meta;
+
+% We need to build a cell array with the names of all .pseth files that were
+% used as input to the feature extraction pipeline
+regex = 'batman_0+\d+_eeg_all_.+_\d+\.pseth$';
+files = dir(OUTPUT_DIR, regex);
+files = catfile(OUTPUT_DIR, files);
+
+% A pattern that matches the feature text files within the .meegpipe dirs
+FEAT_FILE_REGEX = 'batman-abp-.+features.txt$';
+
+% The name of the .csv file where the joint feature table will be stored
+outputFile = catfile(OUTPUT_DIR, 'abp_features.csv');
+
+aggregate2(files, FEAT_FILE_REGEX, outputFile, FILENAME_TRANS);
+
+end
+````
+
+To perform the aggregation run:
+
+````matlab
+batman.aggregate_abp_features
+````
+which will store in file [abp_features.csv][abp_features_csv] the aggregated
+feature table. Below you can see a synopsis of how the features table looks
+like:
+
+filename|subject|sub_block|block_1_14|cond_id|cond_name|selector|systolic_bp|diastolic_bp|pulse_pressure|mean_pressure|mean_dyneg|area_under_systole1|area_under_systole2|heart_rate|co
+--------------------------------------------------------------------------------
+batman_0007_eeg_all_arsq_1|0007|arsq|1|cond3|light0_posture1_dpg2|pset.selector.all_data|98.5089|71.9754|26.5225|79.5602|-0.4426|4.4450|4.5263|65.4675|10.1739
+batman_0007_eeg_all_arsq_11|0007|arsq|11|cond9|light0_posture1_dpg0|pset.selector.all_data|96.7132|73.8370|22.8633|79.9444|-0.3588|3.8429|3.9264|66.7786|8.9266
+batman_0007_eeg_all_arsq_12|0007|arsq|12|cond6|light1_posture1_dpg1|pset.selector.all_data|97.0860|72.6804|24.4148|79.7420|-0.3859|4.3479|4.4589|65.5946|9.3898
+batman_0007_eeg_all_arsq_13|0007|arsq|13|cond8|light1_posture0_dpg1|pset.selector.all_data|98.4168|72.4243|25.9907|79.6494|-0.3081|5.1062|5.4009|52.7616|8.0201
+
+
+
+
+## [Continue to the next part ...][hrv]
+
+The link above is broken because the part of this tutorial is still under
+preparation.
 
 [hrv]: ./hrv_feat.md

@@ -6,20 +6,11 @@ close all;
 clear all;
 clear classes;
 
-% % Add meegpipe to your path.
-% switch lower(get_hostname),
-%     case {'somerenserver', 'nin389'},
-%         addpath(genpath('/data1/toolbox/meegpipe_v0.0.8'));
-%     case 'outolintulan',
-%         addpath(genpath('/Volumes/DATA/mlib/meegpipe_v0.0.8'));
-%     otherwise
-%         error('I don''t know where is meegpipe on %s', get_hostname);
-% end
-
 meegpipe.initialize;
 
 % Import some utilities
 import mperl.file.find.finddepth_regex_match;
+import misc.get_hostname;
 
 switch lower(get_hostname),
     case {'somerenserver', 'nin389'},
@@ -29,7 +20,7 @@ switch lower(get_hostname),
         % The output directory where we want to store the features
         OUTPUT_DIR = ...
             '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output';        
-    case 'outolintulan'
+    otherwise
         INPUT_DIR = '/Volumes/DATA/tutorial/batman/split_files_output';
         OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/extract_abp_features_output';
 end
@@ -60,16 +51,4 @@ files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 run(myPipe, files{:});
 
-end
-
-function name = get_hostname
-[ret, name] = system('hostname');
-if ret
-    if ispc,
-        name = getenv('COMPUTERNAME');
-    else
-        name = getenv('HOSTNAME');
-    end
-end
-name = regexprep(name, '[^\w\d]', '');
 end

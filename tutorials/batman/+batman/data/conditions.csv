@@ -1,0 +1,13 @@
+condition,light,posture,dpg
+cond1,1,1,2
+cond2,1,0,2
+cond3,0,1,2
+cond4,0,0,2
+cond5,1,1,0
+cond6,1,1,1
+cond7,1,0,0
+cond8,1,0,1
+cond9,0,1,0
+cond10,0,1,1
+cond11,0,0,0
+cond12,0,0,1

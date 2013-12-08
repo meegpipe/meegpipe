@@ -12,26 +12,18 @@ close all;
 clear all;
 clear classes;
 
-% Add meegpipe to your path, and initialize it
-switch lower(get_hostname),
-    case {'somerenserver', 'nin389'},
-        addpath(genpath('/data1/toolbox/meegpipe_v0.0.8'));
-    case 'outolintulan',
-        addpath(genpath('/Volumes/DATA/mlib/meegpipe_v0.0.8'));
-    otherwise
-        error('I don''t know where is meegpipe on %s', get_hostname);
-end
 meegpipe.initialize;
 
 % Import some miscellaneous utilities
 import misc.dir;
 import mperl.file.spec.catfile;
+import misc.get_hostname;
 
 % The output directory where we want to store the splitted data files
 switch lower(get_hostname),
     case {'somerenserver', 'nin389'}
         OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
-    case 'outolintulan',
+    otherwise,
         OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/split_files_output';
 end
 
@@ -67,17 +59,4 @@ end
 % This is kind of obvious...
 run(myPipe, files{:});
 
-end
-
-
-function name = get_hostname
-[ret, name] = system('hostname');
-if ret
-    if ispc,
-        name = getenv('COMPUTERNAME');
-    else
-        name = getenv('HOSTNAME');
-    end
-end
-name = regexprep(name, '[^\w\d]', '');
 end
