@@ -6,15 +6,15 @@ close all;
 clear all;
 clear classes;
 
-% Add meegpipe to your path, and initialize it
-switch lower(get_hostname),
-    case {'somerenserver', 'nin389'},
-        addpath(genpath('/data1/toolbox/meegpipe_v0.0.8'));
-    case 'outolintulan',
-        addpath(genpath('/Volumes/DATA/mlib/meegpipe_v0.0.8'));
-    otherwise
-        error('I don''t know where is meegpipe on %s', get_hostname);
-end
+% % Add meegpipe to your path.
+% switch lower(get_hostname),
+%     case {'somerenserver', 'nin389'},
+%         addpath(genpath('/data1/toolbox/meegpipe_v0.0.8'));
+%     case 'outolintulan',
+%         addpath(genpath('/Volumes/DATA/mlib/meegpipe_v0.0.8'));
+%     otherwise
+%         error('I don''t know where is meegpipe on %s', get_hostname);
+% end
 
 meegpipe.initialize;
 
