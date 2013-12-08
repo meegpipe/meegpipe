@@ -17,6 +17,9 @@ count = 0;
 if opt.SummaryOnly,
 
     uTypes = unique(ev);
+    if ~iscell(uTypes),
+        uTypes = {uTypes};
+    end
     count = count +  fprintf(fid, '%d events of %d type(s)\n\n', ...
         numel(ev), numel(uTypes));
     

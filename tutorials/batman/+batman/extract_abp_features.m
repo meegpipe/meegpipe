@@ -43,7 +43,7 @@ myPipe = batman.extract_abp_features_pipeline(...
 regex = 'split_files-.+_\d+\.pseth?';
 splittedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
 somsds.link2files(splittedFiles, OUTPUT_DIR);
-regex = '\.pseth$';
+regex = 'batman_0009_eeg_all_11-14_rs_11\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 % files should now be a cell array containing the full paths to the single

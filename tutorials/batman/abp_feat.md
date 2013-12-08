@@ -447,8 +447,8 @@ To perform the aggregation run:
 batman.aggregate_abp_features
 ````
 which will store in file [abp_features.csv][abp_features_csv] the aggregated
-feature table. Below you can see a synopsis of how the features table looks
-like:
+feature table. Below you can see how the top of that features table looks
+like for me:
 
 [abp_features_csv]: ./abp_features.csv
 
@@ -458,8 +458,6 @@ batman_0007_eeg_all_arsq_1  | 0007    | arsq     | 1         | cond3            
 batman_0007_eeg_all_arsq_11 | 0007    | arsq     | 11        | cond9               | light0_posture1_dpg0 | pset.selector.all_data | 96.7132     | 73.8370      | 22.8633        | 79.9444       | -0.3588     | 3.8429              | 3.9264              | 66.7786    | 8.9266
 batman_0007_eeg_all_arsq_12 | 0007    | arsq     | 12        | cond6               | light1_posture1_dpg1 | pset.selector.all_data | 97.0860     | 72.6804      | 24.4148        | 79.7420       | -0.3859     | 4.3479              | 4.4589              | 65.5946    | 9.3898
 batman_0007_eeg_all_arsq_13 | 0007    | arsq     | 13        | cond8               | light1_posture0_dpg1 | pset.selector.all_data | 98.4168     | 72.4243      | 25.9907        | 79.6494       | -0.3081     | 5.1062              | 5.4009              | 52.7616    | 8.0201
-
-
 
 
 ## [Continue to the next part ...][hrv]
