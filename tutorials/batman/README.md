@@ -1,5 +1,5 @@
 BATMAN tutorial
-===============
+===
 
 Below I assume that you are running this tutorial at the _somerengrid_, i.e. at
 one of the nodes from the private computing grid of the [Sleep&Cognition][sc]

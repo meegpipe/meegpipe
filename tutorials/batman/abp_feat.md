@@ -177,7 +177,7 @@ The [cardiac output toolbox][cotb] from [Physionet.org][physionet] requires that
 the ABP signals are measured in mmHg. The calibration process can be implemented
 by writing a function that transforms the input time-series accordingly:
 
-````
+````matlab
 function calibAbpChannel = calibrate_abp(abpChannel)
 % CALIBRATE_ABP - Calibrates ABP signal so that it is in mmHg units
 
@@ -213,14 +213,104 @@ requires quite a bit of ad-hoc (potentially inaccurate) heuristics. See function
 
 ### Node 4: Beat onset detection
 
+A preliminary step to extracting any valuable feature from the ABP signal is to
+detect the onset of each heartbeat. This can be done using an
+[abp_beat_detect][abp_beat_detect] node:
 
+[abp_beat_detect]: ../../+meegpipe/+node/+abp_beat_detect/README.md
+
+````matlab
+import meegpipe.node.*;
+
+% The default settings will do. But we need to use an appropriate DataSelector
+% so that only the ABP signal is used by this node.
+myNode = abp_beat_detect.new(...
+    'DataSelector',     pset.selector.sensor_label('Portapres')...
+    );
+````
 
 
 ### Node 5: ABP feature extraction
 
+Once the beat onsets have been detected, extracting the ABP features is piece of
+cake using an [abp_features][abp_features] node:
 
+````matlab
+import meegpipe.node.*;
 
+% A default node will do, but with an appropriate DataSelector
+myNode = abp_features.new(...
+    'DataSelector',     pset.selector.sensor_label('Portapres') ...
+    );
+````
 
 
 ### Putting it all together
 
+Below the contents of function [extract_abp_features_pipeline.m][extract_abp_features_pipeline],
+which create the pipeline that we need to extract the ABP features:
+
+[extract_abp_features_pipeline]: ./+batman/extract_abp_features_pipeline.m
+
+````matlab
+function myPipe = extract_abp_features_pipeline(varargin)
+% EXTRACT_ABP_FEATURES_PIPELINE - ABP feature extraction pipeline
+%
+% See also: batman
+
+import meegpipe.node.*;
+import physioset.event.class_selector;
+import pset.selector.sensor_label;
+
+% Initialize the list of nodes that the pipeline will contain
+nodeList = {};
+
+%% Node 1: data import
+myImporter = physioset.import.physioset('Precision', 'double');
+myNode = physioset_import.new('Importer', myImporter);
+nodeList = [nodeList {myNode}];
+
+%% Node 2: copy input physioset to prevent modifying the input .pseth files
+myNode = copy.new;
+nodeList = [nodeList {myNode}];
+
+%% Node 3: Calibrate the ABP channel
+myNode = operator.new(...
+    'Operator',         @(x) batman.abp.calibrate_abp(x), ...
+    'DataSelector',     pset.selector.sensor_label('Portapres'), ...
+    'Name',             'abp-calib');
+nodeList = [nodeList {myNode}];
+
+%% Node 4: ABP onset detection
+myNode = abp_beat_detect.new(...
+    'DataSelector',     pset.selector.sensor_label('Portapres')...
+    );
+nodeList = [nodeList {myNode}];
+
+
+%% Node 5: Extract ABP features
+myNode = abp_features.new(...
+    'DataSelector',     pset.selector.sensor_label('Portapres') ...
+    );
+nodeList = [nodeList {myNode}];
+
+%% Create the pipeline
+% Note that we set property Save to false because we are not interested in
+% the actual physioset data values but only on the features that are
+% extracted from the ABP time-series. The latter are stored in the
+% generated HTML reports and thus we don't need to save a binary copy of
+% the physioset that comes at the output of our pipeline.
+myPipe = pipeline.new(...
+    'Name',             'batman-abp', ...
+    'NodeList',         nodeList, ...
+    'Save',             false, ...
+    varargin{:});
+
+end
+````
+
+## [Continue to the next step ...][hrv]
+
+The link above is broken because the next step is still under preparation.
+
+[hrv]: ./hrv_feat.md
