@@ -309,6 +309,8 @@ myPipe = pipeline.new(...
 end
 ````
 
+## Aggregating features across single-block files
+
 ## [Continue to the next step ...][hrv]
 
 The link above is broken because the next step is still under preparation.
