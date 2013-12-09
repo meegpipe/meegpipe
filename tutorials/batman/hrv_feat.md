@@ -5,6 +5,7 @@ We will now extract Heart Rate Variability features from the [ECG][ecg]
 time-series contained in the BATMAN recordings. This is done with the help of
 [physionet]'s [HRV toolkit][hrv_toolkit].
 
+[ecg]: http://en.wikipedia.org/wiki/Electrocardiography
 [hrv_toolkit]: http://physionet.org/tutorials/hrv-toolkit/
 [physionet]: http://physionet.org/
 
@@ -18,3 +19,20 @@ I wrote][extract_abp_feat].
 
 [abp]: ./abp_feat.md
 [extract_abp_feat]: ./+batman/extract_abp_features.m
+
+
+## Processing pipeline
+
+Try to write the HRV feature extraction pipeline yourself. Hints:
+
+* Node [ecg_annotate][ecg_annotate] can be used to extract HRV features from an
+  ECG time-series, as long as the locations of the R-peaks are annotated with
+  suitable events.
+
+* Node [qrs_detect][qrs_detect] detects R-peaks in an ECG time series and
+  annotates them by placing `qrs` events at the corresponding locations.
+
+If you feel lazy, or you think that this is too easy, you can also just take a
+look at [the pipeline that I wrote][mypipe].
+
+[mypipe]: ./+batman/extract_hrv_features_pipeline.m

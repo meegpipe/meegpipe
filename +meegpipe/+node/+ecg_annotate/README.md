@@ -1,15 +1,14 @@
 `ecg_annotate` - Annotate ECG heartbeats
 ===
 
-The `ecg_annotate` node detects QRS complexes and annotates heartbeats
+The `ecg_annotate` node annotates heartbeats
 using [ecgpuwave][ecgpuwave]. This node is actually a wrapper to the public
-`ecgpuwave` implementation in MATLAB by [Pablo Laguna][laguna] and others.
-Unfortunately, the latter implementation is not complete and requires a 
-third-party R-peak detector. This has been solved using the R-peak detector
-included in the [FMRIB toolbox][fmrib] for MATLAB. 
+`ecgpuwave` implementation in MATLAB by [Pablo Laguna][laguna] and others. This
+node expects R-peak locations to be annotated using appropriate events in the
+input physioset. Suck R-peak locations can be detected and annotated using
+a [qrs_detect][qrs_detect] node.
 
-[fmrib]: http://fsl.fmrib.ox.ac.uk/eeglab/fmribplugin/
-
+[qrs_detect]: ../+qrs_detect/README.md
 
 Additionally, the `ecg_annotate` node computes heart rate variability features
 based on the annotations produced by `ecgpuwave`. This is done using the
