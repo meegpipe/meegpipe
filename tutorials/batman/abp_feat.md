@@ -20,12 +20,13 @@ Database][pub2]. Computers in Cardiology 32: 295-298, 2005.
 [cotb]: http://physionet.org/physiotools/cardiac-output/
 [abp]: http://en.wikipedia.org/wiki/Blood_pressure
 
-In the code samples shown below I assume that your MATLAB search is set to
-its default value. You can ensure that this is the case by executing the
-following command when you start MATLAB:
+In the code samples shown below I assume that you are running this tutorial at
+the _somerengrid_ and that you have run the following two commands when you
+started your MATLAB session:
 
 ````matlab
 restoredefaultpath;
+addpath(genpath('/data1/toolbox/meegpipe_v0.1.0'));
 ````
 
 ## Main processing script
@@ -460,8 +461,5 @@ batman_0007_eeg_all_arsq_13 | 0007    | arsq     | 13        | cond8            
 
 
 ## [Continue to the next part ...][hrv]
-
-The link above is broken because the part of this tutorial is still under
-preparation.
 
 [hrv]: ./hrv_feat.md
