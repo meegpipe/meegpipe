@@ -13,7 +13,7 @@ team of the [Netherlands Institute for Neuroscience][nin].
 
 ### Experimental protocol
 
-Description of the experimental protocol here...
+A description of the experimental protocol should be here at some point ...
 
 ![Experimental protocol](./img/batman-protocol.png "Experimental protocol")
 

@@ -65,8 +65,7 @@ close all;
 clear all;
 clear classes;
 
-% Add meegpipe to your path, and initialize it
-addpath(genpath('/data1/toolbox/meegpipe_v0.0.9'));
+% Initialize meegpipe
 meegpipe.initialize;
 
 % The output directory where we want to store the splitted data files

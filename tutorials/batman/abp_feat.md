@@ -47,8 +47,7 @@ close all;
 clear all;
 clear classes;
 
-% Add meegpipe to your path, and initialize it
-addpath(genpath('/data1/toolbox/meegpipe_v0.0.8'));
+% Initialize meegpipe
 meegpipe.initialize;
 
 % Import some utilities

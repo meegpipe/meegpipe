@@ -29,7 +29,7 @@ yRange   = abs(diff(yLims));
 yLims(1) = yLims(1) - 0.1*yRange;
 yLims(2) = yLims(2) + 0.1*yRange;
 set(gca, 'YLim', yLims);
-set(gca, 'FontSize', 8);
+set(gca, 'FontSize', 10);
 ylabel('Epoch statistic');
 
 % Make clear which channels were rejected
