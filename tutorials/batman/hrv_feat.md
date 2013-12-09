@@ -29,8 +29,12 @@ Try to write the HRV feature extraction pipeline yourself. Hints:
   ECG time-series, as long as the locations of the R-peaks are annotated with
   suitable events.
 
+[ecg_annotate]: ../../+meegpipe/+node/+ecg_annotate/README.md
+
 * Node [qrs_detect][qrs_detect] detects R-peaks in an ECG time series and
   annotates them by placing `qrs` events at the corresponding locations.
+
+[qrs_detect]: ../../+meegpipe/+node/+qrs_detect/README.md
 
 If you feel lazy, or you think that this is too easy, you can also just take a
 look at [the pipeline that I wrote][mypipe].
