@@ -47,9 +47,9 @@ look at [the pipeline that I wrote][mypipe].
 The feature aggregation step is identical to what we did when [aggregating the
 ABP features][abp]:
 
-[abp]: ../abp_feat.md
+[abp]: ./abp_feat.md
 
-````
+````matlab
 function aggregate_hrv_features
 % AGGREGATE_HRV_FEATURES - Aggregate all HRV features in a single .csv table
 
