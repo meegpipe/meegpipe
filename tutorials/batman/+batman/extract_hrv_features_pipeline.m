@@ -25,8 +25,8 @@ nodeList = [nodeList {myNode}];
 
 %% Create the pipeline
 % Note that we set property Save to false because we are not interested in
-% the actual physioset data values but only on the features that are
-% extracted from the ABP time-series. The latter are stored in the
+% the actual physioset data values but only on the HRV features that are
+% extracted from the ECG time-series. The latter are stored in the
 % generated HTML reports and thus we don't need to save a binary copy of
 % the physioset that comes at the output of our pipeline.
 myPipe = pipeline.new(...
