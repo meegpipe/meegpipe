@@ -89,6 +89,6 @@ end
 
 To perform the aggregation simply run:
 
-````
+````matlab
 batman.aggregate_abp_features
 ````
