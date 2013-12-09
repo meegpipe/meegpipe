@@ -66,7 +66,7 @@ clear all;
 clear classes;
 
 % Add meegpipe to your path, and initialize it
-addpath(genpath('/data1/toolbox/meegpipe_v0.0.8'));
+addpath(genpath('/data1/toolbox/meegpipe_v0.0.9'));
 meegpipe.initialize;
 
 % The output directory where we want to store the splitted data files
@@ -88,7 +88,12 @@ myPipe = batman.split_files_pipeline(...
 % step is equivalent to copying the relevant data files into the output
 % directory but has the advantage of saving valuable disk space. The
 % command below will only work at somerengrid.
-files = somsds.link2rec('batman', 'subject', [1 2], 'folder', OUTPUT_DIR);
+files = somsds.link2rec(...
+            'batman', ...           % The recording ID
+            'subject', [1 2], ...   % The subject ID(s)
+            'modality', 'eeg', ...  % The data modality
+            'folder',  OUTPUT_DIR); % The directory where the links will be generated
+        
 
 % files should now be a cell array containing the full paths to the files
 % that are to be splitted (or, rather, the full paths to the symbolic links

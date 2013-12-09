@@ -45,7 +45,12 @@ myPipe = batman.split_files_pipeline(...
 % command below will only work at somerengrid.
 switch lower(get_hostname),
     case {'somerenserver', 'nin389'}
-        files = somsds.link2rec('batman', 'subject', [1 2], 'folder', OUTPUT_DIR);
+        files = somsds.link2rec(...
+            'batman', ...           % The recording ID
+            'subject', [1 2], ...   % The subject ID(s)
+            'modality', 'eeg', ...  % The data modality
+            'folder',  OUTPUT_DIR); % The directory where the links will be generated
+        
     case 'outolintulan',
         DATA_DIR = '/Volumes/DATA/datasets/batman';
         files = catfile(DATA_DIR, dir(DATA_DIR, '\.mff$'));
