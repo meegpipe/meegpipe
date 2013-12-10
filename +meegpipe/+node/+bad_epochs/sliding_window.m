@@ -8,18 +8,22 @@ import physioset.event.periodic_generator;
 import datahash.DataHash;
 
 if nargin < 1 || isempty(period),
-    period = 1;
+    period = 1;  % in seconds
 end
 
 if nargin < 2 || isempty(dur),
-    dur = 0.5*period;
+    dur = 0.5*period; % in seconds
+end
+
+if ~isnumeric(period) || ~isnumeric(dur) || period < 0 || dur < 0,
+    error('Both period and duration must be positive scalars');
 end
 
 crit = stat(...
     'ChannelStat',  @(x) var(x), ...
     'EpochStat',    @(chanVars) mean(chanVars), ...
-    'Max',          @(meanVar) prctile(meanVar, 95), ...
-    varargin{:});
+    'Max',          @(meanVar) prctile(meanVar, 95) ...
+    );
 
 randomEvType = ['__' DataHash(rand(1,100))];
 
@@ -30,13 +34,13 @@ evGen = periodic_generator(...
 
 node1 = ev_gen.new('EventGenerator', evGen);
 
-
 evSel = physioset.event.class_selector('Type', randomEvType);
 
 node2 = bad_epochs.new(...
     'Criterion',        crit, ...
     'DeleteEvents',     true, ...
-    'EventSelector',    evSel);
+    'EventSelector',    evSel, ...
+    varargin{:});
 
 obj = pipeline('NodeList', {node1, node2}, ...
     'Name', 'bad_epochs.sliding_window_var');
