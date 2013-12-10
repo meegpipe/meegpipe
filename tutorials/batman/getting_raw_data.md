@@ -14,7 +14,7 @@ Before anything else we will locate ourselves in our main working directory.
 Open a shell window and type:
 
 ````bash
-cd /data1/projects/meegpipe/tut_batman/[username]
+cd /data1/projects/meegpipe/batman_tut/[username]
 ````
 where `[username]` is your username at the `somerengrid`. In all the examples
 below I will use my username (`gherrero`) for illustration purposes.

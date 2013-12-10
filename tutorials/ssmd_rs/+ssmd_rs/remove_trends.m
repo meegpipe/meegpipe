@@ -1,11 +1,9 @@
-function split_files
-% SPLIT_FILES - Split BATMAN's large .mff files into single-block files
+function remove_trends
+% REMOVE_TRENDS - Remove large amplitude trends in the SSMD datasets
 %
-% This is the first stage of the BATMAN processing chain. The input to this
-% stage are the raw .mff files. The produced output is a set of
-% single-block .pset/pseth files (meegpipe's own data format). By
-% single-block we mean a single condition block (Baseline, PVT, RS, RSQ)
-% within a given experimental manipulation.
+% Depending on the filter that we use for detrending, this step can take a
+% very long time to compute. That is why we have it as a separate pipeline,
+% instead of having it as an additional node of the EEG cleaning pipeline.
 
 % Start in a completely clean state
 close all;
@@ -17,14 +15,19 @@ meegpipe.initialize;
 % Import some miscellaneous utilities
 import misc.dir;
 import mperl.file.spec.catfile;
+import mperl.file.spec.catdir;
 import misc.get_hostname;
+import misc.get_username;
 
 % The output directory where we want to store the splitted data files
 switch lower(get_hostname),
     case {'somerenserver', 'nin389'}
-        OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
+        % If we are running this at somerengrid
+        OUTPUT_DIR = catdir('/data1/projects/meegpipe/ssmd_rs_tut', ...
+            get_username, 'remove_trends_output');
     otherwise,
-        OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/split_files_output';
+        % If German is running this in his laptop
+        OUTPUT_DIR = '/Volumes/DATA/tutorial/ssmd_rs/remove_trends_output';
 end
 
 % Some (optional) parameters that you may want to play with when experimenting
@@ -32,8 +35,8 @@ end
 PARALELLIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
-% Create an instance of your data splitting pipeline
-myPipe = batman.split_files_pipeline(...
+% Create an instance of your detrending pipeline
+myPipe = batman.remove_trends(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
 
@@ -45,14 +48,17 @@ myPipe = batman.split_files_pipeline(...
 % command below will only work at somerengrid.
 switch lower(get_hostname),
     case {'somerenserver', 'nin389'}
+        % If we are running this at the somerengrid, use link2rec to get
+        % symbolic links to the relevant data files
         files = somsds.link2rec(...
             'batman', ...           % The recording ID
-            'subject', [1 2], ...   % The subject ID(s)
-            'modality', 'eeg', ...  % The data modality
+            'subject', 102:104, ...   % The subject ID(s)
+            'cond_regex', 'rs-', ...  % The data modality
             'folder',  OUTPUT_DIR); % The directory where the links will be generated
         
     case 'outolintulan',
-        DATA_DIR = '/Volumes/DATA/datasets/batman';
+        % If German is running this in his laptop
+        DATA_DIR = '/Volumes/DATA/datasets/ssmd';
         files = catfile(DATA_DIR, dir(DATA_DIR, '\.mff$'));
         files = somsds.link2files(files, OUTPUT_DIR);
 end
