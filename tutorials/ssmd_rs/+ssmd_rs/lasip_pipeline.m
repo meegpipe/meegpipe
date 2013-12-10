@@ -28,8 +28,9 @@ nodeList   = [nodeList {myNode}];
 % downsides are that (1) the current implementation of the LASIP filter is
 % terribly slow, and (2) the LASIP filter has quite a few parameters which
 % can be ticky to set for optimal results. For now, we will just use the
-% default LASIP filter:
-myFilter = filter.lasip;
+% default LASIP filter (or almost ... ask your tutor about the GetNoise
+% parameter).
+myFilter = filter.lasip('GetNoise', true);
 
 % It is very important to remember to set the DataSelector property of the
 % node appropriately so that only the desired channels are filtered. In
