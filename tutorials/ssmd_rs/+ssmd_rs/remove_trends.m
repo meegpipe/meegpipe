@@ -57,7 +57,7 @@ switch lower(get_hostname),
         % symbolic links to the relevant data files
         files = somsds.link2rec(...
             'ssmd',       ...         % The recording ID
-            'subject',    102:104, ...% The subject ID(s)
+            'subject',    104:115, ...% The subject ID(s)
             'file_ext',   '.mff', ... % We want only .mff files (there are .TRC as well)
             'cond_regex', 'rs-', ...  % The data modality
             'folder',     OUTPUT_DIR); % The directory where the links will be generated

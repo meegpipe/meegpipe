@@ -3,13 +3,12 @@ function [data, obj] = filter(obj, data, varargin)
 import misc.eta;
 import misc.resample;
 
-verbose         = is_verbose(obj);
 verboseLabel    = get_verbose_label(obj);
 verboseLevel    = get_verbose_level(obj);
 
 %% Do the actual filtering
 tinit = tic;
-if verbose,
+if verboseLevel > 1,
     if isa(data, 'goo.named_object') || isa(data, 'goo.named_object_handle'),
         name = get_name(data);
     else
@@ -43,7 +42,7 @@ for i = 1:size(dataD, 1)
 end
 warning('on', 'MATLAB:oldPfileVersion');
 
-if verbose,
+if verboseLevel > 1,
     fprintf('\n\n');
     clear misc.eta;
 end
@@ -51,7 +50,7 @@ end
 %% Interpolation
 if obj.Decimation > 1,
     
-    if verbose,
+    if verboseLevel > 1,
         if isa(dataD, 'physioset.physioset'),
             name = get_name(dataD);
         else
@@ -110,7 +109,7 @@ if obj.Decimation > 1,
             
         end
         
-        if verbose,
+        if verboseLevel > 1,
             eta(tinit, size(data, 1), i, 'remaintime', true);
         end
     end
@@ -141,7 +140,7 @@ else
     
 end
 
-if verbose,
+if verboseLevel > 1,
     fprintf('\n\n');
     clear misc.eta;
 end
