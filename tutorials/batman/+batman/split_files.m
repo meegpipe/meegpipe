@@ -29,13 +29,13 @@ end
 
 % Some (optional) parameters that you may want to play with when experimenting
 % with your processing pipeline
-PARALELLIZE = true; % Should each file be processed in parallel?
+PARALLELIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
 % Create an instance of your data splitting pipeline
 myPipe = batman.split_files_pipeline(...
     'GenerateReport', DO_REPORT, ...
-    'Parallelize',    PARALELLIZE);
+    'Parallelize',    PARALLELIZE);
 
 % Note that we have not yet written function splitting_pipeline!
 
