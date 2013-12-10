@@ -73,6 +73,11 @@ classdef lasip < ...
             obj = set_verbose(obj, opt.Verbose);
             obj = set_name(obj, opt.Name);
             
+            % We set the verbosity level to something greater than usual
+            % because this is a very slow filter and we want to generate
+            % status messages in almost all occasions
+            obj = set_verbose_level(obj, 2);
+            
         end
         
     end

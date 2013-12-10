@@ -8,6 +8,18 @@ team of the [Netherlands Institute for Neuroscience][nin].
 [sc]: http://www.nin.knaw.nl/research_groups/van_someren_group
 [nin]: http://www.nin.knaw.nl/
 
+I also assume that you have run the following code when you started MATLAB:
+
+````matlab
+% Ensure MATLAB's workspace is completely clean
+close all; clear all; clear classes
+
+% Ensure no interfering toolboxes are in MATLAB's search path
+restoredefaultpath;
+
+% Add meegpipe to MATLAB's search path
+addpath(genpath('/data1/toolbox/meegpipe'));
+````
 
 ## Experimental data
 
@@ -21,10 +33,12 @@ part of the _ssmd_ protocol.
 
 ## Objectives/Roadmap
 
-1. [Removing large amplitude trends in the data][removing_trends] with
-   a [LASIP][lasip] filter. An alternative to this approach would be to
-   simply high-pass filter the raw hdEEG data. However, low-pass filtering often
-   introduces considerable border-artifacts and may note remove completely rapid
-   signal trends (e.g. caused by large movements or by the sensors suddenly
-   loosing contact with the skin).
+1. [Removing large amplitude trends in the data][removing_trends]. These
+   large trends may be caused by movements or by the sensors suddenly
+   loosing contact with the skin.
+
+2. [Removing artifacts][artifacts]
+
+[artifacts]: ./removing_artifacts.md
+[removing_trends]: ./removing_trends.md
 

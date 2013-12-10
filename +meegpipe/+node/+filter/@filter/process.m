@@ -65,10 +65,10 @@ for segItr = 1:numel(evSample)
     
     first = evSample(segItr);
     last  = min(evSample(segItr)+evDur(segItr)-1, size(data,2));
-  
+    
     
     filtObj = set_verbose(filtObj, false);
-   
+    
     if do_reporting(obj)
         thisRep = childof(report.generic.generic, rep);
         % Set the title of this (sub-)report
@@ -88,8 +88,6 @@ for segItr = 1:numel(evSample)
         initialize(thisRep);
         print_link2report(rep, thisRep);
         
-        % Different galleries for different chop/epochs
-        galleryObj = [];
     end
     
     %% Project to PCS, if required
@@ -103,7 +101,7 @@ for segItr = 1:numel(evSample)
     else
         pcs = copy(data);
     end
- 
+    
     %% Filter every principal component
     if verbose,
         if isempty(pca),
@@ -116,7 +114,7 @@ for segItr = 1:numel(evSample)
     end
     
     pcs = filtfilt(filtObj, pcs);
-
+    
     %% Filter the actual data channels
     if ~isempty(pca),
         pcs = bproj(pca, pcs);
@@ -129,6 +127,7 @@ for segItr = 1:numel(evSample)
         end
         tinit2 = tic;
         chanCount = 0;
+        galleryArray = {};
         for i = channelSel
             
             select(data, i);
@@ -150,12 +149,12 @@ for segItr = 1:numel(evSample)
             select(data, [], firstRepSampl:lastRepSampl);
             select(pcs, [], firstRepSampl:lastRepSampl);
             attach_figure(obj);
-            galleryObj = filter.generate_filt_plot(thisRep, ...
+            galleryArray = filter.generate_filt_plot(thisRep, ...
                 i, ...
                 data, ...
                 pcs, ...
                 samplTime, ...
-                galleryObj, ...
+                galleryArray, ...
                 showDiffRep ...
                 );
             restore_selection(data); % plotted epoch time range
@@ -179,13 +178,15 @@ for segItr = 1:numel(evSample)
     end
     
     restore_selection(data);
-
+    
     if verbose, fprintf('\n\n'); end
     
     if do_reporting(obj)
-        fprintf(thisRep, galleryObj);
+        for i = 1:numel(galleryArray),
+            fprintf(thisRep, galleryArray{i});
+        end
     end
-
+    
     if verbose && numel(evSample) > 1,
         clear +misc/eta.m;
         verboseLabel = origVerboseLabel;

@@ -5,6 +5,7 @@ import misc.resample;
 
 verbose         = is_verbose(obj);
 verboseLabel    = get_verbose_label(obj);
+verboseLevel    = get_verbose_level(obj);
 
 %% Do the actual filtering
 tinit = tic;
@@ -36,7 +37,7 @@ for i = 1:size(dataD, 1)
             obj.WeightsMedian, ...
             obj.ExpandBoundary);
     end
-    if verbose,
+    if verboseLevel > 1,
         eta(tinit, size(dataD, 1), i, 'remaintime', true);
     end
 end

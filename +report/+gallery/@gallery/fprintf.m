@@ -38,21 +38,11 @@ level = get_level(obj);
 galName = get_title(obj);
 
 if ~isempty(galName)
-    
-    if level < 2,
-        
         count = count + ...
-            fprintf(fid, '%s\n%s\n\n', galName, repmat('=', 1, 10));
-        
-    else
-        
-        count = count + ...
-            fprintf(fid, '%s %s\n\n', repmat('#', 1, level), galName);
-        
-    end
+            fprintf(fid, '%s %s\n\n', repmat('#', 1, level + 1), galName);
 end
 
-level = level + 1;
+level = level + 2;
 
 count = count + ...
     fprintf(fid, '[[set_many Gallery]]:\n');

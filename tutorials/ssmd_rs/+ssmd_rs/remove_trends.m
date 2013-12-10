@@ -1,16 +1,11 @@
-function remove_trends
+function remove_trends(pipelineName)
 % REMOVE_TRENDS - Remove large amplitude trends in the SSMD datasets
 %
 % Depending on the filter that we use for detrending, this step can take a
 % very long time to compute. That is why we have it as a separate pipeline,
 % instead of having it as an additional node of the EEG cleaning pipeline.
-
-% Start in a completely clean state
-close all;
-clear all;
-clear classes;
-
-meegpipe.initialize;
+%
+% See also: ssmd_rs
 
 % Import some miscellaneous utilities
 import misc.dir;
@@ -18,6 +13,16 @@ import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 import misc.get_hostname;
 import misc.get_username;
+
+% Often you will want to experiment with multiple pipelines on the same
+% data files before you come up with the definitive one. This function
+% illustrates such a scenario. It allows the user to provide a parameter
+% (pipelineName) that determines which pipeline is actually used to process
+% the data files. By default we will use the 'lasip_pipeline'. Another
+% alternative that is to use the 'polyfit_pipeline'.
+if nargin < 1 || isempty(pipelineName),
+    pipelineName = 'polyfit_pipeline';
+end
 
 % The output directory where we want to store the splitted data files
 switch lower(get_hostname),
@@ -36,7 +41,7 @@ PARALELLIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
 % Create an instance of your detrending pipeline
-myPipe = batman.remove_trends(...
+myPipe = ssmd_rs.(pipelineName)(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
 
@@ -56,7 +61,7 @@ switch lower(get_hostname),
             'cond_regex', 'rs-', ...  % The data modality
             'folder',  OUTPUT_DIR); % The directory where the links will be generated
         
-    case 'outolintulan',
+    otherwise,
         % If German is running this in his laptop
         DATA_DIR = '/Volumes/DATA/datasets/ssmd';
         files = catfile(DATA_DIR, dir(DATA_DIR, '\.mff$'));

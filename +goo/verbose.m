@@ -10,6 +10,7 @@ classdef verbose
         
         Verbose         = true;
         VerboseLabel    = @(obj, meth) ['(' class(obj) ') '];
+        VerboseLevel    = [];
        
     end
     
@@ -49,6 +50,12 @@ classdef verbose
         end       
         
         function level  = get_verbose_level(obj)
+            if ~isempty(obj.VerboseLevel),
+                % user-defined level
+                level = obj.VerboseLevel;
+                return;
+            end
+            
             if is_verbose(obj),
                 level = 1;
             elseif ~is_verbose(obj) && obj.Verbose,

@@ -3,8 +3,7 @@ classdef filter < meegpipe.node.abstract_node
     
     methods (Static, Access = private)
         
-        gal = generate_filt_plot(rep, idx, data1, data2, samplTime, ...
-            gal, showDiff);
+        gal = generate_filt_plot(rep, idx, data1, data2, samplTime, gal, showDiff);
         
     end
     

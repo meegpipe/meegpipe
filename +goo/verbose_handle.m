@@ -12,6 +12,7 @@ classdef verbose_handle < handle
         
         Verbose         = true;
         VerboseLabel    = '';
+        VerboseLevel    = [];
         
     end
     
@@ -36,6 +37,12 @@ classdef verbose_handle < handle
         end
         
         function level  = get_verbose_level(obj)
+            if ~isempty(obj.VerboseLevel),
+                % user-defined level
+                level = obj.VerboseLevel;
+                return;
+            end
+            
             if is_verbose(obj),
                 level = 1;
             elseif ~is_verbose(obj) && obj.Verbose,
