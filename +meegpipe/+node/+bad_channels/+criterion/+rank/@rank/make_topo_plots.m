@@ -1,4 +1,4 @@
-function hFig = make_topo_plots(sens, idx, xvarLog)
+function hFig = make_topo_plots(sens, xvarLog, idx)
 
 import meegpipe.node.globals;
 import plotter.topography.topography;

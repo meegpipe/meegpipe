@@ -6,7 +6,7 @@ classdef criterion
    
     methods (Abstract)
        
-        [idx, rankVal] = find_bad_channels(obj, data);
+        [idx, rankVal] = find_bad_channels(obj, data, rep);
         
     end  
     

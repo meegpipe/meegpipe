@@ -5,17 +5,14 @@ classdef config < meegpipe.node.bad_channels.criterion.rank.config
     
     
     properties
-        
         NN              = 10;
         Filter          = [];
         Normalize       = true;
         LogScale        = true;
-        
     end
     
     % Consistency checks
     methods
-        
         
         function obj = set.NN(obj, value)
             

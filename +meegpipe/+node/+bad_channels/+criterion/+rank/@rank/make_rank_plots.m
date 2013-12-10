@@ -1,8 +1,8 @@
-function hFig = make_rank_plots(sens, rejIdx, rankVal)
+function hFig = make_rank_plots(sens, rankVal, rejIdx, minRank, ...
+    maxRank, rankStats)
 
 import rotateticklabel.rotateticklabel;
 import meegpipe.node.globals;
-
 
 SIZE_FACTOR = 2; 
 
@@ -44,7 +44,6 @@ extremeIdx = find(rankVal < th(1) | rankVal > th(2));
 extremeIdx = setdiff(extremeIdx, rejIdx);
 
 if ~isempty(rejIdx),
-   
     % Set the figure XTicks (non-rejected/non-extreme channels)
     nonRejIdx = setdiff(1:numel(rankVal), [rejIdx(:);extremeIdx(:)]);
     set(gca, 'XTick', nonRejIdx);
@@ -78,9 +77,7 @@ if ~isempty(rejIdx),
             set(h, 'Rotation', 90, 'FontSize', fontSize);
         end
     end
-
 end
-
 
 % Place text labels over the extreme points
 if ~isempty(extremeIdx),
@@ -90,8 +87,7 @@ if ~isempty(extremeIdx),
     elseif numel(rejIdx) > 1,
         fontSize = max(2, min(12, min(diff(rejIdx))*SIZE_FACTOR));
     end
-    
- 
+
     if ~isempty(extremeIdx),
         sensLabels = labels(subset(sens, extremeIdx));
         for i = 1:numel(extremeIdx),
@@ -99,7 +95,9 @@ if ~isempty(extremeIdx),
             set(h, 'Rotation', 90, 'FontSize', fontSize);
         end
     end    
-   
-    
+end
+
+report.overlay_rank_stats(rankVal, minRank, maxRank, rankStats);
+
 end
 

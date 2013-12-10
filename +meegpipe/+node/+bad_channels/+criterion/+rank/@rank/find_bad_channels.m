@@ -1,4 +1,4 @@
-function [rejIdx, rankIndex] = find_bad_channels(obj, data)
+function [rejIdx, rankIndex] = find_bad_channels(obj, data, rep)
 % FIND_BAD_CHANNELS - Selects bad channels using an automatic criterion
 %
 % [rejIdx, rankIndex] = find_bad_channels(obj, data)
@@ -10,6 +10,10 @@ function [rejIdx, rankIndex] = find_bad_channels(obj, data)
 % RANKINDEX is a vector of rank index values associated to each channel.
 %
 % See also: meegpipe.node.bad_channels.criterion.rank
+
+import meegpipe.node.bad_channels.criterion.rank.rank;
+
+if nargin < 3, rep = []; end
 
 verbose         = is_verbose(obj);
 verboseLabel    = get_verbose_label(obj);
@@ -86,6 +90,12 @@ if verbose,
 end
 
 rejIdx = find(selected);
+
+if ~isempty(rep),
+    rankStats = get_config(obj, 'RankPlotStats');
+    rank.generate_rank_report(rep, data, rankIndex, rejIdx, minRank, ...
+        maxRank, rankStats);
+end
 
 end
 

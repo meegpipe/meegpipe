@@ -56,13 +56,22 @@ for i = 1:numel(sensObj)
     else
         thisUsrSel = find(ismember(sensLabels, runtimeSel));
     end
-  
-    [rejIdx, rankVal] = find_bad_channels(crit, data);
+
+    if size(data, 1) > 1 && do_reporting(obj),
+        title = sprintf('Sensor group %d: %s', i, sensorClass);
+        subReport = generic('Title', title);
+        subReport = childof(subReport, rep);
+        initialize(subReport);
+        print_link2report(rep, subReport);
+    else
+        subReport = [];
+    end
+    rejIdx = find_bad_channels(crit, data, subReport);
     
     if ~firstTime
         rejIdx  = thisUsrSel;
     end
-  
+    
     %% Report for channels ranks
     print_title(rep, 'Bad channel selection', get_level(rep) + 2);
     
@@ -85,17 +94,7 @@ for i = 1:numel(sensObj)
             'The automatic selection has been manually overriden');
         
     end
-    
-    title = sprintf('Sensor group %d: %s', i, sensorClass);
-    subReport = generic('Title', title);
-    subReport = childof(subReport, rep);
-    initialize(subReport);
-    print_link2report(rep, subReport);
-    if size(data,1) > 1 && do_reporting(obj),
-        bad_channels.generate_rank_report(subReport, data, ...
-            sensors(data), rejIdx, rankVal);
-    end    
-   
+
     %% Update the physioset object
     set_bad_channel(data, rejIdx);
     
@@ -126,9 +125,5 @@ end
 sensLabels = labels(sensors(data));
 
 set_runtime(obj, 'channels', 'reject', sensLabels{is_bad_channel(data)});
-
-
-
-
 
 end

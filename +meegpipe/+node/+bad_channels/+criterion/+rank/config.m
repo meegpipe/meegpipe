@@ -10,11 +10,31 @@ classdef config < meegpipe.node.abstract_config
         MaxCard     = @(dim) ceil(0.2*dim);
         Min         = @(x) median(x)-10*mad(x);
         Max         = @(x) median(x)+10*mad(x);
+        RankPlotStats   = ...
+            meegpipe.node.bad_channels.criterion.rank.default_plot_stats;
         
     end
     
     % Consistency checks
     methods
+        
+        function obj = set.RankPlotStats(obj, value)
+            
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.RankPlotStats = [];
+                return;
+            end
+            
+            if ~isa(value, 'mjava.hash'),
+                throw(InvalidPropValue('RankPlotStats', ...
+                    'Must be an mjava.hash object'));
+            end
+            
+            obj.RankPlotStats = value;
+            
+        end
         
         function obj = set.MaxCard(obj, value)
             

@@ -51,7 +51,13 @@ if ~isempty(minRank),
 end
 
 % Minimum and maximum cardinality of the set of selected channels
-rI2 = abs(rankIndex - median(rankIndex));
+if ~isempty(minRank) && minRank == -Inf
+    rI2 = rankIndex;
+elseif ~isempty(maxRank) && maxRank == Inf,
+    rI2 = -rankIndex;
+else
+    rI2 = abs(rankIndex - median(rankIndex));
+end
 [~, order] = sort(rI2, 'descend');
 
 if minC > size(data,1),

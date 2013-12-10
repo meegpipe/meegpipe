@@ -1,4 +1,5 @@
-function generate_rank_report(rep, data, sens, rejIdx, rankVal)
+function generate_rank_report(rep, data, rankVal, rejIdx, minRank, ...
+    maxRank, rankStats)
 % GENERATE_RANK_REPORT - Generates report on bad channels and their rank
 %
 %
@@ -9,7 +10,7 @@ import mperl.file.spec.catfile;
 import misc.unique_filename;
 import rotateticklabel.rotateticklabel;
 import plot2svg.plot2svg;
-import meegpipe.node.bad_channels.bad_channels;
+import meegpipe.node.bad_channels.criterion.rank.rank;
 import meegpipe.node.globals;
 import report.gallery.gallery;
 import physioset.plotter.snapshots.snapshots;
@@ -23,6 +24,8 @@ verboseLabel    = [verboseLabel '    '];
 
 myGallery       = gallery;
 
+sens = sensors(data);
+
 sensType = upper(regexprep(class(sens), '^(.+?)\.([^\.]+)$', '$2'));
 
 %% Generate a variance topography, if EEG or MEG sens
@@ -32,7 +35,7 @@ if ismember(sensType, {'EEG', 'MEG'}) && has_coords(sens),
         fprintf([verboseLabel 'Generating rank topographies...']);
     end
     
-    bad_channels.make_topo_plots(sens, rejIdx, rankVal);
+    rank.make_topo_plots(sens, rankVal, rejIdx);
     
     % Print to .png format
     fileName = catfile(get_rootpath(rep), ['rank-topo-' sensType '.png']);
@@ -54,13 +57,13 @@ if ismember(sensType, {'EEG', 'MEG'}) && has_coords(sens),
 end
 
 %% Generate a variance plot with upper and lower boundaries
-
 if verbose,
     fprintf([verboseLabel ...
         'Plotting rank values across channels...']);
 end
 
-bad_channels.make_rank_plots(sens, rejIdx, rankVal);
+rank.make_rank_plots(sens, rankVal, rejIdx, minRank, ...
+    maxRank, rankStats);
 
 % Print to .svg and .png format
 fileName = catfile(get_rootpath(rep), ['var-plot-' sensType '.svg']);
