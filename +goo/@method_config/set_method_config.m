@@ -36,13 +36,13 @@ while i < numel(varargin)
         % This should never happen, unless you are working with a physioset
         % that was generated in an old version of meegpipe. Keep it just in
         % case!
-        methodCfg = [];
-    else
-        methodCfg = obj.MethodConfig(methodName);
+        obj.MethodConfig = mjava.hash;
     end
+         
+    methodCfg = obj.MethodConfig(methodName);
     
     if isempty(methodCfg), methodCfg = mjava.hash; end
-    
+  
     for j = 1:2:numel(newCfg)
        % Update existing configuration for this method
        methodCfg(newCfg{j}) = newCfg{j+1};
