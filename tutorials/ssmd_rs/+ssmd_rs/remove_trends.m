@@ -56,10 +56,11 @@ switch lower(get_hostname),
         % If we are running this at the somerengrid, use link2rec to get
         % symbolic links to the relevant data files
         files = somsds.link2rec(...
-            'batman', ...           % The recording ID
-            'subject', 102:104, ...   % The subject ID(s)
+            'ssmd',       ...         % The recording ID
+            'subject',    102:104, ...% The subject ID(s)
+            'file_ext',   '.mff', ... % We want only .mff files (there are .TRC as well)
             'cond_regex', 'rs-', ...  % The data modality
-            'folder',  OUTPUT_DIR); % The directory where the links will be generated
+            'folder',     OUTPUT_DIR); % The directory where the links will be generated
         
     otherwise,
         % If German is running this in his laptop
