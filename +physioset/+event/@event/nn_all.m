@@ -28,8 +28,8 @@ if ~isempty(cmp),
     idx = nan(1, numel(evArray1));
     for i = 1:numel(evArray1)
         
-        tmpIdx = find(cmp(sample1(i),sample2));        
-        
+        tmpIdx = find(cmp(sample1(i),sample2));
+   
         if isempty(tmpIdx),
             continue;
         else
@@ -42,6 +42,8 @@ else
     idx = nn_all(sample1(:), sample2(:));
 end
 
+
+% IDX CAN CONTAIN NANS!!! FIX THI!!!
 evArray = evArray2(idx);
 
 end

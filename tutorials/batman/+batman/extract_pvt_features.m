@@ -3,8 +3,8 @@ function extract_pvt_features
 
 % Start in a completely clean state
 close all;
-clear all;
-clear classes;
+%clear all;
+%clear classes;
 
 meegpipe.initialize;
 
@@ -45,7 +45,7 @@ splittedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
 somsds.link2files(splittedFiles, OUTPUT_DIR);
 % Note that we use a regex that will match only those files that contain
 % PVT events. 
-regex = '_pvt_\d+\.pseth$';
+regex = 'batman_0009_eeg_all_11-14_pvt_14\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 % files should now be a cell array containing the full paths to the single
