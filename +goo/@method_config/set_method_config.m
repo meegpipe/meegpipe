@@ -32,7 +32,14 @@ while i < numel(varargin)
         newCfg = cell(newCfg);
     end
     
-     methodCfg = obj.MethodConfig(methodName);
+    if isempty(obj.MethodConfig),
+        % This should never happen, unless you are working with a physioset
+        % that was generated in an old version of meegpipe. Keep it just in
+        % case!
+        methodCfg = [];
+    else
+        methodCfg = obj.MethodConfig(methodName);
+    end
     
     if isempty(methodCfg), methodCfg = mjava.hash; end
     
