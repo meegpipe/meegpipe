@@ -18,7 +18,13 @@ myImporter = physioset.import.mff('Precision', 'double');
 myNode     = meegpipe.node.physioset_import.new('Importer', myImporter);
 nodeList   = [nodeList {myNode}];
 
-%% Node 2: Detrending
+%% Node 2: Remove data mean
+% The main reason for having this node is to improve the visualization of
+% the detrending step. 
+myNode = meegpipe.node.center.new;
+nodeList = [nodeList {myNode}];
+
+%% Node 3: Detrending
 % We will detrend using a LASIP filter, developed by some of my former
 % colleagues:
 % http://www.cs.tut.fi/~lasip/
