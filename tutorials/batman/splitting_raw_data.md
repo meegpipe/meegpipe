@@ -92,7 +92,7 @@ files = somsds.link2rec(...
             'subject', [1 2], ...   % The subject ID(s)
             'modality', 'eeg', ...  % The data modality
             'folder',  OUTPUT_DIR); % The directory where the links will be generated
-        
+
 
 % files should now be a cell array containing the full paths to the files
 % that are to be splitted (or, rather, the full paths to the symbolic links
@@ -347,8 +347,11 @@ splitNaming = @(physObj, ev, evIdx) ...
 % This is not really required, but since in this tutorial we are not interested
 % in the EEG data, it is a good idea to select only non-EEG data when generating
 % the splits so that we have as small data splits as possible. Notice the
-% ~ symbol, which means: select everything except EEG data
-myDataSel = pset.selector.sensor_class('Class', 'EEG');
+% ~ symbol, which means: select everything except EEG data. What is the
+% ~ symbol does is to "negate" a data selector so that it selects the
+% complementary set that it would normally select. You can check whether a data
+% selector has been negated by inspecting the value of it Negated property.
+myDataSel = ~pset.selector.sensor_class('Class', 'EEG');
 
 % Create the split node. It is important to give a meaningful name to the node.
 myNode = split.new(...
