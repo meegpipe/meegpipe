@@ -10,16 +10,18 @@ meegpipe.initialize;
 
 % Import some utilities
 import mperl.file.find.finddepth_regex_match;
+import mperl.file.spec.catdir;
 import misc.get_hostname;
+import misc.get_username;
 
 switch lower(get_hostname),
     case {'somerenserver', 'nin389'},
         % The directory where the split data files are located
-        INPUT_DIR = ...
-            '/data1/projects/meegpipe/ssmd_rs_tut/gherrero/reject_bad_data_output';
+        INPUT_DIR = catdir('/data1/projects/meegpipe/ssmd_rs_tut', ...
+            get_username, 'reject_bad_data_output');
         % The output directory where we want to store the features
-        OUTPUT_DIR = ...
-            '/data1/projects/meegpipe/ssmd_rs_tut/gherrero/remove_artifacts_output';        
+        OUTPUT_DIR = catdir('/data1/projects/meegpipe/ssmd_rs_tut', ...
+            get_username, 'remove_artifacts_output');        
     otherwise
         INPUT_DIR = '/Volumes/DATA/tutorial/ssmd_rs/reject_bad_data_output';
         OUTPUT_DIR = '/Volumes/DATA/tutorial/ssmd_rs/remove_artifacts_output';
@@ -35,7 +37,7 @@ myPipe = ssmd_rs.remove_artifacts_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
 
-% Note that we have not yet written function extract_abp_feature_pipeline!
+% Note that we have not yet written function remove_artifacts_pipeline!
 
 % Generate links to the relevant data files into the output directory. This
 % step is equivalent to copying the relevant data files into the output
@@ -51,8 +53,7 @@ regex = '\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 % files should now be a cell array containing the full paths to the single
-% sub-block .pseth files that were generated in the data splitting stage.
-
+% sub-block .pseth files that were generated in the data splitting stage
 run(myPipe, files{:});
 
 end

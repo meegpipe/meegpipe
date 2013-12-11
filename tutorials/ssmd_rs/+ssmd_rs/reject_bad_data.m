@@ -6,17 +6,19 @@ meegpipe.initialize;
 % Import some utilities
 import mperl.file.find.finddepth_regex_match;
 import misc.get_hostname;
+import misc.get_username;
+import mperl.file.spec.catdir;
 
 switch lower(get_hostname),
     case {'somerenserver', 'nin389'},
         % The directory where the split data files are located
-        INPUT_DIR = ...
-            '/data1/projects/meegpipe/ssmd_rs_tut/gherrero/remove_trends_output';
+        INPUT_DIR = catdir('/data1/projects/meegpipe/ssmd_rs_tut/', ...
+            get_username, 'remove_trends_output');
         % The output directory where we want to store the features
-        OUTPUT_DIR = ...
-            '/data1/projects/meegpipe/ssmd_rs_tut/gherrero/reject_bad_data_output';        
+        OUTPUT_DIR = catdir('/data1/projects/meegpipe/ssmd_rs_tut/', ...
+            get_username, 'reject_bad_data_output');        
     otherwise
-        INPUT_DIR = '/Volumes/DATA/tutorial/ssmd_rs/remove_trends_output';
+        INPUT_DIR  = '/Volumes/DATA/tutorial/ssmd_rs/remove_trends_output';
         OUTPUT_DIR = '/Volumes/DATA/tutorial/ssmd_rs/reject_bad_data_output';
 end
 
