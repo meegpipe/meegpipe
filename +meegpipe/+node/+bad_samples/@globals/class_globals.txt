@@ -1,5 +1,0 @@
-Class: globals
-============
-
-[[Parent]]: eegcore.txt
-
