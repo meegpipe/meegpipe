@@ -154,7 +154,7 @@ try
     data = sample_data;
     
     crit = meegpipe.node.bad_channels.criterion.var.var('MinCard', 3, ...
-        'MaxCard', 3);
+        'MaxCard', 3, 'Max', 40);
     dataSel = pset.selector.sensor_class('Class', 'eeg');
     myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel);
     run(myNode, data);
