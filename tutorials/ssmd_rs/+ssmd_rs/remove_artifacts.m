@@ -16,13 +16,13 @@ switch lower(get_hostname),
     case {'somerenserver', 'nin389'},
         % The directory where the split data files are located
         INPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/remove_trends_output';
+            '/data1/projects/meegpipe/ssmd_rs_tut/gherrero/reject_bad_data_output';
         % The output directory where we want to store the features
         OUTPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/remove_artifacts_output';        
+            '/data1/projects/meegpipe/ssmd_rs_tut/gherrero/remove_artifacts_output';        
     otherwise
-        INPUT_DIR = '/Volumes/DATA/tutorial/batman/remove_trends_output';
-        OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/remove_artifacts_output';
+        INPUT_DIR = '/Volumes/DATA/tutorial/ssmd_rs/reject_bad_data_output';
+        OUTPUT_DIR = '/Volumes/DATA/tutorial/ssmd_rs/remove_artifacts_output';
 end
 
 % Some (optional) parameters that you may want to play with when experimenting
@@ -31,7 +31,7 @@ PARALELLIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
 % Create an instance of the feature extraction pipeline
-myPipe = batman.remove_artifacts_pipeline(...
+myPipe = ssmd_rs.remove_artifacts_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
 
@@ -40,9 +40,13 @@ myPipe = batman.remove_artifacts_pipeline(...
 % Generate links to the relevant data files into the output directory. This
 % step is equivalent to copying the relevant data files into the output
 % directory but has the advantage of saving valuable disk space.
-regex = '(lasip|polyfit)_pipeline-.+_\d+\.pseth?';
-splittedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
-somsds.link2files(splittedFiles, OUTPUT_DIR);
+regex = 'lasip-pipeline\.meegpipe.+bad-data\.pseth?';
+inputFiles = finddepth_regex_match(INPUT_DIR, regex, false, true);
+if isempty(inputFiles),
+    error('No files match pattern %s under directory %s', ...
+        regex, INPUT_DIR);
+end
+somsds.link2files(inputFiles, OUTPUT_DIR);
 regex = '\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
