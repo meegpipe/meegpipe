@@ -82,7 +82,7 @@ try
     
     badChanLabels = {'EEG 73', 'EEG 153', 'EEG 241'};
     badLabels = labels(subset(sensors(data), badSel));
-    condition = (numel(badSel) == 3 & all(badSel == [10 20 31]) & ...
+    condition = (numel(badSel) == 3 & all(badSel == [9 10 20]) & ...
         all(ismember(badLabels, badChanLabels)));
     
     if condition, 

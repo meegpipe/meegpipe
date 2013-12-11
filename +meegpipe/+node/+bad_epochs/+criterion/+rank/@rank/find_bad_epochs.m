@@ -26,20 +26,20 @@ maxC    = get_config(obj, 'MaxCard');
 ev = ev2;
 selected  = false(1, size(data,1));
 
-if isa(minRank, 'function_handle'),
-    minRank = minRank(rankIndex);
-end
-
-if isa(maxRank, 'function_handle'),
-    maxRank = maxRank(rankIndex);
-end
-
 if isa(minC, 'function_handle'),
     minC = minC(rankIndex);
 end
 
 if isa(maxC, 'function_handle'),
     maxC = maxC(rankIndex);
+end
+
+if isa(minRank, 'function_handle'),
+    minRank = minRank(rankIndex);
+end
+
+if isa(maxRank, 'function_handle'),
+    maxRank = maxRank(rankIndex);
 end
 
 % Min/Max criterion
@@ -56,9 +56,9 @@ if ~isempty(minRank) && minRank == -Inf
 elseif ~isempty(maxRank) && maxRank == Inf,
     rI2 = -rankIndex;
 else
-    rI2 = abs(rankIndex - median(rankIndex));
+    rI2 = min(rankIndex - minRank, maxRank - rankIndex);
 end
-[~, order] = sort(rI2, 'descend');
+[~, order] = sort(rI2, 'ascend');
 
 if minC > size(data,1),
     selected(1:end) = true;

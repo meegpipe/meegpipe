@@ -17,7 +17,7 @@ MEh     = [];
 % Number of tests that should run if everything goes OK
 initialize(14);
 
- 
+
 
 %% Create a new session
 try
@@ -60,12 +60,12 @@ try
     mySel  = class_selector('Type', 'myevent');
     
     crit = criterion.stat.stat(...
-        'ChannelStat',  @(x) x, ...
-        'EpochStat',    @(x) x^2);
+        'ChannelStat',  @(x) sum(x), ...
+        'EpochStat',    @(x) sum(x.^2));
     
     myNode = bad_epochs(...
         'Criterion',     crit, ...
-        'EventSelector', mySel, ...    
+        'EventSelector', mySel, ...
         'Save',          true);
     
     crit = get_config(myNode, 'Criterion');
@@ -84,9 +84,9 @@ end
 try
     
     name = 'process sample data with bad samples';
-
+    
     data = my_sample_data();
-     
+    
     myNode = my_sample_node();
     
     set_bad_sample(data, 101:300);
@@ -106,9 +106,9 @@ end
 try
     
     name = 'process sample data';
-
+    
     data = my_sample_data();
-     
+    
     myNode = my_sample_node();
     
     run(myNode, data);
@@ -126,9 +126,9 @@ end
 try
     
     name = 'process sample data (DeleteEvents=true)';
-
+    
     data = my_sample_data();
-     
+    
     otherEv = event(100, 'Type', 'othertype');
     add_event(data, otherEv);
     
@@ -152,9 +152,9 @@ end
 try
     
     name = 'sliding_window';
-
+    
     data = my_sample_data();
-     
+    
     myNode = sliding_window;
     
     run(myNode, data);
@@ -173,15 +173,21 @@ end
 try
     
     name = 'rejecting only 1 epoch';
-
+    
     data = my_sample_data();
-     
-    myNode = sliding_window([], [], 'Max', 0.6);
+    
+    myCrit = meegpipe.node.bad_epochs.criterion.stat.new(...
+        'ChannelStat',  @(x) var(x), ...
+        'EpochStat',    @(chanVars) mean(chanVars), ...
+        'Max',          0.6 ...
+        );
+    
+    myNode = sliding_window([], [], 'Criterion', myCrit);
     
     run(myNode, data);
-   
+    
     % The sliding_window creates epochs of duration 1s (125 samples)
-   ok(numel(find(is_bad_sample(data))) == 125, name);
+    ok(numel(find(is_bad_sample(data))) == 125, name);
     
 catch ME
     
@@ -195,9 +201,9 @@ end
 try
     
     name = 'sliding_window with Min threshold';
-
+    
     data = my_sample_data();
-     
+    
     myNode = sliding_window(0.5, 1, ...
         'Min', @(meanVar) prctile(meanVar, 5));
     
@@ -217,9 +223,9 @@ end
 try
     
     name = 'minmax';
-
+    
     data = my_sample_data();
-     
+    
     mySel  = class_selector('Type', 'myevent');
     myNode = minmax(-10, 10, 'EventSelector', mySel);
     
@@ -264,7 +270,7 @@ try
     data = my_sample_data();
     
     myNode = my_sample_node('Save', true);
-
+    
     run(myNode, data);
     
     ok(exist(get_output_filename(myNode, data), 'file')>0, name);
@@ -366,7 +372,7 @@ import meegpipe.node.bad_epochs.criterion.stat.stat;
 mySel  = class_selector('Type', 'myevent');
 crit   = stat(...
     'ChannelStat',  @(x) max(abs(x)), ...
-    'EpochStat',    @(x) max(x), ... 
+    'EpochStat',    @(x) max(x), ...
     'Max',           15);
 
 

@@ -32,6 +32,14 @@ maxC    = get_config(obj, 'MaxCard');
 rankIndex = compute_rank(obj, data);
 selected  = false(1, size(data,1));
 
+if isa(minC, 'function_handle'),
+    minC = minC(rankIndex);
+end
+
+if isa(maxC, 'function_handle'),
+    maxC = maxC(rankIndex);
+end
+
 if ~isempty(maxRank),
     
     if isa(maxRank, 'function_handle'),
@@ -55,24 +63,16 @@ if ~isempty(minRank) && minRank == -Inf
 elseif ~isempty(maxRank) && maxRank == Inf,
     rI2 = -rankIndex;
 else
-    rI2 = abs(rankIndex - median(rankIndex));
+    rI2 = min(rankIndex - minRank, maxRank - rankIndex);
 end
-[~, order] = sort(rI2, 'descend');
-
-if isa(minC, 'function_handle'),
-    minC = minC(size(data,1));
-end
-
-if isa(maxC, 'function_handle'),
-    maxC = maxC(size(data,1));
-end
+[~, order] = sort(rI2, 'ascend');
 
 nbSelected = numel(find(selected));
 
 if minC > size(data,1),
     selected(1:end) = true;
 elseif minC > nbSelected,
-    selected(order(1:(minC-nbSelected))) = true;
+    selected(order(1:minC)) = true;
 end
 if maxC < nbSelected
     
