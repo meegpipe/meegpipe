@@ -72,7 +72,7 @@ try
     data = sample_data;
     
     crit = meegpipe.node.bad_channels.criterion.var.var('MinCard', 3, ...
-        'MaxCard', 3);
+        'MaxCard', 3, 'Max', 40);
     dataSel = pset.selector.sensor_class('Class', 'eeg');
     myNode = bad_channels('Criterion', crit, 'DataSelector', dataSel, ...
         'GenerateReport', false);
@@ -82,7 +82,7 @@ try
     
     badChanLabels = {'EEG 73', 'EEG 153', 'EEG 241'};
     badLabels = labels(subset(sensors(data), badSel));
-    condition = (numel(badSel) == 3 & all(badSel == [9 10 20]) & ...
+    condition = (numel(badSel) == 3 & all(badSel == [10 20 31]) & ...
         all(ismember(badLabels, badChanLabels)));
     
     if condition, 
