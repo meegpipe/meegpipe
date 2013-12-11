@@ -9,8 +9,10 @@ function fObj = eog(varargin)
 %
 % See also: filter
 
-
-fObj = filter.lasip('Gamma', 3.5:0.25:5.5, 'Decimation',5, varargin{:});
+% We use a decimation factor of just 2, which should work OK when data is
+% sampled at about 250 Hz. You may want to increase Decimation for higher
+% sampling rates.
+fObj = filter.lasip('Gamma', 3.5:0.25:5.5, 'Decimation',2, varargin{:});
 
 
 end
