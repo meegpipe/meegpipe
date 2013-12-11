@@ -59,9 +59,9 @@ if ~isempty(minRank),
 end
 
 if ~isempty(minRank) && minRank == -Inf
-    rI2 = rankIndex;
-elseif ~isempty(maxRank) && maxRank == Inf,
     rI2 = -rankIndex;
+elseif ~isempty(maxRank) && maxRank == Inf,
+    rI2 = rankIndex;
 else
     rI2 = min(rankIndex - minRank, maxRank - rankIndex);
 end

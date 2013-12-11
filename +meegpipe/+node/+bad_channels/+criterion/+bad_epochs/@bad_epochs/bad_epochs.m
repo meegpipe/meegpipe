@@ -6,7 +6,7 @@ classdef bad_epochs < meegpipe.node.bad_channels.criterion.abstract_criterion
     % From parent class
     methods
         
-        [idx, rankVal] = find_bad_channels(obj, data);
+        [idx, rankVal] = find_bad_channels(obj, data, rep);
         
     end
     

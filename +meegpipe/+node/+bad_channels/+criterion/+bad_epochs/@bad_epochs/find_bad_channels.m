@@ -1,4 +1,4 @@
-function [idx, rankVal] = find_bad_channels(obj, data)
+function [idx, rankVal] = find_bad_channels(obj, data, ~)
 
 import misc.eta;
 

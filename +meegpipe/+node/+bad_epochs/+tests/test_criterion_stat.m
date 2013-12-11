@@ -15,7 +15,7 @@ import physioset.event.class_selector;
 MEh     = [];
 
 % Number of tests that should run if everything goes OK
-initialize(5);
+initialize(6);
 
  
 
@@ -84,10 +84,39 @@ catch ME
     
 end
 
-%% process sample data
+%% process sample data (1)
 try
     
-    name = 'process sample data';
+    name = 'process sample data (1)';
+
+    data = my_sample_data();
+    
+    myCrit = bad_epochs.criterion.stat.new(...
+        'ChannelStat',  @(x) min(x), ...
+        'EpochStat',    @(x) min(x), ...
+        'MinCard',      @(x) 0, ...
+        'MaxCard',      @(x) Inf, ...
+        'Min',          -20, ...
+        'Max',          Inf);
+     
+    myNode = my_sample_node(myCrit);
+    
+    run(myNode, data);
+    
+    ok(numel(find(is_bad_sample(data))) == 125, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+
+%% process sample data (2)
+try
+    
+    name = 'process sample data (2)';
 
     data = my_sample_data();
     
@@ -103,7 +132,7 @@ try
     
     run(myNode, data);
     
-    ok(numel(find(is_bad_sample(data))) == 250, name);
+    ok(numel(find(is_bad_sample(data))) == 125, name);
     
 catch ME
     

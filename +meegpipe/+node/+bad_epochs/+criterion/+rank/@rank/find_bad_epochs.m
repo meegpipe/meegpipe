@@ -24,7 +24,7 @@ maxC    = get_config(obj, 'MaxCard');
 [rankIndex, ev2] = compute_rank(obj, data, ev);
 
 ev = ev2;
-selected  = false(1, size(data,1));
+selected  = false(1, numel(ev));
 
 if isa(minC, 'function_handle'),
     minC = minC(rankIndex);
@@ -52,9 +52,9 @@ end
 
 % Minimum and maximum cardinality of the set of selected channels
 if ~isempty(minRank) && minRank == -Inf
-    rI2 = rankIndex;
-elseif ~isempty(maxRank) && maxRank == Inf,
     rI2 = -rankIndex;
+elseif ~isempty(maxRank) && maxRank == Inf,
+    rI2 = rankIndex;
 else
     rI2 = min(rankIndex - minRank, maxRank - rankIndex);
 end
