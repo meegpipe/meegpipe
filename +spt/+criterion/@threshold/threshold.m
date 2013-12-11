@@ -22,6 +22,13 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
        
         hashObj = default_plot_stats();
         
+        function obj = or(varargin)
+           
+            obj = spt.criterion.threshold(varargin{:}, ...
+                'SelectionAggregator', @(sel) sum(double(sel), 1) > 0);
+            
+        end
+        
     end
     
     
@@ -163,13 +170,14 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
             
             if nargin < 1, return; end
             
-            % First input arg can be a feature object
-            if isa(varargin{1}, 'spt.feature.feature'),
-                opt.Feature = varargin{1};
-                varargin = varargin(2:end);
-            else
-                opt.Feature = {};
+            % First input args can be features (convenient syntax)
+            i = 0;
+            while isa(varargin{i+1}, 'spt.feature.feature'),
+                i = i + 1;
             end
+            opt.Feature = varargin(1:i);
+            varargin = varargin(i+1:end);
+         
             opt.Negated = false;
             opt.Min     = -Inf;
             opt.Max     = +Inf;

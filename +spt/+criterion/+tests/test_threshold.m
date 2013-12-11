@@ -9,7 +9,7 @@ import safefid.safefid;
 
 MEh     = [];
 
-initialize(14);
+initialize(15);
 
 %% Create a new session
 try
@@ -251,6 +251,27 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% or static constructor
+try
+    
+    name = 'or static constructor';
+    
+    myCrit = spt.criterion.threshold.or(...
+        spt.feature.tkurtosis, spt.feature.thilbert, ...      
+        'Max', {5, .1});
+   
+    selected = select(myCrit, [], rand(4, 1000));
+    
+    ok( all(selected), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% multiple features (cont'd)
 try
