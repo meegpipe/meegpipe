@@ -7,9 +7,9 @@ classdef config < meegpipe.node.abstract_config
     properties
         
         MinCard     = 0;
-        MaxCard     = @(dim) ceil(0.2*dim);
-        Min         = @(x) median(x)-10*mad(x);
-        Max         = @(x) median(x)+10*mad(x);
+        MaxCard     = @(rank) ceil(0.2*numel(rank));
+        Min         = @(rank) median(x)-10*mad(rank);
+        Max         = @(rank) median(x)+4*mad(rank);
         RankPlotStats   = ...
             meegpipe.node.bad_channels.criterion.rank.default_plot_stats;
         
@@ -42,7 +42,7 @@ classdef config < meegpipe.node.abstract_config
             import misc.isnatural;
             
             if isempty(value),
-                obj.MaxCard = @(dim) ceil(0.2*dim);
+                obj.MaxCard = @(rank) ceil(0.2*numel(rank));
                 return;
             end
             
