@@ -11,7 +11,7 @@ import filter.bpfilt;
 
 MEh     = [];
 
-initialize(4);
+initialize(5);
 
 %% Create a new session
 try
@@ -66,6 +66,37 @@ try
     [~, I] = max(featVal);
     
     ok( I == 2, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% use nonlinearity
+try
+    
+    name = 'use nonlinearity';
+    
+    % Create sample BSS decomposition
+    X = rand(10, 15000); 
+    A = rand(10);
+    A(:,2) = zeros(10,1);
+    A(2,2) = 1;
+    myBSS = learn(spt.bss.efica, A*X);
+    myBSS = match_sources(myBSS, A);
+    
+    % Select sparse components
+    myFeat = spt.feature.sgini('Nonlinearity', @(x) x.^2);
+    
+    testVal = myFeat.Nonlinearity(5);
+    
+    featVal = extract_feature(myFeat, myBSS);
+   
+    [~, I] = max(featVal);
+    
+    ok( I == 2 & testVal == 25, name);
     
 catch ME
     

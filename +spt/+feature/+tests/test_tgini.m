@@ -11,7 +11,7 @@ import filter.bpfilt;
 
 MEh     = [];
 
-initialize(5);
+initialize(6);
 
 %% Create a new session
 try
@@ -63,6 +63,34 @@ try
     [~, I] = max(featVal);
     
     ok( I == 1, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% Use nonlinearity
+try
+    
+    name = 'use nonlinearity';
+    
+    % Create sample physioset
+    X = randn(4, 10000); 
+    
+    X(1,1:10:10000) = 10;
+    
+    % Select sparse components
+    myFeat = spt.feature.tgini('Nonlinearity', @(x) x.^2);
+    
+    testVal = myFeat.Nonlinearity(5);
+    
+    featVal = extract_feature(myFeat, [], X);
+   
+    [~, I] = max(featVal);
+    
+    ok( I == 1 & testVal == 25, name);
     
 catch ME
     
