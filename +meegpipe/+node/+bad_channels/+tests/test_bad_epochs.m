@@ -55,7 +55,9 @@ try
     name = 'example from docs';
     
     myBadEpochsCrit = bad_epochs.criterion.stat.new(...
-        'Max', 100, 'Min', -1000);
+        'ChannelStat', @(x) max(abs(x)), ...
+        'EpochStat',   @(x) max(x), ...
+        'Max', 100);
     
     myEvSel = physioset.event.class_selector('Type', 'stm');
 
