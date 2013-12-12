@@ -40,8 +40,7 @@ nodeList = [nodeList {myNode}];
 
 %% Node 5: reject bad channels using local cross correlation
 myCrit = meegpipe.node.bad_channels.criterion.xcorr.new(...
-    'Min',  @(nnCorr) prctile(nnCorr, 1), ...
-    );
+    'Min',  @(nnCorr) prctile(nnCorr, 1));
 myNode = meegpipe.node.bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
