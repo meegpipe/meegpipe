@@ -39,7 +39,12 @@ try
     name = 'topo_ratio with real data';
     data = get_real_data;  
     
-    myNode = bss.eog_egi256_hcgsn1('GenerateReport',   true);
+    lasipFilt = get_config(bss.eog_egi256_hcgsn1, 'Filter');
+    lasipFilt = set_verbose_level(lasipFilt, 0);
+    
+    myNode = bss.eog_egi256_hcgsn1(...
+        'GenerateReport',   false, ...
+        'Filter',           lasipFilt);
     
     run(myNode, data);
  
@@ -60,7 +65,13 @@ try
     name = 'topo_ratio with real data (eyes closed)';
     data = get_real_data_ec;  
     
-    myNode = bss.eog_egi256_hcgsn1('GenerateReport',   true);
+    lasipFilt = get_config(bss.eog_egi256_hcgsn1, 'Filter');
+    lasipFilt = set_verbose_level(lasipFilt, 0);
+    
+    myNode = bss.eog_egi256_hcgsn1(...
+        'GenerateReport',   true, ...
+        'Verbose',          false, ...
+        'Filter',           lasipFilt);
     
     run(myNode, data);
  
@@ -93,10 +104,14 @@ try
     
     snrOrig = signal_to_noise(data, S);
     
+    lasipFilt = get_config(bss.eog, 'Filter');
+    lasipFilt = set_verbose_level(lasipFilt, 0);
+    
     myNode = bss.eog(...
         'Criterion',        myCrit, ...
         'RetainedVar',      100, ...
-        'GenerateReport',   true);
+        'GenerateReport',   true, ...
+        'Filter',           lasipFilt);
     
     run(myNode, data);
     
@@ -133,8 +148,14 @@ try
         'Max',      25, ...
         'MinCard',  0, ...
         'MaxCard',  Inf);
+    
+    lasipFilt = get_config(meegpipe.node.bss.eog, 'Filter');
+    lasipFilt = set_verbose_level(lasipFilt, 0);
+    
     myNode = meegpipe.node.bss.eog(...
-        'Criterion', myCrit, 'GenerateReport', true);
+        'Criterion',        myCrit, ...
+        'GenerateReport',   true, ...
+        'Filter',           lasipFilt);
     run(myNode, data);
     
     X = X - repmat(mean(X, 2), 1, size(X,2));
@@ -158,10 +179,14 @@ try
     myCrit = get_config(meegpipe.node.bss.eog, 'Criterion');
     myCrit.Max = {20 15};
     myCrit.MaxCard = Inf;
+    
+    lasipFilt = filter.lasip.eog('Decimation', 40);
+    lasipFilt = set_verbose_level(lasipFilt, 0);
+    
     myNode = meegpipe.node.bss.eog(...
         'Criterion',        myCrit, ...
         'GenerateReport',   true, ...
-        'Filter',           filter.lasip.eog('Decimation', 40), ...
+        'Filter',           lasipFilt, ...
         'RegrFilter',       [], ...
         'GenerateReport',   true);
     

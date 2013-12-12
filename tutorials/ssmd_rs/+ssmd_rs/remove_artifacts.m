@@ -1,11 +1,6 @@
 function remove_artifacts
 % REMOVE_ARTIFACTS - Remove artifacts from SSMD resting state data
 
-% Start in a completely clean state
-close all;
-clear all;
-clear classes;
-
 meegpipe.initialize;
 
 % Import some utilities

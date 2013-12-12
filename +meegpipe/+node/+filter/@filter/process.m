@@ -43,8 +43,12 @@ end
 %% Select a representative set of channels for the report
 if do_reporting(obj)
     
-    channelSel = ceil(linspace(1, size(data,1), nbChannelsRep));
-    channelSel = unique(channelSel);
+    if nbChannelsRep > 0,
+        channelSel = ceil(linspace(1, size(data,1), nbChannelsRep));
+        channelSel = unique(channelSel);
+    else
+        channelSel = [];
+    end
     
     rep = get_report(obj);
     print_title(rep, 'Data processing report', get_level(rep) + 1);

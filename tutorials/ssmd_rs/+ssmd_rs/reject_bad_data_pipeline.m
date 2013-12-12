@@ -18,7 +18,7 @@ nodeList = [nodeList {myNode}];
 myNode = meegpipe.node.copy.new;
 nodeList = [nodeList {myNode}];
 
-%% Node 3: downsampling
+%% Node 3: downsampling to 250 Hz
 myNode = meegpipe.node.resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
@@ -44,8 +44,6 @@ myCrit = meegpipe.node.bad_channels.criterion.xcorr.new(...
     );
 myNode = meegpipe.node.bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
-
-%%
 
 %% Node 6: reject bad epochs (those that exceed +120)
 myCrit = meegpipe.node.bad_epochs.criterion.stat.new(...

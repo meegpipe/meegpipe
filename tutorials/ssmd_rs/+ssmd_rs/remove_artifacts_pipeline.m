@@ -19,14 +19,14 @@ myNode = meegpipe.node.copy.new;
 nodeList = [nodeList {myNode}];
 
 %% Node 5: PWL removal
-myNode = meegpipe.node.bss.pwl;
+myNode = meegpipe.node.bss.pwl('GenerateReport', false);
 nodeList = [nodeList {myNode}];
 
 %% Node 6: ECG removal
-myNode = meegpipe.node.bss.ecg;
+myNode = meegpipe.node.bss.ecg('GenerateReport', false);
 nodeList = [nodeList {myNode}];
 
-%% Node 7: EOG removal
+%% Node 8: EOG removal
 % This a "generic" EOG removal node that does not use any information
 % regarding the topography of the components. It simply tries removes any
 % component that:
@@ -36,7 +36,7 @@ nodeList = [nodeList {myNode}];
 myNode = meegpipe.node.bss.eog;
 nodeList = [nodeList {myNode}];
 
-%% Node 8: EOG removal using an alternative criterion
+%% Node 9: EOG removal using an alternative criterion
 % This criterion will work (if it works) only with EGI's 256 sensor net. It
 % uses a-priori knowledge regarding the net to try to identify ocular
 % components. We also include the psd_ratio feature to prevent focussing
@@ -69,6 +69,16 @@ myCrit  = spt.criterion.threshold(...
     'MinCard', 1 ...
     );
 myNode = meegpipe.node.bss.eog('Criterion', myCrit);
+nodeList = [nodeList {myNode}];
+
+%% Node 7: EMG removal (using a filter node)
+% We try to minimize EMG artifacts using a CCA (Canonical Correlation
+% Analysis filter). For details see:
+%
+% De Clercq, W. et al., Canonical Correlation Analysis Applied to Remove
+% Muscle Artifacts from the Electroencephalogram, IEEE Trans. 
+% Biomed. Eng 53 (12), pp. 2583-2587. 10.1109/TBME.2006.879459.
+myNode = meegpipe.node.filter.emg;
 nodeList = [nodeList {myNode}];
 
 

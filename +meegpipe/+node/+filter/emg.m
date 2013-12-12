@@ -2,10 +2,11 @@ function obj = emg(varargin)
 % EMG - Filtering EMG artifacts using CCA
 
 import misc.process_arguments;
+import pset.selector.cascade;
 
-opt.Correction    = 87.5;
+opt.Correction    = 70;
 opt.PCAVar        = 99.9;
-opt.WindowOverlap = 75;
+opt.WindowOverlap = 50;
 [~, opt] = process_arguments(opt, varargin);
 
 myFilter = filter.cca('MinCorr', opt.Correction/100);
@@ -18,7 +19,16 @@ myFilter = filter.pca(...
     'PCFilter', myFilter, ...
     'PCA',      spt.pca('RetainedVar', opt.PCAVar));
 
+mySel1 = pset.selector.sensor_class('Class', {'MEG','EEG'});
+mySel2 = pset.selector.good_data;
+
 obj = meegpipe.node.filter.new(...
-    'Filter',   myFilter);
+    'Filter',           myFilter, ...
+    'DataSelector',     cascade(mySel1, mySel2), ...
+    'Name',             'filter.emg', ...
+    'NbChannelsReport', 0, ...
+    'ShowDiffReport',   false, ...
+    'IOReport',         report.plotter.io, ...
+    varargin{:});
 
 end
