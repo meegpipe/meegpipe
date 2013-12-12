@@ -10,8 +10,8 @@ import pset.selector.cascade;
 
 %% Process user arguments
 opt.MaxPCs          = 40;
-opt.MinPCs          = 4;
-opt.RetainedVar     = 99.75;
+opt.MinPCs          = @(lambda) min(8, ceil(0.05*numel(lambda)));
+opt.RetainedVar     = 99.85;
 opt.BSS             = spt.bss.multicombi;
 
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
