@@ -18,15 +18,15 @@ nodeList = [nodeList {myNode}];
 myNode = meegpipe.node.copy.new;
 nodeList = [nodeList {myNode}];
 
-%% Node 5: PWL removal
+%% Node 3: PWL removal
 myNode = meegpipe.node.bss.pwl('GenerateReport', false);
 nodeList = [nodeList {myNode}];
 
-%% Node 6: ECG removal
+%% Node 4: ECG removal
 myNode = meegpipe.node.bss.ecg('GenerateReport', false);
 nodeList = [nodeList {myNode}];
 
-%% Node 8: EOG removal
+%% Node 5: EOG removal
 % This a "generic" EOG removal node that does not use any information
 % regarding the topography of the components. It simply tries removes any
 % component that:
@@ -36,7 +36,7 @@ nodeList = [nodeList {myNode}];
 myNode = meegpipe.node.bss.eog;
 nodeList = [nodeList {myNode}];
 
-%% Node 9: EOG removal using an alternative criterion
+%% Node 6: EOG removal using an alternative criterion
 % This criterion will work (if it works) only with EGI's 256 sensor net. It
 % uses a-priori knowledge regarding the net to try to identify ocular
 % components. We also include the psd_ratio feature to prevent focussing
@@ -55,7 +55,7 @@ myCrit  = spt.criterion.threshold(...
 myNode = meegpipe.node.bss.eog('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
-%% Node 9: EOG removal (again) using yet another set of features
+%% Node 7: EOG removal (again) using yet another set of features
 % We now include also a feature that measures the "complexity" of the
 % component time activation. We would expect ocular activity to have low
 % complexity, i.e. high fractal dimensions (tfd feature).
@@ -71,16 +71,24 @@ myCrit  = spt.criterion.threshold(...
 myNode = meegpipe.node.bss.eog('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
-%% Node 7: EMG removal (using a filter node)
+%% Note 8: Sparse sensor noise removal
+% This is an experimental node that tries to remove noise sources that are
+% concentrated in a small set of sensors (i.e. sources that are spatially
+% "sparse"). Such noise is usually due to a bad contact of a given sensor
+% with the scalp.
+myNode = meegpipe.node.bss.sparse_sensor_noise;
+nodeList = [nodeList {myNode}];
+
+%% Node 8: EMG removal (using a filter node)
 % We try to minimize EMG artifacts using a CCA (Canonical Correlation
-% Analysis filter). For details see:
+% Analysis filter). This is an experimental node, that has not been 
+% extensively tested yet. For details on the CCA algorithm see:
 %
 % De Clercq, W. et al., Canonical Correlation Analysis Applied to Remove
 % Muscle Artifacts from the Electroencephalogram, IEEE Trans. 
 % Biomed. Eng 53 (12), pp. 2583-2587. 10.1109/TBME.2006.879459.
 myNode = meegpipe.node.filter.emg;
 nodeList = [nodeList {myNode}];
-
 
 %% Create the pipeline
 % Note that we set property Save to true. If you wouldn't and your
