@@ -11,7 +11,7 @@ import filter.bpfilt;
 
 MEh     = [];
 
-initialize(4);
+initialize(6);
 
 %% Create a new session
 try
@@ -72,6 +72,59 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% less epochs than data length
+try
+    
+    name = 'more epochs than data length';
+    
+    X = randn(4, 10000);    
+    
+    X(2,:) = .20*X(2,:) + sin(2*pi*(1/1000)*(1:size(X,2)));
+    data = import(physioset.import.matrix, X);
+  
+    myFeat = spt.feature.sample_epochs(spt.feature.filter_fit.lasip, ...
+        'EpochDur', 1000, ...
+        'NbEpochs', 5);
+    featVal = extract_feature(myFeat, [], data);
+   
+    [~, I] = max(featVal);
+    
+    ok( I == 2, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% epochDur > data duration
+try
+    
+    name = 'epochDur > data duration';
+    
+    X = randn(4, 10000);    
+    
+    X(2,:) = .20*X(2,:) + sin(2*pi*(1/1000)*(1:size(X,2)));
+    data = import(physioset.import.matrix, X);
+  
+    myFeat = spt.feature.sample_epochs(spt.feature.filter_fit.lasip, ...
+        'EpochDur', 50000, ...
+        'NbEpochs', 5);
+    featVal = extract_feature(myFeat, [], data);
+   
+    [~, I] = max(featVal);
+    
+    ok( I == 2, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% Cleanup
 try

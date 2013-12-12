@@ -27,7 +27,7 @@ classdef sample_epochs < spt.feature.feature & goo.verbose
           
       end
       
-      function featVal = extract_feature(obj, sptObj, tSeries, raw, varargin)     
+      function featVal = extract_feature(obj, sptObj, tSeries, varargin)     
           import exceptions.Inconsistent; 
           
           if isempty(obj.Feature),
@@ -36,7 +36,7 @@ classdef sample_epochs < spt.feature.feature & goo.verbose
           
           epochDur = obj.EpochDur;
           if isa(epochDur, 'function_handle'),
-              epochDur = epochDur(raw.SamplingRate);
+              epochDur = epochDur(varargin{1}.SamplingRate);
           end
           
           if epochDur > size(tSeries, 2),
@@ -54,7 +54,7 @@ classdef sample_epochs < spt.feature.feature & goo.verbose
               epochOnsets = epochOnsets(idx);
           end
           
-          featVal = nan(size(tSeries,2), numel(epochOnsets));
+          featVal = nan(size(tSeries,1), numel(epochOnsets));
           for i = 1:numel(epochOnsets)
              samplesIdx = epochOnsets(i):epochOnsets(i)+epochDur;
              if isa(tSeries, 'pset.mmappset'),
@@ -63,7 +63,7 @@ classdef sample_epochs < spt.feature.feature & goo.verbose
              else
                  thisTS = tSeries(:, samplesIdx);
              end
-             featVal(:, i) = extract_feature(obj.Feature, sptObj, thisTS, raw, varargin{:});
+             featVal(:, i) = extract_feature(obj.Feature, sptObj, thisTS, varargin{:});
              if isa(tSeries, 'pset.mmappset'),
                  restore_selection(tSeries);
              end
