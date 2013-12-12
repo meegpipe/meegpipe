@@ -1,7 +1,7 @@
 classdef filter_fit < spt.feature.feature & goo.verbose
     
     properties
-        Filter = [];
+        Filter          = [];
     end
     
     methods (Static)

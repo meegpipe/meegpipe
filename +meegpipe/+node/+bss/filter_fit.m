@@ -1,5 +1,4 @@
-function obj = sparse_sensor_noise(varargin)
-% SPARSE_SENSOR_NOISE - Correct noise generated at a single sensor
+function obj = filter_fit(varargin)
 
 import misc.process_arguments;
 import misc.split_arguments;
@@ -9,7 +8,7 @@ import pset.selector.cascade;
 
 %% Process input arguments
 opt.MinCard         = 2;
-opt.MaxCard         = @(d) min(10, ceil(0.15*length(d)));
+opt.MaxCard         = @(d) min(8, ceil(0.15*length(d)));
 opt.RetainedVar     = 99.85; 
 opt.BSS             = spt.bss.efica;
 
@@ -23,16 +22,16 @@ myPCA = spt.pca(...
 
 %% Component selection criterion
 myFeat1 = spt.feature.bp_var;
-myFeat2 = spt.feature.sgini('Nonlinearity', @(x) x.^2);
-% Sometimes alpha and beta components have sparse topographies. By using a
-% psd_ratio feature we are able to prevent any alpha/beta component being
-% rejected by mistake
-myFeat3 = spt.feature.psd_ratio(...
+% Prevent at all cost that alpha or beta components are removed
+myFeat2 = spt.feature.psd_ratio(...
     'TargetBand',   [0.1 6;14 20;45 55], ... % anything but alpha/beta
     'RefBand',      [6 14; 20 40] ...        % alpha and beta bands
     );
+% The LASIP filter fit criterion
+myFeat3 = spt.feature.filter_fit.lasip;
+
 myCrit  = spt.criterion.threshold(myFeat1, myFeat2, myFeat3, ...
-    'Max',     {20, @(fVal) prctile(fVal, 75), @(fVal) prctile(fVal, 75)}, ...
+    'Max',     {10, @(fVal) prctile(fVal, 50), 0.5}, ...
     'MinCard', opt.MinCard, ...
     'MaxCard', opt.MaxCard);
 
@@ -45,5 +44,6 @@ obj = meegpipe.node.bss.new(...
     'BSS',          opt.BSS, ...
     'Name',         'bss.sparse_sensor_noise', ...
     varargin{:});
+
 
 end
