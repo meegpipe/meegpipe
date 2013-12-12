@@ -37,7 +37,7 @@ myPipe = ssmd_rs.remove_artifacts_pipeline(...
 % Generate links to the relevant data files into the output directory. This
 % step is equivalent to copying the relevant data files into the output
 % directory but has the advantage of saving valuable disk space.
-regex = 'lasip-pipeline\.meegpipe.+bad-data\.pseth?';
+regex = 'hpfilt-pipeline\.meegpipe.+bad-data\.pseth?';
 inputFiles = finddepth_regex_match(INPUT_DIR, regex, false, true);
 if isempty(inputFiles),
     error('No files match pattern %s under directory %s', ...
