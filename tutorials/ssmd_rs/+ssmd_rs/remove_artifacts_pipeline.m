@@ -71,7 +71,16 @@ myCrit  = spt.criterion.threshold(...
 myNode = meegpipe.node.bss.eog('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
-%% Note 8: Sparse sensor noise removal
+%% Node 8: Removal of non-physiological noise components
+% We often have in our recordings noise sources that concentrate in just a
+% few sensors and that have temporal pattern characterized by sharp signal 
+% transitions between various levels. Typically, such signal fit pretty
+% well the signal model used by the LASIP filter. So we discard those
+% components that match such a model well.
+myNode = meegpipe.node.bss.lasip_fit;
+nodeList = [nodeList {myNode}];
+
+%% Note 9: Sparse sensor noise removal
 % This is an experimental node that tries to remove noise sources that are
 % concentrated in a small set of sensors (i.e. sources that are spatially
 % "sparse"). Such noise is usually due to a bad contact of a given sensor
@@ -79,10 +88,11 @@ nodeList = [nodeList {myNode}];
 myNode = meegpipe.node.bss.sparse_sensor_noise;
 nodeList = [nodeList {myNode}];
 
-%% Node 8: EMG removal (using a filter node)
+%% Node 10: EMG removal (using a filter node)
 % We try to minimize EMG artifacts using a CCA (Canonical Correlation
 % Analysis filter). This is an experimental node, that has not been 
-% extensively tested yet. For details on the CCA algorithm see:
+% extensively tested yet. It is intended to remove burst of EMG activity 
+% rather than continuous EMG noise. For details on the CCA algorithm see:
 %
 % De Clercq, W. et al., Canonical Correlation Analysis Applied to Remove
 % Muscle Artifacts from the Electroencephalogram, IEEE Trans. 

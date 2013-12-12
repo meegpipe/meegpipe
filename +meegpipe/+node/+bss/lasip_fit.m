@@ -1,4 +1,4 @@
-function obj = filter_fit(varargin)
+function obj = lasip_fit(varargin)
 
 import misc.process_arguments;
 import misc.split_arguments;
@@ -27,8 +27,11 @@ myFeat2 = spt.feature.psd_ratio(...
     'TargetBand',   [0.1 6;14 20;45 55], ... % anything but alpha/beta
     'RefBand',      [6 14; 20 40] ...        % alpha and beta bands
     );
-% The LASIP filter fit criterion
-myFeat3 = spt.feature.filter_fit.lasip;
+% How well does the LASIP filter track the signal? Do this in just a few
+% epochs to speed up things
+myFeat3 = spt.feature.sample_epochs(spt.feature.filter_fit.lasip, ...
+    'EpochDur', @(sr) 20*sr, ...
+    'NbEpochs', 10);
 
 myCrit  = spt.criterion.threshold(myFeat1, myFeat2, myFeat3, ...
     'Max',     {10, @(fVal) prctile(fVal, 50), 0.5}, ...

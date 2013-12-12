@@ -60,6 +60,7 @@ try
     myFeat = spt.feature.sample_epochs(spt.feature.filter_fit.lasip, ...
         'EpochDur', 2000, ...
         'NbEpochs', 100);
+    
     featVal = extract_feature(myFeat, [], data);
    
     [~, I] = max(featVal);
@@ -112,7 +113,9 @@ try
     myFeat = spt.feature.sample_epochs(spt.feature.filter_fit.lasip, ...
         'EpochDur', 50000, ...
         'NbEpochs', 5);
+    warning('off', 'sample_epochs:NotEnoughData');
     featVal = extract_feature(myFeat, [], data);
+    warning('on', 'sample_epochs:NotEnoughData');
    
     [~, I] = max(featVal);
     
