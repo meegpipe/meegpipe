@@ -17,7 +17,7 @@ classdef config < meegpipe.node.bad_epochs.criterion.rank.config
                case 'channelstat',
                    val = @(x) iqr(x);
                case 'epochstat',
-                   val = @(x) iqr(x);
+                   val = @(x) prctile(x, 75);
                otherwise
                    error('Invalid configuration option: %s', pName);
            end
