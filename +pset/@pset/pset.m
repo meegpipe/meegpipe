@@ -295,6 +295,12 @@ classdef pset < pset.mmappset & ...
     % MATLAB built-in numeric numeric operators
     methods
         
+        obj = unary_operator(obj, op);
+        
+        function obj = abs(obj)
+           unary_operator(obj, @(x) abs(x));
+        end
+        
         y = flipud(x);
         y = reshape(obj, varargin);
         varargout = size(obj, dim);

@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(10);
+initialize(12);
 
 %% Create a new session
 try
@@ -23,6 +23,39 @@ try
     hashStr = DataHash(randn(1,100));
     session.subsession(hashStr(1:5));
     ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% abs()
+try
+    name = 'abs()';
+    data = pset.pset.randn(2,3000);
+    orig = data(:,:);
+    abs(data);    
+   
+    ok(all(data(:) == abs(orig(:))), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% unary_operator()
+try
+    
+    name = 'unary_operator()';
+    data = pset.pset.randn(2,3000);
+    orig = data(:,:);
+    abs(data);    
+   
+    ok(all(data(:) == abs(orig(:))), name);
     
 catch ME
     

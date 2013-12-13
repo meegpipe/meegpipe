@@ -2,7 +2,7 @@ classdef cca < spt.abstract_spt
     % CCA - BSS using Canonical Correlation Analysis
     
     properties (SetAccess = private, GetAccess = private)
-       CorrVal = []; 
+        CorrVal = [];
     end
     
     properties
@@ -14,13 +14,34 @@ classdef cca < spt.abstract_spt
         function obj = learn_basis(obj, X, varargin)
             
             T = size(X, 2);
+            delay = obj.Delay;
+            
+            if isa(delay, 'function_handle'),
+                % Delay can be a function_handle of the input to the
+                % filter. This is handy when we want delay to be expressed
+                % in seconds. It also allows for adaptive-delay schemes in
+                % which the delay is obtained as a function of the input
+                % data.
+               delay = delay(X); 
+            end
+            % Special case, Delay is an array of possible delays. Pick that
+            % delay that maximizes auto-correlation in the SUM dataset            
+            if numel(delay) > 1,
+                XS = sum(abs(X));
+                corrF = nan(1, numel(obj.Delay));
+                
+                for i = 1:numel(obj.Delay)
+                    corrF(i) = XS(1:end-delay(i))*XS(delay(i)+1:end)';
+                end
+                
+            end
             
             % correlation matrices
             if isa(X, 'pset.mmappset'),
-                select(X, [], obj.Delay+1:T);
+                select(X, [], delay+1:T);
                 Y = subset(X);
                 clear_selection(X);
-                select(X, [], 1:T-obj.Delay);
+                select(X, [], 1:T-delay);
                 center(X);
                 center(Y);
                 Ytrans = transpose(copy(Y));
