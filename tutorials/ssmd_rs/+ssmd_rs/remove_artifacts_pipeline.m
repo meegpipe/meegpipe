@@ -1,6 +1,10 @@
 function myPipe = remove_artifacts_pipeline(varargin)
 % REMOVE_ARTIFACTS_PIPELINE - Remove PWL, ECG and EOG artifacts
 %
+% Note that his pipeline is HUGE. For illustration purposes I have put here
+% lost of nodes so that you know what they can be used for. In a real
+% application you should aim to have shorter pipelines
+%
 % See also: batman
 
 import physioset.event.class_selector;
@@ -71,20 +75,19 @@ myCrit  = spt.criterion.threshold(...
 myNode = meegpipe.node.bss.eog('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
-%% Node 8: Removal of non-physiological noise components
-% We often have in our recordings noise sources that concentrate in just a
-% few sensors and that have temporal pattern characterized by sharp signal 
-% transitions between various levels. Typically, such signal fit pretty
-% well the signal model used by the LASIP filter. So we discard those
-% components that match such a model well.
+%% Node 8: Removal of components with abnormally regular activations
+% This is a way of getting rid of noise sources of unknown origin but that
+% are clearly not of cerebral origin for having too "simple" or regular
+% temporal activations. 
 myNode = meegpipe.node.bss.lasip_fit;
 nodeList = [nodeList {myNode}];
 
 %% Note 9: Sparse sensor noise removal
 % This is an experimental node that tries to remove noise sources that are
 % concentrated in a small set of sensors (i.e. sources that are spatially
-% "sparse"). Such noise is usually due to a bad contact of a given sensor
-% with the scalp.
+% "sparse"). Such noise maybe due to a bad contact of a given sensor
+% with the scalp. Or due to an active muscle group being located near that
+% particular sensor, thus contaminating it with continuous EMG. 
 myNode = meegpipe.node.bss.sparse_sensor_noise;
 nodeList = [nodeList {myNode}];
 

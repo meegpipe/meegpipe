@@ -1,6 +1,6 @@
 function plot_bad_epochs(rep, rankIdx, rejIdx, minTh, maxTh, data, ev)
 
-NB_CHANS  = 10;
+NB_CHANS  = 20;
 NB_EPOCHS = 4;
 
 %% Plot a few bad epochs

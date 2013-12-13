@@ -54,11 +54,14 @@ classdef sample_epochs < spt.feature.feature & goo.verbose
             if numel(epochOnsets) > obj.NbEpochs,
                 idx = round(linspace(1, numel(epochOnsets), obj.NbEpochs));
                 epochOnsets = epochOnsets(idx);
+            elseif isempty(epochOnsets),
+                epochOnsets = 1;
+                epochDur    = size(tSeries, 2);
             end
             
             featVal = nan(size(tSeries,1), numel(epochOnsets));
             for i = 1:numel(epochOnsets)
-                samplesIdx = epochOnsets(i):epochOnsets(i)+epochDur;
+                samplesIdx = epochOnsets(i):epochOnsets(i)+epochDur-1;
                 if isa(tSeries, 'pset.mmappset'),
                     select(tSeries, [], samplesIdx);
                     thisTS = tSeries;

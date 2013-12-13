@@ -56,7 +56,8 @@ classdef filter_fit < spt.feature.feature & goo.verbose
                 fprintf([verboseLabel ...
                     'Finding %s filter fit for %d time-series ...'], ...
                     class(obj.Filter), size(tSeries,1));
-            end            
+            end       
+            tinit = tic;
             for i = 1:size(tSeries,1)
                 filtData = filter(obj.Filter, tSeries(i,:));
                 featVal(i) = var(filtData)./origVar(i);               

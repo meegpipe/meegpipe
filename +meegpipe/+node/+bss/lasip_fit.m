@@ -8,9 +8,11 @@ import pset.selector.cascade;
 
 %% Process input arguments
 opt.MinCard         = 2;
-opt.MaxCard         = @(d) min(8, ceil(0.15*length(d)));
+opt.MaxCard         = @(d) max(8, ceil(0.2*length(d)));
 opt.RetainedVar     = 99.85; 
 opt.BSS             = spt.bss.efica;
+opt.EpochDur        = @(sr) 20*sr;
+opt.NbEpochs        = 10;
 
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 [~, opt] = process_arguments(opt, thisArgs);
@@ -30,8 +32,8 @@ myFeat2 = spt.feature.psd_ratio(...
 % How well does the LASIP filter track the signal? Do this in just a few
 % epochs to speed up things
 myFeat3 = spt.feature.sample_epochs(spt.feature.filter_fit.lasip, ...
-    'EpochDur', @(sr) 20*sr, ...
-    'NbEpochs', 10);
+    'EpochDur', opt.EpochDur, ...
+    'NbEpochs', opt.NbEpochs);
 
 myCrit  = spt.criterion.threshold(myFeat1, myFeat2, myFeat3, ...
     'Max',     {10, @(fVal) prctile(fVal, 50), 0.5}, ...
