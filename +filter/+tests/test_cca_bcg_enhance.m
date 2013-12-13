@@ -10,7 +10,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(7);
+initialize(6);
 
 %% Create a new session
 try
@@ -91,39 +91,14 @@ catch ME
     
 end
 
-%% Sample filtering with component filter
-try
-    
-    name = 'sample filtering with component filter';
-    
-    [data, ~, S, ~, snr] = sample_data();
-    myFilter = filter.cca('MinCard', 2, 'MaxCard', 2, ...
-        'ComponentFilter', filter.lpfilt('fc', 0.1));    
-    
-    filter(myFilter, data);
-    
-    snrAfter = 0;
-    for i = 1:size(data,1)
-        snrAfter = snrAfter + var(S(i,:))/var(data(i,:)-S(i,:));
-    end
-    snrAfter = snrAfter/size(data,1);
-    ok(snrAfter > 50*snr, name);
-    
-catch ME
-    
-    ok(ME, name);
-    status = finalize();
-    return;
-    
-end
-
 %% sliding_window
 try
     
     name = 'sliding_window';
     
     [data, ~, S, ~, snr] = sample_data();
-    myFilter = filter.cca('MinCard', 2, 'MaxCard', 2);  
+    myFilter = filter.cca.bcg_enhance('MinCard', 2, 'MaxCard', 2, ...
+        'SamplingRate', 150);   
     myFilter = filter.sliding_window(myFilter, ...
         'WindowLength', 1000);
     
@@ -150,11 +125,11 @@ try
     name = 'real data';
     
     data = real_data;
-    myFilter = filter.cca('MinCard', 2, 'MaxCard', 2);  
-    myFilter = filter.sliding_window(myFilter, ...
-        'WindowLength', 1000);
+    myFilter = filter.cca('MinCard', 4, 'MaxCard', 4, ...
+        'SamplingRate', data.SamplingRate);   
+    myFilter = filter.sliding_window(myFilter, 'WindowLength', 2000);
     myFilter = filter.pca('PCFilter', myFilter, ...
-        'PCA', spt.pca('MaxCard', 15));
+        'PCA', spt.pca('MaxCard', 9, 'RetainedVar', 99.99));
     
     filter(myFilter, data);
 
@@ -226,14 +201,14 @@ import pset.session;
 import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 
-if exist('20131121T171325_647f7.pseth', 'file') > 0,
-    data = pset.load('20131121T171325_647f7.pseth');
+if exist('bcg_sample.pseth', 'file') > 0,
+    data = pset.load('bcg_sample.pseth');
 else
     % Try downloading the file
-    url = 'http://kasku.org/data/meegpipe/20131121T171325_647f7.zip';
-    unzipDir = catdir(session.instance.Folder, '20131121T171325_647f7');
+    url = 'http://kasku.org/data/meegpipe/bcg_sample.zip';
+    unzipDir = catdir(session.instance.Folder, 'bcg_sample');
     unzip(url, unzipDir);
-    fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
+    fileName = catfile(unzipDir, 'bcg_sample.pseth');
     data = pset.load(fileName);
 end
 dataCopy = copy(data);

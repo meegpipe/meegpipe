@@ -48,7 +48,6 @@ for i = 1:numel(winOnset)
     thisY = filter(myFilt, x(:, winTimeRange));
     
     y(:, winTimeRange(winTimeRange > lastSample)) = 0;
-    
     y(:, winTimeRange) = y(:, winTimeRange) + thisY.*win;
     
     lastSample = winTimeRange(end);

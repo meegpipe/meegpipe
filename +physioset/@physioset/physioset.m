@@ -624,6 +624,14 @@ classdef physioset < ...
             val = mean(obj.PointSet, varargin{:});
         end
         
+        function obj        = abs(obj)
+            obj.PointSet = abs(obj.PointSet);
+        end
+        
+        function y   = sum(obj, varargin)
+            y = sum(obj.PointSet, varargin{:});
+        end
+        
         function obj = center(obj, varargin)
             verbOrig = is_verbose(obj.PointSet);
             set_verbose(obj.PointSet, is_verbose(obj));
@@ -753,12 +761,8 @@ classdef physioset < ...
                     varargout{i} = size(obj.PointSet, i);
                 end
             end
-        end
-        
-        function obj        = sum(obj, varargin)
-            obj = sum(obj.PointSet, varargin);
-        end
-        
+        end        
+    
         function obj        = times(varargin)
             obj = [];
             for i = 1:nargin

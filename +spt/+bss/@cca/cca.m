@@ -27,10 +27,13 @@ classdef cca < spt.abstract_spt
             % Special case, Delay is an array of possible delays. Pick that
             % delay that maximizes auto-correlation in the SUM dataset            
             if numel(delay) > 1,
-                XS = sum(abs(X));
-                corrF = nan(1, numel(obj.Delay));
-                
-                for i = 1:numel(obj.Delay)
+                if isa(X, 'pset.mmappset'),
+                    XS = sum(abs(copy(X)));
+                else
+                    XS = sum(abs(X));
+                end
+                corrF = nan(1, numel(delay));
+                for i = 1:numel(delay)
                     corrF(i) = XS(1:end-delay(i))*XS(delay(i)+1:end)';
                 end
                 
