@@ -23,11 +23,11 @@ myNode = meegpipe.node.copy.new;
 nodeList = [nodeList {myNode}];
 
 %% Node 3: PWL removal
-myNode = meegpipe.node.bss.pwl('GenerateReport', false);
+myNode = meegpipe.node.bss.pwl;
 nodeList = [nodeList {myNode}];
 
 %% Node 4: ECG removal
-myNode = meegpipe.node.bss.ecg('GenerateReport', false);
+myNode = meegpipe.node.bss.ecg;
 nodeList = [nodeList {myNode}];
 
 %% Node 5: EOG removal
