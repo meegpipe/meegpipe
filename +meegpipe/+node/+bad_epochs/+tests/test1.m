@@ -155,7 +155,12 @@ try
     
     data = my_sample_data();
     
-    myNode = sliding_window;
+    myCrit = meegpipe.node.bad_epochs.criterion.stat.new(...
+        'ChannelStat', @(x) max(abs(x)), ...
+        'EpochStat',   @(x) max(x), ...
+        'Max',         5);
+    
+    myNode = sliding_window([], [], 'Criterion', myCrit);
     
     run(myNode, data);
     
