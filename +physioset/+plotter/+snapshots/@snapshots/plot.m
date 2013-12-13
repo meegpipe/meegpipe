@@ -262,7 +262,7 @@ for groupItr = 1:numel(epochs)
                 % events should dealt with as if they were normal events
                 % (i.e. no epoching should be performed).
                 thisEvents = eeglab(thisEvents, false);
-                thisArguments = [arguments, {'events', thisEvents}];
+                thisArguments = [thisArguments, {'events', thisEvents}];
             end
         end
         

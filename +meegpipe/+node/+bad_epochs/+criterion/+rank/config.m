@@ -14,7 +14,6 @@ classdef config < goo.abstract_setget_handle
         Max                 = Inf;
         RankPlotStats       = ...
             meegpipe.node.bad_epochs.criterion.rank.default_plot_stats;
-        
     end
     
     % Consistency checks

@@ -34,9 +34,10 @@ if verbose, fprintf('[done]\n\n'); end
 % Plot a few bad epochs
 if verbose,
     fprintf([verboseLabel ...
-        'Plotting a few epochs ...']);
+        'Plotting a few bad and borderline epochs ...']);
 end
-rank.plot_bad_epochs(rep, rejIdx, data, ev);
+rank.plot_bad_epochs(rep, rankIndex, rejIdx, minRank, maxRank, ...
+    data, ev);
 if verbose, fprintf('[done]\n\n'); end
 
 
