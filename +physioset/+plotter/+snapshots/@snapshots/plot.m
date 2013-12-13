@@ -177,12 +177,6 @@ nbPointsSnapshot   = numel(chanIdx)*maxEpochLength;
 maxNbVertices      = get_config(obj, 'MaxNbVertices');
 downsamplingFactor = ceil(nbPointsSnapshot/maxNbVertices);
 if downsamplingFactor > 8
-%     warning('snapshots:TooManyVertices', ...
-%         [...
-%         'Too many data points in snapshops. You may consider downsampling\n' ...
-%         'the data to prevent potential inkscape crashes.' ...
-%         ], ...
-%         downsamplingFactor);
     downsamplingFactor = 8;
 end
 
@@ -245,7 +239,8 @@ for groupItr = 1:numel(epochs)
         
         %% Plot only window selections within this epoch
         thisArguments = arguments;
-        thisWinrej = winrej_in_epoch(winrej, firstSample);
+        thisWinrej = winrej_in_epoch(winrej, firstSample, ...
+            lastSample-firstSample+1, downsamplingFactor);
         if ~isempty(thisWinrej),
             thisArguments = [arguments, {'winrej', thisWinrej}];
         end
@@ -400,7 +395,7 @@ end
 
 
 %% Helper function to select only winrejs within agiven epoch
-function thisWinrej = winrej_in_epoch(winrej, firstSample)
+function thisWinrej = winrej_in_epoch(winrej, firstSample, dur, downsamplingFactor)
 
 if isempty(winrej), thisWinrej = []; return; end
 
@@ -409,9 +404,14 @@ thisWinrej = thisWinrej - firstSample + 1;
 toRemove = all(thisWinrej < 1, 2);
 thisWinrej(toRemove,:) = [];
 winrej(toRemove,:) = [];
+thisWinrej(thisWinrej > dur) = dur;
 
 if ~isempty(thisWinrej),
     thisWinrej(thisWinrej < 1) = 1;
+    
+    if downsamplingFactor > 1,
+        thisWinrej = max(1, floor(thisWinrej)./downsamplingFactor);
+    end
     
     thisWinrej = [thisWinrej winrej(:,3:end)];
     

@@ -80,10 +80,12 @@ rejIdx = find(selected);
 
 [~, ~, samplIdx] = epoch_get(data, evBad);
 
+set_bad_sample(data, samplIdx(:));    
+
 if ~isempty(rep),
    rankStats = get_config(obj, 'RankPlotStats');
    rank.generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank, ...
-       rankStats);
+       rankStats, data, ev);
 end
 
 end

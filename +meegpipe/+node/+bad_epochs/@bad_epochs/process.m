@@ -87,11 +87,10 @@ for i = 1:numel(sensObj)
     
     select(data, sensIdx{i});
     
-    [evBad, ~, idxBadSampl] = find_bad_epochs(crit, data, ev, sgRep);
+    % find_bad_epochs sets the bad samples on data as well
+    evBad = find_bad_epochs(crit, data, ev, sgRep);
     
     fprintf(fid, evBad);
-    
-    set_bad_sample(data, idxBadSampl(:));
     
     restore_selection(data);
     
@@ -114,9 +113,7 @@ end
 
 if verbose,
     fprintf([verboseLabel msg '\n\n']);  
-end    
-
-
+end
 
 % Remove the good sample selection
 restore_selection(data);

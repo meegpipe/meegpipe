@@ -19,11 +19,7 @@ if ~isnumeric(period) || ~isnumeric(dur) || period < 0 || dur < 0,
     error('Both period and duration must be positive scalars');
 end
 
-crit = stat(...
-    'ChannelStat',  @(x) var(x), ...
-    'EpochStat',    @(chanVars) mean(chanVars), ...
-    'Max',          @(meanVar) prctile(meanVar, 95) ...
-    );
+crit = stat;
 
 randomEvType = ['__' DataHash(rand(1,100))];
 
@@ -32,7 +28,7 @@ evGen = periodic_generator(...
     'Duration', dur, ...
     'Type',     randomEvType);
 
-node1 = ev_gen.new('EventGenerator', evGen);
+node1 = ev_gen.new('EventGenerator', evGen, 'GenerateReport', false);
 
 evSel = physioset.event.class_selector('Type', randomEvType);
 

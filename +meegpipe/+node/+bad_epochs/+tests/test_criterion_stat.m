@@ -15,9 +15,9 @@ import physioset.event.class_selector;
 MEh     = [];
 
 % Number of tests that should run if everything goes OK
-initialize(6);
+initialize(7);
 
- 
+
 
 %% Create a new session
 try
@@ -57,7 +57,7 @@ end
 try
     
     name = 'constructor with config options';
- 
+    
     myCrit = bad_epochs.criterion.stat.new(...
         'ChannelStat',  @(x) max(x), ...
         'EpochStat',    @(x) max(x.^2), ...
@@ -65,7 +65,7 @@ try
         'MaxCard',      10, ...
         'Min',          @(rank) 5, ...
         'Max',          @(rank) 10);
-
+    
     chanStat  = get_config(myCrit, 'ChannelStat');
     epochStat = get_config(myCrit, 'EpochStat');
     minCard   = get_config(myCrit, 'MinCard');
@@ -84,11 +84,44 @@ catch ME
     
 end
 
+%% process real EEG data
+try
+    
+    name = 'process real EEG data';
+    
+    if exist('20131121T171325_647f7.pseth', 'file') > 0,
+        data = pset.load('20131121T171325_647f7.pseth');
+    else
+        % Try downloading the file
+        url = 'http://kasku.org/data/meegpipe/20131121T171325_647f7.zip';
+        unzipDir = catdir(session.instance.Folder, '20131121T171325_647f7');
+        unzip(url, unzipDir);
+        fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
+        data = pset.load(fileName);
+    end
+    dataCopy = copy(data);
+    
+    myCrit = meegpipe.node.bad_epochs.criterion.stat.new(...
+        'Min', @(x) median(x) - 4*mad(x), ...
+        'Max', @(x) median(x) +4*mad(x));
+    myNode  = meegpipe.node.bad_epochs.sliding_window(1, 2, ...
+        'Criterion', myCrit);
+    run(myNode, dataCopy);
+    
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 %% process sample data (1)
 try
     
     name = 'process sample data (1)';
-
+    
     data = my_sample_data();
     
     myCrit = bad_epochs.criterion.stat.new(...
@@ -98,7 +131,7 @@ try
         'MaxCard',      @(x) Inf, ...
         'Min',          -20, ...
         'Max',          Inf);
-     
+    
     myNode = my_sample_node(myCrit);
     
     run(myNode, data);
@@ -117,7 +150,7 @@ end
 try
     
     name = 'process sample data (2)';
-
+    
     data = my_sample_data();
     
     myCrit = bad_epochs.criterion.stat.new(...
@@ -127,7 +160,7 @@ try
         'MaxCard',      @(x) Inf, ...
         'Min',          -Inf, ...
         'Max',          19);
-     
+    
     myNode = my_sample_node(myCrit);
     
     run(myNode, data);

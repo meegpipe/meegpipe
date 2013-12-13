@@ -5,11 +5,14 @@ classdef rank < meegpipe.node.bad_epochs.criterion.abstract_criterion
     
 
     methods (Static, Access = private)
-       generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank, stats); 
-       hFig = plot_epoch_vs_rank(rankIndex, rejIdx, minRank, maxRank, stats);
-       hFig = plot_rank_pdf(rankIndex, rejIDx, minRank, maxRank, stats);
+        generate_rank_report(rep, rankIndex, rejIdx, minRank, maxRank, ...
+            stats, data, ev);
+        hFig = plot_epoch_vs_rank(rankIndex, rejIdx, minRank, maxRank, stats);
+        hFig = plot_rank_pdf(rankIndex, rejIDx, minRank, maxRank, stats);
+        plot_bad_epochs(rep, rejIdx, data, ev);
+        plot_bordeline_epochs(rep, rankIndex, rejIdx, data, ev);
     end
-   
+    
     % criterion interface
     methods
        

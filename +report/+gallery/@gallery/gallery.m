@@ -15,7 +15,7 @@ classdef gallery < goo.printable_handle & goo.abstract_configurable_handle
     % % Assume myfile.png and another.png exist
     % galObj = add_figure(galObj, 'myfile.png', 'A nice picture');
     % galObj = add_figure(galObj, 'another.png', 'Another nice picture');
-    % 
+    %
     % % Print to file
     % fid = fopen('report.txt', 'w');
     % fprintf(fid, galObj);
@@ -51,41 +51,37 @@ classdef gallery < goo.printable_handle & goo.abstract_configurable_handle
     %
     %
     % See also: config, demo, make_test
-
     
-    %% IMPLEMENTATION
-    
-    properties (SetAccess = private, GetAccess = private)        
+    properties (SetAccess = private, GetAccess = private)
         
         Files        = {};
         Captions     = {};
         ThumbNail    = {};  % Print thumbnail for image?
-        Link         = {};  % Print link for image?   
+        Link         = {};  % Print link for image?
         Level        = 1;
         Title        = '';
         
     end
-    
-   
-    %% PUBLIC INTERFACE ...................................................
     
     methods
         
         % Accessors
         nbFigs    = nb_figures(obj);
         
-        fileTitle = get_filename(obj, idx);       
+        fileTitle = get_filename(obj, idx);
         
         ref       = get_ref(obj, idx);
         
-        caption   = get_caption(obj, idx);   
+        caption   = get_caption(obj, idx);
         
-        disp(obj);        
-     
-        % Modifiers    
+        disp(obj);
+        
+        % Modifiers
+       
+        obj       = print_figure(myGallery, hFig, rep, name, caption);
         
         obj       = add_figure(obj, fileName, caption, thumb, link);
-     
+        
         % goo.printable interface
         count = fprintf(fid, varargin);
         
@@ -96,8 +92,8 @@ classdef gallery < goo.printable_handle & goo.abstract_configurable_handle
         
         function obj = gallery(varargin)
             
-            obj = obj@goo.abstract_configurable_handle(varargin{:});            
-                        
+            obj = obj@goo.abstract_configurable_handle(varargin{:});
+            
         end
         
     end
