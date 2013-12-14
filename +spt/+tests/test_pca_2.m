@@ -295,8 +295,8 @@ try
     
     origDim = myPCA.DimOut;
 
-    newDim = nan(1, 5);
-    for i = 1:5,
+    newDim = nan(1, 10);
+    for i = 1:10,
         X = rand(5,3)*rand(3, 10000) + 0.01*randn(5, 10000);
         data = import(myImporter, X);
         myPCA = spt.pca('Criterion', 'AIC', 'RetainedVar', 100);
@@ -331,8 +331,8 @@ try
     
     origDim = myPCA.DimOut;
     
-    newDim = nan(1, 5);
-    for i = 1:5,
+    newDim = nan(1, 10);
+    for i = 1:10,
         X = rand(5,3)*rand(3, 10000) + 0.01*randn(5, 10000);
         data = import(myImporter, X);
         myPCA = spt.pca('Criterion', 'MIBS', 'RetainedVar', 100);
@@ -353,7 +353,7 @@ end
 %% reverse component sorting
 try
     
-    name = 'Criterion=mibs';
+    name = 'reverse component sorting';
     
     X = rand(5,1000);
     myPCA = learn(spt.pca('Sphering', false), X);
