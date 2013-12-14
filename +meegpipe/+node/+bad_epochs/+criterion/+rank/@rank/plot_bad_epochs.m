@@ -4,14 +4,15 @@ NB_CHANS  = 20;
 NB_EPOCHS = 4;
 
 %% Plot a few bad epochs
-if ~isempty(ev) && ~isempty(rejIdx),
-    chanIdx  = unique(ceil(linspace(1, size(data, 1), NB_CHANS)));
-    epochIdx = unique(ceil(linspace(1, numel(rejIdx), NB_EPOCHS)));
-    epochIdx = rejIdx(epochIdx);
-    generate_snapshots(rep, 'Sample Bad Epochs', epochIdx, chanIdx, data, ev);    
-else
-    epochIdx = [];
+if isempty(ev) || isempty(rejIdx),
+    return;
 end
+
+chanIdx  = unique(ceil(linspace(1, size(data, 1), NB_CHANS)));
+epochIdx = unique(ceil(linspace(1, numel(rejIdx), NB_EPOCHS)));
+epochIdx = rejIdx(epochIdx);
+generate_snapshots(rep, 'Sample Bad Epochs', epochIdx, chanIdx, data, ev);
+
 
 %% Plot a few borderline cases
 % sort the epochs according to how close they are to the rejection boundary
@@ -54,7 +55,7 @@ plotterObj = physioset.plotter.snapshots.new(...
 subRep = report.plotter.new(...
     'Plotter',     plotterObj, ...
     'Title',       'Sample bad epochs');
-    
+
 embed(subRep, rep);
 
 print_title(rep, titleStr, get_level(rep) + 1);

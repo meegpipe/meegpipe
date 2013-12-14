@@ -74,7 +74,6 @@ for segItr = 1:numel(evSample)
     
     segLength = last - first + 1;
     
-    % Expand boundaries?
     if expandBoundary,
        
         leftExpand = ceil(0.02*segLength);
