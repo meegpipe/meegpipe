@@ -6,21 +6,13 @@ classdef abstract_dfilt < ...
         goo.printable            & ...
         goo.abstract_named_object
     % ABSTRACT_DFILT - Common ancestor to digital filter classes
-    %
-    %
-    % See also: filter.dfilt, filter
     
     methods (Static, Access = protected)
         
         [y, wp, ws, rp, rs] = filt_ord(designmethod, wp, ws, rp, rs, type)
         
     end
-    
-    
-    % Public interface ....................................................
-    
-    % Method to be implemented by children classes
-    % These default implementations are for debugging purposes only
+
     methods
         
         % Conversion to a MATLAB dfilt.?? object
@@ -40,8 +32,7 @@ classdef abstract_dfilt < ...
         y = filtfilt(obj, x, varargin);
         
     end
-    
-    
+
     % report.printable interface
     methods
         count = fprintf(fid, obj, varargin);

@@ -12,17 +12,10 @@ classdef lasip < ...
         WindowType;
         WeightsMedian;
         InterpMethod;
-        GetNoise;
+        %GetNoise;      % Replaced by GetResiduals in 
         Decimation;
         ExpandBoundary;
-        
-        % VarTh can be used to deactivate filter operation when the filter
-        % does not produce any significant changes on the input data. This
-        % parameter is the ratio of var(output)/var(input) in percentage
-        % that should be exceeded for the filter output not to be discarded
-        % (for being negligible).
-        VarTh = 0;  
-       
+
     end
     
     % Consistency checks to be done later
@@ -62,7 +55,6 @@ classdef lasip < ...
             opt.ExpandBoundary   = 2;
             opt.Verbose          = false;
             opt.Name             = 'lasip';
-            opt.VarTh            = 0;
             [~, opt] = process_arguments(opt, varargin);
             
             fNames = setdiff(fieldnames(opt), {'Verbose', 'Name'});

@@ -94,17 +94,10 @@ if obj.Decimation > 1,
                 end
             end
             
-            % Check if the variance threshold has been exceeded
-            varRatio = 100*var(yi)/var(data(i,:));
-            
             if obj.GetNoise
-                if (varRatio > obj.VarTh),
-                    data(i, :) = data(i, :) - yi;
-                end
-            elseif varRatio > obj.VarTh
-                data(i, :) = yi;
+                data(i, :) = data(i, :) - yi;
             else
-                data(i,:) = 0;
+                data(i, :) = yi;
             end
             
         end
@@ -122,20 +115,13 @@ else
                 'contains NaNs: the channel will not be filtered'], i);
             continue;
         end
-
-        % Check if the variance threshold has been exceeded
-        varRatio = var(dataD(i,:))/var(data(i,:));
         
         if obj.GetNoise
-            if varRatio > obj.VarTh,
-                data(i,:) = data(i,:) - dataD(i,:);
-            end
-        elseif varRatio > obj.VarTh
-            data(i,:) = dataD(i,:);
+            data(i,:) = data(i,:) - dataD(i,:);
         else
-            data(i,:) = 0;
+            data(i,:) = dataD(i,:);
         end
-   
+        
     end
     
 end

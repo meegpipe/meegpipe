@@ -6,8 +6,12 @@ end
 
 [st, i] = dbstack;
 
-st   = st(i+1);
-name = strrep(st.name, '.', ':');
+if numel(st) < 2,
+    name = 'Base';
+else
+    st   = st(i+1);
+    name = strrep(st.name, '.', ':');
+end
 
 obj = MException([name ':Inconsistent'], ...
     'Inconsistent object: %s', msg);

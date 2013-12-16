@@ -14,9 +14,6 @@ function A = learn_coeffs(obj, data)
 %
 % See also: var.estimator
 
-% Description: Learns VAR coefficients
-% Documentation: class_var_arfit.txt
-
 import external.arfit.arfit;
 
 

@@ -18,7 +18,7 @@ NbC                 Inf         # Number of components for the eds filter
 #
 # Specific to varfilt
 #
-AR                  false       # Perform the filtering in an univariate
+ForceAR             false       # Perform the filtering in an univariate
                                 # fashion, i.e. channel by channel?  
 VAR                 var.arfit   # VAR estimation algorithm                             
 
