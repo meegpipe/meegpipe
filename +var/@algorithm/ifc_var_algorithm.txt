@@ -1,4 +1,0 @@
-Class: algorithm
-============
-
-[[Parent]]: class_var_estimator.txt

@@ -1,6 +1,0 @@
-Package: var
-============
-
-[[Parent]]: eegcore.txt
-
-
