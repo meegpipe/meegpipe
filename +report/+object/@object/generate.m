@@ -42,13 +42,15 @@ for i = 1:numel(obj.Objects)
     elseif isa(thisObj, 'goo.reportable') || ...
             isa(thisObj, 'goo.reportable_handle'),
         
-        level = get_level(obj) + 1;
+        level = get_level(obj) + 1;        
         
-        set_level(obj, get_level(obj) + 1);
-        %make_title(obj, 'Object 
         fprintf(fid, '\n\n');
-        fprintf(fid, '%s %s\n\n', repmat('#', 1, level), ...
-            'Object properties');
+        
+        title = get_title(obj);
+        
+        if isempty(title), title = 'Object properties'; end
+        
+        fprintf(fid, '%s %s\n\n', repmat('#', 1, level), title);
         
         [pName, pValue, pDescr] = report_info(thisObj);
         

@@ -1,4 +1,4 @@
-function y = plus(a, b)
+function y = plus(varargin)
 % + Plus. 
 %
 %   A + B adds B to the contents of pset object A. B can be either a
@@ -7,39 +7,36 @@ function y = plus(a, b)
 % See also: pset.pset
 
 
-import misc.ispset;
-
-% Check data dimensions
-if ~all(size(a)==size(b)) && ~((prod(size(a))==1) || prod(size(b))==1), %#ok<PSIZE>
-    error('pset:pset:plus:dimensionMismatch', 'Data dimensions do not match.');
+count = 1;
+while count < nargin && ~isa(varargin{count+1}, 'pset.pset'),
+    count = count + 1;
 end
 
-if ~ispset(a),        
-    tmp = a;
-    a = b;
-    b = tmp;    
-end
+y = varargin{count};
 
-y = a;
+varargin = varargin(setdiff(1:nargin, count));
 
-for i = 1:a.NbChunks
-    [index, dataa] = get_chunk(a, i);
-    if ispset(b),
-        [~, datab] = get_chunk(b, i);
-    elseif numel(b)==1,
-        datab = b(1);
-    else
-        if a.Transposed,
-            datab = b(index, :);
+
+for i = 1:y.NbChunks
+    [index, dataa] = get_chunk(y, i);
+    for j = 1:numel(varargin)        
+        if isa(varargin{j}, 'pset.pset'),
+            [~, datab] = get_chunk(varargin{j}, i);
+        elseif numel(varargin{j})==1,
+            datab = varargin{j}(1);
         else
-            datab = b(:, index);
+            if a.Transposed,
+                datab = varargin{j}(index, :);
+            else
+                datab = varargin{j}(:, index);
+            end
         end
-    end    
-    if a.Transposed,        
-        s.subs = {index, 1:nb_dim(a)};        
-    else
-        s.subs = {1:nb_dim(a), index};        
+        if y.Transposed,
+            s.subs = {index, 1:nb_dim(y)};
+        else
+            s.subs = {1:nb_dim(y), index};
+        end
+        s.type = '()';
+        y = subsasgn(y, s, dataa + datab);
     end
-    s.type = '()';
-    y = subsasgn(y, s, dataa + datab);
 end

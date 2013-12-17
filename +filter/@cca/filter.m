@@ -61,7 +61,7 @@ if maxCard < Inf,
 end
 cca = select_component(cca, selected);
 
-myFilt = obj.ComponentFilter;
+myFilt = obj.CCFilter;
 if isa(myFilt, 'function_handle'),
     myFilt = myFilt(x.SamplingRate);
 end

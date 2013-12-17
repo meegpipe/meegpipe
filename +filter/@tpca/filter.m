@@ -14,13 +14,18 @@ if verbose,
         size(x,1), obj.Order);
 end
 
+if isa(obj.Order, 'function_handle'),
+    order = obj.Order(x.SamplingRate);
+else
+    order = obj.Order;
+end
 
 tinit = tic;
 pca = obj.PCA;
 pca = set_verbose(pca, false);
-dim = ceil(obj.Order/2);
+dim = ceil(order/2);
 for i = 1:size(x,1),
-    d   = signal2hankel(x(i,:), obj.Order);
+    d   = signal2hankel(x(i,:), order);
     pca = learn(pca, d);
     d   = proj(pca, d);
     if ~isempty(obj.PCFilter),

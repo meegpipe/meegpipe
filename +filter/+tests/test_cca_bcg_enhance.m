@@ -72,7 +72,13 @@ try
     name = 'sample filtering';
     
     [data, ~, S, ~, snr] = sample_data();
-    myFilter = filter.cca.bcg_enhance('MinCard', 2, 'MaxCard', 2);    
+    
+    myCCFilter = filter.tpca('Order', 50, 'PCA', spt.pca('RetainedVar', 95));
+    
+    myFilter = filter.cca.bcg_enhance(...
+        'MinCard', 2, ...
+        'MaxCard', 2, ...
+        'CCFilter', myCCFilter);    
     
     filter(myFilter, data);
     
@@ -81,7 +87,7 @@ try
         snrAfter = snrAfter + var(S(i,:))/var(data(i,:)-S(i,:));
     end
     snrAfter = snrAfter/size(data,1);
-    ok(snrAfter > 20*snr, name);
+    ok(snrAfter > 50*snr, name);
     
 catch ME
     
@@ -97,8 +103,17 @@ try
     name = 'sliding_window';
     
     [data, ~, S, ~, snr] = sample_data();
-    myFilter = filter.cca.bcg_enhance('MinCard', 2, 'MaxCard', 2, ...
-        'SamplingRate', 150);   
+    
+    myCCFilter = filter.tpca(...
+        'Order',    50, ...
+        'PCA',      spt.pca('RetainedVar', 95));
+    
+    myFilter = filter.cca.bcg_enhance(...
+        'MinCard',      2, ...
+        'MaxCard',      2, ...
+        'SamplingRate', 150, ...
+        'CCFilter',     myCCFilter);    
+    
     myFilter = filter.sliding_window(myFilter, ...
         'WindowLength', 1000);
     
@@ -109,7 +124,7 @@ try
         snrAfter = snrAfter + var(S(i,:))/var(data(i,:)-S(i,:));
     end
     snrAfter = snrAfter/size(data,1);
-    ok(snrAfter > 20*snr, name);
+    ok(snrAfter > 50*snr, name);
     
 catch ME
     
@@ -125,11 +140,24 @@ try
     name = 'real data';
     
     data = real_data;
-    myFilter = filter.cca('MinCard', 4, 'MaxCard', 4, ...
-        'SamplingRate', data.SamplingRate);   
-    myFilter = filter.sliding_window(myFilter, 'WindowLength', 2000);
-    myFilter = filter.pca('PCFilter', myFilter, ...
-        'PCA', spt.pca('MaxCard', 9, 'RetainedVar', 99.99));
+    
+    myCCFilter = filter.tpca(...
+        'Order',    100, ...
+        'PCA',      spt.pca('RetainedVar', 97.5));
+    
+    myFilter = filter.cca.bcg_enhance(...
+        'MinCorr',      @(x) median(x), ...
+        'SamplingRate', data.SamplingRate, ...
+        'CCFilter',     myCCFilter);
+    
+     myFilter = filter.sliding_window(myFilter, ...
+         'WindowLength', 5000);
+     
+    myFilter = filter.pca(...
+        'PCA', spt.pca('RetainedVar', 99.99), ...
+        'PCFilter', myFilter);
+    
+    
     
     filter(myFilter, data);
 

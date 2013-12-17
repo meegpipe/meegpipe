@@ -12,9 +12,10 @@ classdef cca < ...
         MinCorr = 0;
         MinCard = 0;
         MaxCard = Inf;
-        ComponentFilter  = [];
         TopCorrFirst = true;
         CCA = spt.bss.cca;
+        % To be applied to the selected canonical components
+        CCFilter = []; 
         
     end
     
@@ -32,8 +33,8 @@ classdef cca < ...
         % Redefinitions of methods from goo.verbose
         function obj = set_verbose(obj, bool)
             obj = set_verbose@goo.verbose(obj, bool);
-            if ~isempty(obj.ComponentFilter),
-                obj.ComponentFilter = set_verbose(obj.ComponentFilter, bool);
+            if ~isempty(obj.CCFilter),
+                obj.CCFilter = set_verbose(obj.CCFilter, bool);
             end
         end
        
@@ -65,9 +66,15 @@ classdef cca < ...
                    );
            end
            
+           myCCFilter = filter.tpca(...
+               'Order', @(sr) ceil(sr/10), ...
+               'PCA',   spt.pca('RetainedVar', 99) ...
+               );
+           
            myFilter = filter.cca(...
                'CCA',          myCCA, ...
-               'MinCorr',      0.5, ...     
+               'CCFilter',     myCCFilter, ...
+               'MinCorr',      0.35, ...     
                'TopCorrFirst', true, ...
                'Name',         'filter.cca.bcg_enhance', ...
                varargin{:} ...
@@ -88,7 +95,7 @@ classdef cca < ...
             opt.MaxCard = Inf;
             opt.CCA = spt.bss.cca;
             opt.TopCorrFirst = true;
-            opt.ComponentFilter = [];
+            opt.CCFilter = [];
             opt.Name     = 'filter.cca';
             opt.Verbose  = true;
             
@@ -99,7 +106,7 @@ classdef cca < ...
             obj.MinCard = opt.MinCard;
             obj.MaxCard = opt.MaxCard;
             obj.CCA = opt.CCA;
-            obj.ComponentFilter = opt.ComponentFilter;
+            obj.CCFilter = opt.CCFilter;
             obj.TopCorrFirst = opt.TopCorrFirst;
             
             obj = set_name(obj, opt.Name);

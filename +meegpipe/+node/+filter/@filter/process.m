@@ -1,5 +1,5 @@
 function [data, dataNew] = process(obj, data, varargin)
-
+% PROCESS - Main processing method for filter nodes
 
 import goo.globals;
 import misc.eta;
