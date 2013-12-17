@@ -1,4 +1,4 @@
-function obj = learn(obj, data)
+function obj = learn(obj, data, varargin)
 % LEARN - Learn spatial tranformation basis functions
 
 import goo.globals;
@@ -32,7 +32,7 @@ if ~isempty(obj.LearningFilter),
    data = filter(myFilter, data);    
 end
 
-obj = learn_basis(obj, data);
+obj = learn_basis(obj, data, varargin{:});
 
 if verbose,
      fprintf([verboseLabel 'Learned %d %s basis\n\n'], nb_component(obj), class(obj));

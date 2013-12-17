@@ -1,5 +1,5 @@
 classdef config < meegpipe.node.abstract_config
-    % CONFIG - Configuration for node lasip
+    % CONFIG - Configuration for node filter
     %
     % ## Usage synopsis:
     %
@@ -52,12 +52,7 @@ classdef config < meegpipe.node.abstract_config
                 throw(InvalidPropValue('Filter', ...
                     'Must be a filter.dfilt object or a function_handle'));
             end
-            
-            if isa(value, 'goo.verbose') || ...
-                    isa(value, 'goo.verbose_handle'),
-                value = set_verbose(value, false);
-            end
-           
+         
             obj.Filter = value;
             
         end

@@ -18,6 +18,13 @@ if isempty(galArray),
     galArray = {gal};
 end
 
+visible = globals.get.VisibleFigures;
+if visible,
+    visibleStr = 'on';
+else
+    visibleStr = 'off';
+end
+
 % IMPORTANT: The current statble version of Inkscape (0.48.2) crashes when
 % attempting to convert very large .svg files to .png. The downsampling
 % here is to prevent the inkscape crash, but anyways it's a good idea to
@@ -27,7 +34,7 @@ data1 = resample(data1(:,:), 1, Q);
 data2 = resample(data2(:,:), 1, Q);
 samplTime = samplTime(1:Q:end);
 
-figure;
+figure('Visible', visibleStr);
 plot(samplTime, data1, 'k', 'LineWidth', LINE_WIDTH);
 hold on;
 plot(samplTime, data2, 'r', 'LineWidth', 0.75*LINE_WIDTH);
@@ -55,7 +62,7 @@ if showDiff,
         galArray = [galArray {gal}];
     end
     
-    figure;
+    figure('Visible', visibleStr);
     plot(samplTime, data1, 'k', 'LineWidth', LINE_WIDTH);
     hold on;
     plot(samplTime, data1-data2, 'r', 'LineWidth', 0.75*LINE_WIDTH);

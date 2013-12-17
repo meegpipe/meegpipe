@@ -13,6 +13,11 @@ classdef cca < spt.abstract_spt
         
         function obj = learn_basis(obj, X, varargin)
             
+            import misc.process_arguments;
+            
+            opt.SamplingRate = [];
+            [~, opt] = process_arguments(opt, varargin);
+            
             T = size(X, 2);
             delay = obj.Delay;
             
@@ -22,21 +27,31 @@ classdef cca < spt.abstract_spt
                 % in seconds. It also allows for adaptive-delay schemes in
                 % which the delay is obtained as a function of the input
                 % data.
-               delay = delay(X); 
+               if isa(X, 'physioset.physioset'),
+                   delay = delay(X); 
+               elseif ~isempty(opt.SamplingRate),
+                   delay = delay(opt.SamplingRate);
+               else
+                   error('Invalid/missing CCA delay');
+               end
             end
             % Special case, Delay is an array of possible delays. Pick that
             % delay that maximizes auto-correlation in the SUM dataset            
             if numel(delay) > 1,
-                if isa(X, 'pset.mmappset'),
-                    XS = sum(abs(copy(X)));
-                else
-                    XS = sum(abs(X));
-                end
-                corrF = nan(1, numel(delay));
+                corrF = zeros(size(X,1), numel(delay));
                 for i = 1:numel(delay)
-                    corrF(i) = XS(1:end-delay(i))*XS(delay(i)+1:end)';
+                    for j = 1:size(X,1),
+                        thisX = X(j,:) - mean(X(j,:));
+                        thisX = thisX./sqrt(var(thisX));
+                        thisCorr = ...
+                            thisX(1:end-delay(i))*thisX(delay(i)+1:end)';
+                        thisCorr = thisCorr/(numel(thisX)-delay(i));
+                        corrF(j,i) = thisCorr;
+                    end
                 end
-                
+                corrF = prctile(abs(corrF), .75, 1);  
+                [~, Imax] = max(corrF);
+                delay = delay(Imax);
             end
             
             % correlation matrices
@@ -50,8 +65,8 @@ classdef cca < spt.abstract_spt
                 Ytrans = transpose(copy(Y));
                 Xtrans = transpose(copy(X));
             else
-                Y = X(:,obj.Delay+1:end);
-                X = X(:,1:end-obj.Delay);
+                Y = X(:,delay+1:end);
+                X = X(:,1:end-delay);
                 X = X - repmat(mean(X,2), 1, size(X,2));
                 Y = Y - repmat(mean(Y,2), 1, size(Y,2));
                 Ytrans = transpose(Y);

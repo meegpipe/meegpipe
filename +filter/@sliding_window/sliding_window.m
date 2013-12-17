@@ -27,9 +27,10 @@ classdef sliding_window< ...
             
             import misc.process_arguments;
             
-             if nargin < 1, return; end
+            if nargin < 1, return; end
             
-            if isa(varargin{1}, 'filter.dfilt'),
+            if isa(varargin{1}, 'filter.dfilt') || ...
+                    isa(varargin{1}, 'filter.rfilt'),
                 varargin = [{'Filter'}, varargin];
             end
             
@@ -40,7 +41,7 @@ classdef sliding_window< ...
             opt.Name           = 'sliding_window_cca';
             opt.Verbose        = true;
             
-            [~, opt] = process_arguments(opt, varargin);
+            [~, opt] = process_arguments(opt, varargin, [], true);
             
             obj.Filter         = opt.Filter;
             obj.WindowLength   = opt.WindowLength;

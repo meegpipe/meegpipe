@@ -28,6 +28,7 @@ for nodeItr = 1:numel(nodeList),
     
     if isempty(nodeList{nodeItr}),
         nodesOutput{nodeItr} = data;
+        continue;
     end
     
     if verbose,
@@ -54,7 +55,7 @@ for nodeItr = 1:numel(nodeList),
     
 end
 
-data = aggrFunc(nodesOutput{:});
+data = aggrFunc(nodesOutput);
 
 
 end

@@ -40,7 +40,8 @@ classdef config < meegpipe.node.abstract_config
                 value = {value};
             end
             
-            if ~all(cellfun(@(x) isa(x, 'meegpipe.node.node'), value)),
+            if ~all(cellfun(@(x) isempty(x) || ...
+                    isa(x, 'meegpipe.node.node'), value)),
                 throw(InvalidPropValue('NodeList', ...
                     'Must be a cell array of node objects'));
             end

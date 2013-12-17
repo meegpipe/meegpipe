@@ -13,7 +13,7 @@ goo.globals.set('VerboseLabel', verboseLabel);
 cca = obj.CCA;
 cca = set_verbose(cca, verbose);
 
-cca = learn(cca, x);
+cca = learn(cca, x, varargin{:});
 d   = proj(cca, x);
 
 selected = true(1, size(d,1));
@@ -66,7 +66,7 @@ if isa(myFilt, 'function_handle'),
     myFilt = myFilt(x.SamplingRate);
 end
 if ~isempty(myFilt),
-    d = filtfilt(myFilt, d);
+    d = filtfilt(myFilt, d, varargin{:});
 end
 
 d   = bproj(cca, d);

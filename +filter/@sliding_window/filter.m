@@ -45,11 +45,19 @@ for i = 1:numel(winOnset)
     
     winTimeRange = winOnset(i):winOnset(i)+winLength-1;
     
-    thisY = filter(myFilt, x(:, winTimeRange));
+    if nargin > 2, 
+        % To make it work with regression filters as well
+        thisY = filter(myFilt, x(:, winTimeRange), ...
+            varargin{1}(:, winTimeRange), 'SamplingRate', x.SamplingRate);
+    else
+        thisY = filter(myFilt, x(:, winTimeRange), 'SamplingRate', ...
+            x.SamplingRate);
+    end
     
     y(:, winTimeRange(winTimeRange > lastSample)) = 0;
+
     y(:, winTimeRange) = y(:, winTimeRange) + thisY.*win;
-    
+  
     lastSample = winTimeRange(end);
     
     unitVec(winTimeRange) = unitVec(winTimeRange) + win(1,:);

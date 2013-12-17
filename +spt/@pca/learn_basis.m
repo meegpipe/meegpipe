@@ -19,8 +19,6 @@ obj.CovRank = rank(C);
 V(:, obj.CovRank+1:end)         = [];
 sortedLambda(obj.CovRank+1:end) = [];
 
-
-
 if obj.Sphering,
     W = diag(sortedLambda.^(-.5))*V';
 else
@@ -32,8 +30,13 @@ A = pinv(W);
 % Compute model order selection criteria
 critName = setdiff(keys(spt.pca.valid_criteria), 'NONE');
 for critItr = 1:numel(critName)
+    try
     [kopt, critVal] = feval(['spt.pca.' lower(critName{critItr})], ...
-        Lambda, obj.Samples);
+        sortedLambda, obj.Samples);
+    catch
+        cata=5;
+        keyboard;
+    end
     obj.(upper(critName{critItr})) = critVal;
     obj.([upper(critName{critItr}) 'Order']) = kopt;
 end

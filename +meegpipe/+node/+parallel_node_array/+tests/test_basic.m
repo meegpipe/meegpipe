@@ -13,7 +13,7 @@ import physioset.event.value_selector;
 
 MEh     = [];
 
-initialize(6);
+initialize(7);
 
 %% Create a new session
 try
@@ -71,6 +71,58 @@ try
         isa(myAggr, 'function_handle') & ...
         myAggr(5,4) == 20, ...
         name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% using a regression filter as aggregator (real data)
+try
+    
+    name = 'using a regression filter as aggregator (real data)';
+    
+    
+    data = real_data;
+    
+    myFilter = filter.cca.bcg_enhance(...
+        'MinCorr',      @(x) median(x), ...
+        'SamplingRate', data.SamplingRate ...
+        );
+    
+     myFilter = filter.pca(...
+        'PCA',          spt.pca('RetainedVar', 99.99), ...
+        'PCFilter',     myFilter);
+    
+    % This mini-pipeline takes care of extracting the signals that are
+    % to be regressed out later on
+    myRegrExtractor = pipeline.new(...
+        copy.new, ...
+        filter.new('Filter', myFilter), ...
+        spt.new('SPT',    spt.pca('RetainedVar', 99)));
+    
+    % The regression filter is a sliding window multiple-lag regression
+    % filter
+    myFilter = filter.mlag_regr('Order', 10);
+    myFilter = filter.sliding_window(...
+        'Filter',         myFilter, ...
+        'WindowLength',   data.SamplingRate*10, ...
+        'WindowOverlap',  50);   
+    
+    % The second parallel node is just transparent, meaning: let the input
+    % data pass through untouched (no copy is performed due to CopyInput
+    % being set to false).
+    myNode = parallel_node_array.new(...
+        'NodeList',   {[], myRegrExtractor}, ...
+        'Aggregator', @(nodesOut) filter(myFilter, nodesOut{1}, nodesOut{2}), ...
+        'CopyInput',  false);
+    
+    dataO = data(1,:);    
+    run(myNode, data);    
+    
+    ok(prctile(abs(dataO), 90) > 2*prctile(abs(data(1,:)), 90), name);
     
 catch ME
     
@@ -145,3 +197,26 @@ end
 
 %% Testing summary
 status = finalize();
+
+end
+
+
+function dataCopy = real_data()
+
+import pset.session;
+import mperl.file.spec.catfile;
+import mperl.file.spec.catdir;
+
+if exist('bcg_sample.pseth', 'file') > 0,
+    data = pset.load('bcg_sample.pseth');
+else
+    % Try downloading the file
+    url = 'http://kasku.org/data/meegpipe/bcg_sample.zip';
+    unzipDir = catdir(session.instance.Folder, 'bcg_sample');
+    unzip(url, unzipDir);
+    fileName = catfile(unzipDir, 'bcg_sample.pseth');
+    data = pset.load(fileName);
+end
+dataCopy = copy(data);
+
+end

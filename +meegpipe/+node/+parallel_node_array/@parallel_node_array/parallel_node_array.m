@@ -25,12 +25,14 @@ classdef parallel_node_array < meegpipe.node.abstract_node
             
             nodeList = get_config(obj, 'NodeList');
             for i = 1:numel(nodeList),
+                if isempty(nodeList{i}), continue; end
                 nodeList{i} = clone(nodeList{i});
                 nodeList{i}.GenerateReport = ...
                     nodeList{i}.GenerateReport & do_reporting(obj);
             end
             
             for i = 1:numel(nodeList)
+                if isempty(nodeList{i}), continue; end
                 childof(nodeList{i}, obj, i);
             end
             set_config(obj, 'NodeList', nodeList);

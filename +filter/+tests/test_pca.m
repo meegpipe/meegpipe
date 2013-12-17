@@ -10,7 +10,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(5);
+initialize(6);
 
 %% Create a new session
 try
@@ -49,6 +49,32 @@ try
         myFilt.PCA.RetainedVar == 90;
     
     ok(cond, name);
+    
+catch ME
+    
+    ok(ME, name);
+    status = finalize();
+    return;
+    
+end
+
+%% regression filter
+try
+    
+    name = 'regression filter';
+    
+    [data, N, S, ~, snr] = sample_data();
+    myFilter = filter.mlag_regr('Order', 3);  
+    myFilter = filter.pca(myFilter);
+    
+    filter(myFilter, data, N);
+    
+    snrAfter = 0;
+    for i = 1:size(data,1)
+        snrAfter = snrAfter + var(S(i,:))/var(data(i,:)-S(i,:));
+    end
+    snrAfter = snrAfter/size(data,1);
+    ok(snrAfter > 10*snr, name);
     
 catch ME
     

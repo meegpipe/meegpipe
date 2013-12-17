@@ -16,7 +16,7 @@ classdef pca < ...
     
     methods
         % filter.dfilt interface
-        [y, obj] = filter(obj, x, varargin);
+        [y, obj] = filter(obj, x, d, varargin);
         
         function [y, obj] = filtfilt(obj, x, varargin)
             
@@ -39,6 +39,13 @@ classdef pca < ...
         function obj = pca(varargin)
             
             import misc.process_arguments;
+            
+            if nargin < 1, return; end
+            
+            if isa(varargin{1}, 'filter.dfilt') || ...
+                    isa(varargin{1}, 'filter.rfilt'),
+                varargin = [{'PCFilter'}, varargin];
+            end
             
             opt.PCA      = spt.pca('MaxCard', 5);
             opt.PCFilter = [];

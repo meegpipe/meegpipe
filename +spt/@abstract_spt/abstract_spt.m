@@ -93,7 +93,7 @@ classdef abstract_spt < ...
         
         % Method learn() is implemented in terms of learn_basis() which is to
         % be implemented by concrete classes that inherit from abstract_spt
-        obj      = learn(obj, data, ev, sr);
+        obj      = learn(obj, data, varargin);
         
         obj      = match_sources(source, target, varargin);
         

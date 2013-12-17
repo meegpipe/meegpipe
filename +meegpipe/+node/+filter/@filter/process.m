@@ -71,7 +71,7 @@ for segItr = 1:numel(evSample)
     last  = min(evSample(segItr)+evDur(segItr)-1, size(data,2));
     
     
-    filtObj = set_verbose(filtObj, false);
+    %filtObj = set_verbose(filtObj, false);
     
     if do_reporting(obj)
         thisRep = childof(report.generic.generic, rep);

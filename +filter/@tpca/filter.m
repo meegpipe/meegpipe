@@ -2,7 +2,10 @@ function [x, obj] = filter(obj, x, varargin)
 
 import misc.signal2hankel;
 import misc.eta;
+import misc.process_arguments;
 
+opt.SamplingRate = [];
+[~, opt] = process_arguments(opt, varargin);
 
 verbose = is_verbose(obj) && size(x,1) > 5;
 verboseLabel = get_verbose_label(obj);
@@ -15,7 +18,14 @@ if verbose,
 end
 
 if isa(obj.Order, 'function_handle'),
-    order = obj.Order(x.SamplingRate);
+    if isa(x, 'physioset.physioset'),
+        order = obj.Order(x.SamplingRate);
+    elseif ~isempty(opt.SamplingRate),
+        order = obj.Order(opt.SamplingRate);
+    else
+        error('Unknown data sampling rate');
+    end
+        
 else
     order = obj.Order;
 end
