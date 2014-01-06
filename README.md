@@ -103,7 +103,9 @@ are embedded in the data processing reports.
 [pil]: http://www.pythonware.com/products/pil/
 
 
-### Google Chrome (optional, strongly recommended)
+### Optional dependencies
+
+#### Google Chrome (optional, strongly recommended)
 
 _meegpipe_ generates HTML reports with lots of [.svg][svg] graphics
 embedded. [Google Chrome][gc] is far superior to other browsers when handling
@@ -124,7 +126,7 @@ this problem.
 
 
 
-### Sun/Oracle grid engine (optional)
+#### Sun/Oracle grid engine (optional)
 
 If [Oracle Grid Engine][oge] (OGE) is installed on your system,
 then _meegpipe_ should be able to use it to push your processing jobs to the
@@ -137,7 +139,7 @@ grid.  A good overview on the administration of OGE can be found on
 [oge-slides]: http://beowulf.rutgers.edu/info-user/pdf/ge_presentation.pdf
 
 
-### Condor high-throughput computing (optional)
+#### Condor high-throughput computing (optional)
 
 If [Condor][condor] is installed on your system then _meegpipe_ will be 
 able to use to parallelize the workload produced by _meegpipe_. Condor can 
