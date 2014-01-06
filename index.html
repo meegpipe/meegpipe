@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>meegpipe by meegpipe</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>meegpipe</h1>
+        <h2>Scalable and reproducible pipelines for M/EEG</h2>
+        <a href="https://github.com/meegpipe/meegpipe" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="meegpipe" class="anchor" href="#meegpipe"><span class="octicon octicon-link"></span></a>meegpipe</h1>
+
+<p><em>meegpipe</em> is a collection of MATLAB tools for building advanced processing
+pipelines for high density physiological recordings. It is especially 
+suited for the processing of high-density <a href="http://en.wikipedia.org/wiki/Electroencephalography">EEG</a> and <a href="http://en.wikipedia.org/wiki/Magnetoencephalography">MEG</a>, 
+but can also handle other modalities such as <a href="http://en.wikipedia.org/wiki/Electrocardiography">ECG</a>, temperature, 
+<a href="http://en.wikipedia.org/wiki/Actigraphy">actigraphy</a>, light exposure, etc. </p>
+
+<p>Be aware however that, so far, <em>meegpipe</em> has been tested only with hdEEG data, 
+and even in that case the testing has been very superficial. So expect to find
+many bugs if you are brave enough to use the current version. On the bright 
+side, you should expect the API to be relatively stable at this point. </p>
+
+<p>At this moment, there is no stable release of <em>meegpipe</em>. The code that you
+can download from here is the development version, which changes almost 
+daily. This doesn't mean that the current version is not useful. But it 
+means that you should have the mindset of a beta-tester and update 
+regularly to the latest version. You should also subscribe to
+<em>meegpipe</em>'s <a href="https://groups.google.com/forum/#!forum/meegpipe">google group</a>, where I will be posting information on
+ major bug fixes and updates.</p>
+
+<p>If you find any bug or have any feedback to share, please 
+<a href="http://germangh.com">contact me</a>.</p>
+
+<p>In the documentation below I often assume a Linux-like system (e.g. use of 
+frontslashes, <code>~</code> to denote home directory, etc). However, <em>meegpipe</em> should 
+also run under Windows. If you are using Windows, some of the commands that
+appear below might need minor modifications like replacing <code>~</code> by your home
+directory name.</p>
+
+<h2>
+<a name="pre-requisites" class="anchor" href="#pre-requisites"><span class="octicon octicon-link"></span></a>Pre-requisites</h2>
+
+<p>If you are working at somerengrid (our lab's private computing grid), then all the
+pre-requisites are already there and you can go directly to the installation instructions.
+Otherwise, you will have to install the requirements below. </p>
+
+<h3>
+<a name="fieldtrip-and-eeglab" class="anchor" href="#fieldtrip-and-eeglab"><span class="octicon octicon-link"></span></a>Fieldtrip and EEGLAB</h3>
+
+<p><a href="http://fieldtrip.fcdonders.nl/">Fieldtrip</a> and <a href="http://sccn.ucsd.edu/eeglab/">EEGLAB</a> are required mostly for input/output 
+of data from/to various data formats, and for plotting. Please <strong>do not</strong> add
+Fieldtrip and EEGLAB to your MATLAB search path. Instead simply edit 
+<a href="http://github.com/germangh/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini">+meegpipe/meegpipe.ini</a> to include the paths to the root 
+directories of Fieldtrip and EEGLAB on your system.</p>
+
+<h3>
+<a name="python" class="anchor" href="#python"><span class="octicon octicon-link"></span></a>Python</h3>
+
+<p>A. Kenneth Reitz has written an excellent guide on 
+<a href="http://docs.python-guide.org/en/latest/starting/installation/">how to install Python</a>. <em>meegpipe</em> requires a Python 2.x
+interpreter, where x is ideally at least 7. Please ensure that 
+<strong>easy_install</strong> and <strong>pip</strong> are also installed. Refer to the 
+<a href="http://docs.python-guide.org/en/latest/starting/installation/">python installation guide</a> for more details. </p>
+
+<p>If your OS is Linux-based (that includes Mac OS X) chances are that Python is already 
+installed on your system. In that case, open a terminal and ensure that you have the 
+required version of Python:</p>
+
+<pre><code>python --version
+</code></pre>
+
+<p>Even if your OS ships with Python, you may have to install 
+<strong>easy_install</strong> and <strong>pip</strong>. This can be done by 
+<a href="https://pypi.python.org/pypi/setuptools#installation-instructions">installing easy_install</a> and then running in a terminal (or 
+Windows command window):</p>
+
+<pre><code>easy_install pip
+</code></pre>
+
+<h3>
+<a name="remark" class="anchor" href="#remark"><span class="octicon octicon-link"></span></a>Remark</h3>
+
+<p>The <a href="http://kaba.hilvi.org/remark/remark.htm">Remark</a> python library is required for generating HTML reports.
+To install Rermark in Mac OS X and Linux run from the command line:</p>
+
+<pre><code>sudo pip install remark
+</code></pre>
+
+<p>In Windows, open a terminal and run:</p>
+
+<pre><code>easy_install pillow
+pip install remark
+</code></pre>
+
+<h3>
+<a name="inkscape" class="anchor" href="#inkscape"><span class="octicon octicon-link"></span></a>Inkscape</h3>
+
+<p><a href="http://en.dev.inkscape.org/download/">Inkscape</a> is required for generating the thumbnail images that
+are embedded in the data processing reports. </p>
+
+<h3>
+<a name="google-chrome-optional-strongly-recommended" class="anchor" href="#google-chrome-optional-strongly-recommended"><span class="octicon octicon-link"></span></a>Google Chrome (optional, strongly recommended)</h3>
+
+<p><em>meegpipe</em> generates HTML reports with lots of <a href="http://en.wikipedia.org/wiki/Scalable_Vector_Graphics">.svg</a> graphics
+embedded. <a href="https://www.google.com/intl/en/chrome/browser/">Google Chrome</a> is far superior to other browsers when handling
+<code>.svg</code> files and thus it is strongly recommended that you install Google
+Chrome. </p>
+
+<p><strong>NOTE for Windows 8 users</strong>: For some unknown reason neither Firefox nor
+Google Chrome are able to display local .svg files, when running under 
+Windows 8. Whenever trying to do so, both browsers attempt to download the 
+file and thus the file is not displayed. Read section 
+<em>Known problems/limitations</em> at the end of this document for possible 
+solutions to this problem.</p>
+
+<h3>
+<a name="sunoracle-grid-engine-optional" class="anchor" href="#sunoracle-grid-engine-optional"><span class="octicon octicon-link"></span></a>Sun/Oracle grid engine (optional)</h3>
+
+<p>If <a href="http://www.oracle.com/us/products/tools/oracle-grid-engine-075549.html">Oracle Grid Engine</a> (OGE) is installed on your system,
+then <em>meegpipe</em> should be able to use it to push your processing jobs to the
+grid.  A good overview on the administration of OGE can be found on 
+<a href="http://beowulf.rutgers.edu/info-user/pdf/ge_presentation.pdf">this presentation</a> by Daniel Templeton. </p>
+
+<h3>
+<a name="condor-high-throughput-computing-optional" class="anchor" href="#condor-high-throughput-computing-optional"><span class="octicon octicon-link"></span></a>Condor high-throughput computing (optional)</h3>
+
+<p>If <a href="http://research.cs.wisc.edu/htcondor/">Condor</a> is installed on your system then <em>meegpipe</em> will be 
+able to use to parallelize the workload produced by <em>meegpipe</em>. Condor can 
+be used to submit jobs to specialized clusters, to idle computers, to 
+the grid, or even to the cloud. If you are using <em>meegpipe</em> on a powerful 
+multi-core workstation you can also use Condor to exploit these local 
+parallel resources.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Clone the repository, either in <a href="https://github.com/meegpipe/meegpipe/archive/master.zip">.zip format</a>
+or using the command line, as follows:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span><span class="nb">cd</span> ~
+<span class="nv">$ </span>git clone git://github.com/meegpipe/meegpipe
+</pre></div>
+
+<p>The commands above will download <em>meegpipe</em>'s source code into directory
+ <code>~/meegpipe</code>.  Once this is done you should edit the configuration of 
+<em>meegpipe</em> by defining the locations of the third-party MATLAB dependencies 
+(Fieldtrip and EEGLAB) on your system. Do this by following the
+ instructions in <a href="http://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini">+meegpipe/meegpipe.ini</a>. </p>
+
+<h2>
+<a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic usage</h2>
+
+<p>Before anything else you will have to add <em>meegpipe</em> and its dependencies
+to your MATLAB search path:</p>
+
+<div class="highlight highlight-matlab"><pre><span class="n">restoredefaultpath</span><span class="p">;</span>
+<span class="n">addpath</span><span class="p">(</span><span class="n">genpath</span><span class="p">(</span><span class="s">'~/meegpipe'</span><span class="p">));</span>
+<span class="n">meegpipe</span><span class="p">.</span><span class="n">initialize</span><span class="p">;</span>
+</pre></div>
+
+<p>The commands above will ensure that your MATLAB search path contains <strong>only</strong> 
+the MATLAB sources that are needed for <em>meegpipe</em> to run. 
+Namely, <em>meegpipe</em> itself, and a subset of Fieldtrip and EEGLAB. The 
+<code>restoredefaultpath</code> command is important to ensure that other toolboxes do 
+not interfere with <em>meegpipe</em>. On the other hand, <em>meegpipe</em> components are 
+all encapsulated in <a href="http://www.mathworks.nl/help/matlab/matlab_oop/scoping-classes-with-packages.html">MATLAB packages</a>, which should prevent 
+<em>meegpipe</em> interfering with other toolboxes. Thus it should be relatively
+ safe for you to add the three lines above to your MATLAB <a href="http://www.mathworks.nl/help/matlab/ref/startup.html">startup</a>
+ function so that you don't need to type them every time you start MATLAB.</p>
+
+<h3>
+<a name="data-import" class="anchor" href="#data-import"><span class="octicon octicon-link"></span></a>Data import</h3>
+
+<div class="highlight highlight-matlab"><pre><span class="n">import</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="o">.*</span><span class="p">;</span>
+<span class="c">% Import from an .mff file</span>
+<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">mff</span><span class="p">,</span> <span class="s">'myfile.mff'</span><span class="p">);</span>
+<span class="c">% Import from an EDF+ file</span>
+<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">edfplus</span><span class="p">,</span> <span class="s">'myfile.edf'</span><span class="p">);</span>
+<span class="c">% Import MATLAB built-in numerics</span>
+<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10000</span><span class="p">));</span>
+</pre></div>
+
+<p>All data importer classes implement an <code>import()</code> method, which always 
+produces a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> object. For more information and a list 
+of available data importers see the <a href="./+physioset/+import/README.md">documentation</a>.</p>
+
+<h3>
+<a name="data-processing-nodes" class="anchor" href="#data-processing-nodes"><span class="octicon octicon-link"></span></a>Data processing nodes</h3>
+
+<div class="highlight highlight-matlab"><pre><span class="n">import</span> <span class="n">meegpipe</span><span class="o">.*</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="p">.</span><span class="n">matrix</span><span class="p">;</span>
+
+<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10000</span><span class="p">));</span>
+
+<span class="c">% Detrend using a 10th order polynomial</span>
+<span class="n">myNode1</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">detrend</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'PolyOrder'</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+<span class="n">run</span><span class="p">(</span><span class="n">myNode1</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+
+<span class="c">% Filter data using a tfilter (temporal filter) node</span>
+<span class="c">% First build a band-pass filter object</span>
+<span class="n">myFilter</span> <span class="p">=</span> <span class="n">filter</span><span class="p">.</span><span class="n">bpfilt</span><span class="p">(</span><span class="s">'Fp'</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span> <span class="mf">0.3</span><span class="p">]);</span>
+<span class="c">% And then use it to construct the node</span>
+<span class="n">myNode2</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">tfilter</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Filter'</span><span class="p">,</span> <span class="n">myFilter</span><span class="p">);</span>
+<span class="n">run</span><span class="p">(</span><span class="n">myNode2</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+</pre></div>
+
+<p>For more information and a list of available processing nodes, see the
+<a href="./+meegpipe/+node/README.md">documenation</a>.</p>
+
+<h3>
+<a name="processing-reports" class="anchor" href="#processing-reports"><span class="octicon octicon-link"></span></a>Processing reports</h3>
+
+<p>One of the great features of <em>meegpipe</em> is that it generates comprehensive 
+HTML reports for every data processing task. In the example above, you 
+should have got a warning saying something like:</p>
+
+<blockquote>
+<p><strong>Warning</strong>: A new session was created in folder 'session_1' <br>
+In session.session&gt;session.instance at 82 <br>
+ In pset.generate_data at 35 <br>
+ In matrix.import at 62 <br></p>
+</blockquote>
+
+<p>This means that <em>meegpipe</em> just created a directory <code>session_1</code>, which will be 
+used to store, among other things, the data processing reports. Namely, you can 
+find a node's HTML report under:</p>
+
+<pre><code>session_1/[DATA].meegpipe/[NODE]_[USR]_[SYS]/remark/index.htm
+</code></pre>
+
+<p>where</p>
+
+<ul>
+<li><p><strong>DATA</strong> is a string identifying the processed <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a>. Use
+method <code>get_name()</code> to find out the name of a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> object.</p></li>
+<li><p><strong>NODE</strong> is a string identifying the <em>processing node</em>. It is a combination of 
+the node name (which can be obtained using method <code>get_name()</code>) and a hash code that 
+summarizes the node configuration. </p></li>
+<li><p><strong>USR</strong> is just the name of the user that ran command <code>run()</code>.</p></li>
+<li><p><strong>SYS</strong> is a string identifying the operating system and MATLAB version (e.g. <em>PCWIN64-R2011b</em>). </p></li>
+</ul><h3>
+<a name="pipelines" class="anchor" href="#pipelines"><span class="octicon octicon-link"></span></a>Pipelines</h3>
+
+<p>A <em>pipeline</em> is just a concatenation of nodes. With the exception of
+<a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/%40physioset_import/physioset_import.m">physioset_import</a> nodes, all other node classes always
+take a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> as input.</p>
+
+<div class="highlight highlight-matlab"><pre><span class="n">import</span> <span class="n">meegpipe</span><span class="o">.*</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="o">.*</span><span class="p">;</span>
+<span class="n">myNode1</span>  <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">physioset_import</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Importer'</span><span class="p">,</span> <span class="n">mff</span><span class="p">);</span>
+<span class="n">myFilter</span> <span class="p">=</span> <span class="n">filter</span><span class="p">.</span><span class="n">bpfilt</span><span class="p">(</span><span class="s">'Fp'</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span> <span class="mf">0.3</span><span class="p">]);</span>
+<span class="n">myNode2</span>  <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">tfilter</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Filter'</span><span class="p">,</span> <span class="n">myFilter</span><span class="p">);</span>
+<span class="n">myPipe</span>   <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">pipeline</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'NodeList'</span><span class="p">,</span> <span class="p">{</span><span class="n">myNode1</span><span class="p">,</span> <span class="n">myNode2</span><span class="p">});</span>
+
+<span class="c">% Will read from .mff file, and band-pass filter the data it contains</span>
+<span class="n">data</span> <span class="p">=</span> <span class="n">run</span><span class="p">(</span><span class="n">myPipe</span><span class="p">,</span> <span class="s">'myfile.mff'</span><span class="p">);</span>
+
+</pre></div>
+
+<h3>
+<a name="data-export" class="anchor" href="#data-export"><span class="octicon octicon-link"></span></a>Data export</h3>
+
+<div class="highlight highlight-matlab"><pre><span class="c">% Create a random EEG physioset</span>
+<span class="n">mySensors</span> <span class="p">=</span> <span class="n">sensors</span><span class="p">.</span><span class="n">eeg</span><span class="p">.</span><span class="n">from_template</span><span class="p">(</span><span class="s">'egi256'</span><span class="p">);</span>
+<span class="n">mySensors</span> <span class="p">=</span> <span class="n">subset</span><span class="p">(</span><span class="n">mySensors</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">256</span><span class="p">);</span>
+<span class="n">myImporter</span> <span class="p">=</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="p">.</span><span class="n">matrix</span><span class="p">(</span><span class="s">'Sensors'</span><span class="p">,</span> <span class="n">mySensors</span><span class="p">);</span>
+<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">myImporter</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">2000</span><span class="p">));</span>
+<span class="c">% Export to EEGLAB</span>
+<span class="n">myEEGLABStr</span> <span class="p">=</span> <span class="n">eeglab</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<span class="c">% Export to Fieldtrip</span>
+<span class="n">myFTripStr</span> <span class="p">=</span> <span class="n">fieldtrip</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</pre></div>
+
+<h2>
+<a name="more-information" class="anchor" href="#more-information"><span class="octicon octicon-link"></span></a>More information</h2>
+
+<p>See the practical <a href="http://github.com/meegpipe/meegpipe/tree/master/tutorials">tutorials</a>
+for some typical use cases of <em>meegpipe</em>. A high-level description of the API components 
+can be found in the <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md">documentation</a>, which is still work 
+in progress. </p>
+
+<h2>
+<a name="known-problemslimitations" class="anchor" href="#known-problemslimitations"><span class="octicon octicon-link"></span></a>Known problems/limitations</h2>
+
+<h3>
+<a name="long-path-names-under-windows" class="anchor" href="#long-path-names-under-windows"><span class="octicon octicon-link"></span></a>Long path names under Windows</h3>
+
+<p><em>meegpipe</em> has a tendency to generate reports with very deep file structures.
+Under Windows this might cause a problem due to the 
+<a href="http://msdn.microsoft.com/en-us/library/aa365247%28VS.85%29.aspx#maxpath">maximum path length limitation</a>. At this moment there is no 
+failproof workaround. However, you should be able to avoid the problem
+by simply using short pipeline names, and by avoiding deep nesting of 
+pipelines within pipelines.</p>
+
+<h3>
+<a name="inkscape-crashes" class="anchor" href="#inkscape-crashes"><span class="octicon octicon-link"></span></a>Inkscape crashes</h3>
+
+<p>Under some very rare circumstances, <a href="http://en.dev.inkscape.org/download/">inkscape</a> crashes when being
+called from the command line in Windows 8. Such crashes typically manifest 
+as a pop-up window with an error message. This problem can be solved by
+using the <a href="https://skydrive.live.com/?cid=09706d11303fa52a&amp;id=9706D11303FA52A%21217#cid=09706D11303FA52A&amp;id=9706D11303FA52A%21275">development version of Inkscape</a> (release r23126
+ and above).</p>
+
+<h3>
+<a name="local-svg-files-do-not-render-under-windows-8" class="anchor" href="#local-svg-files-do-not-render-under-windows-8"><span class="octicon octicon-link"></span></a>Local <code>.svg</code> files do not render under Windows 8</h3>
+
+<p>Under <strong>Windows 8</strong> neither Firefox nor Google Chrome are able to render 
+local .svg files.  There are two possible solutions to this problem:</p>
+
+<ul>
+<li><p>Use MS Explorer under Windows 8. This is far from ideal as MS Explorer 
+is quite slow at rendering .svg files. In particular, you will experience 
+very poor performance when trying to zoom-in an image. </p></li>
+<li><p>Run a local HTTP server that will serve the report page. In practice 
+this just means double clicking on the <code>pyserver.bat</code> file that you 
+will find on the root directory of each generated report. The <code>.bat</code> 
+file will use Python to start a local server at port 8000. It will also 
+try opening Chrome and point it to the server root
+URL: <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a> . Of course for this solution to work both 
+Python and Chrome need to be installed on your Windows 8 system. Also,
+the installation directory of Chrome must be the default under Windows 8:
+<code>C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</code>.</p></li>
+</ul><p>The downside of the second solution above is that you will not be able to
+display multiple reports simultaneously in Chrome. This problem can be 
+overcome by editing <code>pyserver.bat</code> so that different reports are served on
+different HTTP ports. </p>
+
+<h2>
+<a name="attribution" class="anchor" href="#attribution"><span class="octicon octicon-link"></span></a>Attribution</h2>
+
+<p>For convenience, <em>meegpipe</em> ships together with code from third-parties. 
+You can find a comprehensive list <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">here</a>. </p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Any code that is not part of any of the bundled third-party dependencies
+(see <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">the list</a>), is released under the 
+<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike licence</a>. </p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/meegpipe/meegpipe/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/meegpipe/meegpipe/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/meegpipe/meegpipe"></a> is maintained by <a href="https://github.com/meegpipe">meegpipe</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-44767640-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
