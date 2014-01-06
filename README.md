@@ -189,7 +189,7 @@ _meegpipe_ interfering with other toolboxes. Thus it should be relatively
 [startup]: http://www.mathworks.nl/help/matlab/ref/startup.html
 [eeglab]: http://sccn.ucsd.edu/eeglab/
 [ftrip]: http://fieldtrip.fcdonders.nl/
-[ini]: http://github.com/germangh/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini
+[ini]: http://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini
 [matlab-pkg]: http://www.mathworks.nl/help/matlab/matlab_oop/scoping-classes-with-packages.html
 
 
@@ -209,7 +209,7 @@ data = import(matrix, randn(10,10000));
 All data importer classes implement an `import()` method, which always 
 produces a [physioset][physioset] object. 
 
-[physioset]: https://github.com/germangh/matlab_physioset/blob/master/%2Bphysioset/%40physioset/physioset.m
+[physioset]: https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/physioset.m
 
 ### Data processing nodes
 
@@ -238,17 +238,14 @@ rather than _a copy of the input data_. This means that `run()` operates
 directly on the input data. Thus after running the code above, `data` 
 will be __both__ detrended and filtered. 
 
-If you wondered what is that `alias_import` about, just read the inline 
-documentation of [alias_import][alias-import].
-
 [wiki-ref]: http://en.wikipedia.org/wiki/Reference_(computer_science)
-[alias-import]: https://github.com/germangh/meegpipe/blob/master/%2Bmeegpipe/alias_import.m
+
 
 ### Processing reports
 
 One of the great features of _meegpipe_ is that it generates comprehensive 
-HTML reports for every data processing task. In the example above, you probably
-got a warning saying something like:
+HTML reports for every data processing task. In the example above, you 
+should have got a warning saying something like:
 
 > <strong>Warning</strong>: A new session was created in folder 'session_1' <br>
 > In session.session>session.instance at 82 <br>
@@ -282,7 +279,7 @@ A _pipeline_ is just a concatenation of nodes. With the exception of
 [physioset_import][node-physioset_import] nodes, all other node classes always
 take a [physioset][physioset] as input.
 
-[node-physioset_import]: https://github.com/germangh/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/%40physioset_import/physioset_import.m
+[node-physioset_import]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/%40physioset_import/physioset_import.m
 
 ````matlab
 import meegpipe.*;
@@ -378,7 +375,7 @@ different HTTP ports.
 For convenience, _meegpipe_ ships together with code from third-parties. 
 You can find a comprehensive list [here][attribution]. 
 
-[attribution]: https://github.com/germangh/meegpipe/blob/master/attribution.md
+[attribution]: https://github.com/meegpipe/meegpipe/blob/master/attribution.md
 
 
 
