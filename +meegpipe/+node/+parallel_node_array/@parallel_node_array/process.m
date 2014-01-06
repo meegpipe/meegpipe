@@ -28,6 +28,10 @@ for nodeItr = 1:numel(nodeList),
     
     if isempty(nodeList{nodeItr}),
         nodesOutput{nodeItr} = data;
+        print_title(rep, sprintf('Node #%d: Empty node', nodeItr), ...
+            get_level(rep)+2);
+        print_paragraph(rep, ['This node simply redirects its input ' ...
+            'to its output']);
         continue;
     end
     
@@ -49,7 +53,8 @@ for nodeItr = 1:numel(nodeList),
     dirName = abs2rel(get_rootpath(nodeRep), get_rootpath(rep));
     
     nodeName = get_name(nodeList{nodeItr});
-    print_paragraph(rep, '[Detailed report for %s][%s]', nodeName, nodeName);
+    print_paragraph(rep, '[Detailed report for %s][%s]', nodeName, ...
+        nodeName);
     print_link(rep, catfile(dirName, 'index.htm'), nodeName);
     
     

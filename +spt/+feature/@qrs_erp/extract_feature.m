@@ -81,7 +81,8 @@ for j = 1:size(tSeries,1)
         erpAvg  = erpAvg - mean(erpAvg);
         erpAvg  = erpAvg./sqrt(var(erpAvg));
         corrVal = erpAvg'*squeeze(erp)/numel(erpAvg);
-        winStatVal(i) = obj.CorrAggregationStat(corrVal);
+
+        winStatVal(i) = obj.CorrAggregationStat(corrVal); 
         
         % Penalize windows where the median RR is too large or too small
         medRR = median(diff(peakLocs))/sr;

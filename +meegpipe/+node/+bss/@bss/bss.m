@@ -43,6 +43,7 @@ classdef bss < meegpipe.node.abstract_node
         % node interface
         [data, dataNew] = process(obj, data, varargin);
         
+      
         % Constructor
         function obj = bss(varargin)
             

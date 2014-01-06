@@ -41,7 +41,7 @@ for i = 1:size(x,1),
     if ~isempty(obj.PCFilter),
         d   = filtfilt(obj.PCFilter, d);
     end
-    d   = bproj(pca, d);
+    d = bproj(pca, d);
     x(i,:) = d(dim,:);
     if verbose,
         eta(tinit, size(x, 1), i, 'remaintime', false);

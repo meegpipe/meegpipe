@@ -14,9 +14,6 @@ function count = print_title(obj, title, level)
 %
 % See also: print_code, print_link, print_file_link
 
-% Documentation: class_abstract_generator.txt
-% Description: Print report title
-
 if nargin < 3 || isempty(level), level = get_level(obj); end
 
 if nargin < 2 || isempty(title), title = get_title(obj); end

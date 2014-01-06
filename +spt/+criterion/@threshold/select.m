@@ -49,9 +49,22 @@ selected(minSelected) = true;
 
 % Sort components by their distance to the hypercube delimited by the
 % various thresholds
-maxTh = repmat(maxTh, size(tSeries, 1), 1);
-minTh = repmat(minTh, size(tSeries, 1), 1);
-rankIdx = min(max(featVal-maxTh, minTh-featVal), [], 2);
+shift = min(featVal);
+featValNorm = featVal - repmat(shift, size(featVal, 1), 1);
+scale = max(featValNorm);
+featValNorm = featValNorm./repmat(scale, size(featVal, 1), 1);
+if all(isinf(maxTh)) && all(isinf(minTh)),    
+    rankIdx = mean(featValNorm, 2);
+else
+    maxThMat = repmat((maxTh-shift)./scale, size(tSeries, 1), 1);
+    minThMat = repmat((minTh-shift)./scale, size(tSeries, 1), 1);
+    
+    distMax  = featValNorm-maxThMat;
+    distMin  = minThMat-featValNorm; 
+    
+    rankIdx  = max(max(distMax, distMin), [], 2);
+end
+
 obj.RankIndex = rankIdx;
 [~, idx] = sort(rankIdx, 'descend');
 

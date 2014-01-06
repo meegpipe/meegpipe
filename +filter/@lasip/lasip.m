@@ -12,7 +12,7 @@ classdef lasip < ...
         WindowType;
         WeightsMedian;
         InterpMethod;
-        %GetNoise;      % Replaced by GetResiduals in 
+        GetNoise;     
         Decimation;
         ExpandBoundary;
 

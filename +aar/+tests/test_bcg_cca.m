@@ -1,5 +1,5 @@
-function [status, MEh] = test_cca()
-% TEST_CCA - Tests BCG correction using CCA
+function [status, MEh] = test_bcg_cca()
+% TEST_BCG_CCA - Tests BCG correction using CCA
 
 import mperl.file.spec.*;
 import meegpipe.node.*;
@@ -13,7 +13,7 @@ import physioset.event.value_selector;
 
 MEh     = [];
 
-%initialize(4);
+initialize(5);
 
 %% Create a new session
 try
@@ -78,7 +78,7 @@ try
     myNode = aar.bcg.cca;
     run(myNode, data);    
     
-    ok(prctile(abs(dataO), 90) > 2*prctile(abs(data(1,:)), 90), name);
+    ok(prctile(abs(dataO), 90) > 1.5*prctile(abs(data(1,:)), 90), name);
     
 catch ME
     

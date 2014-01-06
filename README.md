@@ -79,55 +79,19 @@ required version of Python:
 Even if your OS ships with Python, you may have to install _easy\_install_ and _pip_. 
 
 
-### Pygments
+### Remark
 
-The [Pygments][pygments] python library is required for generating HTML reports.
-Just type in a terminal:
-	
-	easy_install Pygments
+The [Remark][remark] python library is required for generating HTML reports.
+To install Rermark in Mac OS X and Linux run from the command line:
 
-### Markdown
-	
-[Python Markdown 2.0][markdown] is required to generate HTML reports. Note
-that you must use Markdown 2.0 and not the newer Markdown 2.2.  To install
-[Python Markdown 2.0][markdown], type in a terminal:
-  
-	pip install markdown==2.0.0
+[remark]: http://kaba.hilvi.org/remark/remark.htm
 
-### Python Imaging Library
+    sudo pip install remark
 
-The [Python Imaging Library (PIL)][pil] is required for embedding images in
-the HTML reports. Depending on your operating system and whether you are
-using 32-bit or 64-bit Python, you may run into problems when installing the
-PIL. But in most cases the instructions below should be enough to get PIL 
-installed:
+In Windows, open a terminal and run:
 
-* __Mac OS X and Linux__. On a terminal, type `pip install pil`.
-	
-* __Windows (32-bit Python)__. Install Python Imaging Library using a
-  [32-bit installer][32bitpil]. On Windows 7, make sure that you run the
-  installer as an administrator (right click --> run as administrator).
-
-[32bitpil]: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pil
-
-* __Windows (64-bit Python)__. Install Python Imaging Library using a 
- [64-bit installer][64bitpil]. On Windows 7, make sure that you run the 
- installer as an administrator (right click --> run as administrator). You 
- 
-
-[64bitpil]: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pil
-
-__Windows note:__ The version of PIL (32 or 64 bits) that you should
- install under Windows depends on the version of your default Python
- installation. You can check whether your Python is 32 or 64 bits 
- by openning a command window and typing `Python`. If you try to install 
- the wrong version of PIL, the installer will complain about the correct 
- version of Python not being found in the Windows registry.
- 
-__Windows note:__ Depending on your Python version (2.5, 2.6 or 2.7) you
-may want to install one of the Pillow binaries instead of the standard
-PIL binaries. 
-
+    easy_install pillow
+    pip install remark
 
 
 ### Inkscape
@@ -150,11 +114,12 @@ MATLAB repositories on which _meegpipe_ depends.
 [git-download]: http://git-scm.com/downloads
 
 
-### Google Chrome
+### Google Chrome (optional, strongly recommended)
 
 _meegpipe_ generates HTML reports with lots of [.svg][svg] graphics
-embedded. [Google Chrome][gc] is far superior to other browsers for handling
-large numbers of .svg files. 
+embedded. [Google Chrome][gc] is far superior to other browsers when handling
+`.svg` files and thus it is strongly recommended that you install Google
+Chrome. 
 
 [svg]: http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
 [gc]: https://www.google.com/intl/en/chrome/browser/
@@ -170,7 +135,7 @@ solutions to this problem.
 ### Sun/Oracle grid engine (optional)
 
 If [Oracle Grid Engine][oge] (OGE) is installed on your system,
-then _meegpipe_ should be able to use to push your processing jobs to the
+then _meegpipe_ should be able to use it to push your processing jobs to the
 grid.  A good overview on the administration of OGE can be found on 
 [this presentation][oge-slides] by Daniel Templeton. 
 
@@ -180,79 +145,28 @@ grid.  A good overview on the administration of OGE can be found on
 [oge-slides]: http://beowulf.rutgers.edu/info-user/pdf/ge_presentation.pdf
 
 
+### Condor high-throughput computing (optional)
+
+If [Condor][condor] is installed on your system then _meegpipe_ will be 
+able to use to parallelize the workload produced by _meegpipe_. Condor can 
+be used to submit jobs to specialized clusters, to idle computers, to 
+the grid, or even to the cloud. If you are using _meegpipe_ on a powerful 
+multi-core workstation you can also use Condor to exploit these local 
+parallel resources. 
+
 
 ## Installation
 
-Clone the repository, either in [.zip format](https://github.com/germangh/meegpipe/archive/master.zip)
-or using the command line. It is highly recommended that you clone the repo (or unzip the .zip file) 
-within an empty _installation_ directory, e.g. :
+Clone the repository, either in [.zip format](https://github.com/meegpipe/meegpipe/archive/master.zip)
+or using the command line, as follows:
 
 ````bash
 $ cd ~
-$ mkdir installdir
-$ cd installdir
-$ git clone git://github.com/germangh/meegpipe
+$ git clone git://github.com/meegpipe/meegpipe
 ````
 
-Start MATLAB and type:
-
-````matlab
-cd ~/installdir/meegpipe;
-submodule_update([],true);
-clear all;
-````
-
-The last command above will automatically clone several external dependencies.
-Such dependencies will be cloned into `~/installdir` (or whatever installation 
-directory you decided to use). 
-
-## Test the installation (optional)
-
-You can test whether your installation was successful by running:
-
-    cd ~/installdir/meegpipe;
-    % Update dependencies necessary for testing purposes only
-    submodule_update([], true, true);
-	meegpipe.make_test
-
-Running the full battery of tests can take a very long time (> 1h). It is 
-relatively normal for a few tests to fail due to the fact that _meegpipe_ is
-under continuous development and I only ensure that the code passes all tests
-after commiting very major changes to the code.
-
-## Updating meegpipe
-
-It is usually a good idea to regularly update to the latest development
-version. To update _meegpipe_ and all its dependendencies simply run again 
-`submodule_update`, i.e:
-
-````matlab
-cd ~/installdir/meegpipe;
-submodule_update;
-clear all;
-````
-
-If the code above produces only a list of messages saying 
-`Already up-to-date`, then it means that _meegpipe_ and all its dependencies
-are already in their most up to date version. Otherwise, please run 
-`submodule_update` as many times as necessary until only 
-`Already up-to-date` messages are produced. 
-
-
-### Local changes to meegpipe and its submodules
-
-If you modify the contents of any of the subdirectories under
-`~installdir` then `submodule_update` will refuse to update your code to 
-the newest version that is available at the online repository. The 
-reason is that such an update would overwrite your local changes and you 
-may not like that. At this point the best solution is that you re-install 
-(i.e. clone) the new version of `meegpipe` in a new installation directory
-and do a fresh `submodule_update` from there. Of course you should remember
-to have a clean (standard) MATLAB search path before doing 
-`submodule_update` from the new installation directory. 
-
-Merging your local changes with the changes at the online repository of 
-`meegpipe` is possible, but not documented/supported yet. 
+The commands above will install _meegpipe_ source code under directory
+ `~/meegpipe`. 
 
 
 ## Basic usage
@@ -264,23 +178,26 @@ include the locations of the third-party dependencies on your system. Then run
 the following in MATLAB:
 
 ``````matlab
+restoredefaultpath;
+addpath(genpath('~/meegpipe'));
 meegpipe.initialize;
 ````
 
-The command above needs to be run only once per MATLAB session. Alternatively, 
-you may add `installdir` all its subdirectories to your MATLAB path and then add
-the line:
-
-````matlab
-meegpipe.initialize
-````
-
-to your MATLAB [startup] function.
+The commands above will ensure that your MATLAB search path contains __only__ 
+the third-party components that are needed for _meegpipe_ to run. 
+Namely, _meegpipe_ itself, and a subset of Fieldtrip and EEGLAB. The 
+`restoredefaultpath` command is important to ensure that other toolboxes do 
+not interfere with _meegpipe_. On the other hand, _meegpipe_ components are 
+all encapsulated in [MATLAB packages][matlab-pkg], which should prevent 
+_meegpipe_ interfering with other toolboxes. Thus it should be relatively
+ safe for you to add the three lines above to your MATLAB [startup][startup]
+ function so that you don't need to type them every time you start MATLAB.
 
 [startup]: http://www.mathworks.nl/help/matlab/ref/startup.html
 [eeglab]: http://sccn.ucsd.edu/eeglab/
 [ftrip]: http://fieldtrip.fcdonders.nl/
 [ini]: http://github.com/germangh/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini
+[matlab-pkg]: http://www.mathworks.nl/help/matlab/matlab_oop/scoping-classes-with-packages.html
 
 
 ### Data import
@@ -378,28 +295,14 @@ take a [physioset][physioset] as input.
 import meegpipe.*;
 import physioset.import.*;
 myNode1  = node.physioset_import.new('Importer', mff);
-myNode2  = node.detrend.new('PolyOrder', 10);
 myFilter = filter.bpfilt('Fp', [0.1 0.3]);
-myNode3  = node.tfilter.new('Filter', myFilter);
-myPipe   = node.pipeline.new('NodeList', {myNode1, myNode2, myNode3});
+myNode2  = node.tfilter.new('Filter', myFilter);
+myPipe   = node.pipeline.new('NodeList', {myNode1, myNode2});
 
-% Will read from .mff file, detrend and band-pass filter data
+% Will read from .mff file, and band-pass filter the data it contains
 data = run(myPipe, 'myfile.mff');
 
 ````
-
-Several pre-configured pipelines are available. See 
-`help meegpipe.node.pipeline` for a full list. Pre-configured pipelines 
-are created as follows:
-
-````matlab
-% OBS-based pipeline for cleaning simultaneous EEG-fMRI data
-% 
-import meegpipe.*;
-myPipe = node.pipeline.bcg_obs(1000);
-data = run(myPipe, 'myfile.mff');
-````
-
 
 ### Data export
 
@@ -417,16 +320,19 @@ myFTripStr = fieldtrip(data);
 
 ## More information
 
-See the practical [tutorials](http://github.com/germangh/meegpipe/tree/master/tutorials)
+See the practical [tutorials](http://github.com/meegpipe/meegpipe/tree/master/tutorials)
 for some typical use cases of _meegpipe_. A high-level description of the API components 
-can be found in the [documentation][doc-main], which at this moment is almost non-existent. 
-But that is likely to change in the near future. 
+can be found in the [documentation][doc-main], which is still work 
+in progress. 
 
-[doc-main]: https://github.com/germangh/meegpipe/blob/master/%2Bmeegpipe/README.md
+[doc-main]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md
 
 
 
 ## Known problems/limitations
+
+
+### Long path names under Windows
 
 _meegpipe_ has a tendency to generate reports with very deep file structures.
 Under Windows this might cause a problem due to the 
@@ -434,6 +340,9 @@ Under Windows this might cause a problem due to the
 failproof workaround. However, you should be able to avoid the problem
 by simply using short pipeline names, and by avoiding deep nesting of 
 pipelines within pipelines.
+
+
+### Inkscape crashes
 
 Under some very rare circumstances, [inkscape][inkscape] crashes when being
 called from the command line in Windows 8. Such crashes typically manifest 
@@ -443,6 +352,9 @@ using the [development version of Inkscape][inkscape-dev] (release r23126
 
 [maxpath]: http://msdn.microsoft.com/en-us/library/aa365247%28VS.85%29.aspx#maxpath
 [inkscape-dev]: https://skydrive.live.com/?cid=09706d11303fa52a&id=9706D11303FA52A%21217#cid=09706D11303FA52A&id=9706D11303FA52A%21275
+
+
+### Local `.svg` files do not render under Windows 8
 
 Under __Windows 8__ neither Firefox nor Google Chrome are able to render 
 local .svg files.  There are two possible solutions to this problem:
@@ -463,29 +375,10 @@ local .svg files.  There are two possible solutions to this problem:
 
 
 The downside of the second solution above is that you will not be able to
-display multiple reports simultaneously in Chrome. You can manually 
-overcome this problem by editing the `pyserver.bat` files so that 
-different reports are associated to different servers on different ports.
+display multiple reports simultaneously in Chrome. This problem can be 
+overcome by editing `pyserver.bat` so that different reports are served on
+different HTTP ports. 
 
-## Near-future to-do list
-
-At this point, I am not planning to add any major functionality to _meegpipe_. E.g. adding
-new processing nodes is not a priority at the moment. Below the items that 
-currently fill by urgent to-do list, more or less in order of priority:
-
-* __Find and fix most bugs__
-* Document the API so that users can  add new features (e.g. processing nodes, 
-  component selection criteria, etc) to the _meegpipe_ framework
-* Finalize and test the tutorials
-* Create a [homebrew][homebrew] formula to automate the
-  installation process under Mac OS X
-* Create a [Debian package][deb-pkg] to automate the installation under 
-  [Debian-based Linux distros][debian-distros]
-  
-
-[deb-pkg]: http://www.debian.org/distrib/packages
-[homebrew]: http://mxcl.github.com/homebrew/
-[debian-distros]: http://www.debian.org/misc/children-distros
 
 ## Attribution
 
@@ -493,6 +386,8 @@ For convenience, _meegpipe_ ships together with code from third-parties.
 You can find a comprehensive list [here][attribution]. 
 
 [attribution]: https://github.com/germangh/meegpipe/blob/master/attribution.md
+
+
 
 ## License
 

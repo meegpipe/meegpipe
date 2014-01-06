@@ -348,6 +348,10 @@ classdef physioset < ...
         
         function obj = loadobj(obj)
             obj.PointSet = loadobj(obj.PointSet);
+            
+            % We clear the processing history becuase it crates a lot of
+            % troubles. Fix this!
+            clear_processing_history(obj);
         end
         
         function obj = saveobj(obj)
@@ -524,6 +528,10 @@ classdef physioset < ...
         [evArray, rawIdx]  = get_event(obj, idx);
         
         history            = get_processing_history(obj, idx);
+        
+        function obj = clear_processing_history(obj)
+            obj.ProcHistory = [];
+        end
         
         h = plot(obj, varargin);
         

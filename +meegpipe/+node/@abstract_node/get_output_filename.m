@@ -28,13 +28,22 @@ if isa(data, 'physioset.physioset') || ischar(data)
     
     if isempty(origFile),
         if ischar(data),
-            origFile = data;
+            [~, name, ext] = fileparts(data);
+        elseif ~isempty(get_name(data)),
+            % IMPORTANT: This is the new way of naming the output files.
+            % The name of the physioset now takes prevalence over the
+            % filename. This is necessary for nodes like the bss node,
+            % which may produce as output a set of independent components
+            % instead of a modified version of the input physioset.
+            name = get_name(data);
+            ext  = pset.globals.get.DataFileExt; 
         else
-            origFile = get_datafile(data);
+            [~, name, ext] = fileparts(get_datafile(data));
         end
+        
+    else
+        [~, name, ext] = fileparts(origFile);
     end
-    
-    [~, name, ext] = fileparts(origFile);
     
     if isempty(savePath)
         savePath = get_full_dir(obj, data);

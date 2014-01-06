@@ -23,12 +23,17 @@ else
     warnMsg = [];
 end
 
-if get_config(obj, 'Reject'),
+rej = get_config(obj, 'Reject');
+
+if isempty(rej),
     count = count + print_paragraph(rep, [msg ...
-        ' were __REJECTED__ in this analysis window. ' warnMsg]);
+        ' were produced as output in this node.' warnMsg]);
+elseif rej,
+    count = count + print_paragraph(rep, [msg ...
+        ' were __REJECTED__. ' warnMsg]);
 else
     count = count + print_paragraph(rep, [msg ...
-        ' were __ACCEPTED__ in this analysis window. ' warnMsg]);
+        ' were __ACCEPTED__. ' warnMsg]);
 end
 
 end

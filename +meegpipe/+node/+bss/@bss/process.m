@@ -50,7 +50,12 @@ end
 myBSS = learn(myBSS, pcs);
 ics   = proj(myBSS, pcs);
 
-set_name(ics, [get_name(myBSS), ' activations']);
+% Give a proper name to the ics. This is necessary to be able to predict
+% the name of the output file when reject=[]. See method
+% get_output_filename()
+BSSName = get_name(myBSS);
+BSSName = regexprep(BSSName, '.+\.([^.]+$)', '$1');
+set_name(ics, [get_name(data) '_' BSSName, ' activations']);
 add_event(ics, get_event(data));
 
 [~, myBSS] = cascade(myPCA, myBSS);
@@ -58,7 +63,9 @@ add_event(ics, get_event(data));
 [selected, ~, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
 
 if verbose,
-    if  reject,
+    if isempty(reject)
+        str = 'produced';
+    elseif reject,
         str = 'rejected';
     else
         str = 'accepted';
@@ -123,13 +130,28 @@ if do_reporting(obj)
 end
 make_criterion_report(obj, myCrit, [], icSel, isAutoSel);
  
-if isempty(icSel) && ~reject,
-    % We select the empty set
-    data(:,:) = 0;
-elseif (isempty(icSel) && reject) || ...
-        (numel(icSel) == size(ics, 1) && ~reject),
-    % Leave data untouched    
-else      
+if isempty(icSel),
+    
+    if isempty(reject),
+        error('No components were selected! Cannot output an empty set.'); 
+    elseif ~reject,        
+        data(:,:) = 0;
+    end    
+    
+elseif numel(icSel) == size(ics, 1),
+    
+    if isempty(reject), 
+        % So that if Save=true the file name will have the proper name
+        set_name(ics, get_name(data));
+        data = ics;
+    elseif reject,
+        data(:,:) = 0;
+    end
+ 
+else  
+    % Not all, but some components are selected
+    
+    % Filter the components, if the user provided a filter
     if ~isempty(myFilt),  
         select(ics, icSel);    
         if do_reporting(obj),            
@@ -146,7 +168,14 @@ else
         restore_selection(ics);
     end 
 
-    if reject,
+    if isempty(reject)
+        % An empty Reject property means: do not reject or accept
+        % components, simply retrieve the components in the output of the
+        % node. 
+        select(ics, icSel);
+        set_name(ics, get_name(data));
+        data = ics;       
+    elseif reject,
         if ~isempty(myRegrFilter),
             % Wee need to keep a backup copy of the original ics.
             select(ics, icSel);
@@ -161,7 +190,7 @@ else
     end
     
     % Remove residual noise using a regression filter
-    if reject && ~isempty(myRegrFilter),       
+    if ~isempty(reject) && reject && ~isempty(myRegrFilter),       
         filter(myRegrFilter, data, rejectedICs);
     end
     

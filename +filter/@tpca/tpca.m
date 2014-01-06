@@ -87,7 +87,5 @@ classdef tpca < ...
         
     end
     
-    
-    
-    
+
 end
