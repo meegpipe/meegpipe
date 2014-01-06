@@ -8,8 +8,8 @@ processing tasks performed at the [Sleep&Cognition][sc] team of the
 materials are fairly advanced and you are strongly encouraged to first read
 [meegpipe's documentation][meegpipe-api].
 
-__IMPORTANT:__ These tutorials were designed for internal use within our
-research group. Thus, the raw data files used in the tutorials are not always
+__IMPORTANT:__ These materials were designed for internal use within our
+research group. Thus, the raw data files used in the tutorials may not be
 publicly available.
 
 [meegpipe-api]: ../+meegpipe/README.md

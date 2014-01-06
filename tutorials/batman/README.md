@@ -1,19 +1,44 @@
 BATMAN tutorial
 ===
 
-Below I assume that you are running this tutorial at the _somerengrid_, i.e. at
-one of the nodes from the private computing grid of the [Sleep&Cognition][sc]
-team of the [Netherlands Institute for Neuroscience][nin].
+This tutorial illustrates a real data processing use-case that was performed
+within the [BATMAN project][batman-proj]. Below I assume that you are following
+this tutorial at the _somerengrid_, i.e. at one of the nodes from the private
+computing grid of the [Sleep&Cognition][sc] team of the
+[Netherlands Institute for Neuroscience][nin].
 
+[batman-proj]: http://www.neurosipe.nl/project.php?id=23&sess=6eccc41939665cfccccd8c94d8e0216f
 [sc]: http://www.nin.knaw.nl/research_groups/van_someren_group
 [nin]: http://www.nin.knaw.nl/
 
 
 ## Experimental data
 
+
+The BATMAN (Behavior, Alertness, and Thermoregulation: a Multivariate ANalysis)
+project pursues to identify major thermoregulatory system parameters, and their
+effects on behaviour and alertness, in a completely unrestrained ambulatory
+setting. Achieving this goal will involve ambulatory measurement of all relevant
+inputs and outputs: physical activity, posture, environmental light and
+body temperature, electrocardiography, and skin temperature by means of a
+multi-sensor system as well as questionnaires and reaction times assessed on a
+PDA. These parameters will be validated against those derived under strictly
+controlled laboratory manipulations.
+
+This tutorial deals with the extraction of valuable features (for modeling
+purposes) from the laboratory recordings obtained within the BATMAN project.
+
+
 ### Experimental protocol
 
-A description of the experimental protocol should be here at some point ...
+In a nutshell, the BATMAN protocol various environmental manipulations
+(posture, skin temperature, ambient lights) in order to trigger thermoregulatory
+system responses. Such responses were characterized using a diverse set of
+variables: arterial blood pressure, ECG, skin and core temperature, and hdEEG.
+Additionally, and in order to assess effects on behavior and alertness, the
+subjects performed a PVT response-time task, and filled the Amsterdam Resting
+State Questionnaire in every experimental block. In total there were 12
+experimental blocks, as illustrated in the diagram below:
 
 ![Experimental protocol](./img/batman-protocol.png "Experimental protocol")
 
