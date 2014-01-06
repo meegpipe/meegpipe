@@ -219,7 +219,7 @@ of available data importers see the [documentation][import-docs].
 
 
 [import-docs]: ./+physioset/+import/README.md
-[physioset]: https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/physioset.m
+[physioset]: https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md
 
 
 
