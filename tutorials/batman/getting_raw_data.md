@@ -1,12 +1,13 @@
-Getting the raw data files
+Retrieve the raw data files
 ===
 
-The experimental data files from the BATMAN project are managed by the
-[somsds][somsds] software. The _somsds_ data management assigns several
-meta-data tags to every data file that it manages. It then allows you to
-retrieve a set of files by querying _somsds_ for files with specific tag values.
-For instance, all experimental files acquired within the BATMAN project have
-a _recording_ tag with value set to _batman_.
+The experimental data files from the BATMAN project are managed by a
+specialized piece of software: [the somsds data management system][somsds].
+This software assigns various meta-data to the experimental data files that it
+manages. It then allows you to retrieve a set of files by querying _somsds_ for
+specific meta-data values. For instance, all experimental files acquired within
+the BATMAN project have a meta-data tag named _recording_, which is set to
+the string _batman_.
 
 ## Moving to our working directory
 
@@ -22,8 +23,8 @@ below I will use my username (`gherrero`) for illustration purposes.
 
 ## Retrieving the experimental data
 
-In this tutorial we are going to work with a subset of the BATMAN dataset.
-Namely, we need to retrieve the EEG data files from subjects 1 and 2. In the
+In this tutorial we are going to consider only a subset of the BATMAN dataset.
+Namely, we want to retrieve the EEG data files from subjects 1 and 2. In a
 shell window type:
 
 
@@ -38,15 +39,13 @@ every meta-data tag associated with an experimental data file. In the case of
 the BATMAN project, the ECG, ABP, temperature and EEG data are all stored in the
 same `.mff` file (produced by [EGI]'s [Netstation] software). When multiple
 modalities are stored in a single data file, the `modality` tag of the file
-matches the _main_ modality contained in the file. BATMAN's `.mff` files hold 257
-EEG channels and 12 additional physiological channels (ABP, ECG, temperature).
-Thus it is reasonable to consider that EEG is the main modality of those `.mff`
-files.
+matches the _main_ modality that is contained in the file. BATMAN's `.mff` files
+hold 257 EEG channels and 12 additional physiological channels (ABP, ECG,
+temperature). Thus it is reasonable to use `eeg` as main modality.
 
 [roadmap]: ./README.md
 [egi]: http://www.egi.com/
 [netstation]: http://www.egi.com/index.php?option=com_content&view=article&id=413
-
 
 After you run the `somsds_link2rec` command above, the following messages will
 be displayed in your shell window:

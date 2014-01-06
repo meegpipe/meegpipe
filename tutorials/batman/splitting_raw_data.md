@@ -1,4 +1,4 @@
-Splitting raw data files
+Split raw data files
 ===
 
 The raw data files that we just [linked to in the previous step][getting_raw]

@@ -51,17 +51,15 @@ when the subject filled the resting state questionnaire.
 
 ## Objectives/Roadmap
 
-1. [Retrieving the relevant raw data files][getting_raw] from our centralized
-   [data storage][somsds].
-
-[somsds]: http://germangh.com/somsds
+1. [Retrieve the relevant raw data files][getting_raw] from our centralized
+   data warehouse.
 
 2. [Split the large (20-30 Gb) files][splitting] that were obtained for
    each subject into smaller, more manageable, files. Note that this step is not
    really required as _meegpipe_ is able to handle such large files directly.
    But, especially when you are building a new workflow, dealing with smaller
    files can speed up the processing considerably and thus facilitate the
-   early detection of errors and inconsistencies in your workflow.
+   early detection of errors and inconsistencies.
 
 3. [Extract features from the Arterial Blood Pressure (ABP) time-series][abp-feat]
    We want to get such features for each experimental block and for each
