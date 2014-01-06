@@ -20,6 +20,6 @@ materials are fairly advanced and you are strongly encouraged to first read
 * The [ssmd_rs tutorial][ssmd_rs] illustrates a typical pre-processing and
   data-cleaning workflow in a resting-state [hdEEG][hdeeg] study.
 
-  [batman]:  ./+batman/README.md
-  [ssmd_rs]: ./+ssmd_rs/README.md
+  [batman]:  ./batman/README.md
+  [ssmd_rs]: ./ssmd_rs/README.md
   [hdeeg]: http://en.wikipedia.org/wiki/Electroencephalography
