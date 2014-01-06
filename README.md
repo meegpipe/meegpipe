@@ -64,7 +64,7 @@ directories of Fieldtrip and EEGLAB on your system.
 A. Kenneth Reitz has written an excellent guide on 
 [how to install Python][python-install]. _meegpipe_ requires a Python 2.x
 interpreter, where x is ideally at least 7. Please ensure that 
-_easy\_install_ and _pip_ are also installed. Refer to the 
+__easy_install__ and __pip__ are also installed. Refer to the 
 [python installation guide][python-install] for more details. 
 
 [python]: http://python.org
