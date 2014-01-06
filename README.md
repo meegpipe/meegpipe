@@ -105,7 +105,8 @@ are embedded in the data processing reports.
 
 ### Optional dependencies
 
-#### Google Chrome (optional, strongly recommended)
+
+#### Google Chrome (strongly recommended)
 
 _meegpipe_ generates HTML reports with lots of [.svg][svg] graphics
 embedded. [Google Chrome][gc] is far superior to other browsers when handling
@@ -115,18 +116,8 @@ Chrome.
 [svg]: http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
 [gc]: https://www.google.com/intl/en/chrome/browser/
 
-__NOTE for Windows 8 users__: For some unknown reason neither Firefox nor
-Google Chrome are able to display local .svg files, when running under 
-Windows 8. Whenever trying to do so, both browsers attempt to download the 
-file and thus the file is not displayed. Read the 
-[document on known issues and limitations][issues] for ways to overcome
-this problem.
 
-[issues]: ./issues.md
-
-
-
-#### Sun/Oracle grid engine (optional)
+#### Sun/Oracle grid engine
 
 If [Oracle Grid Engine][oge] (OGE) is installed on your system,
 then _meegpipe_ should be able to use it to push your processing jobs to the
@@ -139,7 +130,7 @@ grid.  A good overview on the administration of OGE can be found on
 [oge-slides]: http://beowulf.rutgers.edu/info-user/pdf/ge_presentation.pdf
 
 
-#### Condor high-throughput computing (optional)
+#### Condor high-throughput computing
 
 If [Condor][condor] is installed on your system then _meegpipe_ will be 
 able to use to parallelize the workload produced by _meegpipe_. Condor can 
@@ -276,6 +267,14 @@ where
 
 * __SYS__ is a string identifying the operating system and MATLAB version (e.g. _PCWIN64-R2011b_). 
 
+
+__NOTE for Windows 8 users__: For some unknown reason neither Firefox nor
+Google Chrome are able to display local .svg files, when running under 
+Windows 8. Whenever trying to do so, both browsers attempt to download the 
+file and thus the file is not displayed. Read the 
+[document on known issues and limitations][issues] for ways to overcome
+this problem.
+[issues]: ./issues.md
 
 
 ### Pipelines
