@@ -162,7 +162,7 @@ The commands above will download _meegpipe_'s source code into directory
  `~/meegpipe`.  Once this is done you should edit the configuration of 
 _meegpipe_ by defining the locations of the third-party MATLAB dependencies 
 (Fieldtrip and EEGLAB) on your system. Do this by following the
- instructions in the comments of [+meegpipe/meegpipe.ini][ini]. 
+ instructions in [+meegpipe/meegpipe.ini][ini]. 
 
 
 ## Basic usage
