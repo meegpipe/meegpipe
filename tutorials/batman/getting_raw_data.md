@@ -47,42 +47,33 @@ temperature). Thus it is reasonable to use `eeg` as main modality.
 [egi]: http://www.egi.com/
 [netstation]: http://www.egi.com/index.php?option=com_content&view=article&id=413
 
-After you run the `somsds_link2rec` command above, the following messages will
-be displayed in your shell window:
+The `somsds_link2rec` command will generate the following messages:
 
 ![somsds_link2rec output](./img/somsds_link2rec.png "Output produced by the
 somsds_link2rec command")
 
 
-## Where is the data?
-
-The messages produced by the `somsds_link2rec` command give a clear indication
-of what has just happened. The command `somsds_link2rec` has generated
-two [symbolic links][symboliclink] under directory:
+Hopefully, these messages give you an indication of what has just happened.
+They are telling you that two [symbolic links][symboliclink] have been
+generated under directory:
 
 ````
 /data1/projects/meegpipe/batman_tut/gherrero/batman
 ````
-
-that point to two files located under directory:
-
-````
-/data1/recordings/batman/subjects
-````
-
-You can treat these symbolic links as if they were the actual raw data files.
-
 [symboliclink]: http://en.wikipedia.org/wiki/Symbolic_link
 
-The advantage of using symbolic links instead of simply copying the raw data
-to our working directory is that the raw files are very large (almost 30 Gb
-each). On the other hand, the size of the symbolic links is negligible. You can
-create as many symbolic links as you want. You can also delete them without ever
-risking deleting the actual data files that they point to.
+From now on you can treat these symbolic links as if they were the raw data
+files you are interesting in processing. The advantage of using symbolic links
+instead of simply copying the raw data to our working directory is that the raw
+files are very large (about 30 Gb each). On the other hand, the size of the
+symbolic links is negligible. You can create as many symbolic links as you want.
+You can also delete them without ever risking deleting the actual data files
+that they point to.
 
 Consider the case that we would like to perform two different analyses on the
 same set of files. You can use `somsds_link2rec` to keep your two analyses into
-two completely self-contained directories (named `analysis1` and `analysis2`):
+two completely self-contained directories (named e.g. `analysis1` and
+`analysis2`):
 
 ````bash
 mkdir analysis1
@@ -99,19 +90,19 @@ somsds_link2rec batman --subject 1,2 --modality eeg --folder analysis2
 ````
 
 The `--folder` argument tells `somsds_link2rec` to generate the links into
-a directory with a specific name (instead of the default name: `batman`). If
-after performing your two analyses you realize that they were useless, you could
-just delete them using:
+a specific directory. The default behavior is to generate the links under a
+subdirectory (named as the `recording` name) within your current directory.
+
+If after performing your two analyses you decide to discard them, then you could
+simply delete the containing directories:
 
 ````
 rm -rf analysis1
 rm -rf analysis2
 ````
-
-
 [somsds]: http://www.germangh.com/somsds/
 
 
-## [Continue to the next step ...][splitting]
+You can now [continue to the next step ...][splitting]
 
 [splitting]: ./splitting_raw_data.md
