@@ -1,33 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>meegpipe by meegpipe</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="meegpipe : Scalable and reproducible pipelines for M/EEG" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>meegpipe</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>meegpipe</h1>
-        <p>Scalable and reproducible pipelines for M/EEG</p>
 
-        <p class="view"><a href="https://github.com/meegpipe/meegpipe">View the Project on GitHub <small>meegpipe/meegpipe</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/meegpipe/meegpipe">View on GitHub</a>
 
+          <h1 id="project_title">meegpipe</h1>
+          <h2 id="project_tagline">Scalable and reproducible pipelines for M/EEG</h2>
 
-        <ul>
-          <li><a href="https://github.com/meegpipe/meegpipe/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/meegpipe/meegpipe/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/meegpipe/meegpipe">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/meegpipe/meegpipe/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/meegpipe/meegpipe/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a name="meegpipe" class="anchor" href="#meegpipe"><span class="octicon octicon-link"></span></a>meegpipe</h1>
 
@@ -35,13 +38,7 @@
 pipelines for high density physiological recordings. It is especially 
 suited for the processing of high-density <a href="http://en.wikipedia.org/wiki/Electroencephalography">EEG</a> and <a href="http://en.wikipedia.org/wiki/Magnetoencephalography">MEG</a>, 
 but can also handle other modalities such as <a href="http://en.wikipedia.org/wiki/Electrocardiography">ECG</a>, temperature, 
-<a href="http://en.wikipedia.org/wiki/Actigraphy">actigraphy</a>, light exposure, etc. </p>
-
-<p>Be aware however that, so far, <em>meegpipe</em> has been tested only with hdEEG data, 
-and even in that case the testing has been very superficial. So expect to find
-many bugs if you are brave enough to use the current version. On the bright 
-side, you should expect the API to be relatively stable at this point. If 
-you find any bug or have any feedback to share, please <a href="http://germangh.com">contact me</a>.</p>
+<a href="http://en.wikipedia.org/wiki/Actigraphy">actigraphy</a>, light exposure, etc.</p>
 
 <p>In the documentation below I often assume a Linux-like system (e.g. use of 
 frontslashes, <code>~</code> to denote home directory, etc). However, <em>meegpipe</em> should 
@@ -113,47 +110,20 @@ are embedded in the data processing reports. </p>
 <h3>
 <a name="optional-dependencies" class="anchor" href="#optional-dependencies"><span class="octicon octicon-link"></span></a>Optional dependencies</h3>
 
-<h4>
-<a name="google-chrome-strongly-recommended" class="anchor" href="#google-chrome-strongly-recommended"><span class="octicon octicon-link"></span></a>Google Chrome (strongly recommended)</h4>
-
-<p><em>meegpipe</em> generates HTML reports with lots of <a href="http://en.wikipedia.org/wiki/Scalable_Vector_Graphics">.svg</a> graphics
-embedded. <a href="https://www.google.com/intl/en/chrome/browser/">Google Chrome</a> is far superior to other browsers when handling
-<code>.svg</code> files and thus it is strongly recommended that you install Google
-Chrome. </p>
-
-<h4>
-<a name="sunoracle-grid-engine" class="anchor" href="#sunoracle-grid-engine"><span class="octicon octicon-link"></span></a>Sun/Oracle grid engine</h4>
-
-<p>If <a href="http://www.oracle.com/us/products/tools/oracle-grid-engine-075549.html">Oracle Grid Engine</a> (OGE) is installed on your system,
-then <em>meegpipe</em> should be able to use it to push your processing jobs to the
-grid.  A good overview on the administration of OGE can be found on 
-<a href="http://beowulf.rutgers.edu/info-user/pdf/ge_presentation.pdf">this presentation</a> by Daniel Templeton. </p>
-
-<h4>
-<a name="condor-high-throughput-computing" class="anchor" href="#condor-high-throughput-computing"><span class="octicon octicon-link"></span></a>Condor high-throughput computing</h4>
-
-<p>If <a href="http://research.cs.wisc.edu/htcondor/">Condor</a> is installed on your system then <em>meegpipe</em> will be 
-able to use to parallelize the workload produced by <em>meegpipe</em>. Condor can 
-be used to submit jobs to specialized clusters, to idle computers, to 
-the grid, or even to the cloud. If you are using <em>meegpipe</em> on a powerful 
-multi-core workstation you can also use Condor to exploit these local 
-parallel resources.</p>
+<p>You are encouraged to install a few <a href="./optional.md">additional components</a> that can
+considerably enhance <em>meegpipe</em>'s functionality. In particular, it is
+strongly recommended that you use <a href="www.google.com/chrome">Google Chrome</a> to inspect the HTML
+reports generated by <em>meegpipe</em>.</p>
 
 <h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>Clone the repository, either in <a href="https://github.com/meegpipe/meegpipe/archive/master.zip">.zip format</a>
-or using the command line, as follows:</p>
-
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span><span class="nb">cd</span> ~
-<span class="nv">$ </span>git clone git://github.com/meegpipe/meegpipe
-</pre></div>
-
-<p>The commands above will download <em>meegpipe</em>'s source code into directory
- <code>~/meegpipe</code>.  Once this is done you should edit the configuration of 
+<p>Get the code in <a href="https://github.com/meegpipe/meegpipe/archive/master.zip">.zip format</a>
+and extract it to a local directory (below I will assume that you used
+directory <code>~/meegpipe</code>). Once this is done you should edit the configuration of 
 <em>meegpipe</em> by defining the locations of the third-party MATLAB dependencies 
 (Fieldtrip and EEGLAB) on your system. Do this by following the
- instructions in <a href="http://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini">+meegpipe/meegpipe.ini</a>. </p>
+ instructions in <a href="http://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini">~/meegpipe/+meegpipe/meegpipe.ini</a>. </p>
 
 <h2>
 <a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic usage</h2>
@@ -307,12 +277,16 @@ You can find a comprehensive list <a href="https://github.com/meegpipe/meegpipe/
 (see <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">the list</a>), is released under the 
 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike licence</a>. </p>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/meegpipe">meegpipe</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">meegpipe maintained by <a href="https://github.com/meegpipe">meegpipe</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -323,6 +297,7 @@ You can find a comprehensive list <a href="https://github.com/meegpipe/meegpipe/
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
