@@ -5,13 +5,8 @@ _meegpipe_ is a collection of MATLAB tools for building advanced processing
 pipelines for high density physiological recordings. It is especially 
 suited for the processing of high-density [EEG][eeg] and [MEG][meg], 
 but can also handle other modalities such as [ECG][ecg], temperature, 
-[actigraphy][acti], light exposure, etc. 
+[actigraphy][acti], light exposure, etc.
 
-Be aware however that, so far, _meegpipe_ has been tested only with hdEEG data, 
-and even in that case the testing has been very superficial. So expect to find
-many bugs if you are brave enough to use the current version. On the bright 
-side, you should expect the API to be relatively stable at this point. If 
-you find any bug or have any feedback to share, please [contact me][ggh].
 
 [gg]: https://groups.google.com/forum/#!forum/meegpipe
 [ggh]: http://germangh.com
@@ -144,20 +139,12 @@ parallel resources.
 
 ## Installation
 
-Clone the repository, either in [.zip format](https://github.com/meegpipe/meegpipe/archive/master.zip)
-or using the command line, as follows:
-
-````bash
-$ cd ~
-$ git clone git://github.com/meegpipe/meegpipe
-````
-
-The commands above will download _meegpipe_'s source code into directory
- `~/meegpipe`.  Once this is done you should edit the configuration of 
+Get the code in [.zip format](https://github.com/meegpipe/meegpipe/archive/master.zip)
+and extract it to a local directory (below I will assume that you used
+directory `~/meegpipe`). Once this is done you should edit the configuration of 
 _meegpipe_ by defining the locations of the third-party MATLAB dependencies 
 (Fieldtrip and EEGLAB) on your system. Do this by following the
  instructions in [+meegpipe/meegpipe.ini][ini]. 
-
 
 ## Basic usage
 
