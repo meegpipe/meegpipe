@@ -195,8 +195,6 @@ _meegpipe_ interfering with other toolboxes. Thus it should be relatively
 
 ### Data import
 
-See `help physioset.import` for a list of available data importers.
-
 ````matlab
 import physioset.import.*;
 % Import from an .mff file
@@ -207,13 +205,18 @@ data = import(edfplus, 'myfile.edf');
 data = import(matrix, randn(10,10000));
 ````
 All data importer classes implement an `import()` method, which always 
-produces a [physioset][physioset] object. 
+produces a [physioset][physioset] object. For more information and a list 
+of available data importers see the [documentation][import-docs].
 
+
+[import-docs]: ./+physioset/+import/README.md
 [physioset]: https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/physioset.m
+
+
+
 
 ### Data processing nodes
 
-See `help meegpipe.node` for a list of available nodes.
 
 ````matlab
 import meegpipe.*;
@@ -233,12 +236,11 @@ myNode2 = node.tfilter.new('Filter', myFilter);
 run(myNode2, data);
 ````
 
-Note that method `run()` takes a [reference][wiki-ref] to the input data, 
-rather than _a copy of the input data_. This means that `run()` operates 
-directly on the input data. Thus after running the code above, `data` 
-will be __both__ detrended and filtered. 
+For more information and a list of available processing nodes, see the
+[documenation][nodes-docs].
 
 [wiki-ref]: http://en.wikipedia.org/wiki/Reference_(computer_science)
+[nodes-docs]: ./+meegpipe/+node/README.md
 
 
 ### Processing reports
