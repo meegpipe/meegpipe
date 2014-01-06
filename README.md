@@ -167,10 +167,8 @@ _meegpipe_ by defining the locations of the third-party MATLAB dependencies
 
 ## Basic usage
 
-Before anything else you will have to add to your MATLAB path 
-some third-party dependencies (e.g. components of [Fieldtrip][ftrip] and 
-[EEGLAB][eeglab]).Then
-run the following in MATLAB:
+Before anything else you will have to add _meegpipe_ and its dependencies
+to your MATLAB search path:
 
 ``````matlab
 restoredefaultpath;
