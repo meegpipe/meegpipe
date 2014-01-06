@@ -158,17 +158,19 @@ $ cd ~
 $ git clone git://github.com/meegpipe/meegpipe
 ````
 
-The commands above will install _meegpipe_ source code under directory
- `~/meegpipe`. 
+The commands above will download _meegpipe_'s source code into directory
+ `~/meegpipe`.  Once this is done you should edit the configuration of 
+_meegpipe_ by defining the locations of the third-party MATLAB dependencies 
+(Fieldtrip and EEGLAB) on your system. Do this by following the
+ instructions in the comments of [+meegpipe/meegpipe.ini][ini]. 
 
 
 ## Basic usage
 
 Before anything else you will have to add to your MATLAB path 
 some third-party dependencies (e.g. components of [Fieldtrip][ftrip] and 
-[EEGLAB][eeglab]). First edit the contents of [+meegpipe/meegpipe.ini][ini] to
-include the locations of the third-party dependencies on your system. Then run
-the following in MATLAB:
+[EEGLAB][eeglab]).Then
+run the following in MATLAB:
 
 ``````matlab
 restoredefaultpath;
