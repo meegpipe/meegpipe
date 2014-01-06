@@ -105,15 +105,6 @@ are embedded in the data processing reports.
 [pil]: http://www.pythonware.com/products/pil/
 
 
-### Git control version system
-
-[Git][git-download] is required to automatically download various
-MATLAB repositories on which _meegpipe_ depends. 
-
-
-[git-download]: http://git-scm.com/downloads
-
-
 ### Google Chrome (optional, strongly recommended)
 
 _meegpipe_ generates HTML reports with lots of [.svg][svg] graphics
