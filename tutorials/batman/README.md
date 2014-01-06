@@ -31,14 +31,14 @@ purposes) from the laboratory recordings obtained within the BATMAN project.
 
 ### Experimental protocol
 
-In a nutshell, the BATMAN protocol various environmental manipulations
-(posture, skin temperature, ambient lights) in order to trigger thermoregulatory
-system responses. Such responses were characterized using a diverse set of
-variables: arterial blood pressure, ECG, skin and core temperature, and hdEEG.
-Additionally, and in order to assess effects on behavior and alertness, the
+In a nutshell, the BATMAN protocol involved various environmental manipulations
+(posture, skin temperature, ambient lights) that are expected to trigger
+relevant thermoregulatory system responses. Such responses were characterized
+using a diverse set of variables: arterial blood pressure, ECG, skin and core
+temperature, and hdEEG. In order to assess effects on behavior and alertness, the
 subjects performed a PVT response-time task, and filled the Amsterdam Resting
-State Questionnaire in every experimental block. In total there were 12
-experimental blocks, as illustrated in the diagram below:
+State Questionnaire while being subjected to these experimental manipulations.
+In total there were 12 experimental blocks, as illustrated in the diagram below:
 
 ![Experimental protocol](./img/batman-protocol.png "Experimental protocol")
 
