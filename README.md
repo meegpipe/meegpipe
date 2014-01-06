@@ -10,21 +10,10 @@ but can also handle other modalities such as [ECG][ecg], temperature,
 Be aware however that, so far, _meegpipe_ has been tested only with hdEEG data, 
 and even in that case the testing has been very superficial. So expect to find
 many bugs if you are brave enough to use the current version. On the bright 
-side, you should expect the API to be relatively stable at this point. 
-
-At this moment, there is no stable release of _meegpipe_. The code that you
-can download from here is the development version, which changes almost 
-daily. This doesn't mean that the current version is not useful. But it 
-means that you should have the mindset of a beta-tester and update 
-regularly to the latest version. You should also subscribe to
-_meegpipe_'s [google group][gg], where I will be posting information on
- major bug fixes and updates.
+side, you should expect the API to be relatively stable at this point. If 
+you find any bug or have any feedback to share, please [contact me][ggh].
 
 [gg]: https://groups.google.com/forum/#!forum/meegpipe
-
-If you find any bug or have any feedback to share, please 
-[contact me][ggh].
-
 [ggh]: http://germangh.com
 [eeg]: http://en.wikipedia.org/wiki/Electroencephalography
 [meg]: http://en.wikipedia.org/wiki/Magnetoencephalography
