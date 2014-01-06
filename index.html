@@ -111,30 +111,26 @@ pip install remark
 are embedded in the data processing reports. </p>
 
 <h3>
-<a name="google-chrome-optional-strongly-recommended" class="anchor" href="#google-chrome-optional-strongly-recommended"><span class="octicon octicon-link"></span></a>Google Chrome (optional, strongly recommended)</h3>
+<a name="optional-dependencies" class="anchor" href="#optional-dependencies"><span class="octicon octicon-link"></span></a>Optional dependencies</h3>
+
+<h4>
+<a name="google-chrome-strongly-recommended" class="anchor" href="#google-chrome-strongly-recommended"><span class="octicon octicon-link"></span></a>Google Chrome (strongly recommended)</h4>
 
 <p><em>meegpipe</em> generates HTML reports with lots of <a href="http://en.wikipedia.org/wiki/Scalable_Vector_Graphics">.svg</a> graphics
 embedded. <a href="https://www.google.com/intl/en/chrome/browser/">Google Chrome</a> is far superior to other browsers when handling
 <code>.svg</code> files and thus it is strongly recommended that you install Google
 Chrome. </p>
 
-<p><strong>NOTE for Windows 8 users</strong>: For some unknown reason neither Firefox nor
-Google Chrome are able to display local .svg files, when running under 
-Windows 8. Whenever trying to do so, both browsers attempt to download the 
-file and thus the file is not displayed. Read section 
-<em>Known problems/limitations</em> at the end of this document for possible 
-solutions to this problem.</p>
-
-<h3>
-<a name="sunoracle-grid-engine-optional" class="anchor" href="#sunoracle-grid-engine-optional"><span class="octicon octicon-link"></span></a>Sun/Oracle grid engine (optional)</h3>
+<h4>
+<a name="sunoracle-grid-engine" class="anchor" href="#sunoracle-grid-engine"><span class="octicon octicon-link"></span></a>Sun/Oracle grid engine</h4>
 
 <p>If <a href="http://www.oracle.com/us/products/tools/oracle-grid-engine-075549.html">Oracle Grid Engine</a> (OGE) is installed on your system,
 then <em>meegpipe</em> should be able to use it to push your processing jobs to the
 grid.  A good overview on the administration of OGE can be found on 
 <a href="http://beowulf.rutgers.edu/info-user/pdf/ge_presentation.pdf">this presentation</a> by Daniel Templeton. </p>
 
-<h3>
-<a name="condor-high-throughput-computing-optional" class="anchor" href="#condor-high-throughput-computing-optional"><span class="octicon octicon-link"></span></a>Condor high-throughput computing (optional)</h3>
+<h4>
+<a name="condor-high-throughput-computing" class="anchor" href="#condor-high-throughput-computing"><span class="octicon octicon-link"></span></a>Condor high-throughput computing</h4>
 
 <p>If <a href="http://research.cs.wisc.edu/htcondor/">Condor</a> is installed on your system then <em>meegpipe</em> will be 
 able to use to parallelize the workload produced by <em>meegpipe</em>. Condor can 
@@ -250,7 +246,14 @@ the node name (which can be obtained using method <code>get_name()</code>) and a
 summarizes the node configuration. </p></li>
 <li><p><strong>USR</strong> is just the name of the user that ran command <code>run()</code>.</p></li>
 <li><p><strong>SYS</strong> is a string identifying the operating system and MATLAB version (e.g. <em>PCWIN64-R2011b</em>). </p></li>
-</ul><h3>
+</ul><p><strong>NOTE for Windows 8 users</strong>: For some unknown reason neither Firefox nor
+Google Chrome are able to display local .svg files, when running under 
+Windows 8. Whenever trying to do so, both browsers attempt to download the 
+file and thus the file is not displayed. Read the 
+<a href="./issues.md">document on known issues and limitations</a> for ways to overcome
+this problem.</p>
+
+<h3>
 <a name="pipelines" class="anchor" href="#pipelines"><span class="octicon octicon-link"></span></a>Pipelines</h3>
 
 <p>A <em>pipeline</em> is just a concatenation of nodes. With the exception of
@@ -290,52 +293,6 @@ take a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%4
 for some typical use cases of <em>meegpipe</em>. A high-level description of the API components 
 can be found in the <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md">documentation</a>, which is still work 
 in progress. </p>
-
-<h2>
-<a name="known-problemslimitations" class="anchor" href="#known-problemslimitations"><span class="octicon octicon-link"></span></a>Known problems/limitations</h2>
-
-<h3>
-<a name="long-path-names-under-windows" class="anchor" href="#long-path-names-under-windows"><span class="octicon octicon-link"></span></a>Long path names under Windows</h3>
-
-<p><em>meegpipe</em> has a tendency to generate reports with very deep file structures.
-Under Windows this might cause a problem due to the 
-<a href="http://msdn.microsoft.com/en-us/library/aa365247%28VS.85%29.aspx#maxpath">maximum path length limitation</a>. At this moment there is no 
-failproof workaround. However, you should be able to avoid the problem
-by simply using short pipeline names, and by avoiding deep nesting of 
-pipelines within pipelines.</p>
-
-<h3>
-<a name="inkscape-crashes" class="anchor" href="#inkscape-crashes"><span class="octicon octicon-link"></span></a>Inkscape crashes</h3>
-
-<p>Under some very rare circumstances, <a href="http://en.dev.inkscape.org/download/">inkscape</a> crashes when being
-called from the command line in Windows 8. Such crashes typically manifest 
-as a pop-up window with an error message. This problem can be solved by
-using the <a href="https://skydrive.live.com/?cid=09706d11303fa52a&amp;id=9706D11303FA52A%21217#cid=09706D11303FA52A&amp;id=9706D11303FA52A%21275">development version of Inkscape</a> (release r23126
- and above).</p>
-
-<h3>
-<a name="local-svg-files-do-not-render-under-windows-8" class="anchor" href="#local-svg-files-do-not-render-under-windows-8"><span class="octicon octicon-link"></span></a>Local <code>.svg</code> files do not render under Windows 8</h3>
-
-<p>Under <strong>Windows 8</strong> neither Firefox nor Google Chrome are able to render 
-local .svg files.  There are two possible solutions to this problem:</p>
-
-<ul>
-<li><p>Use MS Explorer under Windows 8. This is far from ideal as MS Explorer 
-is quite slow at rendering .svg files. In particular, you will experience 
-very poor performance when trying to zoom-in an image. </p></li>
-<li><p>Run a local HTTP server that will serve the report page. In practice 
-this just means double clicking on the <code>pyserver.bat</code> file that you 
-will find on the root directory of each generated report. The <code>.bat</code> 
-file will use Python to start a local server at port 8000. It will also 
-try opening Chrome and point it to the server root
-URL: <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a> . Of course for this solution to work both 
-Python and Chrome need to be installed on your Windows 8 system. Also,
-the installation directory of Chrome must be the default under Windows 8:
-<code>C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</code>.</p></li>
-</ul><p>The downside of the second solution above is that you will not be able to
-display multiple reports simultaneously in Chrome. This problem can be 
-overcome by editing <code>pyserver.bat</code> so that different reports are served on
-different HTTP ports. </p>
 
 <h2>
 <a name="attribution" class="anchor" href="#attribution"><span class="octicon octicon-link"></span></a>Attribution</h2>
