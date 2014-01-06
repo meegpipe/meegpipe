@@ -97,7 +97,7 @@ In Windows, open a terminal and run:
 ### Inkscape
 
 [Inkscape][inkscape] is required for generating the thumbnail images that
-are embedded in the data processing reports.
+are embedded in the data processing reports. 
 
 [inkscape]: http://en.dev.inkscape.org/download/
 [pygments]: http://pygments.org/
@@ -143,7 +143,9 @@ able to use to parallelize the workload produced by _meegpipe_. Condor can
 be used to submit jobs to specialized clusters, to idle computers, to 
 the grid, or even to the cloud. If you are using _meegpipe_ on a powerful 
 multi-core workstation you can also use Condor to exploit these local 
-parallel resources. 
+parallel resources.
+
+[condor]: http://research.cs.wisc.edu/htcondor/
 
 
 ## Installation
