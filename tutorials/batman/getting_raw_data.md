@@ -103,6 +103,6 @@ rm -rf analysis2
 [somsds]: http://www.germangh.com/somsds/
 
 
-You can now [continue to the next step ...][splitting]
+You are now ready to [continue to the next step ...][splitting]
 
 [splitting]: ./splitting_raw_data.md
