@@ -91,22 +91,6 @@ with my own minor modifications is available [here][external-plot2svg].
 
 [shadederrorbar]: http://www.mathworks.com/matlabcentral/fileexchange/26311
 
-### Remark
-
-[Remark][remark] is developed and maintained by [Kalle Rutanen][kalle], 
-Remark implements all the machinery necessary to generate _meegpipe_'s
-HTML processing reports. Moreover, the installation instructions for 
-the _Pygments_, _Markdown_ and _PIL_ libraries that appear in _meegpipe_'s
-documentation have been borrowed from Remark's 
-[installation instructions][remark-install]. 
-
-Note that remark itself includes third-party software. Please see 
-[Remark's documentation][remark-install] for more information. 
-
-[kalle]: http://kaba.hilvi.org/homepage/
-[remark]: http://kaba.hilvi.org/remark/remark.htm
-[remark-install]: http://kaba.hilvi.org/remark/installation.htm
-
 ### Runica
 
 [runica][runica] is the implementation of the [Infomax][infomax] ICA 
