@@ -177,7 +177,7 @@ meegpipe.initialize;
 ````
 
 The commands above will ensure that your MATLAB search path contains __only__ 
-the third-party components that are needed for _meegpipe_ to run. 
+the MATLAB sources that are needed for _meegpipe_ to run. 
 Namely, _meegpipe_ itself, and a subset of Fieldtrip and EEGLAB. The 
 `restoredefaultpath` command is important to ensure that other toolboxes do 
 not interfere with _meegpipe_. On the other hand, _meegpipe_ components are 
