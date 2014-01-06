@@ -75,7 +75,7 @@ Windows command window):
 ### Remark
 
 The [Remark][remark] python library is required for generating HTML reports.
-To install Rermark in Mac OS X and Linux run from the command line:
+To install Remark in Mac OS X and Linux run from the command line:
 
 [remark]: http://kaba.hilvi.org/remark/remark.htm
 
