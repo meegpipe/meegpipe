@@ -76,7 +76,16 @@ required version of Python:
 
 	python --version
 	
-Even if your OS ships with Python, you may have to install _easy\_install_ and _pip_. 
+Even if your OS ships with Python, you may have to install 
+__easy_install__ and __pip__. This can be done by 
+[installing easy_install][easy_install] and then running in a terminal (or 
+Windows command window):
+
+    easy_install pip
+
+
+[easy_install]: https://pypi.python.org/pypi/setuptools#installation-instructions
+[pip]: https://pypi.python.org/pypi/pip
 
 
 ### Remark
