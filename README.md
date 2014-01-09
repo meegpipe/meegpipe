@@ -65,10 +65,8 @@ you have the required version of Python:
 install additional Python modules. First install __easy_install__ by running in a
 shell window:
 
-````
     wget http://python-distribute.org/distribute_setup.py
-    python ./distribute_setup.py
-````
+    sudo python ./distribute_setup.py
 
 Now you can use __easy_install__ to install __pip__. Open a shell window and
 run:
