@@ -59,6 +59,11 @@ you have the required version of Python:
 	python --version
 
 
+On Mac OS X you may also need to install [XCode][xcode].
+
+[xcode]: https://developer.apple.com/xcode/
+
+
 ### easy_install and pip
 
 [easy_install][easy_install] and [pip][pip] allow you to easily download and
@@ -76,6 +81,17 @@ run:
 
 [easy_install]: https://pypi.python.org/pypi/setuptools#installation-instructions
 [pip]: https://pypi.python.org/pypi/pip
+
+
+### Python development tools (Linux only)
+
+If your Linux distro uses the [yum package manager][yum] run:
+
+    sudo yum install python-devel
+
+If your Linux distro uses [apt-get][apt-get] then run instead:
+
+    sudo apt-get install python-dev
 
 
 ### Remark
