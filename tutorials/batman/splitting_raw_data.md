@@ -4,27 +4,38 @@ Split raw data files
 The raw data files that we just [linked to in the previous step][getting_raw]
 of this tutorial are very large: about 30 GB each. It is certainly possible to
 use `meegpipe` to work with such large files directly, but it is generally
-a good idea to try to work with smaller chunks of your data at a time, if that
-makes sense for your particular analysis. Otherwise, you may need to wait a long
-for every processing stage to complete on a given file.
+a good idea to work with smaller chunks of your data at a time, if that
+makes sense for your particular analysis. You should always aim to break your
+data into the smallest chunks that may be processed independently. This splitting
+strategy may speed up processing dramatically. By default, _meegpipe_ will
+process each input file in a separate grid job. Depending on the available grid
+resources, this means that all your files may be processed in parallel.
 
-In this tutorial we want to extract features for each experimental condition
-separately. Thus, it makes sense to split our original data files into 12
-single-block files, each containing just one experimental manipulation.
-`meegpipe` allows you to process files into parallel jobs and thus breaking
-your files into 12 smaller chunks has the potential of reducing computation
-times considerably.
+[getting_raw]: ./getting_raw_data.md
 
-In the code snippets shown below I assume that your MATLAB search is set to
-its default value. You can ensure that this is the case by executing the
-following command when you start MATLAB:
+In this tutorial we want to extract features separately for each experimental
+block and separate for each experimental sub-block. Thus, it makes sense to
+split our original data files into 12 `baseline` sub-blocks, 12 `PVT`
+sub-blocks, 12 `RS` sub-blocks, and 12 `RSQ` sub-blocks. That is, each raw data
+file will be split into 48 files.
+
+
+## Setting up `meegpipe`
+
+Before anything else you need to add _meegpipe_ to MATLAB's search path:
 
 ````matlab
 restoredefaultpath;
+addpath(genpath('/data1/toolbox/matlab_v1.0.0'));
 ````
 
+You also need to add to MATLAB's path a few third-party dependencies:
 
-[getting_raw]: ./getting_raw_data.md
+````matlab
+meegpipe.initialize;
+````
+
+You only need to run the three commands above once for a given MATLAB session.
 
 
 ## Keeping your scripts organized
@@ -42,40 +53,46 @@ From now on we will save all scripts under `+batman`.
 
 ## Main processing script
 
-Before writing our data processing pipeline we are going to write the scheleton
-of our _main_ processing script where we perform the necessary preliminaries,
-and where we run the pipeline (which we will write later) on the relevant data
-files. Below you can see a profusely commented example of how such a
-[split_files.m][split_files_m] script may look like:
+Before writing a data processing pipeline, I often prefer to write first the
+scheleton of a _main_ processing script that takes care of all the necessary
+preliminaries: picking the files to be processed, creating the processing
+pipelines, and running the pipeline on the chosen set of files. Below I describe
+step-by-step how I would write such a [split_files.m][split_files_m].
 
 [split_files_m]: ./split_files.m
 
+First I define the output directory where we the splitted data files will be
+stored:
+
 ````matlab
-% SPLIT_FILES - Split BATMAN's large .mff files into single-block files
-%
-% This is the first stage of the BATMAN processing chain. The input to this
-% stage are the raw .mff files. The produced output is a set of
-% single-block .pset/pseth files (meegpipe's own data format). By
-% single-block we mean a single condition block (Baseline, PVT, RS, RSQ)
-% within a given experimental manipulation.
-
-
-% Start in a completely clean state
-close all;
-clear all;
-clear classes;
-
-% Initialize meegpipe
-meegpipe.initialize;
-
-% The output directory where we want to store the splitted data files
 OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
+`````
 
-% Some (optional) parameters that you may want to play with when experimenting
-% with your processing pipeline
-PARALLELIZE = true; % Should each file be processed in parallel?
+I also define a few other parameters that I may want to play with when tuning
+the processing pipeline. For instance, all processing nodes generate (sometimes
+very profuse) HTML reports. These are very useful for assessing whether
+the node did what it was expected to do. However, when you have already ensured
+that the nodes are working well, you may want to deactivate the HTML report
+generation so that processing is faster. Depending on your pipeline
+configuration and the size of your data files, the speedup can be _very
+considerable_. We use variable `DO_REPORT` to take care of activating or
+activating the report generation:
+
+````matlab
 DO_REPORT   = true; % Should full HTML reports be generated?
+````
 
+By default, _meegpipe_ always tries to process your files in parallel, either
+with [Oracle's Grid Engine][sge] or with [Condor][condor], whatever is
+available. But when you are in the process of defining a new pipeline, you are
+first interested in determining whether it works at all. Thus you may prefer to
+just run your files sequentially so that you
+
+````matlab
+PARALLELIZE = true; % Should each file be processed in parallel?
+````
+
+````matlab
 % Create an instance of your data splitting pipeline
 myPipe = batman.split_files_pipeline(...
     'GenerateReport', DO_REPORT, ...
