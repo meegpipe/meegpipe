@@ -89,10 +89,12 @@ If your Linux distro uses the [yum package manager][yum] run:
 
     sudo yum install python-devel
 
-If your Linux distro uses [apt-get][apt-get] then run instead:
+If your Linux distro uses [apt-get][apt-get] to manage packages then run instead:
 
     sudo apt-get install python-dev
 
+[yum]: http://yum.baseurl.org/
+[apt-get]: http://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_basic_package_management_operations
 
 ### Remark
 
