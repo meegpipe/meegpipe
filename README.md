@@ -66,18 +66,8 @@ On Mac OS X you may also need to install [XCode][xcode].
 
 ### easy_install and pip
 
-[easy_install][easy_install] and [pip][pip] allow you to easily download and
-install additional Python modules. First install __easy_install__ by running in a
-shell window:
-
-    wget http://python-distribute.org/distribute_setup.py
-    sudo python ./distribute_setup.py
-
-Now you can use __easy_install__ to install __pip__. Open a shell window and
-run:
-
-    easy_install pip
-
+See the [Python installation guide][python-install] for instructions on how to
+install __easy_install__ and __pip__ on your system.
 
 [easy_install]: https://pypi.python.org/pypi/setuptools#installation-instructions
 [pip]: https://pypi.python.org/pypi/pip
@@ -114,7 +104,16 @@ In Windows, open a terminal and run:
 ### Inkscape
 
 [Inkscape][inkscape] is required for generating the thumbnail images that
-are embedded in the data processing reports.
+are embedded in the data processing reports. To install on Linux run:
+
+    sudo yum install inkscape
+
+or
+
+    sudo apt-get install inkscape
+
+For Windows and Mac OS X you can use the installation packages available at
+[Inkscape's web page][inkscape].
 
 [inkscape]: http://en.dev.inkscape.org/download/
 [pygments]: http://pygments.org/
