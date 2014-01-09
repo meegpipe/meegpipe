@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -15,17 +16,18 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>meegpipe</h1>
-        <p>Scalable and reproducible M/EEG pipelines</p>
-
-        <p class="view"><a href="https://github.com/meegpipe/meegpipe">View the Project on GitHub <small>meegpipe/meegpipe</small></a></p>
-
+        <h1 class="header">meegpipe</h1>
+        <p class="header">Scalable and reproducible M/EEG pipelines</p>
 
         <ul>
-          <li><a href="https://github.com/meegpipe/meegpipe/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/meegpipe/meegpipe/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/meegpipe/meegpipe">View On <strong>GitHub</strong></a></li>
+          <li class="download"><a class="buttons" href="https://github.com/meegpipe/meegpipe/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/meegpipe/meegpipe/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/meegpipe/meegpipe">View On GitHub</a></li>
         </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/meegpipe">meegpipe</a></p>
+
+
       </header>
       <section>
         <h1>
@@ -73,6 +75,8 @@ you have the required version of Python:</p>
 <pre><code>python --version
 </code></pre>
 
+<p>On Mac OS X you may also need to install <a href="https://developer.apple.com/xcode/">XCode</a>.</p>
+
 <h3>
 <a name="easy_install-and-pip" class="anchor" href="#easy_install-and-pip"><span class="octicon octicon-link"></span></a>easy_install and pip</h3>
 
@@ -88,6 +92,19 @@ sudo python ./distribute_setup.py
 run:</p>
 
 <pre><code>easy_install pip
+</code></pre>
+
+<h3>
+<a name="python-development-tools-linux-only" class="anchor" href="#python-development-tools-linux-only"><span class="octicon octicon-link"></span></a>Python development tools (Linux only)</h3>
+
+<p>If your Linux distro uses the [yum package manager][yum] run:</p>
+
+<pre><code>sudo yum install python-devel
+</code></pre>
+
+<p>If your Linux distro uses [apt-get][apt-get] then run instead:</p>
+
+<pre><code>sudo apt-get install python-dev
 </code></pre>
 
 <h3>
@@ -282,12 +299,11 @@ You can find a comprehensive list <a href="https://github.com/meegpipe/meegpipe/
 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike licence</a>.</p>
       </section>
       <footer>
-        <p>This project is maintained by <a href="https://github.com/meegpipe">meegpipe</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
