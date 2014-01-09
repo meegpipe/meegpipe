@@ -37,7 +37,7 @@ Fieldtrip and EEGLAB to your MATLAB search path. Instead simply edit
 [+meegpipe/meegpipe.ini][meegpipecfg] to include the paths to the root
 directories of Fieldtrip and EEGLAB on your system.
 
-[meegpipecfg]: http://github.com/germangh/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini
+[meegpipecfg]: http://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini
 [ftrip]: http://fieldtrip.fcdonders.nl/
 [eeglab]: http://sccn.ucsd.edu/eeglab/
 [fileio]: http://fieldtrip.fcdonders.nl/development/fileio
