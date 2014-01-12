@@ -59,9 +59,19 @@ you have the required version of Python:
 	python --version
 
 
-On Mac OS X you may also need to install [XCode][xcode].
+On Mac OS X you may also need to install XCode via the [Mac App Store][xcode].
+Alternatively, if you have a fee Apple Developer Account, you can just install
+[Command Line Tools for Xcode][xcode-cmdtools]. You can check whether Xcode is
+already installed on your Mac OS X system by opening a terminal window and typing:
+
+````
+gcc --version
+````
+
+Which should display something else than a `Command not found` error.
 
 [xcode]: https://developer.apple.com/xcode/
+[xcode-cmdtools]: https://developer.apple.com/downloads/index.action
 
 
 ### easy_install and pip
@@ -185,9 +195,8 @@ produces a [physioset][physioset] object. For more information and a list
 of available data importers see the [documentation][import-docs].
 
 
-[import-docs]: ./+physioset/+import/README.md
-[physioset]: https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md
-
+[import-docs]: https://github.com/meegpipe/meegpipe/blob/master/+physioset/+import/README.md
+[physioset]: https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md
 
 
 
@@ -200,16 +209,28 @@ import physioset.import.matrix;
 
 data = import(matrix, randn(10,10000));
 
-% Detrend using a 10th order polynomial
-myNode1 = node.detrend.new('PolyOrder', 10);
+% Detrend using a 10th order polynomial to remove very low freq. trends
+myNode1 = node.filter.new('Filter', filter.polyfit('Order', 10));
 run(myNode1, data);
 
-% Filter data using a tfilter (temporal filter) node
-% First build a band-pass filter object
-myFilter = filter.bpfilt('Fp', [0.1 0.3]);
-% And then use it to construct the node
-myNode2 = node.tfilter.new('Filter', myFilter);
+% Reject bad channels
+myNode2  = node.bad_channels.new;
 run(myNode2, data);
+
+% Apply a band pass filter between 0.1 and 70 Hz
+myFilter = @(sr) filter.bpfilt('Fp', [0.1 70]/(sr/2));
+myNode3   = node.filter.new('Filter', myFilter);
+run(myNode3, data);
+
+% Remove powerline noise using Blind Source Separation (BSS)
+myNode4   = node.bss.pwl;
+run(myNode4, data);
+
+% Reject ocular artifacts using BSS
+myNode5   = node.bss.eog;
+run(myNode5, data);
+
+% etc ...
 ````
 
 For more information and a list of available processing nodes, see the
@@ -250,32 +271,32 @@ where
 * __SYS__ is a string identifying the operating system and MATLAB version (e.g. _PCWIN64-R2011b_).
 
 
-__NOTE for Windows 8 users__: For some unknown reason neither Firefox nor
+__NOTE for Windows 8 users__: Neither Firefox nor
 Google Chrome are able to display local .svg files, when running under
 Windows 8. Whenever trying to do so, both browsers attempt to download the
 file and thus the file is not displayed. Read the
 [document on known issues and limitations][issues] for ways to overcome
 this problem.
-[issues]: ./issues.md
+
+[issues]: https://github.com/meegpipe/meegpipe/blob/master/issues.md
 
 
 ### Pipelines
 
 A _pipeline_ is just a concatenation of nodes. With the exception of
 [physioset_import][node-physioset_import] nodes, all other node classes always
-take a [physioset][physioset] as input.
+take a [physioset][physioset] as input. The five processing steps that we
+performed above when illustrating how nodes work could be grouped into
+a pipeline:
 
 [node-physioset_import]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/%40physioset_import/physioset_import.m
 
 ````matlab
 import meegpipe.*;
 import physioset.import.*;
-myNode1  = node.physioset_import.new('Importer', mff);
-myFilter = filter.bpfilt('Fp', [0.1 0.3]);
-myNode2  = node.tfilter.new('Filter', myFilter);
-myPipe   = node.pipeline.new('NodeList', {myNode1, myNode2});
 
-% Will read from .mff file, and band-pass filter the data it contains
+myPipe = node.pipeline.new(...
+    'NodeList', {myNode1, myNode2, myNode3, myNode4, myNode5})
 data = run(myPipe, 'myfile.mff');
 
 ````
@@ -283,16 +304,18 @@ data = run(myPipe, 'myfile.mff');
 ### Data export
 
 ````matlab
-% Create a random EEG physioset
-mySensors = sensors.eeg.from_template('egi256');
-mySensors = subset(mySensors, 1:10:256);
+% Create a random EEG physioset for illustration purposes
+mySensors  = sensors.eeg.from_template('egi256');
+mySensors  = subset(mySensors, 1:10:256);
 myImporter = physioset.import.matrix('Sensors', mySensors);
 data = import(myImporter, randn(26, 2000));
+
 % Export to EEGLAB
 myEEGLABStr = eeglab(data);
 % Export to Fieldtrip
 myFTripStr = fieldtrip(data);
 ````
+
 
 ## More information
 
@@ -309,7 +332,6 @@ For convenience, _meegpipe_ ships together with code from third-parties.
 You can find a comprehensive list [here][attribution].
 
 [attribution]: https://github.com/meegpipe/meegpipe/blob/master/attribution.md
-
 
 
 ## License
