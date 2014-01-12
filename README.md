@@ -282,13 +282,17 @@ this problem.
 
 ### Pipelines
 
-A _pipeline_ is just a concatenation of nodes. With the exception of
+A `pipeline` is just a concatenation of nodes. With the exception of
 [physioset_import][node-physioset_import] nodes, all other node classes always
-take a [physioset][physioset] as input. The five processing steps that we
-performed above when illustrating how nodes work could be grouped into
-a pipeline:
+take a [physioset][physioset] as input. And with the exception of
+[physioset_export][node-physioset_export] nodes, all other nodes produce a
+`physioset` object at output.
+
+The five processing steps that we performed above when illustrating how nodes
+work could have been grouped into a pipeline:
 
 [node-physioset_import]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/%40physioset_import/physioset_import.m
+[node-physioset_export]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_export/%40physioset_export/physioset_export.m
 
 ````matlab
 import meegpipe.*;
