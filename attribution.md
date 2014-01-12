@@ -1,17 +1,12 @@
 Attribution
 ========
 
-__NOTE:__ This list is still incomplete. I will shortly add more detailed 
-information, including scientific references for some of the software 
-tools listed below. 
-
-_meegpipe_ ships the following third-party software (in no particular order):
-
+_meegpipe_ includes the following third-party software (in no particular order):
 
 
 ### AMICA
 
-[AMICA][amica] is an ICA algorithm developed by [Jason Palmer][jason]. 
+[AMICA][amica] is an ICA algorithm developed by [Jason Palmer][jason].
 
 [amica]: http://sccn.ucsd.edu/~jason/amica_web.html
 [jason]: http://sccn.ucsd.edu/~jason/
@@ -43,7 +38,7 @@ The implementation of the [FastICA][fastica] algorithm by FastICA's author
 ### FMRIB's plug-in for EEGLAB
 
 The version of [FMRIB plug-in][fmrib] bundled with _meegpipe_ includes
-some minor modifications by [Johan Van Der Meer][johan]. 
+some minor modifications by [Johan Van Der Meer][johan].
 
 [johan]: http://nl.linkedin.com/pub/johan-van-der-meer/10/554/3a0
 [fmrib]: http://www.fmrib.ox.ac.uk/eeglab/fmribplugin/
@@ -52,7 +47,7 @@ some minor modifications by [Johan Van Der Meer][johan].
 ### LASIP
 
 _meegpipe_ includes some [demo code][lasip] for the 1D Adaptive Scale
-Selection filters developed by [Alessandro Foi][foi] and others at 
+Selection filters developed by [Alessandro Foi][foi] and others at
 [Tampere University of Technology][tut], Finland.
 
 [lasip]: http://www.cs.tut.fi/~lasip/1D/
@@ -62,23 +57,12 @@ Selection filters developed by [Alessandro Foi][foi] and others at
 
 ### Matlab central code
 
-I have taken quite a few pieces of code from [Matlab Central][mcentral]. 
-Note that in some cases I have modified the original source code so I am 
-maintaining an independent repository for each of the Matlab Central 
-submissions that I list below:
-
-[mcentral]: http://www.mathworks.nl/matlabcentral/
-
-* Jan Simon's [DataHash][datahash]. I maintain a clone of Jan Simon's code
-including some minor modifications in a [github repo][external-datahash].
+* Jan Simon's [DataHash][datahash]
 
 [datahash]: http://www.mathworks.com/matlabcentral/fileexchange/31272
-[external-datahash]: https://github.com/germangh/matlab_external_datahash
 
-* Juerg Schwizer's [plot2svg][plot2svg]. A clone of Juerg's original code 
-with my own minor modifications is available [here][external-plot2svg].
+* Juerg Schwizer's [plot2svg][plot2svg].
 
-[external-plot2svg]: https://github.com/germangh/matlab_external_plot2svg
 [plot2svg]: http://www.mathworks.nl/matlabcentral/fileexchange/7401-scalable-vector-graphics-svg-export-of-figures
 
 
@@ -93,7 +77,7 @@ with my own minor modifications is available [here][external-plot2svg].
 
 ### Runica
 
-[runica][runica] is the implementation of the [Infomax][infomax] ICA 
+[runica][runica] is the implementation of the [Infomax][infomax] ICA
 algorithm that is included with [EEGLAB][eeglab].
 
 [eeglab]: http://sccn.ucsd.edu/eeglab/
