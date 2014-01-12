@@ -285,8 +285,8 @@ this problem.
 A `pipeline` is just a concatenation of nodes. With the exception of
 [physioset_import][node-physioset_import] nodes, all other node classes always
 take a [physioset][physioset] as input. And with the exception of
-[physioset_export][node-physioset_export] nodes, all other nodes produce a
-`physioset` object at output.
+[physioset_export][node-physioset_export] nodes, all other node classes produce a
+`physioset` object as output.
 
 The five processing steps that we performed above when illustrating how nodes
 work could have been grouped into a pipeline:
