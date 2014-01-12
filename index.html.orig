@@ -58,7 +58,11 @@ Otherwise, you will have to install the requirements below.</p>
 <p><a href="http://fieldtrip.fcdonders.nl/">Fieldtrip</a> and <a href="http://sccn.ucsd.edu/eeglab/">EEGLAB</a> are required mostly for input/output
 of data from/to various data formats, and for plotting. Please <strong>do not</strong> add
 Fieldtrip and EEGLAB to your MATLAB search path. Instead simply edit
+<<<<<<< HEAD
+<a href="http://github.com/germangh/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini">+meegpipe/meegpipe.ini</a> to include the paths to the root
+=======
 <a href="http://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini">+meegpipe/meegpipe.ini</a> to include the paths to the root
+>>>>>>> 81829d48db6b53f13395e02cf0574e25480b24c1
 directories of Fieldtrip and EEGLAB on your system.</p>
 
 <h3>
@@ -66,15 +70,31 @@ directories of Fieldtrip and EEGLAB on your system.</p>
 
 <p>A. Kenneth Reitz has written an excellent guide on
 <a href="http://docs.python-guide.org/en/latest/starting/installation/">how to install Python</a>. <em>meegpipe</em> requires a Python 2.x
+<<<<<<< HEAD
+interpreter, where x is ideally at least 7. Please ensure that
+<strong>easy_install</strong> and <strong>pip</strong> are also installed. Refer to the
+<a href="http://docs.python-guide.org/en/latest/starting/installation/">python installation guide</a> for more details. </p>
+
+<p>If your OS is Linux-based (that includes Mac OS X) chances are that Python is already
+installed on your system. In that case, open a terminal and ensure that you have the
+required version of Python:</p>
+=======
 interpreter, where x is ideally at least 7.</p>
 
 <p>If your OS is Linux-based (that includes Mac OS X) chances are that Python is
 already installed on your system. In that case, open a terminal and ensure that
 you have the required version of Python:</p>
+>>>>>>> 81829d48db6b53f13395e02cf0574e25480b24c1
 
 <pre><code>python --version
 </code></pre>
 
+<<<<<<< HEAD
+<p>Even if your OS ships with Python, you may have to install
+<strong>easy_install</strong> and <strong>pip</strong>. This can be done by
+<a href="https://pypi.python.org/pypi/setuptools#installation-instructions">installing easy_install</a> and then running in a terminal (or
+Windows command window):</p>
+=======
 <p>On Mac OS X you may also need to install XCode via the <a href="https://developer.apple.com/xcode/">Mac App Store</a>.
 Alternatively, if you have a free Apple Developer Account, you can just install
 <a href="https://developer.apple.com/downloads/index.action">Command Line Tools for Xcode</a>. You can check whether Xcode is
@@ -100,6 +120,7 @@ install <strong>easy_install</strong> and <strong>pip</strong> on your system.</
 </code></pre>
 
 <p>If your Linux distro uses <a href="http://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_basic_package_management_operations">apt-get</a> to manage packages then run instead:</p>
+>>>>>>> 81829d48db6b53f13395e02cf0574e25480b24c1
 
 <pre><code>sudo apt-get install python-dev
 </code></pre>
@@ -188,8 +209,13 @@ all encapsulated in <a href="http://www.mathworks.nl/help/matlab/matlab_oop/scop
 </pre></div>
 
 <p>All data importer classes implement an <code>import()</code> method, which always
+<<<<<<< HEAD
+produces a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> object. For more information and a list
+of available data importers see the <a href="./+physioset/+import/README.md">documentation</a>.</p>
+=======
 produces a <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a> object. For more information and a list
 of available data importers see the <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/+import/README.md">documentation</a>.</p>
+>>>>>>> 81829d48db6b53f13395e02cf0574e25480b24c1
 
 <h3>
 <a name="data-processing-nodes" class="anchor" href="#data-processing-nodes"><span class="octicon octicon-link"></span></a>Data processing nodes</h3>
@@ -249,6 +275,21 @@ find a node's HTML report under:</p>
 
 <p>where</p>
 
+<<<<<<< HEAD
+<ul>
+<li><p><strong>DATA</strong> is a string identifying the processed <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a>. Use
+method <code>get_name()</code> to find out the name of a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> object.</p></li>
+<li><p><strong>NODE</strong> is a string identifying the <em>processing node</em>. It is a combination of
+the node name (which can be obtained using method <code>get_name()</code>) and a hash code that
+summarizes the node configuration. </p></li>
+<li><p><strong>USR</strong> is just the name of the user that ran command <code>run()</code>.</p></li>
+<li><p><strong>SYS</strong> is a string identifying the operating system and MATLAB version (e.g. <em>PCWIN64-R2011b</em>). </p></li>
+</ul><p><strong>NOTE for Windows 8 users</strong>: For some unknown reason neither Firefox nor
+Google Chrome are able to display local .svg files, when running under
+Windows 8. Whenever trying to do so, both browsers attempt to download the
+file and thus the file is not displayed. Read the
+<a href="./issues.md">document on known issues and limitations</a> for ways to overcome
+=======
 <p><strong>DATA</strong> is a string identifying the processed <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a>. Use
  method <code>get_name()</code> to find out the name of a <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a> object.</p>
 
@@ -264,6 +305,7 @@ find a node's HTML report under:</p>
 running under Windows 8. Whenever trying to do so, both browsers attempt to
 download the file and thus the file is not displayed. Read the
 <a href="https://github.com/meegpipe/meegpipe/blob/master/issues.md">document on known issues and limitations</a> for ways to overcome
+>>>>>>> 81829d48db6b53f13395e02cf0574e25480b24c1
 this problem.</p>
 
 <h3>
@@ -305,26 +347,46 @@ work could have been grouped into a pipeline:</p>
 <h2>
 <a name="more-information" class="anchor" href="#more-information"><span class="octicon octicon-link"></span></a>More information</h2>
 
+<<<<<<< HEAD
+<p>See the practical <a href="http://github.com/meegpipe/meegpipe/tree/master/tutorials">tutorials</a>
+for some typical use cases of <em>meegpipe</em>. A high-level description of the API components
+can be found in the <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md">documentation</a>, which is still work
+in progress. </p>
+=======
 <p>See the practical <a href="http://github.com/meegpipe/meegpipe/tree/master/tutorials/README.md">tutorials</a>
 for some typical use cases of <em>meegpipe</em>. A high-level description of the API components
 can be found in the <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md">documentation</a>, which is still work
 in progress.</p>
+>>>>>>> 81829d48db6b53f13395e02cf0574e25480b24c1
 
 <h2>
 <a name="attribution" class="anchor" href="#attribution"><span class="octicon octicon-link"></span></a>Attribution</h2>
 
 <p>For convenience, <em>meegpipe</em> ships together with code from third-parties.
+<<<<<<< HEAD
+You can find a comprehensive list <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">here</a>. </p>
+=======
 You can find a comprehensive list <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">here</a>.</p>
+>>>>>>> 81829d48db6b53f13395e02cf0574e25480b24c1
 
 <h2>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>Any code that is not part of any of the bundled third-party dependencies
 (see <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">the list</a>), is released under the
+<<<<<<< HEAD
+<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike licence</a>. </p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a
+          href="http://germangh.com">German Gomez-Herrero</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+=======
 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike licence</a>.</p>
       </section>
       <footer>
         <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+>>>>>>> 81829d48db6b53f13395e02cf0574e25480b24c1
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
