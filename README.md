@@ -60,7 +60,7 @@ you have the required version of Python:
 
 
 On Mac OS X you may also need to install XCode via the [Mac App Store][xcode].
-Alternatively, if you have a fee Apple Developer Account, you can just install
+Alternatively, if you have a free Apple Developer Account, you can just install
 [Command Line Tools for Xcode][xcode-cmdtools]. You can check whether Xcode is
 already installed on your Mac OS X system by opening a terminal window and typing:
 
@@ -271,10 +271,9 @@ __USR__ is just the name of the user that ran command `run()`.
 __SYS__ is a string identifying the operating system and MATLAB version (e.g. _PCWIN64-R2011b_).
 
 
-Windows 8 users should note that neither Firefox nor
-Google Chrome are able to display local .svg files, when running under
-Windows 8. Whenever trying to do so, both browsers attempt to download the
-file and thus the file is not displayed. Read the
+Neither Firefox nor Google Chrome are able to display local .svg files, when
+running under Windows 8. Whenever trying to do so, both browsers attempt to
+download the file and thus the file is not displayed. Read the
 [document on known issues and limitations][issues] for ways to overcome
 this problem.
 
