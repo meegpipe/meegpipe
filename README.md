@@ -234,10 +234,10 @@ run(myNode5, data);
 ````
 
 For more information and a list of available processing nodes, see the
-[documenation][nodes-docs].
+[documentation][nodes-docs].
 
 [wiki-ref]: http://en.wikipedia.org/wiki/Reference_(computer_science)
-[nodes-docs]: ./+meegpipe/+node/README.md
+[nodes-docs]: http://github.com/meegpipe/meegpipe/blob/master/+meegpipe/+node/README.md
 
 
 ### Processing reports
@@ -259,19 +259,19 @@ find a node's HTML report under:
 
 where
 
-* __DATA__ is a string identifying the processed [physioset][physioset]. Use
+__DATA__ is a string identifying the processed [physioset][physioset]. Use
  method `get_name()` to find out the name of a [physioset][physioset] object.
 
-* __NODE__ is a string identifying the _processing node_. It is a combination of
+__NODE__ is a string identifying the _processing node_. It is a combination of
  the node name (which can be obtained using method `get_name()`) and a hash code that
  summarizes the node configuration.
 
-* __USR__ is just the name of the user that ran command `run()`.
+__USR__ is just the name of the user that ran command `run()`.
 
-* __SYS__ is a string identifying the operating system and MATLAB version (e.g. _PCWIN64-R2011b_).
+__SYS__ is a string identifying the operating system and MATLAB version (e.g. _PCWIN64-R2011b_).
 
 
-__NOTE for Windows 8 users__: Neither Firefox nor
+Windows 8 users should note that neither Firefox nor
 Google Chrome are able to display local .svg files, when running under
 Windows 8. Whenever trying to do so, both browsers attempt to download the
 file and thus the file is not displayed. Read the
@@ -319,7 +319,7 @@ myFTripStr = fieldtrip(data);
 
 ## More information
 
-See the practical [tutorials](http://github.com/meegpipe/meegpipe/tree/master/tutorials)
+See the practical [tutorials](http://github.com/meegpipe/meegpipe/tree/master/tutorials/README.md)
 for some typical use cases of _meegpipe_. A high-level description of the API components
 can be found in the [documentation][doc-main], which is still work
 in progress.
