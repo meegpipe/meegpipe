@@ -224,7 +224,7 @@ of available data importers see the <a href="https://github.com/meegpipe/meegpip
 </pre></div>
 
 <p>For more information and a list of available processing nodes, see the
-<a href="./+meegpipe/+node/README.md">documenation</a>.</p>
+<a href="http://github.com/meegpipe/meegpipe/blob/master/+meegpipe/+node/README.md">documentation</a>.</p>
 
 <h3>
 <a name="processing-reports" class="anchor" href="#processing-reports"><span class="octicon octicon-link"></span></a>Processing reports</h3>
@@ -249,15 +249,18 @@ find a node's HTML report under:</p>
 
 <p>where</p>
 
-<ul>
-<li><p><strong>DATA</strong> is a string identifying the processed <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a>. Use
-method <code>get_name()</code> to find out the name of a <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a> object.</p></li>
-<li><p><strong>NODE</strong> is a string identifying the <em>processing node</em>. It is a combination of
-the node name (which can be obtained using method <code>get_name()</code>) and a hash code that
-summarizes the node configuration.</p></li>
-<li><p><strong>USR</strong> is just the name of the user that ran command <code>run()</code>.</p></li>
-<li><p><strong>SYS</strong> is a string identifying the operating system and MATLAB version (e.g. <em>PCWIN64-R2011b</em>).</p></li>
-</ul><p><strong>NOTE for Windows 8 users</strong>: Neither Firefox nor
+<p><strong>DATA</strong> is a string identifying the processed <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a>. Use
+ method <code>get_name()</code> to find out the name of a <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a> object.</p>
+
+<p><strong>NODE</strong> is a string identifying the <em>processing node</em>. It is a combination of
+ the node name (which can be obtained using method <code>get_name()</code>) and a hash code that
+ summarizes the node configuration.</p>
+
+<p><strong>USR</strong> is just the name of the user that ran command <code>run()</code>.</p>
+
+<p><strong>SYS</strong> is a string identifying the operating system and MATLAB version (e.g. <em>PCWIN64-R2011b</em>).</p>
+
+<p>Windows 8 users should note that neither Firefox nor
 Google Chrome are able to display local .svg files, when running under
 Windows 8. Whenever trying to do so, both browsers attempt to download the
 file and thus the file is not displayed. Read the
@@ -300,7 +303,7 @@ a pipeline:</p>
 <h2>
 <a name="more-information" class="anchor" href="#more-information"><span class="octicon octicon-link"></span></a>More information</h2>
 
-<p>See the practical <a href="http://github.com/meegpipe/meegpipe/tree/master/tutorials">tutorials</a>
+<p>See the practical <a href="http://github.com/meegpipe/meegpipe/tree/master/tutorials/README.md">tutorials</a>
 for some typical use cases of <em>meegpipe</em>. A high-level description of the API components
 can be found in the <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md">documentation</a>, which is still work
 in progress.</p>
