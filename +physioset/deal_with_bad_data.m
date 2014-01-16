@@ -82,7 +82,7 @@ switch lower(policy)
         evIdx = nan(1, size(winrej,1));
         count = 0;
         for i = 1:size(winrej,1)
-            pos = winrej(i,1)-1;
+            pos = winrej(i,1);
             if pos < 1, continue; end
             
             dur = diff(winrej(i,1:2))+1;
