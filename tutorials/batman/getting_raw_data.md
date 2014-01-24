@@ -120,6 +120,6 @@ the results of your analysis but _also the raw data_ (or, in our case, symbolic
 links to the raw data).
 
 
-You are now ready to [continue to the next step ...][splitting]
+## [Continue to the next step ...][splitting]
 
 [splitting]: ./splitting_raw_data.md

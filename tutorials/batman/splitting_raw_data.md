@@ -401,7 +401,10 @@ myNode = split.new(...
 ````
 
 The purpose of the `SplitNamingPolicy` configuration option is to define the
-naming strategy for the generated (split) files. This is an implementation
+naming strategy for the generated (split) files. It is defined with a
+[function_handle][function_handle] that takes three arguments: the physioset
+object that is being split, the event object that defines the current split, and
+the index of the current split. This is an implementation
 detail that is not that relevant, but you may want to take a look at how I
 implemented my [split naming policy][split_naming_policy_m].
 
@@ -477,7 +480,7 @@ myPipe = meegpipe.node.pipeline.new(...
     'Name',             'split_files', ...
     varargin{:});
 
-end``matlab
+end
 ````
 
 Now you are finally ready to split all `.mff` files into single-block files that
