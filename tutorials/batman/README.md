@@ -2,10 +2,11 @@ BATMAN tutorial
 ===
 
 This tutorial illustrates a real data processing use-case that was performed
-within the [BATMAN project][batman-proj]. Below I assume that you are following
-this tutorial at the _somerengrid_, i.e. at one of the nodes from the private
-computing grid of the [Sleep&Cognition][sc] team of the
-[Netherlands Institute for Neuroscience][nin].
+within the [BATMAN project][batman-proj]. Below I assume that you are
+following this tutorial at the _somerengrid_, i.e. at one of the nodes of the
+private computing grid of the [Sleep&Cognition][sc] team of the
+[Netherlands Institute for Neuroscience][nin]. In particular, the raw data files
+that are used in this tutorial are not yet publicly available.
 
 [batman-proj]: http://www.neurosipe.nl/project.php?id=23&sess=6eccc41939665cfccccd8c94d8e0216f
 [sc]: http://www.nin.knaw.nl/research_groups/van_someren_group
@@ -51,8 +52,8 @@ when the subject filled the resting state questionnaire.
 
 ## Objectives/Roadmap
 
-1. [Retrieve the relevant raw data files][getting_raw] from our centralized
-   data warehouse.
+1. [Retrieve the relevant raw data files][getting_raw]. This step is only
+   relevant for those of you that are following this tutorial at _somerengrid_.
 
 2. [Split the large (20-30 Gb) files][splitting] that were obtained for
    each subject into smaller, more manageable, files. Note that this step is not

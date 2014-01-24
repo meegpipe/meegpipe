@@ -1,8 +1,19 @@
 Retrieve the raw data files
 ===
 
+Note: This step is only relevant if you are following this tutorial from a node
+of _somerengrid_, the private computing grid of the [Sleep & Cognition][sc] team
+of the [Netherlands Institute for Neuroscience (NIN)][nin]. At this point, the raw
+data files are not publicly available but they will be eventually. If you are
+working at the NIN and are interested in getting access to the raw data, please
+contact [German Gomez-Herrero][ggh].
+
+[nin]: http://www.nin.knaw.nl
+[sc]: http://www.nin.knaw.nl/research_groups/van_someren_group
+[ggh]: http://germangh.com
+
 The experimental data files from the BATMAN project are managed by a
-specialized piece of software: [the somsds data management system][somsds].
+specialized software tool: [the somsds data management system][somsds].
 This software assigns various meta-data to the experimental data files that it
 manages. It then allows you to retrieve a set of files by querying _somsds_ for
 specific meta-data values. For instance, all experimental files acquired within
