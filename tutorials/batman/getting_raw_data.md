@@ -1,10 +1,10 @@
 Retrieve the raw data files
 ===
 
-Note: This step is only relevant if you are following this tutorial from a node
+__NOTE__: This step is only relevant if you are following this tutorial from a node
 of _somerengrid_, the private computing grid of the [Sleep & Cognition][sc] team
 of the [Netherlands Institute for Neuroscience (NIN)][nin]. At this point, the raw
-data files are not publicly available but they will be eventually. If you are
+data files are not publicly available but they will be, eventually. If you are
 working at the NIN and are interested in getting access to the raw data, please
 contact [German Gomez-Herrero][ggh].
 
@@ -14,11 +14,11 @@ contact [German Gomez-Herrero][ggh].
 
 The experimental data files from the BATMAN project are managed by a
 specialized software tool: [the somsds data management system][somsds].
-This software assigns various meta-data to the experimental data files that it
-manages. It then allows you to retrieve a set of files by querying _somsds_ for
-specific meta-data values. For instance, all experimental files acquired within
+This software stores meta-data associated to the experimental data files that it
+manages. It then allows you to retrieve a set of files by querying _somsds_
+using such meta-data. For instance, all experimental files acquired within
 the BATMAN project have a meta-data tag named _recording_, which is set to
-the string _batman_.
+the value _batman_.
 
 ## Moving to our working directory
 
@@ -52,7 +52,7 @@ same `.mff` file (produced by [EGI]'s [Netstation] software). When multiple
 modalities are stored in a single data file, the `modality` tag of the file
 matches the _main_ modality that is contained in the file. BATMAN's `.mff` files
 hold 257 EEG channels and 12 additional physiological channels (ABP, ECG,
-temperature). Thus it is reasonable to use `eeg` as main modality.
+temperature). Thus the reason for considering `eeg` as the main modality.
 
 [roadmap]: ./README.md
 [egi]: http://www.egi.com/
@@ -101,7 +101,7 @@ somsds_link2rec batman --subject 1,2 --modality eeg --folder analysis2
 ````
 
 The `--folder` argument tells `somsds_link2rec` to generate the links into
-a specific directory. The default behavior is to generate the links under a
+a specific directory. The default behavior is to generate them under a
 subdirectory (named as the `recording` name) within your current directory.
 
 If after performing your two analyses you decide to discard them, then you could
@@ -112,6 +112,12 @@ rm -rf analysis1
 rm -rf analysis2
 ````
 [somsds]: http://www.germangh.com/somsds/
+
+
+It is good practice that you always keep your analysis results fully
+self-contained. That means that if folder `analysis1` should not contain only
+the results of your analysis but _also the raw data_ (or, in our case, symbolic
+links to the raw data).
 
 
 You are now ready to [continue to the next step ...][splitting]
