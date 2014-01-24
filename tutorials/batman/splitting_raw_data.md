@@ -383,9 +383,9 @@ splitNaming = @(physObj, ev, evIdx) ...
 % This is not really required, but since in this tutorial we are not interested
 % in the EEG data, it is a good idea to select only non-EEG data when generating
 % the splits so that we have as small data splits as possible. Notice the
-% ~ symbol, which means: select everything except EEG data. What is the
-% ~ symbol does is to "negate" a data selector so that it selects the
-% complementary set that it would normally select. You can check whether a data
+% ~ symbol, which means: select everything except EEG data. The  ~ symbol
+% "negates" a data selector so that it selects the complementary set to the
+% data set that it would normally select. You can check whether a data
 % selector has been negated by inspecting the value of it Negated property.
 myDataSel = ~pset.selector.sensor_class('Class', 'EEG');
 
