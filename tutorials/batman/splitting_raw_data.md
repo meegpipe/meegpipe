@@ -1,23 +1,24 @@
 Split raw data files
 ===
 
-The raw data files that we just [linked to in the previous step][getting_raw]
+The raw data files that we just [retrieved in the previous step][getting_raw]
 of this tutorial are very large: about 30 GB each. It is certainly possible to
 use `meegpipe` to work with such large files directly, but it is generally
-a good idea to work with smaller chunks of your data at a time, if that
-makes sense for your particular analysis. You should always aim to break your
-data into the smallest chunks that may be processed independently. This splitting
-strategy may speed up processing dramatically. By default, _meegpipe_ will
-process each input file in a separate grid job. Depending on the available grid
-resources, this means that all your files may be processed in parallel.
+a good idea to work with smaller chunks of your data at a time. You should
+always aim to break your data into the smallest chunks that may be processed
+independently. This splitting strategy may speed up processing dramatically.
+_meegpipe_ can process each input file in a separate [grid engine][sge] job
+(or [condor][condor] job) so, depending on the available resources on your grid
+or computer cluster, all your files may be processed in parallel.
 
+[condor]: http://research.cs.wisc.edu/htcondor/
+[sge]: http://gridscheduler.sourceforge.net/
 [getting_raw]: ./getting_raw_data.md
 
 In this tutorial we want to extract features separately for each experimental
-block and separate for each experimental sub-block. Thus, it makes sense to
-split our original data files into 12 `baseline` sub-blocks, 12 `PVT`
-sub-blocks, 12 `RS` sub-blocks, and 12 `RSQ` sub-blocks. That is, each raw data
-file will be split into 48 files.
+sub-block. Thus, it makes sense to split our original data files into 12
+`baseline` sub-blocks, 12 `PVT` sub-blocks, 12 `RS` sub-blocks, and 12 `RSQ`
+sub-blocks. That is, each raw data file is split into 48 files.
 
 
 ## Setting up `meegpipe`
@@ -41,7 +42,9 @@ You only need to run the three commands above once for a given MATLAB session.
 ## Keeping your scripts organized
 
 We are going to wrap all the scripts necessary to perform the file splitting
-into a MATLAB package called `batman`. Open MATLAB and type:
+into a [MATLAB package][matlabpkg] called `batman`. Open MATLAB and type:
+
+[matlabpkg]: http://www.mathworks.nl/help/matlab/matlab_oop/scoping-classes-with-packages.html
 
 ````matlab
 cd /data1/projects/meegpipe/batman_tut/gherrero
@@ -57,9 +60,9 @@ Before writing a data processing pipeline, I often prefer to write first the
 scheleton of a _main_ processing script that takes care of all the necessary
 preliminaries: picking the files to be processed, creating the processing
 pipelines, and running the pipeline on the chosen set of files. Below I describe
-step-by-step how I would write such a [split_files.m][split_files_m].
+step-by-step how I would write such a [split_files.m][split_files_m] script.
 
-[split_files_m]: ./split_files.m
+[split_files_m]: ./+batman/split_files.m
 
 First I define the output directory where we the splitted data files will be
 stored:
