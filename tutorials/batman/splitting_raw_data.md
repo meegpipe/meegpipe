@@ -376,7 +376,7 @@ import meegpipe.node.*;
 % event within every PVT sub-block.
 myEvSel = batman.pvt_selector;
 
-% Just trust me on this one...
+% See the note after this code snippet for more info on this one
 splitNaming = @(physObj, ev, evIdx) ...
     batman.split_naming_policy(physObj, ev, evIdx, 'baseline');
 
@@ -399,6 +399,13 @@ myNode = split.new(...
     'Name',             'baseline', ...
 
 ````
+
+The purpose of the `SplitNamingPolicy` configuration option is to define the
+naming strategy for the generated (split) files. This is an implementation
+detail that is not that relevant, but you may want to take a look at how I
+implemented my [split naming policy][split_naming_policy_m].
+
+[split_naming_policy_m]: ./+batman/split_naming_policy.m
 
 ### Putting it all together
 
