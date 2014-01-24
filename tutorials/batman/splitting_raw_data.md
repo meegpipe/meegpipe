@@ -60,21 +60,21 @@ Before writing a data processing pipeline, I often prefer to write first the
 scheleton of a _main_ processing script that takes care of all the necessary
 preliminaries: picking the files to be processed, creating the processing
 pipelines, and running the pipeline on the chosen set of files. Below I describe
-step-by-step how I would write such a [split_files.m][split_files_m] script.
+step-by-step how I would write such a [split_files.m][split_files_m] script (or
+function).
 
 [split_files_m]: ./+batman/split_files.m
 
-First I define the output directory where we the splitted data files will be
-stored:
+First I define the output directory where the split data files should be stored:
 
 ````matlab
 OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
 `````
 
 I also define a few other parameters that I may want to play with when tuning
-the processing pipeline. For instance, all processing nodes generate (sometimes
-very profuse) HTML reports. These are very useful for assessing whether
-the node did what it was expected to do. However, when you have already ensured
+the processing pipeline. For instance, all processing nodes generate HTML
+reports. These are very useful to determine whether the node did what it was
+expected to do. However, when you have already ensured
 that the nodes are working well, you may want to deactivate the HTML report
 generation so that processing is faster. Depending on your pipeline
 configuration and the size of your data files, the speedup can be _very
@@ -85,34 +85,50 @@ activating the report generation:
 DO_REPORT   = true; % Should full HTML reports be generated?
 ````
 
-By default, _meegpipe_ always tries to process your files in parallel, either
-with [Oracle's Grid Engine][sge] or with [Condor][condor], whatever is
-available. But when you are in the process of defining a new pipeline, you are
-first interested in determining whether it works at all. Thus you may prefer to
-just run your files sequentially so that you
+By default, _meegpipe_ always tries to process your files in the background, either
+with [Open Grid Engine][sge] or with [Condor][condor], whatever is
+available on your system. But when you are in the process of defining a new
+pipeline, you first need to know whether it works at all. Thus you may prefer to
+just process your files sequentially on your current MATLAB session so that
+you can easily follow the execution status messages that _meegpipe_ produces.
 
 ````matlab
 PARALLELIZE = true; % Should each file be processed in parallel?
 ````
+
+We now create an instance of the data processing pipeline:
+
 
 ````matlab
 % Create an instance of your data splitting pipeline
 myPipe = batman.split_files_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALLELIZE);
+`````
 
-% Note that we have not yet written function splitting_pipeline!
+Note that we have not written yet function `batman.split_files_pipelines.m`. But
+let's assume that we have.
 
-% Generate links to the relevant data files into the output directory. This
-% step is equivalent to copying the relevant data files into the output
-% directory but has the advantage of saving valuable disk space. The
-% command below will only work at somerengrid.
+_meegpipe_ always stores the processing results on the same directory where the
+input files are located. This does not mean that we need to produce endless
+copies of our raw data files whenever we want to process them with a different
+pipeline. We just need to create [symbolic links][symlink] to those files:
+
+[symlink]: http://en.wikipedia.org/wiki/Symbolic_link
+
+````
 files = somsds.link2rec(...
             'batman', ...           % The recording ID
             'subject', [1 2], ...   % The subject ID(s)
             'modality', 'eeg', ...  % The data modality
             'folder',  OUTPUT_DIR); % The directory where the links will be generated
+````
 
+MATLAB function `somsds.link2rec` is just a wrapper over the `somsds_link2rec`
+script that we used when we demonstrated [how to retrieve the raw data
+files][getting_raw_data].
+
+[getting_raw_data]: ./getting_raw_data.md
 
 % files should now be a cell array containing the full paths to the files
 % that are to be splitted (or, rather, the full paths to the symbolic links
