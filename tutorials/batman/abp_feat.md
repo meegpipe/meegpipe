@@ -1,6 +1,10 @@
 ABP feature extraction
 ===
 
+[Go to the previous tutorial step][splitting_raw_data]
+
+[splitting_raw_data]: ./splitting_raw_data.md
+
 In this third part of the tutorial we will extract several interesting features
 from the [Arterial Blood Pressure (ABP)][abp] time-series that are part of the
 BATMAN study. For more information regarding the list of features and the way
@@ -26,7 +30,7 @@ started your MATLAB session:
 
 ````matlab
 restoredefaultpath;
-addpath(genpath('/data1/toolbox/meegpipe_v0.1.0'));
+addpath(genpath('/data1/toolbox/meegpipe_v1.0.0'));
 ````
 
 ## Main processing script
