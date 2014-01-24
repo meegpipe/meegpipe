@@ -111,9 +111,8 @@ let's assume that we have.
 
 _meegpipe_ always stores the processing results on the same directory where the
 input files are located. Of course you want to avoid as much as possible
-creating redundant copies of your raw data files. So we create
-[symbolic links][symlink] to, instead of copying, the relevant data files into
-`OUTPUT_DIR`:
+creating redundant copies of your raw data files. So, instead of copying, we
+create [symbolic links][symlink] to the relevant data files:
 
 [symlink]: http://en.wikipedia.org/wiki/Symbolic_link
 
