@@ -1,7 +1,7 @@
 Split raw data files
 ===
 
-[Go to the previous tutorial step][splitting_raw_data]
+[Go to the previous tutorial step][getting_raw_data]
 
 The raw data files that we just [retrieved in the previous step][getting_raw]
 of this tutorial are very large: about 30 GB each. It is certainly possible to
