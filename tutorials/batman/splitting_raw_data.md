@@ -130,17 +130,17 @@ files][getting_raw_data].
 
 [getting_raw_data]: ./getting_raw_data.md
 
-% files should now be a cell array containing the full paths to the files
-% that are to be splitted (or, rather, the full paths to the symbolic links
-% that point to those files).
+After running the code above, variable `files` should be a cell array containing
+the full paths to the files that are to be split (or, rather, the full paths to
+the symbolic links that point to those files).
 
-% This is kind of obvious...
+The final and obvious step is to run the pipeline on the selected files:
+
+````
 run(myPipe, files{:});
 ````
 
-
 ## The splitting pipeline
-
 
 Our `split_files.m` above made used of certain `batman.split_files_pipeline`
 that took care of creating an instance of the data processing pipeline. It is
