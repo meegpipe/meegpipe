@@ -110,9 +110,10 @@ Note that we have not written yet function `batman.split_files_pipelines.m`. But
 let's assume that we have.
 
 _meegpipe_ always stores the processing results on the same directory where the
-input files are located. This does not mean that we need to produce endless
-copies of our raw data files whenever we want to process them with a different
-pipeline. We just need to create [symbolic links][symlink] to those files:
+input files are located. Of course you want to avoid as much as possible
+creating redundant copies of your raw data files. So we create
+[symbolic links][symlink] to, instead of copying, the relevant data files into
+`OUTPUT_DIR`:
 
 [symlink]: http://en.wikipedia.org/wiki/Symbolic_link
 
