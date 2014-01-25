@@ -22,7 +22,6 @@ dataNew = [];
 
 verbose = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);
-
 nn   = get_config(obj, 'NN');
 
 % List of bad channels
@@ -72,38 +71,7 @@ if verbose,
     
 end
 
-if do_reporting(obj)
-    if verbose
-        fprintf( [verboseLabel, 'Generating interpolation report ...']);
-    end
-    rep = get_report(obj);
-    print_title(rep, 'Interpolation report', get_level(rep) + 1);    
-    
-    snapshotPlotter = physioset.plotter.snapshots.new(...
-        'MaxChannels',      Inf, ...
-        'WinLength',        20, ...
-        'NbBadEpochs',      0, ...
-        'NbGoodEpochs',     2, ...
-        'Channels',         chanGroups);
-    
-    snapshotRep = report.plotter.new(...
-        'Plotter',              snapshotPlotter, ...
-        'Title',                'Interpolation snapshots', ...
-        'PrintGalleryTitle',    false);
-    
-    embed(snapshotRep, rep);
-    
-    print_paragraph(snapshotRep, [...
-        'Interpolated channels plotted together with the %d nearest ' ...
-        'neighbours that were used as ' ...
-        'reference for the interpolation'], nn);   
-    
-    set_level(snapshotRep, get_level(rep) + 2);
-    
-    generate(snapshotRep, data);
-    
-    if verbose, fprintf('[done]\n\n'); end
-end
+make_interpolation_report(obj, chanGroups, data, badIdx, W(badIdx,:)');
 
 
 end

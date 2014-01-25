@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(8);
+initialize(9);
 
 %% Create a new session
 try
@@ -54,6 +54,26 @@ try
     name = 'construct node that uses 5 NNs';
     obj = chan_interp('NN', 10);
     ok(get_config(obj, 'NN') == 10, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% process HD sample data
+try
+    
+    name = 'process HD sample data';
+
+    data = my_hd_sample_data();
+     
+    myNode = chan_interp('NN', 5);    
+    
+    run(myNode, data);    
+    
+    ok(min(std(data(is_bad_channel(data), :), [], 2)) > 1e-3, name);
     
 catch ME
     
@@ -191,6 +211,20 @@ data(3, :) = 0;
 data(5, :) = 0;
 
 set_bad_channel(data, [3 5]);
+
+end
+
+function data = my_hd_sample_data()
+import physioset.event.event;
+
+sens = sensors.eeg.from_template('egi256');
+data = import(physioset.import.matrix('Sensors', sens), randn(257, 10000));
+
+data(3, :) = 0;
+data(25, :) = 0;
+data(100, :) = 0;
+
+set_bad_channel(data, [3 25 100]);
 
 end
 

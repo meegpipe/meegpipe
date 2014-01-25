@@ -14,6 +14,9 @@ classdef chan_interp < meegpipe.node.abstract_node
     %
     % See also: config, abstract_node
     
+    methods (Access = private)
+        make_interpolation_report(obj, chanGroups, data, badIdx, A);
+    end
     
     methods
         % meegpipe.node.node interface
