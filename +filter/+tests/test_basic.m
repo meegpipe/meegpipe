@@ -19,16 +19,13 @@ try
     cascade;
     hpfilt;
     mlag_regr;
-    sbfilt;
-    varfilt;
+    sbfilt;    
     ok(true, name);
     
 catch ME
     
     ok(ME, name);
     MEh = [MEh ME];
-    status = finalize();
-    return;
     
 end
 
@@ -43,8 +40,6 @@ catch ME
     
     ok(ME, name);
     MEh = [MEh ME];
-    status = finalize();
-    return;
     
 end
 
@@ -59,9 +54,7 @@ catch ME
     
     ok(ME, name);
     MEh = [MEh ME];
-    status = finalize();
-    return;
-    
+
 end
 
 %% Filtering with bpfilt
@@ -75,8 +68,6 @@ catch ME
     
     ok(ME, name);
     MEh = [MEh ME];
-    status = finalize();
-    return;
     
 end
 
@@ -91,8 +82,6 @@ catch ME
     
     ok(ME, name);
     MEh = [MEh ME];
-    status = finalize();
-    return;
     
 end
 
