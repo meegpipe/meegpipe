@@ -10,7 +10,7 @@ if ret
   end
 end
 
-name = regexprep(name, '[^\w\d]', '');
+name = regexprep(name, '[^.\w\d]', '');
    
 
 
