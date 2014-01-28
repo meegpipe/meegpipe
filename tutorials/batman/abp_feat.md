@@ -290,6 +290,8 @@ myNode = abp_beat_detect.new(...
 Once the beat onsets have been detected, extracting the ABP features is piece of
 cake using an [abp_features][abp_features] node:
 
+[abp_features]: ../../+meegpipe/+node/+abp_features/README.md
+
 ````matlab
 import meegpipe.node.*;
 
