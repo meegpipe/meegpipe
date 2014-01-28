@@ -180,6 +180,9 @@ never copied by default, and that they behave as references to a
 [memmap]: http://www.mathworks.nl/help/matlab/import_export/overview-of-memory-mapping.html
 
 ````matlab
+%% Note that this code snippet is just for illustration purposes. You don't need
+%% to put this into your extract_abp_features_pipeline function.
+
 % Create a dummy physioset object
 myPhysObj = import(physioset.import.matrix, rand(4, 1000));
 
