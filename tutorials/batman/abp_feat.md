@@ -301,6 +301,21 @@ myNode = abp_features.new(...
     );
 ````
 
+### Create the pipeline
+
+````matlab
+myPipe = pipeline.new(...
+    'Name',             'batman-abp', ...
+    'NodeList',         nodeList, ...
+    'Save',             false);
+````
+
+Note that we set property `Save` of our pipeline to `false` to prevent saving to
+disk a copy of the processed data files. This makes sense because we are
+interested only in the extracted features, which are stored in separate text
+files and are not part of the output physioset object. This will become clear
+below.
+
 
 ### Putting it all together
 
