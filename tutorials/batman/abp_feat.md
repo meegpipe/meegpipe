@@ -143,11 +143,9 @@ run(myPipe, files{:});
 
 ## The feature extraction pipeline
 
-In this section we will write function `extract_abp_features_pipeline`, which is
-used by script `extract_abp_features` above to process every split data file
-that was produced in [the previous part][splitting] of this tutorial.
-
-[splitting]: ./spliting_raw_data.md
+It is now time to write the crucial helper function
+`extract_abp_features_pipeline`, which takes care of building an instance of the
+feature extraction pipeline.
 
 
 ### Node 1: Import the `.pseth/.pset` files
