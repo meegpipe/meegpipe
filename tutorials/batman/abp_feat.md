@@ -5,11 +5,11 @@ ABP feature extraction
 
 [splitting_raw_data]: ./splitting_raw_data.md
 
-In this third part of the tutorial we will extract several interesting features
-from the [Arterial Blood Pressure (ABP)][abp] time-series that are part of the
-BATMAN study. For more information regarding the list of features and the way
-they are computed we refer you to [physionet's cardiac output toolbox][cotb],
-and to the following two publications:
+In this third part of the tutorial we will extract several potentially
+interesting features from the [Arterial Blood Pressure (ABP)][abp] time-series
+that are part of the BATMAN study. For more information regarding the list of
+features and the way they are computed we refer you to
+[physionet's cardiac output toolbox][cotb], and to the following two publications:
 
 * Sun JX, [Cardiac Output Estimation using Arterial Blood Pressure Waveforms][pub1],
 MEng Thesis, Cambridge (MA), Massachussetts Institute of Technology, Department
@@ -29,41 +29,36 @@ the _somerengrid_ and that you have run the following two commands when you
 started your MATLAB session:
 
 ````matlab
+close all; clear all; clear classes;
 restoredefaultpath;
 addpath(genpath('/data1/toolbox/meegpipe_v1.0.0'));
+meegpipe.initialize;
 ````
+
+Note: You may need to change the path to `meegpipe` above, so that it matches
+the most up to date version (1.0.0 at the time of writing this).
 
 ## Main processing script
 
 Before writing our data processing pipeline we are going to write the scheleton
 of our _main_ processing script where we perform the necessary preliminaries,
 and where we run the pipeline (which we will write later) on the relevant data
-files. Below you can see a profusely commented example of how such a
-[extract_abp_features.m][extract_abp_features_m] script may look like:
+files.
 
-[extract_abp_features_m]: ./extract_abp_features.m
+First we specify the locations of the input files to this processing stage (the
+output of the previous tutorial stage), and the location where the processing
+results should be stored:
+
+````matlab
+INPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output'
+OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output';
+````
+Note that `INPUT_DIR` above matches the output directory of the previous step of
+this tutorial, where we [split the raw data files][splitting_raw_data] into
+smaller files.
 
 
 ````matlab
-% EXTRACT_ABP_FEATURES - Extract ABP features from BATMAN data
-
-% Start in a completely clean state
-close all;
-clear all;
-clear classes;
-
-% Initialize meegpipe
-meegpipe.initialize;
-
-% Import some utilities
-import mperl.file.find.finddepth_regex_match;
-
-% The directory where the split data files are located
-INPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output'
-
-% The output directory where we want to store the features and the HTML reports
-OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output';
-
 % Some (optional) parameters that you may want to play with when experimenting
 % with your processing pipeline
 PARALELLIZE = true; % Should each file be processed in parallel?
