@@ -55,37 +55,95 @@ OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_
 ````
 Note that `INPUT_DIR` above matches the output directory of the previous step of
 this tutorial, where we [split the raw data files][splitting_raw_data] into
-smaller files.
+smaller files. As we also use constants to easily set whether full HTML reports
+should be generated, and whether processing jobs should be run as parallel
+background jobs.
 
 
 ````matlab
-% Some (optional) parameters that you may want to play with when experimenting
-% with your processing pipeline
 PARALELLIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
+````
 
-% Create an instance of the feature extraction pipeline
+We now create an instance of the data processing pipeline that will take care of
+extracting the features we are interested in:
+````matlab
 myPipe = batman.extract_abp_features_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
-
-% Note that we have not yet written function extract_abp_features_pipeline!
-
-% Generate links to the relevant data files into the output directory. This
-% step is equivalent to copying the relevant data files into the output
-% directory but has the advantage of saving valuable disk space.
-regex = 'split_files-.+_\d+\.pseth?';
-splittedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
-somsds.link2files(splittedFiles, OUTPUT_DIR);
-regex = '\.pseth$';
-files = finddepth_regex_match(OUTPUT_DIR, regex);
-
-% files should now be a cell array containing the full paths to the single
-% sub-block .pseth files that were generated in the data splitting stage.
-
-run(myPipe, files{:});
 ````
 
+Of course, we have not written any function
+`batman.extract_abp_features_pipeline` so the code above will not work quite
+yet. But it will soon enough.
+
+Until now, our main processing script looks almost identical to the one we wrote
+when we [split the raw files][splitting_raw_data]. Something that does change is
+the way we retrieve the list of files that we aim to process. Since the input to
+this processing stage are not anymore __raw__ data files, we cannot anymore use
+`somsds.link2rec` to retrieve them. Thus we need to be a bit more explicit when
+building the list of files that are to be processed. First we need to get hold
+of the split files that were produced in the [previous
+section][splitting_raw_data] of this tutorial:
+
+
+````matlab
+import mperl.file.file.finddepth_regex_match;
+regex = 'split_files-.+_\d+\.pset';
+splittedFiles = finddepth_regex_match(INPUT_DIR, regex);
+````
+
+The code above build a cell array of file names `splittedFiles`, by matching
+a [regular expression][regex] (a _pattern_) to the names of all the files
+located within directory `INPUT_DIR` and any of its sub-directories.
+
+Regular expressions are a extremely powerful way of finding the items you want
+among a very large list of strings. In this case we are looking for a set of
+files within a directory tree listing that may contain thousands of items
+(file names). Mastering regular expressions is far from trivial and there are
+[whole books][regex-book] dedicated to the topic. I will not go into details,
+but the pattern `split_files-.+_\d+\.pseth?` will __match__ any string that
+contains the text `split_files`, followed by one or more characters (`.+`),
+followed by an underscore, followed by one or more digits (`\d+`), followed by
+by the string `.pset` (`\.pset`). This pattern matches exactly the file that we
+want to extract ABP features from.
+
+[regex]: http://en.wikipedia.org/wiki/Regular_expression
+[regex-book]: http://shop.oreilly.com/product/9780596528126.do
+
+Recall that _meegpipe_ always stores processing results under the same directory
+where the input file(s) is (are) located (each set of results under a different
+`.meegpipe` directory). Thus we can't just process all the files listed in the
+cell array `splittedFiles`. Well, we could, but that would mess our tidy
+directory structure and store the results somewhere deep under `INPUT_DIR`.
+Instead, we want the results to be stored under `OUTPUT_DIR`:
+
+````matlab
+somsds.link2files(splittedFiles, OUTPUT_DIR);
+````
+
+The command above creates symbolic links to all files listed in `splittedFiles`
+and stores such links under `OUTPUT_DIR`. Now `OUTPUT_DIR` contains (links to)
+all relevant data.
+
+A final detail is that the split files are stored in _meegpipe_'s own format
+`.pset/.pseth` which uses a header file (`.pseth`, relatively small) and an
+associated data file (`.pset`, possibly very large). You should only input to
+your pipeline the `.pseth` files. Again we make use of regular expressions to
+pick the set of files we want:
+
+````matlab
+% Pick any file under OUTPUT_DIR whose name ends (thus the $) with .pseth
+regex = '\.pseth$';
+files = finddepth_regex_match(OUTPUT_DIR, regex);
+````
+
+Finally, `files` contains the list of files that want to be processed with our
+ABP feature extraction pipeline:
+
+````matlab
+run(myPipe, files{:});
+````
 
 
 ## The feature extraction pipeline

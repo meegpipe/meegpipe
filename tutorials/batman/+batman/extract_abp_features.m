@@ -19,7 +19,7 @@ switch lower(get_hostname),
             '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
         % The output directory where we want to store the features
         OUTPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output';        
+            '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output';
     otherwise
         INPUT_DIR = '/Volumes/DATA/tutorial/batman/split_files_output';
         OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/extract_abp_features_output';
@@ -40,7 +40,7 @@ myPipe = batman.extract_abp_features_pipeline(...
 % Generate links to the relevant data files into the output directory. This
 % step is equivalent to copying the relevant data files into the output
 % directory but has the advantage of saving valuable disk space.
-regex = 'split_files-.+_\d+\.pseth?';
+regex = 'split_files-.+_\d+\.pset';
 splittedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
 somsds.link2files(splittedFiles, OUTPUT_DIR);
 regex = '\.pseth$';
