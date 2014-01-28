@@ -217,7 +217,7 @@ going to be a [copy][copy] node, which creates a completely independent
 
 [copy]: ../../+meegpipe/+node/+copy/README.md
 
-````
+````matlab
 % This import directive needs to be run only once. I put it here to stress the
 % fact that copy.new actually means: meegpipe.node.copy.new
 import meegpipe.node.*;
