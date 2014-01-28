@@ -187,7 +187,7 @@ never copied by default, and that they behave as references to a
 myPhysObj = import(physioset.import.matrix, rand(4, 1000));
 
 % Let' save the physioset to a disk file in .pseth/.pset format and let's keep
-% track of the file name.
+% track of the corresponding header (.pseth) file name.
 save(myPhysObj);
 fileName = get_hdrfile(myPhysObj);
 
@@ -218,6 +218,8 @@ going to be a [copy][copy] node, which creates a completely independent
 [copy]: ../../+meegpipe/+node/+copy/README.md
 
 ````
+% This import directive needs to be run only once. I put it here to stress the
+% fact that copy.new actually means: meegpipe.node.copy.new
 import meegpipe.node.*;
 
 myNode = copy.new;
