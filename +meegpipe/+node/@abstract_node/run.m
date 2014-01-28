@@ -141,7 +141,9 @@ try
         %restore_selection(data);
     end
     
-    finalize(obj, data);
+    % Important: DO NOT DO finalize(obj, data). It would break the bss node
+    % when Reject=[]
+    data = finalize(obj, data);
     
 catch ME
     % This is useful when running through OGE to find out what happened

@@ -177,7 +177,7 @@ else
         data = ics;       
     elseif reject,
         if ~isempty(myRegrFilter),
-            % Wee need to keep a backup copy of the original ics.
+            % We need to keep a backup copy of the original ics.
             select(ics, icSel);
             rejectedICs = subset(ics);
             restore_selection(ics);

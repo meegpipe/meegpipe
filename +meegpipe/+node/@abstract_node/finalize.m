@@ -1,4 +1,4 @@
-function finalize(obj, data)
+function data = finalize(obj, data)
 % FINALIZE_NODE - Finalizes a processing node
 %
 % finalize(obj)

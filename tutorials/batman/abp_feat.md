@@ -313,8 +313,8 @@ myPipe = pipeline.new(...
 Note that we set property `Save` of our pipeline to `false` to prevent saving to
 disk a copy of the processed data files. This makes sense because we are
 interested only in the extracted features, which are stored in separate text
-files and are not part of the output physioset object. This will become clear
-below.
+files and are not part of the output physioset object. Inspect the generated
+HTML reports for the detailed location of such text files.
 
 
 ### Putting it all together
@@ -336,12 +336,13 @@ features (in text format) for each experimental sub-block. Having all those
 features spread across such a large number of text files is inconvenient for
 futher analyses using statistical software such as [R][r]. It would be much
 better if we could have all ABP features in a single comma-separated file. At
-the same time, need to keep track whether a feature came from this or that
+the same time, we need to keep track whether a feature came from this or that
 experimental sub-block. Also, it would be very advantageous if we could
 incorporate into our feature table information regarding the experimental
-manipulation that took place in a given sub-block. Let's go step by step and
-start by writing a function that will translate block numbers and subject IDs to
-condition names:
+manipulation (the __condition__) that took place in a given sub-block.
+
+Let's start by writing a function that will translate block numbers and subject
+IDs to condition names:
 
 [r]: http://www.r-project.org/
 
