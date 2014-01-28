@@ -89,7 +89,7 @@ regex = 'split_files-.+_\d+\.pset';
 splittedFiles = finddepth_regex_match(INPUT_DIR, regex);
 ````
 
-The code above build a cell array of file names `splittedFiles`, by matching
+The code above will build a cell array of file names `splittedFiles`, by matching
 a [regular expression][regex] (a _pattern_) to the names of all the files
 located within directory `INPUT_DIR` and any of its sub-directories.
 
@@ -101,8 +101,8 @@ files within a directory tree listing that may contain thousands of items
 but the pattern `split_files-.+_\d+\.pseth?` will __match__ any string that
 contains the text `split_files`, followed by one or more characters (`.+`),
 followed by an underscore, followed by one or more digits (`\d+`), followed by
-by the string `.pset` (`\.pset`). This pattern matches exactly the file that we
-want to extract ABP features from.
+the string `.pset` (`\.pset`). This pattern matches exactly the split files
+that we are interested in.
 
 [regex]: http://en.wikipedia.org/wiki/Regular_expression
 [regex-book]: http://shop.oreilly.com/product/9780596528126.do
@@ -134,8 +134,7 @@ regex = '\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 ````
 
-Finally, `files` contains the list of files that want to be processed with our
-ABP feature extraction pipeline:
+Finally:
 
 ````matlab
 run(myPipe, files{:});
