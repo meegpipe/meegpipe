@@ -1,13 +1,6 @@
 function extract_abp_features
 % EXTRACT_ABP_FEATURES - Extract ABP features from BATMAN data
 
-% Start in a completely clean state
-close all;
-clear all;
-clear classes;
-
-meegpipe.initialize;
-
 % Import some utilities
 import mperl.file.find.finddepth_regex_match;
 import misc.get_hostname;
