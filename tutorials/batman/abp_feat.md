@@ -55,7 +55,7 @@ OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_
 ````
 Note that `INPUT_DIR` above matches the output directory of the previous step of
 this tutorial, where we [split the raw data files][splitting_raw_data] into
-smaller files. As we also use constants to easily set whether full HTML reports
+smaller files. We also use constants to specify whether full HTML reports
 should be generated, and whether processing jobs should be run as parallel
 background jobs.
 
@@ -65,26 +65,22 @@ PARALELLIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 ````
 
-We now create an instance of the data processing pipeline that will take care of
-extracting the features we are interested in:
+We now create an instance of the data processing pipeline using a helper
+function (`batman.extract_abp_features_pipelines`) to take care of specifying
+and building the pipeline nodes:
+
 ````matlab
 myPipe = batman.extract_abp_features_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
 ````
 
-Of course, we have not written any function
-`batman.extract_abp_features_pipeline` so the code above will not work quite
-yet. But it will soon enough.
+Of course, we have not written any `batman.extract_abp_features_pipeline` so the
+code above will not work quite yet. But it will soon enough.
 
-Until now, our main processing script looks almost identical to the one we wrote
-when we [split the raw files][splitting_raw_data]. Something that does change is
-the way we retrieve the list of files that we aim to process. Since the input to
-this processing stage are not anymore __raw__ data files, we cannot anymore use
-`somsds.link2rec` to retrieve them. Thus we need to be a bit more explicit when
-building the list of files that are to be processed. First we need to get hold
-of the split files that were produced in the [previous
-section][splitting_raw_data] of this tutorial:
+The ABP features should be extracted from every split file that was produced in
+the [previous section][splitting_raw_data] of this tutorial. So let's get hold
+of them:
 
 
 ````matlab
