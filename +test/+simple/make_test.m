@@ -7,6 +7,9 @@ import misc.dir;
 import mperl.file.spec.*;
 import test.simple.globals;
 import misc.link2mfile;
+import safefid.safefid;
+
+LOG_FILE = 'meegpipe_test.log';
 
 if nargin < 1,
     status = test.simple.globals.get.Failure;
@@ -17,6 +20,8 @@ end
 
 verboseLabel = '(make_test) ';
 status = false(1, nargin);
+
+log_file = safefid.fopen(LOG_FILE, 'w');
 
 for j = 1:nargin
     module = varargin{j};
@@ -33,9 +38,10 @@ for j = 1:nargin
         
         funcName = [module '.tests.' name];
         fprintf([verboseLabel link2mfile(funcName) '\n']);
+        log_file.fprintf([verboseLabel funcName '\n']);
         
         cmd = sprintf('%s.tests.%s', module, name);
-     
+        
         thisStatus(i) = feval(cmd);
         
         fprintf('\n\n');
