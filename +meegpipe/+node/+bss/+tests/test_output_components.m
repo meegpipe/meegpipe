@@ -224,7 +224,7 @@ try
     ics = run(myNode, data);
    
     condition = size(ics, 1) == 2 & isa(sensors(ics), 'sensors.dummy');
-    outputFileName = get_output_filename(myNode, ics);
+    outputFileName = get_output_filename(myNode, data);
     clear data ans;
     
     ok( condition & ...
@@ -263,7 +263,7 @@ try
     ics = run(myNode, data);
    
     condition = size(ics, 1) == 3 & isa(sensors(ics), 'sensors.dummy');
-    outputFileName = get_output_filename(myNode, ics);
+    outputFileName = get_output_filename(myNode, data);
     clear data ans ics;
     
     ok( condition & ...
@@ -300,7 +300,7 @@ try
     
     ok( all(cellfun(@(x) size(x, 1) == 2, newData)) & ... 
         all(cellfun(@(x) ...
-        exist(get_output_filename(myNode, x), 'file') > 0, newData)), ...
+        exist(get_output_filename(myNode, x), 'file') > 0, data)), ...
         name);
     
     

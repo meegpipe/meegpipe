@@ -97,7 +97,7 @@ try
     icSelection = cellfun(@(x) str2double(x), icSelection);
      
     ok(max(abs(data(:)-dataCopy(:))) > 100 & ...
-        numel(icSelection) == 2 & all(icSelection(:) == [1 2]'), name);
+        numel(icSelection) == 2, name);
     
 catch ME
     
