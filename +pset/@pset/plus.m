@@ -8,7 +8,7 @@ function y = plus(varargin)
 
 
 count = 1;
-while count < nargin && ~isa(varargin{count+1}, 'pset.pset'),
+while count < nargin && ~isa(varargin{count}, 'pset.pset'),
     count = count + 1;
 end
 
