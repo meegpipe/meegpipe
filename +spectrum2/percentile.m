@@ -7,8 +7,10 @@ classdef percentile < goo.verbose
     methods
         function dspData = psd(obj, varargin)
             import misc.process_arguments;
+            import misc.split_arguments;
             import misc.eta;
             
+ 
             if nargin < 2,
                 dspData = [];
                 return;
@@ -29,6 +31,8 @@ classdef percentile < goo.verbose
             opt.CenterDC        = false;
             opt.Normalize       = true; % Normalize variance?
             opt.Percentile      = [25 75];
+            
+            THIS_PROPS = {'Percentile'};
             % There is a bug here, this doesnt work if you set Normalize to
             % false. Fix that at some point! In general this function
             % requires heavy cleaning.        
@@ -78,8 +82,8 @@ classdef percentile < goo.verbose
                 return;
             end
            
-            Hpsd = psd(obj.Estimator, data{count}, varargin{:});
-          
+            [~, otherArgs] = split_arguments(THIS_PROPS, varargin);
+            Hpsd = psd(obj.Estimator, data{count}, otherArgs{:});
             
             if is_verbose(obj) && toc*numel(data) > 10,
                 verbose = true;
@@ -115,7 +119,8 @@ classdef percentile < goo.verbose
                     thisData = data{i};
                 end
                 
-                Hpsd = psd(obj.Estimator, thisData, varargin{:});
+                [~, otherArgs] = split_arguments(THIS_PROPS, varargin);
+                Hpsd = psd(obj.Estimator, thisData, otherArgs{:});
                 
                 
                 psdCount = psdCount + 1;

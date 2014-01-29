@@ -102,8 +102,15 @@ if readEvents
         fprintf([verboseLabel 'Reading events...']);
     end
     
+    if hdr.nrec > 10000,
+        readAnnotVerbose = true;
+        warning(['File has as many as %d records (%s seconds each). ' ...
+            'It''s going to take a while ...'], hdr.nrec, num2str(hdr.dur));
+    else
+        readAnnotVerbose = verbose;
+    end
     [~, ~, eventArray, samplTime] = read(fileName, ...
-        'onlyannotations', true, 'hdr', hdr, 'verbose', false);
+        'onlyannotations', true, 'hdr', hdr, 'verbose', readAnnotVerbose);
     
     if verbose,
         fprintf('[done]\n\n');

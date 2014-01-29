@@ -101,7 +101,7 @@ try
         physioset_import('Importer', physioset.import.physioset), ...
         copy, ...
         filter('Filter', filter.bpfilt('fp', [5 10]/125)) ...
-        }, 'Save', true);
+        }, 'Save', false);
     
     newData = run(myPipe, get_hdrfile(data));
     
@@ -110,7 +110,7 @@ try
     condition1 = all(newData(1,:) < eps) & any(data(1,:)>0.1);
     copyFile = get_datafile(newData);
     condition2 = exist(copyFile, 'file') > 0;
-    clear newData; % the copy node output should be deleted
+    clear newData; % the processed physioset should be temporary
     condition3 = ~exist(copyFile, 'file');
     ok(condition1 & condition2 & condition3, name);
     

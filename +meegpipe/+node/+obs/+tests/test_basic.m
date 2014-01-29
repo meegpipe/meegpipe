@@ -81,7 +81,7 @@ try
     % Add some artificial QRS complex events
     add_event(data, qrs(1:100:10000));
     
-    myNode = obs;
+    myNode = obs.new;
     
     run(myNode, data);
     
@@ -148,14 +148,18 @@ import pset.session;
 import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 
-if exist('bcg_sample2.pseth', 'file') > 0,
+unzipDir = catdir(session.instance.Folder, 'bcg_sample2');
+fileName = catfile(unzipDir, 'bcg_sample2.pseth');
+
+if exist('bcg_sample.pseth', 'file') > 0,
     data = pset.load('bcg_sample2.pseth');
+elseif exist('bcg_sample2.zip', 'file') > 0
+    unzip('bcg_sample2.zip', unzipDir);
+    data = pset.load(fileName);
 else
     % Try downloading the file
-    url = 'http://kasku.org/data/meegpipe/bcg_sample2.zip';
-    unzipDir = catdir(session.instance.Folder, 'bcg_sample2');
-    unzip(url, unzipDir);
-    fileName = catfile(unzipDir, 'bcg_sample2.pseth');
+    url = 'http://kasku.org/data/meegpipe/bcg_sample2.zip';    
+    unzip(url, unzipDir);    
     data = pset.load(fileName);
 end
 dataCopy = copy(data);

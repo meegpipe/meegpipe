@@ -253,8 +253,14 @@ classdef eeg < sensors.physiology
                     'EEG 1, EEG 2, ...']),
                 
                 newLabels = cell(size(obj.Label));
-                for i = 1:numel(obj.Label),      
-                    newLabels{i} = ['EEG ' num2str(i)];
+                for i = 1:numel(obj.Label),   
+                    % The EGI net uses E# naming -> EEG #
+                    match = regexp(obj.Label{i}, 'E(?<number>\d+)$', 'names');
+                    if isempty(match),
+                        newLabels{i} = ['EEG ' num2str(i)];
+                    else
+                        newLabels{i} = ['EEG ' match.number];
+                    end
                 end
                 % Take care of reference channels
                 isRef = cellfun(...

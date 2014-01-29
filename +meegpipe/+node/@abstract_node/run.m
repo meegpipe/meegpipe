@@ -20,6 +20,11 @@ if nargin == 2 && iscell(varargin{1}) && numel(varargin{1}) == 1,
      varargin = varargin{1};
 end
 
+% Another common mistake: user passes an empty cell
+if nargin == 2 && isempty(varargin{1})
+   error('You need to provide at least one data file to be processed!') 
+end
+
 %% Take care of multiple input datasets using recursion
 if numel(varargin) > 1,
     

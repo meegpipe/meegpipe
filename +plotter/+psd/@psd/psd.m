@@ -21,10 +21,7 @@ classdef psd < plotter.plotter & goo.abstract_configurable_handle
     %
     % See also: plotter.psd.config, plotter.psd.demo
 
-    
-    %% IMPLEMENTATION .....................................................    
-    
-    
+   
     properties (GetAccess = private, SetAccess = private)
         
         Figure;     % Handle to the attached figure
@@ -73,10 +70,7 @@ classdef psd < plotter.plotter & goo.abstract_configurable_handle
         
         set_matchscale(obj, src, evnt);  
         
-    end     
-  
-    
-    %% PUBLIC INTERFACE ...................................................
+    end   
     
     properties
        DeleteOnDestroy = true; 
@@ -194,7 +188,16 @@ classdef psd < plotter.plotter & goo.abstract_configurable_handle
     % Constructor
     methods
         
-        function obj = psd(varargin)            
+        function obj = psd(varargin)        
+            
+            import misc.split_arguments;
+            import misc.process_arguments;
+            
+            thisProps = {'DeleteOnDestroy'};
+            [thisArgs, varargin] = split_arguments(thisProps, varargin);
+            
+            opt.DeleteOnDestroy = true;
+            [~, opt] = process_arguments(opt, thisArgs);
           
             obj = obj@goo.abstract_configurable_handle(varargin{:});
            
@@ -238,6 +241,8 @@ classdef psd < plotter.plotter & goo.abstract_configurable_handle
             set_matchscale(obj);
             set_data_scale(obj);
             set_boi(obj);
+            
+            obj.DeleteOnDestroy = opt.DeleteOnDestroy;
             
         end
         

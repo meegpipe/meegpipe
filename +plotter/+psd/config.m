@@ -55,15 +55,7 @@ classdef config < goo.abstract_setget_handle
     %
     %
     % See also: psd
-    
-    
-    %% PUBLIC INTERFACE ...................................................
-    properties
-        
-        DeleteOnDestroy = true;     % Delete figure after clearing handle?
-        
-    end
-    
+
     properties (SetObservable)
         
         Transparent     = false;    % Make plot transparent?
@@ -82,22 +74,7 @@ classdef config < goo.abstract_setget_handle
     % Consistency checks (set methods)
     methods
         
-        
-        function set.DeleteOnDestroy(obj, value)
-            
-            import exceptions.*;
-            
-            if isempty(value),
-                value = true;
-            end
-            if numel(value) ~= 1 || ~islogical(value),
-                throw(InvalidPropValue('DeleteOnDestroy', ...
-                    'A logical scalar was expected'));
-            end
-            obj.DeleteOnDestroy = value;
-            
-        end
-        
+    
         function set.Transparent(obj, value)
             
             import exceptions.*;

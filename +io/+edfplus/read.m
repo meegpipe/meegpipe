@@ -587,7 +587,8 @@ else
     rec_count = 1;
     
     % Loop accross data records
-    nrec_by10 = floor(hdr.nrec/10);
+    nrec_by100 = max(1,floor(hdr.nrec/100));
+    tinit = tic;
     while pos < hdr.file_size
         % Read a single annotation channel
         for chan_itr = 1:length(ann_chan_idx)
@@ -616,13 +617,13 @@ else
                 if length(data_subtokens) > 1,
                     tal_cell{chan_itr, rec_count}(j).annotations = data_subtokens(2:end);
                 end
-            end
+            end  
         end
         % Move to the next data record
         pos = pos + hdr.record_size;
         rec_count = rec_count + 1;
-        if verbose && ~mod(rec_count, nrec_by10),
-            fprintf('.');
+        if verbose && ~mod(rec_count, nrec_by100),
+            misc.eta(tinit, hdr.nrec, rec_count);
         end
     end
     if rec_count < hdr.nrec,      
