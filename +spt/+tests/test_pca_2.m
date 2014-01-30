@@ -12,6 +12,10 @@ import meegpipe.node.*;
 
 MEh     = [];
 
+% Number of iterations to perform when computing model selection indices.
+% Increase for better robustness at the cost of computation time
+NB_ITER = 15;
+
 initialize(15);
 
 %% Create a new session
@@ -260,7 +264,7 @@ try
     origDim = myPCA.DimOut;
 
     newDim = nan(1, 5);
-    for i = 1:5,
+    for i = 1:NB_ITER,
         X = rand(5,3)*rand(3, 10000) + 0.01*randn(5, 10000);
         data = import(myImporter, X);
         myPCA = spt.pca('Criterion', 'MDL', 'RetainedVar', 100);
@@ -296,7 +300,7 @@ try
     origDim = myPCA.DimOut;
 
     newDim = nan(1, 10);
-    for i = 1:10,
+    for i = 1:NB_ITER,
         X = rand(5,3)*rand(3, 10000) + 0.01*randn(5, 10000);
         data = import(myImporter, X);
         myPCA = spt.pca('Criterion', 'AIC', 'RetainedVar', 100);
@@ -332,7 +336,7 @@ try
     origDim = myPCA.DimOut;
     
     newDim = nan(1, 10);
-    for i = 1:10,
+    for i = 1:NB_ITER,
         X = rand(5,3)*rand(3, 10000) + 0.01*randn(5, 10000);
         data = import(myImporter, X);
         myPCA = spt.pca('Criterion', 'MIBS', 'RetainedVar', 100);

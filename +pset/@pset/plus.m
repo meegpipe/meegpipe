@@ -25,7 +25,7 @@ for i = 1:y.NbChunks
         elseif numel(varargin{j})==1,
             datab = varargin{j}(1);
         else
-            if a.Transposed,
+            if y.Transposed,
                 datab = varargin{j}(index, :);
             else
                 datab = varargin{j}(:, index);
