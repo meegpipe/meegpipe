@@ -263,7 +263,7 @@ myNode = operator.new(...
 ````
 
 Unfortunately, converting the ABP measurements in the BATMAN study to mmHg
-requires quite a bit of ad-hoc (potentially inaccurate) heuristics. See function
+requires quite a bit of ad-hoc heuristics. See function
 [calibrate_abp][calibrate_abp] if you want to learn the details.
 
 [calibrate_abp]: ./+batman/calibrate_abp.m
@@ -273,7 +273,7 @@ requires quite a bit of ad-hoc (potentially inaccurate) heuristics. See function
 
 ### Node 4: Beat onset detection
 
-A preliminary step to extracting any valuable feature from the ABP signal is to
+A prerequisite to extracting any valuable feature from the ABP signal is to
 detect the onset of each heartbeat. This can be done using an
 [abp_beat_detect][abp_beat_detect] node:
 
@@ -283,7 +283,8 @@ detect the onset of each heartbeat. This can be done using an
 import meegpipe.node.*;
 
 % The default settings will do. But we need to use an appropriate DataSelector
-% so that only the ABP signal is used by this node.
+% so that only the ABP signal is used by this node. You don't want this node to
+% start detecting heartbeats in 257 EEG signals...
 myNode = abp_beat_detect.new(...
     'DataSelector',     pset.selector.sensor_label('Portapres')...
     );
