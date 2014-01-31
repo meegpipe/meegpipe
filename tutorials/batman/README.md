@@ -85,20 +85,21 @@ when the subject filled the resting state questionnaire.
 The tutorial will guide you step-by-step through the MATLAB code that you would
 need to write to accomplish the objectives above. The final completed set of
 scripts is part of [meegpipe][meegpipe] itself. You can find it under
-`tutorials/+batman`.
+`tutorials/+batman`. Follow the instructions below to run the whole tutorial
+without going through the step-by-step explanations.
 
 [meegpipe]: http://meegpipe.github.io/meegpipe
 
 To ensure that the tutorial files will work as expected it is highly recommended
 that you restore your default MATLAB path:
 
-````
+````matlab
 restoredefaultpath
 ````
 
 Then you can add _meegpipe_ to the MATLAB path and initialize it:
 
-````
+````matlab
 % If you are not working at somerengrid, edit the path below accordingly
 addpath(genpath('/data1/toolbox/meegpipe'));
 
