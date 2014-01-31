@@ -427,14 +427,13 @@ The final outcome of this section of the tutorial is:
 [split_files]: ./+batman/split_files.m
 
 
-Once both functions above are in your MATLAB search path you can simply run the
-following to split all data files:
+Once both of these functions are in your MATLAB search path you can simply run
+the following to split all data files:
 
 ````matlab
 % I assume that you have wrapped your scripts with a package called batman
 batman.split_files
 ````
-
 
 ## [Continue to the next step ...][abp]
 

@@ -108,9 +108,9 @@ that we are interested in.
 [regex-book]: http://shop.oreilly.com/product/9780596528126.do
 
 Recall that _meegpipe_ always stores processing results under the same directory
-where the input file(s) is (are) located (each set of results under a different
-`.meegpipe` directory). Thus we can't just process all the files listed in the
-cell array `splittedFiles`. Well, we could, but that would mess our tidy
+where the input file is located (under a different`.meegpipe` directory with the
+same name as the input file). Thus we can't just process all the files listed in
+the cell array `splittedFiles`. Well, we could, but that would mess our tidy
 directory structure and store the results somewhere deep under `INPUT_DIR`.
 Instead, we want the results to be stored under `OUTPUT_DIR`:
 
@@ -123,13 +123,13 @@ and stores such links under `OUTPUT_DIR`. Now `OUTPUT_DIR` contains (links to)
 all relevant data.
 
 A final detail is that the split files are stored in _meegpipe_'s own format
-`.pset/.pseth` which uses a header file (`.pseth`, relatively small) and an
-associated data file (`.pset`, possibly very large). You should only input to
-your pipeline the `.pseth` files. Again we make use of regular expressions to
-pick the set of files we want:
+`.pset/.pseth` which uses a header file (`.pseth`) and an
+associated data file (`.pset`). You should only input to your pipeline the
+`.pseth` files. Again we make use of regular expressions to pick the set of
+files we want:
 
 ````matlab
-% Pick any file under OUTPUT_DIR whose name ends (thus the $) with .pseth
+% Pick any file under OUTPUT_DIR whose name ends (thus the $ anchor) with .pseth
 regex = '\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 ````
@@ -172,16 +172,18 @@ myNode = physioset_import.new('Importer', myImpoter);
 
 ### Node 2: Copy the input data
 
-Disk files in `.pseth/.pset` format store a seralized version of a `physioset`
-object. Recall from the [documentation][physioset] that physioset objects are
-never copied by default, and that they behave as references to a
-([memory-mapped][memmap]) disk file, i.e.:
+Disk files in `.pseth/.pset` format store a [serialized][serialization] version
+of a `physioset` object. Recall from the [documentation][physioset] that
+physioset objects are never copied by default, and that they behave as
+references to a ([memory-mapped][memmap]) disk file. The code below illustrates
+what I mean:
 
+[serialization]: http://en.wikipedia.org/wiki/Serialization
 [memmap]: http://www.mathworks.nl/help/matlab/import_export/overview-of-memory-mapping.html
 
 ````matlab
-%% Note that this code snippet is just for illustration purposes. You don't need
-%% to put this into your extract_abp_features_pipeline function.
+%% Note that this code snippet is just for illustration purposes. You should not
+%% put this code into your extract_abp_features_pipeline function.
 
 % Create a dummy physioset object
 myPhysObj = import(physioset.import.matrix, rand(4, 1000));
@@ -208,11 +210,14 @@ myPhysObjReloaded = pset.load(fileName);
 assert(all(myPhysObjReloaded(1,:) == 0));
 ````
 
-The code above aims to illustrate that if we load a physioset object from a
+The code above should make clear that, if we load a physioset object from a
 `pset/.pseth` file and we modify the values of the loaded physioset, then
-__we will be modifying the contents of the original `.pset/.pseth` file__. We
-want to prevent this from happening and thus the second node of our pipeline is
-going to be a [copy][copy] node, which creates a completely independent
+__we will be modifying the contents of the original `.pset/.pseth` file__.
+The [file splitting section][splitting_raw_data] of this tutorial can take many
+hours to complete, depending on how many files you process. You obviously want
+to keep the split files untouched, to prevent having to reproduced the splitting
+should you have to re-run the ABP feature extraction. This can be accomplished
+by including a [copy][copy] node in your pipeline to create an independent
 (but identical) copy of the input physioset:
 
 [copy]: ../../+meegpipe/+node/+copy/README.md
