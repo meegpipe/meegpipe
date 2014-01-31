@@ -99,10 +99,9 @@ try
     
     X = randn(10, 1000);
     dataCopy = run(myNode, X);    
-    
-    savePath = get_save_dir(myNode);
-    [~, fileName, fileExt] = fileparts(get_datafile(dataCopy));
-    savedFile = catfile(savePath, [fileName '_pipeline' fileExt]);
+  
+    savedFile = get_datafile(dataCopy);
+    clear X dataCopy;
     
     ok(exist(savedFile, 'file') > 0, name);
     

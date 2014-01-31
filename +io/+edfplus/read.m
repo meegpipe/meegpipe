@@ -623,7 +623,7 @@ else
         pos = pos + hdr.record_size;
         rec_count = rec_count + 1;
         if verbose && ~mod(rec_count, nrec_by100),
-            misc.eta(tinit, hdr.nrec, rec_count);
+            misc.eta(tinit, hdr.nrec, rec_count, 'remaintime', true);
         end
     end
     if rec_count < hdr.nrec,      
