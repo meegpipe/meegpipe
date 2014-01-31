@@ -79,3 +79,33 @@ when the subject filled the resting state questionnaire.
 [pvt-feat]: ./pvt_feat.md
 [ecg]: http://en.wikipedia.org/wiki/Electrocardiography
 
+
+## Outcome
+
+The tutorial will guide you step-by-step through the MATLAB code that you would
+need to write to accomplish the objectives above. The final completed set of
+scripts is part of [meegpipe][meegpipe] itself. You can find it under
+`tutorials/+batman`.
+
+[meegpipe]: http://meegpipe.github.io/meegpipe
+
+To split all raw data files into smaller files simply run:
+
+````matlab
+% You will have to edit a few things in batman.split_files if you are not
+% running this at the somerengrid
+batman.split_files
+````
+Wait until all files have been split and then, to reproduce all other tutorial
+steps run:
+
+````matlab
+% You will have to edit a few paths and OS-related stuff in these scripts if you
+% are not running this at somerengrid
+batman.extract_abp_features
+batman.extract_hrv_features
+batman.extract_pvt_features
+````
+
+
+

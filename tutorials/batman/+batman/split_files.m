@@ -17,18 +17,19 @@ meegpipe.initialize;
 % Import some miscellaneous utilities
 import misc.dir;
 import mperl.file.spec.catfile;
-import misc.get_hostname;
+import misc.get_username;
 
 % The output directory where we want to store the splitted data files
-switch lower(get_hostname),
-    case {'somerenserver', 'nin389'}
-        OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
-    otherwise,
-        OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/split_files_output';
-end
+OUTPUT_DIR = [ ...
+    '/data1/projects/meegpipe/batman_tut/' , ...
+    get_username, ...
+    '/split_files_output'];
 
-% Some (optional) parameters that you may want to play with when experimenting
-% with your processing pipeline
+% Ensure the directory exists (Unix-specific)
+system(['mkdir -p ' OUTPUT_DIR]);
+
+% Some (optional) parameters that you may want to play with when
+% experimenting with your processing pipeline
 PARALLELIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
@@ -43,19 +44,12 @@ myPipe = batman.split_files_pipeline(...
 % step is equivalent to copying the relevant data files into the output
 % directory but has the advantage of saving valuable disk space. The
 % command below will only work at somerengrid.
-switch lower(get_hostname),
-    case {'somerenserver', 'nin389'}
-        files = somsds.link2rec(...
-            'batman', ...           % The recording ID
-            'subject', [1 2], ...   % The subject ID(s)
-            'modality', 'eeg', ...  % The data modality
-            'folder',  OUTPUT_DIR); % The directory where the links will be generated
-        
-    case 'outolintulan',
-        DATA_DIR = '/Volumes/DATA/datasets/batman';
-        files = catfile(DATA_DIR, dir(DATA_DIR, '\.mff$'));
-        files = somsds.link2files(files, OUTPUT_DIR);
-end
+files = somsds.link2rec(...
+    'batman', ...           % The recording ID
+    'subject', [1 2], ...   % The subject ID(s)
+    'modality', 'eeg', ...  % The data modality
+    'folder',  OUTPUT_DIR); % The directory where the links will be generated
+
 
 % files should now be a cell array containing the full paths to the files
 % that are to be splitted (or, rather, the full paths to the symbolic links

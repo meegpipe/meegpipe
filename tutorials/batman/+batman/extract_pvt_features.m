@@ -1,29 +1,26 @@
 function extract_pvt_features
 % EXTRACT_PVT_FEATURES - Extract PVT features from BATMAN data
 
-% Start in a completely clean state
-close all;
-%clear all;
-%clear classes;
-
 meegpipe.initialize;
 
 % Import some utilities
 import mperl.file.find.finddepth_regex_match;
-import misc.get_hostname;
+import misc.get_username;
 
-switch lower(get_hostname),
-    case {'somerenserver', 'nin389'},
-        % The directory where the split data files are located
-        INPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
-        % The output directory where we want to store the features
-        OUTPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/extract_pvt_features_output';        
-    otherwise
-        INPUT_DIR = '/Volumes/DATA/tutorial/batman/split_files_output';
-        OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/extract_pvt_features_output';
-end
+% The directory where the split data files are located
+INPUT_DIR = [ ...
+    '/data1/projects/meegpipe/batman_tut/' ...
+    get_username ...
+    '/split_files_output'];
+
+% The output directory where we want to store the features
+OUTPUT_DIR = [...
+    '/data1/projects/meegpipe/batman_tut/' ...
+    get_username ...
+    '/extract_pvt_features_output'];
+
+% Ensure the output directory exists (Unix-specific)
+system(['mkdir -p ' OUTPUT_DIR])
 
 % Some (optional) parameters that you may want to play with when experimenting
 % with your processing pipeline
@@ -45,7 +42,6 @@ splittedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
 somsds.link2files(splittedFiles, OUTPUT_DIR);
 % Note that we use a regex that will match only those files that contain
 % PVT events. 
-regex = 'batman_0009_eeg_all_11-14_pvt_14\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 % files should now be a cell array containing the full paths to the single

@@ -1,29 +1,27 @@
 function extract_hrv_features
 % EXTRACT_HRV_FEATURES - Extract HRV features from BATMAN data
 
-% Start in a completely clean state
-close all;
-clear all;
-clear classes;
-
+% Just in case you forgot to do it when you started MATLAB
 meegpipe.initialize;
 
 % Import some utilities
 import mperl.file.find.finddepth_regex_match;
-import misc.get_hostname;
+import misc.get_username;
 
-switch lower(get_hostname),
-    case {'somerenserver', 'nin389'},
-        % The directory where the split data files are located
-        INPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
-        % The output directory where we want to store the features
-        OUTPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/extract_hrv_features_output';        
-    otherwise
-        INPUT_DIR = '/Volumes/DATA/tutorial/batman/split_files_output';
-        OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/extract_hrv_features_output';
-end
+% The input directory (the output directory of the splitting stage)
+INPUT_DIR = [ ...
+    '/data1/projects/meegpipe/batman_tut/' ...
+    get_username ...
+    '/split_files_output'];
+
+% The output directory where we want to store the features
+OUTPUT_DIR = [...
+    '/data1/projects/meegpipe/batman_tut/' ...
+    get_username ...
+    '/extract_hrv_features_output'];
+
+% Ensure that the output directory exists (Unix-specific)
+system(['mkdir -p ' OUTPUT_DIR]);
 
 % Some (optional) parameters that you may want to play with when experimenting
 % with your processing pipeline
@@ -34,8 +32,6 @@ DO_REPORT   = true; % Should full HTML reports be generated?
 myPipe = batman.extract_hrv_features_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALLELIZE);
-
-% Note that we have not yet written function extract_hrv_feature_pipeline!
 
 % Generate links to the relevant data files into the output directory. This
 % step is equivalent to copying the relevant data files into the output

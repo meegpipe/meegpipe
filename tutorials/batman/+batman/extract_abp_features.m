@@ -1,22 +1,27 @@
 function extract_abp_features
 % EXTRACT_ABP_FEATURES - Extract ABP features from BATMAN data
 
+% Just in case you forgot to do it when you started MATLAB
+meegpipe.initialize;
+
 % Import some utilities
 import mperl.file.find.finddepth_regex_match;
-import misc.get_hostname;
+import misc.get_username;
 
-switch lower(get_hostname),
-    case {'somerenserver', 'nin389'},
-        % The directory where the split data files are located
-        INPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/split_files_output';
-        % The output directory where we want to store the features
-        OUTPUT_DIR = ...
-            '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output';
-    otherwise
-        INPUT_DIR = '/Volumes/DATA/tutorial/batman/split_files_output';
-        OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/extract_abp_features_output';
-end
+% The directory where the split data files are located
+INPUT_DIR = ...
+    ['/data1/projects/meegpipe/batman_tut/' ...
+    get_username ...
+    '/split_files_output'];
+
+% The output directory where we want to store the features
+OUTPUT_DIR = ...
+    ['/data1/projects/meegpipe/batman_tut/' ...
+    get_username ...
+    '/extract_abp_features_output'];
+
+% Ensure the directory exists (Unix-specific)
+system(['mkdir -p ' OUTPUT_DIR]);
 
 % Some (optional) parameters that you may want to play with when experimenting
 % with your processing pipeline

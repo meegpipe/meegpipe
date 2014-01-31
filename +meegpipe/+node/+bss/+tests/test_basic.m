@@ -231,7 +231,7 @@ try
     condition = max(abs(data(:)-X(:))) > 0.001;
     outputFileName = get_output_filename(myNode, data);
     clear data ans;
-    
+    pause(1)
     ok( condition & ...
         exist(outputFileName, 'file') > 0, name);
     

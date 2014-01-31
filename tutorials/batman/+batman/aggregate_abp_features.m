@@ -7,13 +7,9 @@ import misc.dir;
 import mperl.file.spec.catfile;
 import misc.get_hostname;
 
-% The directory where the .meegpipe directories are located
-switch lower(get_hostname)
-    case {'somerenserver', 'nin389'}
-        OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output';
-    otherwise
-        OUTPUT_DIR = '/Volumes/DATA/tutorial/batman/extract_abp_features_output';
-end
+% The directory where the .meegpipe directories from the splitting stage are
+% located. Change this to match the path in your system.
+OUTPUT_DIR = '/data1/projects/meegpipe/batman_tut/gherrero/extract_abp_features_output
 
 % This is the function that we use to translate file names into meta-info tags
 FILENAME_TRANS = @batman.fname2meta;
