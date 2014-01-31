@@ -48,6 +48,7 @@ The feature aggregation step is analogous to what we did when [aggregating the
 ABP features][abp]. Just take a look at
 [aggregate_hrv_features.m][aggregate_hrv_features].
 
+[aggregate_hrv_features]: ./+batman/aggregate_hrv_features.m
 [abp]: ./abp_feat.md
 
 
