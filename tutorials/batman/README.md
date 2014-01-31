@@ -89,6 +89,25 @@ scripts is part of [meegpipe][meegpipe] itself. You can find it under
 
 [meegpipe]: http://meegpipe.github.io/meegpipe
 
+To ensure that the tutorial files will work as expected it is highly recommended
+that you restore your default MATLAB path:
+
+````
+restoredefaultpath
+````
+
+Then you can add _meegpipe_ to the MATLAB path and initialize it:
+
+````
+% If you are not working at somerengrid, edit the path below accordingly
+addpath(genpath('/data1/toolbox/meegpipe'));
+
+% If you are not at somerengrid, you will most likely need to edit meegpipe's
+% configuration file so that meegpipe can find Fieldtrip and EEGLAB in your
+% system. Follow the instructions in +meegpipe/meegpipe.ini
+meegpipe.initialize;
+````
+
 To split all raw data files into smaller files simply run:
 
 ````matlab
