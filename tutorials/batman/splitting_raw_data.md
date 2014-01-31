@@ -388,7 +388,7 @@ splitNaming = @(physObj, ev, evIdx) ...
 % ~ symbol, which means: select everything except EEG data. The  ~ symbol
 % "negates" a data selector so that it selects the complementary set to the
 % data set that it would normally select. You can check whether a data
-% selector has been negated by inspecting the value of it Negated property.
+% selector has been negated by inspecting the value of its Negated property.
 myDataSel = ~pset.selector.sensor_class('Class', 'EEG');
 
 % Create the split node. It is important to give a meaningful name to the node.
@@ -414,81 +414,24 @@ implemented my [split naming policy][split_naming_policy_m].
 
 ### Putting it all together
 
-Below the contents of function [split_files_pipeline.m][split_files_pipeline],
-which create the pipeline that we need to split the BATMAN files as required.
+The final outcome of this section of the tutorial is:
+
+* A function that takes care of building the _meegpipe_ pipeline:
+  [split_files_pipeline.m][split_files_pipeline].
+
+* A _main_ function that takes care of gathering all the relevant data files,
+  and of processing them with the splitting pipeline:
+  [split_files.m][split_files].
 
 [split_files_pipeline]: ./+batman/split_files_pipeline.m
+[split_files]: ./+batman/split_files.m
+
+
+Once both functions above are in your MATLAB search path you can simply run the
+following to split all data files:
 
 ````matlab
-function myPipe = split_files_pipeline(varargin)
-% SPLIT_FILES_PIPELINE - Splits BATMAN .mff files into single sub-block files
-
-import meegpipe.node.*;
-
-% Initialize the list of nodes that the pipeline will contain
-nodeList = {};
-
-%% Node 1: Covert .mff files into a physioset object
-myImporter = physioset.import.mff('Precision', 'single');
-myNode = physioset_import.new('Importer', myImporter);
-
-nodeList = [nodeList {myNode}];
-
-%% Node 2-: Split each sub-block within each experimental manipulation block
-
-% This event selector selects the first PVT event in every PVT sub-block
-myEvSel = batman.pvt_selector;
-
-% The offset of each sub-block with respect to the PVT sub-block onset
-off = mjava.hash;
-off('baseline') = -9*60;
-off('pvt')      = 0;
-off('rs')       = 7*60;
-off('arsq')     = 12*60;
-
-% The duration of each sub-block
-dur = mjava.hash;
-dur('baseline') = 9*60;
-dur('pvt')      = 7*60;
-dur('rs')       = 5*60;
-dur('arsq')     = 3.5*60;
-
-% A cell array with the names of every sub-block
-sbNames = keys(dur);
-
-% The split node should select only non-EEG data
-myDataSel = ~pset.selector.sensor_class('Class', 'EEG');
-
-for sbItr = 1:numel(sbNames)
-
-    namingPolicy = @(physO, ev, evIdx) ...
-        batman.split_naming_policy(physO, ev, evIdx, sbNames{sbItr});
-
-    myNode = split.new(...
-        'DataSelector',      myDataSel, ...
-        'EventSelector',     myEvSel, ...
-        'SplitNamingPolicy', namingPolicy, ...
-        'Duration',          dur(sbNames{sbItr}), ...
-        'Offset',            off(sbNames{sbItr}), ...
-        'Name',              sbNames{sbItr});
-
-    nodeList = [nodeList {myNode}]; %#ok<AGROW>
-end
-
-%% Create the pipeline object
-myPipe = meegpipe.node.pipeline.new(...
-    'NodeList',         nodeList, ...
-    'Save',             false, ...
-    'Name',             'split_files', ...
-    varargin{:});
-
-end
-````
-
-Now you are finally ready to split all `.mff` files into single-block files that
-do not contain any EEG data by running:
-
-````matlab
+% I assume that you have wrapped your scripts with a package called batman
 batman.split_files
 ````
 

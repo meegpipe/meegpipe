@@ -937,7 +937,7 @@ if ~isempty(tal_cell),
     end_offset = spr-end_sample;
     
     n_cell = numel(tal_cell);
-    n_cell_by10 = floor(n_cell/10);
+    n_cell_by100 = floor(n_cell/100);
     for i = 1:size(tal_cell,1)
         for ii = startrec:endrec
             for j = 1:length(tal_cell{i,ii}),
@@ -986,7 +986,7 @@ if ~isempty(tal_cell),
                     end
                 end
             end
-            if verbose && ~mod(i, n_cell_by10),
+            if verbose && ~mod(i, n_cell_by100),
                 fprintf('.');
             end
         end

@@ -8,9 +8,9 @@ processing tasks performed at the [Sleep&Cognition][sc] team of the
 materials are fairly advanced and you are strongly encouraged to first read
 [meegpipe's documentation][meegpipe-api].
 
-__IMPORTANT:__ These materials were designed for internal use within our
-research group. Thus, the raw data files used in the tutorials may not be
-publicly available.
+__IMPORTANT:__ These materials were originally designed for internal use within
+the [Netherlands Institute for Neuroscience][nin]. Thus, the raw data files used
+in the tutorials may not be publicly available.
 
 [meegpipe-api]: ../+meegpipe/README.md
 [sc]: http://www.nin.knaw.nl/research_groups/van_someren_group
