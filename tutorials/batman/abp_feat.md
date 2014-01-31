@@ -332,6 +332,7 @@ to see the results of the step-by-step procedure described above. To
 extract the ABP features from all relevant files simply run:
 
 ````matlab
+% I assume you have wrapped your files in a package called batman
 batman.extract_abp_features
 ````
 
@@ -341,11 +342,12 @@ We now have a large number of `.meegpipe` directories that contain the ABP
 features (in text format) for each experimental sub-block. Having all those
 features spread across such a large number of text files is inconvenient for
 futher analyses using statistical software such as [R][r]. It would be much
-better if we could have all ABP features in a single comma-separated file. At
-the same time, we need to keep track whether a feature came from this or that
-experimental sub-block. Also, it would be very advantageous if we could
-incorporate into our feature table information regarding the experimental
-manipulation (the __condition__) that took place in a given sub-block.
+better if we could have all ABP features in a single comma-separated file. When
+pulling all features into a single file, we need to keep track whether a feature
+came from this or that experimental sub-block, or this or that subject. It would
+be also desirable to incorporate into our feature table information regarding
+the experimental manipulation (the __condition__) that took place in a given
+sub-block.
 
 Let's start by writing a function that will translate block numbers and subject
 IDs to condition names:
@@ -362,8 +364,8 @@ function [condID, condName] = block2condition(subj, blockID)
 
 end
 ````
-If you want to know the implementation details, see function
-[block2condition][block2condition].
+If you want to know the implementation details, see
+[block2condition.m][block2condition].
 
 [block2condition]: ./+batman/block2condition.m
 
@@ -385,10 +387,10 @@ light0_posture1_dpg2
 ````
 
 But to simplify the feature aggregation process what we need is to convert from
-an input file name (e.g. `batman_0007_eeg_all_pvt_1.pseth`) into a set of
-meta-info tags that identify uniquely the corresponding experimental sub-block,
-and that may be useful for grouping purposes in subsequent statistical analyses.
-The following function will perform such a translation for us:
+an input file name into a set of meta-info tags that identify uniquely the
+corresponding experimental sub-block, and that may be useful for grouping
+purposes in subsequent statistical analyses. The following function will perform
+such a translation for us:
 
 ````matlab
 function meta = fname2meta(fName)
