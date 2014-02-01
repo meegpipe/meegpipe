@@ -46,8 +46,8 @@ for j = 1:nargin
         
         fprintf('\n\n');
         
-        if status > 0,
-            log_file.fprintf('[not OK] %s\n', datestr(now));
+        if thisStatus(i) > 0,
+            log_file.fprintf('[%d not OK] %s\n', thisStatus(i), datestr(now));
         else
             log_file.fprintf('[OK] %s\n', datestr(now));
         end
