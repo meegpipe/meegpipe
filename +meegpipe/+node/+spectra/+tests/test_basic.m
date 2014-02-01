@@ -198,7 +198,7 @@ try
         dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic
-        MAX_TRIES = 100;
+        MAX_TRIES = 200;
         tries = 0;
         while tries < MAX_TRIES && ~exist(dataFiles{3}, 'file'),
             pause(1);
