@@ -9,8 +9,6 @@ function status = finalize()
 %
 % See also: initialize, ok
 
-% Documentation: pkg_test_simple.txt
-% Description: Finalizes tests and prints summary
 
 import test.simple.globals;
 

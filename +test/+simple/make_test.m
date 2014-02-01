@@ -32,13 +32,13 @@ for j = 1:nargin
     
     thisStatus  = repmat(globals.get.Failure, 1, numel(files));
     
-    for i = 1:numel(files)
+    for i = 1:numel(files) 
         
         [~, name] = fileparts(files{i});
         
         funcName = [module '.tests.' name];
         fprintf([verboseLabel link2mfile(funcName) '\n']);
-        log_file.fprintf([verboseLabel funcName '\n']);
+        log_file.fprintf('(%s) %s ...', datestr(now), funcName);
         
         cmd = sprintf('%s.tests.%s', module, name);
         
@@ -46,6 +46,11 @@ for j = 1:nargin
         
         fprintf('\n\n');
         
+        if status > 0,
+            log_file.fprintf('[not OK] %s\n', datestr(now));
+        else
+            log_file.fprintf('[OK] %s\n', datestr(now));
+        end
     end
     
     status(j) = any(thisStatus ~= globals.get.Success);
