@@ -339,7 +339,9 @@ try
             
         end
         
-        myNode = bss.new('Save', true, 'Reject', []);
+        myCrit = spt.criterion.threshold(spt.feature.tkurtosis, ...
+            'MaxCard', 2, 'MinCard', 2);
+        myNode = bss.new('Save', true, 'Reject', [], 'Criterion', myCrit);
         dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic
