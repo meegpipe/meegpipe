@@ -40,7 +40,7 @@ the most up to date version (1.0.0 at the time of writing this).
 
 ## Main processing script
 
-Before writing our data processing pipeline we are going to write the scheleton
+Before writing our data processing pipeline we are going to write the skeleton
 of our _main_ processing script where we perform the necessary preliminaries,
 and where we run the pipeline (which we will write later) on the relevant data
 files.
