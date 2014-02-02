@@ -243,7 +243,7 @@ try
             data{i} = import(physioset.import.matrix, randn(10, 1000));
             
         end
-        myNode    = resample('DownsampleBy', 2, 'OGE', true);
+        myNode    = resample('DownsampleBy', 2, 'OGE', true, 'Save', true);
         dataFiles = run(myNode, data{:});
         pause(5); % give time for OGE to do its magic
         MAX_TRIES = 100;

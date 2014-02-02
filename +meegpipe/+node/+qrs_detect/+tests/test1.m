@@ -164,7 +164,7 @@ try
             data{i} = import(myImporter, ecg + randn(size(ecg)));
         end
         
-        myNode = qrs_detect('OGE', true);
+        myNode = qrs_detect('OGE', true, 'Save', true);
         dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic
