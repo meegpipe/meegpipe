@@ -122,14 +122,14 @@ try
             data{i} = import(physioset.import.matrix, 2+randn(10, 1000));
         end
         
-        myNode = center('OGE', true, 'Queue', 'short.q', 'Save', true);
+        myNode = center('OGE', true, 'Save', true);
         dataFiles = run(myNode, data{:});
         
         pause(5); % give time for OGE to do its magic
-        MAX_TRIES = 45;
+        MAX_TRIES = 50;
         tries = 0;
         while tries < MAX_TRIES && ~exist(dataFiles{3}, 'file'),
-            pause(1);
+            pause(5);
             tries = tries + 1;
         end
         
