@@ -24,9 +24,13 @@ end
 pntSel = pnt_selection(obj);
 if ~isempty(pntSel),
    
-    origSample = get_sample(evArray);
+    origSample = get_sample(evArray);  
     
-    if any(origSample > numel(pntSel)),
+    % A dirty fix. This happens sometimes and we don't want to produce an
+    % error for such a tiny inconsistency. 
+    origSample(origSample == numel(pntSel) + 1) = numel(pntSel);
+    
+    if any(origSample > numel(pntSel)),      
         error('Out of range event');
     end
     
