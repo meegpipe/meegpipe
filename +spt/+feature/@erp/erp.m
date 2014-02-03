@@ -5,7 +5,8 @@ classdef erp < spt.feature.feature & goo.verbose
         EventSelector = []; % Select ERP events
         Offset        = []; % Taken from events if empty (in seconds)
         Duration      = []; % Taken from events if empty (in seconds)
-        Filter        = []; % A pre-processing filter        
+        Filter        = []; % A pre-processing filter 
+        CorrAggregationStat = @(x) prctile(abs(x), 75);
     end
     
     methods
@@ -87,6 +88,7 @@ classdef erp < spt.feature.feature & goo.verbose
             opt.Offset        = []; 
             opt.Duration      = []; 
             opt.Filter        = [];
+            opt.CorrAggregationStat = @(x) prctile(abs(x), 75);
             obj = set_properties(obj, opt, varargin); 
         end
         

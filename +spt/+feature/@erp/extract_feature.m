@@ -57,7 +57,6 @@ if ~isempty(obj.Filter),
     
 end
 
-
 if is_verbose(obj),
     fprintf([verboseLabel 'Computing terp rank for %d time series...'], ...
         size(tSeries,1));
@@ -72,6 +71,11 @@ for tsIter = 1:size(tSeries,1)
     
     x = tSeries(tsIter, :);
     x = squeeze(epoch_get(x, ev));
+    
+    % To prevent division by zero later
+    hasZeroVar = var(x) < eps;
+    x(:, hasZeroVar) = [];
+    
     x = x - repmat(mean(x), size(x,1), 1);
     x = x./repmat(sqrt(var(x)), size(x, 1), 1);
     % This is so slow that we can't afford it...
@@ -88,7 +92,7 @@ for tsIter = 1:size(tSeries,1)
     
     trialCorr = trialCorr/size(x,1);
     
-    featVal(tsIter) = median(abs(trialCorr));
+    featVal(tsIter) = obj.CorrAggregationStat(trialCorr);
     
     if is_verbose(obj),
         eta(tinit, size(tSeries,1), tsIter);

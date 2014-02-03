@@ -24,10 +24,10 @@ if nargin == 2
 else
     if isempty(ev),
         eegplot(data, 'eloc_file', sens, ...
-            'srate', data.SamplingRate);
+            'srate', data.SamplingRate, varargin{:});
     else
         eegplot(data, 'events', ev, 'eloc_file', sens, ...
-            'srate', data.SamplingRate);
+            'srate', data.SamplingRate, varargin{:});
     end
 end
 h = gcf;

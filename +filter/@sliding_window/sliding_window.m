@@ -39,7 +39,7 @@ classdef sliding_window< ...
             opt.WindowLength   = @(sr) round(30*sr); % In data samples
             opt.WindowOverlap  = 50;                 % In percentage
             opt.WindowFunction = @hamming;
-            opt.Name           = 'sliding_window_cca';
+            opt.Name           = 'sliding_window';
             opt.Verbose        = true;
             
             [~, opt] = process_arguments(opt, varargin, [], true);
