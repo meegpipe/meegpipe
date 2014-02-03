@@ -909,7 +909,7 @@ end
 
 if ~isempty(tal_cell),
     if verbose,
-        fprintf('\n(io:edfplus:read) Computing sample indices for the annotations...');
+        fprintf('\n(io:edfplus:read) Computing sample indices for the annotations...\n');
     end
     % This part is messy! -> Fix it
     if isempty(starttime),
