@@ -113,8 +113,8 @@ To retrieve and split all raw data files into smaller files simply run:
 
 ````matlab
 % You will have to edit a few things in batman.split_files if you are not
-% running this at the somerengrid. You will also need to edit the part of the
-% that deals with retrieving the raw data files
+% running this at the somerengrid, namely everything that has to do with
+% retrieving the raw data files
 batman.split_files
 ````
 Wait until all files have been split and then, to reproduce all other tutorial
