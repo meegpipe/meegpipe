@@ -80,12 +80,12 @@ when the subject filled the resting state questionnaire.
 [ecg]: http://en.wikipedia.org/wiki/Electrocardiography
 
 
-## Outcome
+## Final outcome
 
 The tutorial will guide you step-by-step through the MATLAB code that you would
 need to write to accomplish the objectives above. The final completed set of
 scripts is part of [meegpipe][meegpipe] itself. You can find it under
-`tutorials/+batman`. Follow the instructions below to run the whole tutorial
+[tutorials/+batman](./). Follow the instructions below to run the whole tutorial
 without going through the step-by-step explanations.
 
 [meegpipe]: http://meegpipe.github.io/meegpipe
