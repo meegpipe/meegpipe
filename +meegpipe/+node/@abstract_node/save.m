@@ -28,15 +28,14 @@ else
     
     savePath = get_full_dir(obj);
     
-    dataCopy = copy(data, ...
+    move(data, ...
         'Path',     savePath, ...
         'DataFile', [name ext], ...
         'PostFix',  '', ...
-        'PreFix',   '', ...
-        'Temporary', false);
-    
-    save(dataCopy);
-    data = dataCopy;
+        'PreFix',   '');
+   
+    save(data);
+
 end
 
 end

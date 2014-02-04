@@ -22,7 +22,7 @@ end
 [pathNew, nameNew, extNew] = fileparts(newName);
 [pathOld, nameOld] = fileparts(obj.DataFile);
 
-if ~isempty(extNew) && ~strcmpi(extNew, globals.evaluate.DataFileExt),
+if ~isempty(extNew) && ~strcmpi(extNew, globals.get.DataFileExt),
     warning('move:invalidFileExt', ...
         'Ignoring file extension ''%s''', extNew);
 end
@@ -31,11 +31,11 @@ if isempty(pathNew),
     pathNew = pathOld;
 end
 
-fileNew = [pathNew filesep nameNew globals.evaluate.DataFileExt];
+fileNew = [pathNew filesep nameNew globals.get.DataFileExt];
 
 if exist(fileNew, 'file') && opt.overwrite,
     delete(fileNew);
-    headerFile = [pathNew filesep nameNew globals.evaluate.HdrFileExt];
+    headerFile = [pathNew filesep nameNew globals.get.HdrFileExt];
     if exist(headerFile, 'file'),
        delete(headerFile); 
     end
@@ -54,9 +54,9 @@ movefile(obj.DataFile, fileNew);
 obj.DataFile = fileNew;
 make_mmemmapfile(obj);
 
-headerFileOld = [pathOld filesep nameOld globals.evaluate.HdrFileExt];
+headerFileOld = [pathOld filesep nameOld globals.get.HdrFileExt];
 if exist(headerFileOld, 'file')
-    headerFileNew = [pathNew filesep nameNew globals.evaluate.HdrFileExt];
+    headerFileNew = [pathNew filesep nameNew globals.get.HdrFileExt];
     movefile(headerFileOld, headerFileNew);
 end
 if opt.verbose,
