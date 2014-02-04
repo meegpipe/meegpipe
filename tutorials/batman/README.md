@@ -97,7 +97,7 @@ that you restore your default MATLAB path:
 restoredefaultpath
 ````
 
-Then you can add _meegpipe_ to the MATLAB path and initialize it:
+Then you should add _meegpipe_ to the MATLAB path and initialize it:
 
 ````matlab
 % If you are not working at somerengrid, edit the path below accordingly
@@ -109,11 +109,12 @@ addpath(genpath('/data1/toolbox/meegpipe'));
 meegpipe.initialize;
 ````
 
-To split all raw data files into smaller files simply run:
+To retrieve and split all raw data files into smaller files simply run:
 
 ````matlab
 % You will have to edit a few things in batman.split_files if you are not
-% running this at the somerengrid
+% running this at the somerengrid. You will also need to edit the part of the
+% that deals with retrieving the raw data files
 batman.split_files
 ````
 Wait until all files have been split and then, to reproduce all other tutorial
