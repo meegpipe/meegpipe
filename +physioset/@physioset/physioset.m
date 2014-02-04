@@ -331,7 +331,7 @@ classdef physioset < ...
         
         newObj = copy(obj, varargin);
         
-        obj = move(obj, varargin);
+        obj    = move(obj, varargin);
         
         newObj = subset(obj, varargin);
         
@@ -358,8 +358,8 @@ classdef physioset < ...
         
         function obj = saveobj(obj)
             obj.PointSet = saveobj(obj.PointSet);
-        end
-        
+        end        
+
         function obj = sphere(obj, varargin)
             obj = sphere(obj.PointSet, varargin{:});
         end

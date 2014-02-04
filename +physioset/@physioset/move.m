@@ -73,7 +73,7 @@ if exist(new_name, 'file'),
         delete(hdrFile);
     end
 end
-obj.PointSet = move(obj.PointSet, new_name);
+obj.PointSet = move(obj.PointSet, new_name, 'Verbose', false);
 
 if verbose,
     fprintf('[done]\n\n');

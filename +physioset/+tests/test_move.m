@@ -32,10 +32,10 @@ catch ME
     
 end
 
-%% mtimes() with square matrix
+%% move a sample file
 try
     
-    name = 'mtimes() with square matrix';
+    name = 'move a sample file';
     data = import(physioset.import.matrix, rand(5, 100));
     dataOrig = data(:,:);    
     origFile = get_datafile(data);   

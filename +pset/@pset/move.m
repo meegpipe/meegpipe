@@ -50,7 +50,13 @@ if opt.verbose,
    fprintf(stdout, '(move) Moving %s -> %s ...', nameOld, nameNew); 
 end
 destroy_mmemmapfile(obj);
-movefile(obj.DataFile, fileNew);
+% For some stupid reason MATAB movefile refuses to just "rename" the file
+% and instead copies it. So don't use it!
+% movefile(obj.DataFile, fileNew);
+[status, res] = system(sprintf('move %s %s', obj.DataFile, fileNew));
+if status > 0,
+    error(res);
+end
 obj.DataFile = fileNew;
 make_mmemmapfile(obj);
 
