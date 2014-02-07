@@ -4,7 +4,6 @@ import mperl.split;
 import misc.isinteger;
 import io.mff2.read_header;
 import io.mff2.read_data;
-import datestr2num.DateStr2Num;
 import io.mff2.parse_begin_time;
 
 if nargin < 3 || isempty(beginTime),

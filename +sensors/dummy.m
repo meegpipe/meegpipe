@@ -74,10 +74,10 @@ classdef dummy < sensors.abstract_sensors
             if isempty(idx),
                 obj = [];
                 return;
-            end                      
+            end
             if ~isempty(obj.Label),
-                obj.Label = obj.Label(idx);   
-            end     
+                obj.Label = obj.Label(idx);
+            end
         end
     end
     
@@ -87,6 +87,11 @@ classdef dummy < sensors.abstract_sensors
             import sensors.abstract_sensors
             import misc.process_arguments;
             
+            if nargin == 1 && iscell(nbSensors),
+                varargin = {'Label', nbSensors};
+                nbSensors = numel(nbSensors);
+            end
+            
             if nargin < 1 || nbSensors < 1, return; end
             
             if ~isnumeric(nbSensors),
@@ -95,17 +100,17 @@ classdef dummy < sensors.abstract_sensors
             
             if isempty(nbSensors), return; end
             
-           
-            opt.Label = [];            
+            
+            opt.Label = [];
             [~, opt] = process_arguments(opt, varargin);
             
-            if isempty(opt.Label), 
-                opt.Label = num2cell(1:nbSensors); 
+            if isempty(opt.Label),
+                opt.Label = num2cell(1:nbSensors);
                 opt.Label = cellfun(@(x) num2str(x), opt.Label, ...
                     'UniformOutput', false);
             end
             
-            obj.Label = opt.Label;     
+            obj.Label = opt.Label;
         end
     end
     

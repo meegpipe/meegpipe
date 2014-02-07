@@ -39,7 +39,7 @@ classdef abstract_physioset_import < ...
         end        
       
     end
-  
+
     properties
         
         Precision    = meegpipe.get_config('pset', 'precision');
@@ -214,14 +214,10 @@ classdef abstract_physioset_import < ...
         
     end
     
-    methods (Abstract)
-        
-        varargout = import(obj, filename, varargin)
-        
-    end
-    
     % Other methods
     methods
+        
+        pObj = import(obj, varargin);
         
         function [fileName, obj] = resolve_link(obj, fileName)
             
