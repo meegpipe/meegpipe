@@ -50,7 +50,7 @@ for i = 1:numel(templList)
     
 end
 
-obj = sensors.dummy(numel(inputLabels), 'Label', inputLabels);
+obj = sensors.eeg('Label', inputLabels);
 
 end
 

@@ -73,14 +73,18 @@ if verb, fprintf('[done]\n\n'); end
 %% Read signal values
 
 if verb,
-    fprintf([verbLabl, 'Reading signal values ....']);
+    fprintf([verbLabl, 'Reading signal values ...']);
 end
 
 NB = hdr.NumberSampleBlocks;
 SD = hdr.SizeSignalDataBlock;
 NS = hdr.NumberOfSignals;
 
-if verb, tinit = tic; end
+if verb, 
+    clear +misc/eta;
+    NBBy100 = floor(NB/100);
+    tinit = tic; 
+end
 for g=1:NB;
     if hdr.VersionNumber == 203
         pos = 217 + NS*136 + (g-1) *(86+SD);
@@ -97,7 +101,7 @@ for g=1:NB;
     
     fwrite(fidPset, data(:), obj.Precision);
     
-    if verb,
+    if verb && ~mod(g, NBBy100),
         misc.eta(tinit, NB, g);
     end
 end %for
@@ -119,11 +123,15 @@ hdr.measurementduration = [num2str(th,'%02.0f') ':' ...
 startTime = datenum(hdr.measurementtime);
 startDate = datenum(hdr.measurementdate);
 
-if verb, fprintf('[done]\n\n'); end
+if verb, 
+    fprintf('[done]\n\n'); 
+    clear +misc/eta;
+end
 
 % Events are read with read_events()
 ev = [];
 sr = hdr.FS;
 sens = poly5.labels2sensors(sensLabels);
+
 
 end

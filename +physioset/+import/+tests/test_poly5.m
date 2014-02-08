@@ -11,6 +11,7 @@ import misc.rmdir;
 
 % The sample data file to be used for testing
 DATA_FILE = '20140205_112958.DummyData.Poly5';
+DATA_FILE_2 = '20131125_130803.DATA.Poly5';
 DATA_URL = 'http://kasku.org/data/meegpipe/';
 
 MEh     = [];
@@ -51,10 +52,10 @@ catch ME
     
 end
 
-%% get sample data file
+%% import sample data
 try
-    name = 'get sample data file';
-       
+    
+    name = 'import sample data file';   
     folder = session.instance.Folder;
     
     [fPath, fName, fExt] = fileparts(DATA_FILE);
@@ -68,21 +69,45 @@ try
         urlwrite([DATA_URL fName ext], dataFileCopy);
         urlwrite([DATA_URL name '.events.csv'], evFileCopy);
     end
-    ok(exist(dataFileCopy, 'file') > 0 & ...
-        exist(evFileCopy, 'file') > 0, name);
+    warning('off', 'sensors:InvalidLabel');
+    warning('off', 'sensors:MissingPhysDim');
+    data = import(poly5, dataFileCopy);
+    warning('on', 'sensors:MissingPhysDim');
+    warning('on', 'sensors:InvalidLabel'); 
+
+    ok(all(size(data) == [3 6000]) & numel(get_event(data)) == 6, name);    
+    
+    clear data;
+    
     
 catch ME
     
+    warning('on', 'sensors:MissingPhysDim');
+    warning('on', 'sensors:InvalidLabel');
+    clear data;
     ok(ME, name);
     MEh = [MEh ME];
     
 end
 
-%% import sample data
+%% import another sample data
 try
     
-    name = 'import sample data file';   
+    name = 'import another sample data file';   
     
+    folder = session.instance.Folder;
+    
+    [fPath, fName, fExt] = fileparts(DATA_FILE_2);
+    evFile = [fPath fName '.events.csv'];
+    evFileCopy = catfile(folder, [fName '.events.csv']);
+    dataFileCopy = catfile(folder, [fName fExt]);
+    if exist(DATA_FILE_2, 'file'),
+        copyfile(DATA_FILE_2, dataFileCopy);
+        copyfile(evFile, evFileCopy);
+    else
+        urlwrite([DATA_URL fName ext], dataFileCopy);
+        urlwrite([DATA_URL name '.events.csv'], evFileCopy);
+    end
     warning('off', 'sensors:InvalidLabel');
     warning('off', 'sensors:MissingPhysDim');
     data = import(poly5, dataFileCopy);

@@ -29,6 +29,11 @@ while ~isnumeric(tline)
     tline = fgetl(fid);
 end
 
+if count < 1, 
+    ev = []; 
+    return;
+end
+
 sampl(count+1:end) = [];
 
 ev = physioset.event.event(sampl);
