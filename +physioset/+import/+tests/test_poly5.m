@@ -114,7 +114,7 @@ try
     warning('on', 'sensors:MissingPhysDim');
     warning('on', 'sensors:InvalidLabel'); 
 
-    ok(all(size(data) == [3 6000]) & numel(get_event(data)) == 6, name);    
+    ok(all(size(data) == [37 2759240]) & numel(get_event(data)) == 0, name);    
     
     clear data;
     
