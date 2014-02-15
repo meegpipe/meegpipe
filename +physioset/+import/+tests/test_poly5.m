@@ -8,11 +8,13 @@ import pset.session;
 import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
+import misc.set_warning_status;
 
 % The sample data file to be used for testing
 DATA_FILE = '20140205_112958.DummyData.Poly5';
 DATA_FILE_2 = '20131125_130803.DATA.Poly5';
 DATA_URL = 'http://kasku.org/data/meegpipe/';
+WARN_IDS = { 'sensors:MissingPhysDim', 'sensors:MissingPhysDim' };
 
 MEh     = [];
 
@@ -69,11 +71,9 @@ try
         urlwrite([DATA_URL fName ext], dataFileCopy);
         urlwrite([DATA_URL name '.events.csv'], evFileCopy);
     end
-    warning('off', 'sensors:InvalidLabel');
-    warning('off', 'sensors:MissingPhysDim');
+    stat = set_warning_status(WARN_IDS, 'off');
     data = import(poly5, dataFileCopy);
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
+    set_warning_status(WARN_IDS, stat);
     
     ok(all(size(data) == [3 6000]) & numel(get_event(data)) == 6, name);
     
@@ -82,8 +82,8 @@ try
     
 catch ME
     
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
+    ids = { 'sensors:MissingPhysDim', 'sensors:MissingPhysDim' };
+    set_warning_status(ids, 'on');
     clear data;
     ok(ME, name);
     MEh = [MEh ME];
@@ -108,11 +108,9 @@ try
         urlwrite([DATA_URL fName ext], dataFileCopy);
         urlwrite([DATA_URL name '.events.csv'], evFileCopy);
     end
-    warning('off', 'sensors:InvalidLabel');
-    warning('off', 'sensors:MissingPhysDim');
+    stat = set_warning_status(WARN_IDS, 'off');
     data = import(poly5, dataFileCopy);
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
+    set_warning_status(WARN_IDS, stat);
     
     ok(all(size(data) == [37 2759240]) & numel(get_event(data)) == 0, name);
     
@@ -121,8 +119,7 @@ try
     
 catch ME
     
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
+    set_warning_status(WARN_IDS, 'on');
     clear data;
     ok(ME, name);
     MEh = [MEh ME];
@@ -147,7 +144,10 @@ try
         urlwrite([DATA_URL fName ext], dataFileCopy);
         urlwrite([DATA_URL name '.events.csv'], evFileCopy);
     end
+    
+    stat = set_warning_status(WARN_IDS, 'off');
     import(poly5('FileName', catfile(folder, 'myfile')), dataFileCopy);
+    set_warning_status(WARN_IDS, stat);
     
     psetExt = pset.globals.get.DataFileExt;
     newFile = catfile(folder, ['myfile' psetExt]);
@@ -155,8 +155,7 @@ try
     
 catch ME
     
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
+    set_warning_status(WARN_IDS, 'on');
     ok(ME, name);
     MEh = [MEh ME];
     

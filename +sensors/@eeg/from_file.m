@@ -20,8 +20,6 @@ function obj = from_file(filename, varargin)
 %       option is ignored for .hpts files. Default: []
 %
 % See also: from_eeglab, from_fieldtrip, from_template
-% Documentation: class_sensors.eeg.txt
-% Description: Reads sensors.information from a file
 
 
 import misc.process_arguments;
