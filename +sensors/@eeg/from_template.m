@@ -13,6 +13,7 @@ function obj = from_template(name, varargin)
 % See also: from_eeglab, from_fieldtrip, from_file
 
 import misc.is_string;
+import misc.set_warning_status;
 import sensors.abstract_sensors
 import sensors.root_path;
 import mperl.file.spec.catfile;
@@ -46,11 +47,10 @@ if isempty(file),
     obj = [];
 else
     
-    warning('off', 'sensors:MissingPhysDim');
-    warning('off', 'sensors:InvalidLabel');
+    id = {'sensors:MissingPhysDim', 'sensors:InvalidLabel'};
+    origStatus = set_warning_status(id, 'off');
     obj = sensors.eeg.from_file(file, varargin{:});   
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
+    set_warning_status(id, origStatus);
     
 end
 

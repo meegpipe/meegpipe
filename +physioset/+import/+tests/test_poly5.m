@@ -55,7 +55,7 @@ end
 %% import sample data
 try
     
-    name = 'import sample data file';   
+    name = 'import sample data file';
     folder = session.instance.Folder;
     
     [fPath, fName, fExt] = fileparts(DATA_FILE);
@@ -73,9 +73,9 @@ try
     warning('off', 'sensors:MissingPhysDim');
     data = import(poly5, dataFileCopy);
     warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel'); 
-
-    ok(all(size(data) == [3 6000]) & numel(get_event(data)) == 6, name);    
+    warning('on', 'sensors:InvalidLabel');
+    
+    ok(all(size(data) == [3 6000]) & numel(get_event(data)) == 6, name);
     
     clear data;
     
@@ -93,7 +93,7 @@ end
 %% import another sample data
 try
     
-    name = 'import another sample data file';   
+    name = 'import another sample data file';
     
     folder = session.instance.Folder;
     
@@ -112,9 +112,9 @@ try
     warning('off', 'sensors:MissingPhysDim');
     data = import(poly5, dataFileCopy);
     warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel'); 
-
-    ok(all(size(data) == [37 2759240]) & numel(get_event(data)) == 0, name);    
+    warning('on', 'sensors:InvalidLabel');
+    
+    ok(all(size(data) == [37 2759240]) & numel(get_event(data)) == 0, name);
     
     clear data;
     
@@ -135,7 +135,18 @@ try
     name = 'specify file name';
     
     folder = session.instance.Folder;
-   
+    
+    [fPath, fName, fExt] = fileparts(DATA_FILE);
+    evFile = [fPath fName '.events.csv'];
+    evFileCopy = catfile(folder, [fName '.events.csv']);
+    dataFileCopy = catfile(folder, [fName fExt]);
+    if exist(DATA_FILE, 'file'),
+        copyfile(DATA_FILE, dataFileCopy);
+        copyfile(evFile, evFileCopy);
+    else
+        urlwrite([DATA_URL fName ext], dataFileCopy);
+        urlwrite([DATA_URL name '.events.csv'], evFileCopy);
+    end
     import(poly5('FileName', catfile(folder, 'myfile')), dataFileCopy);
     
     psetExt = pset.globals.get.DataFileExt;
