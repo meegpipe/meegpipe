@@ -145,8 +145,11 @@ try
         urlwrite([DATA_URL name '.events.csv'], evFileCopy);
     end
     
+    myImporter = poly5(...
+        'FileName',     catfile(folder, 'myfile'), ...
+        'Temporary',    false);
     stat = set_warning_status(WARN_IDS, 'off');
-    import(poly5('FileName', catfile(folder, 'myfile')), dataFileCopy);
+    import(myImporter, dataFileCopy);
     set_warning_status(WARN_IDS, stat);
     
     psetExt = pset.globals.get.DataFileExt;
