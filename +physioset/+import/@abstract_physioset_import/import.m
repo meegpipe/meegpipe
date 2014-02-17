@@ -52,6 +52,10 @@ if verbose,
     fprintf([verboseLabel 'Generating physioset object ...\n\n']);
 end
 physiosetArgs = construction_args_physioset(obj);
+
+if ~isempty(obj.Sensors),
+    sens = obj.Sensors;
+end
 pObj = physioset(psetFileName, nb_sensors(sens), physiosetArgs{:}, ...
     'StartDate',    startDate, 'StartTime', startTime, ...
     'Event',        ev, ...
@@ -64,6 +68,7 @@ if verbose,
 end
 
 if obj.ReadEvents && isempty(ev),
+    
     ev = read_events(obj, fileName, pObj, verbose, verboseLabel);
     add_event(pObj, ev);
 end

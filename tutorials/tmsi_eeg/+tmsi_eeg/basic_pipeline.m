@@ -32,6 +32,12 @@ nodeList = [nodeList {myNode}];
 % more similar dynamic range). 
 nodeList = [nodeList {center.new}];
 % 
+
+% %% Node 5: LASIP filtering
+myFilter = filter.lasip;
+myNode = filter.new('Filter', myFilter);
+nodeList = [nodeList {myNode}];
+
 % %% Node 5: Band pass filtering
 myFilter = @(sr) filter.bpfilt('Fp', [1 42]/(sr/2));
 myNode = filter.new('Filter', myFilter);
