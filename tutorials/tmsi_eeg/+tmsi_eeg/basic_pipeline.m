@@ -6,12 +6,15 @@ import meegpipe.node.*;
 nodeList = {};
 
 %% Node 1: data import
-myImporter = physioset.import.poly5;
+load('sensors_grunberg');
+
+myImporter = physioset.import.poly5('Sensors', mySensors);
 myNode = physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
 %% Node 2: Discard any data that is not EEG
-myNode = subset.new('DataSelector', pset.selector.sensor_class('Class', 'EEG'));
+mySelector = pset.selector.sensor_idx(5:32);
+myNode = subset.new('DataSelector', mySelector);
 nodeList = [nodeList {myNode}];
 
 %% Node 3: reject bad epochs
@@ -28,24 +31,28 @@ nodeList = [nodeList {myNode}];
 % filtering node more meaningful (since filter input and output will have a
 % more similar dynamic range). 
 nodeList = [nodeList {center.new}];
-
-%% Node 5: Band pass filtering
+% 
+% %% Node 5: Band pass filtering
 myFilter = @(sr) filter.bpfilt('Fp', [1 42]/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
-%% Node 6: reject EOG components
-myNode = bss.eog('RetainedVar', 99.95);
+%% Node 6: reject ECG components
+myNode = bss.ecg('RetainedVar', 99.99);
 nodeList = [nodeList {myNode}];
 
-%% Node 7: compute spectral features 
+%% Node 7: reject EOG components
+myNode = bss.eog('RetainedVar', 99.975);
+nodeList = [nodeList {myNode}];
+
+%% Node 8: compute spectral features 
 % (topographies, spectral ratios, ...)
 myNode = spectra.new;
 nodeList = [nodeList {myNode}];
 
 %% Create the pipeline
 myPipe = pipeline.new(...
-    'Name',             'tsmi-basic-pipeline', ...
+    'Name',             'tmsi-basic-pipeline', ...
     'NodeList',         nodeList, ...
     'Save',             true, ...
     varargin{:});

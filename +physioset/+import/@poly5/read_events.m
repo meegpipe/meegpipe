@@ -10,6 +10,11 @@ NB_EVENTS = 10000;
 
 fileName = catfile(path, [name '.events.csv']);
 
+if ~exist(fileName, 'file'),
+    ev = [];
+    return;
+end
+
 fid = safefid(fileName, 'r');
 
 fgetl(fid);
