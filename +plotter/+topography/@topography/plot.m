@@ -20,6 +20,12 @@ function h = plot(h, sensors, data)
 import plotter.topography.topography;
 import misc.nn_match;
 
+
+if ~has_coords(sensors),
+    h = [];
+    return;
+end
+
 opt.sensors     = get_config(h, 'Sensors');
 opt.fiducials   = get_config(h, 'Fiducials');
 opt.extra       = get_config(h, 'Extra');
