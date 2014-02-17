@@ -14,12 +14,14 @@ function h = plot(obj, varargin)
 import misc.split_arguments;
 import misc.process_arguments;
 
-cartesian = obj.Cartesian(~any(isnan(obj.Cartesian')), :);
-if isempty(cartesian),
+
+if ~has_coords(obj),
     h = [];
     % Nothing to plot
     return;
 end
+
+cartesian = cartesian_coords(obj);
 
 [args1, varargin] = ...
     split_arguments({'Labels', 'Project2D', 'Visible'}, varargin);

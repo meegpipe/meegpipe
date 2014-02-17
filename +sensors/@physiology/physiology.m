@@ -1,4 +1,3 @@
-
 classdef physiology < sensors.abstract_sensors
     % PHYSIOLOGY - Physiological sensors.class
     %

@@ -11,7 +11,15 @@ myNode = physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
 %% Node 2: Band pass filtering
-myFilter = filter.bpfilt('fp', @(sr) [1 40]/(sr/2));
+myFilter = @(sr) filter.bpfilt('Fp', [1 40]/(sr/2));
 myNode = filter.new('Filter', myFilter);
+nodeList = [nodeList {myNode}];
+
+%% Create the pipeline
+myPipe = pipeline.new(...
+    'Name',             'tsmi-basic-pipeline', ...
+    'NodeList',         nodeList, ...
+    'Save',             false, ...
+    varargin{:});
 
 end

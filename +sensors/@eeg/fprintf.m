@@ -9,9 +9,9 @@ import plot2svg.plot2svg;
 count = fprintf@sensors.abstract_sensors(fid, obj, varargin);
 
 % Print also the locations in a 2D plot
-h = plot(obj, 'Labels', true, 'Project2D', true, 'Visible', false);
-
-if isempty(h),    
+if has_coords(obj)
+    h = plot(obj, 'Labels', true, 'Project2D', true, 'Visible', false);
+else
     count = fprintf(fid, 'Missing sensor coordinates\n\n');
     return;
 end
