@@ -11,8 +11,7 @@ count = fprintf@sensors.abstract_sensors(fid, obj, varargin);
 % Print also the locations in a 2D plot
 if has_coords(obj)
     h = plot(obj, 'Labels', true, 'Project2D', true, 'Visible', false);
-else
-    count = fprintf(fid, 'Missing sensor coordinates\n\n');
+else    
     return;
 end
 

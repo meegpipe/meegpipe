@@ -39,9 +39,6 @@ classdef bpfilt < filter.abstract_dfilt
     %
     % See also: lpfilt, hpfilt, sbfilt
     
-    % Documentation: class_filter_bpfilt.txt
-    % Description: Class definition
-    
     properties (SetAccess = private, GetAccess = private)
         MDFilt;     % Equivalent MATLAB dfilt object
     end
@@ -148,8 +145,7 @@ classdef bpfilt < filter.abstract_dfilt
             end
             obj.Fp = opt.fp;
             obj = set_persistent(obj, opt.persistentmemory);
-            % To make the nested filters silent
-            obj = set_verbose(obj, false);
+            
             % Now set the verbose property, but not for nested filters
             obj = set_verbose(obj, opt.verbose);
             obj = set_verbose_label(obj, opt.verboselabel);

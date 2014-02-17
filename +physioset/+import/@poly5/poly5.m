@@ -1,7 +1,7 @@
 classdef poly5 < physioset.import.abstract_physioset_import
     
     methods (Access = private, Static)
-       sens = labels2sensors(labels); 
+       sens = descriptions2sensors(labels); 
     end
     
     % Needed by import() method of parent class

@@ -10,16 +10,40 @@ myImporter = physioset.import.poly5;
 myNode = physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
-%% Node 2: Band pass filtering
-myFilter = @(sr) filter.bpfilt('Fp', [1 40]/(sr/2));
+%% Node 2: reject bad epochs
+% For whatever reason, there are large outliers at the end of the Poly5
+% files. 
+myCrit = bad_epochs.criterion.stat.new(...
+    'Max',          @(stats) median(stats)+2*mad(stats), ...
+    'EpochStat',        @(x) max(x));
+myNode = bad_epochs.sliding_window(5, 5, 'Criterion', myCrit);
+nodeList = [nodeList {myNode}];
+
+%% Node 3: center
+% This is not really required but will make the report of the subsequent
+% filtering node more meaningful (since filter input and output will have a
+% more similar dynamic range). 
+nodeList = [nodeList {center.new}];
+
+%% Node 4: Band pass filtering
+myFilter = @(sr) filter.bpfilt('Fp', [1 42]/(sr/2));
 myNode = filter.new('Filter', myFilter);
+nodeList = [nodeList {myNode}];
+
+%% Node 5: reject EOG components
+myNode = bss.eog('RetainedVar', 99.99);
+nodeList = [nodeList {myNode}];
+
+%% Node 6: compute spectral features 
+% (topographies, spectral ratios, ...)
+myNode = spectra.new;
 nodeList = [nodeList {myNode}];
 
 %% Create the pipeline
 myPipe = pipeline.new(...
     'Name',             'tsmi-basic-pipeline', ...
     'NodeList',         nodeList, ...
-    'Save',             false, ...
+    'Save',             true, ...
     varargin{:});
 
 end

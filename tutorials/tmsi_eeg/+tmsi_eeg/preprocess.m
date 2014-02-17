@@ -9,8 +9,14 @@ import mperl.file.find.finddepth_regex_match;
 INPUT_DIR = pwd;
 OUTPUT_DIR = catdir(pwd, 'tmsi_eeg_tutorial');
 
-PARALELLIZE = true; % Should each file be processed in parallel?
-DO_REPORT   = true; % Should full HTML reports be generated?
+% Should each file be processed in parallel? Set this to false to ensure
+% that files will be processed sequentially within the current MATLAB
+% session (good for debugging purposes, as all status messages will be
+% displayed on the current MATLAB session's command window). 
+PARALELLIZE = true; 
+
+% Should full HTML reports be generated?
+DO_REPORT   = true; 
 
 myPipe = tmsi_eeg.basic_pipeline(...
     'GenerateReport', DO_REPORT, ...

@@ -27,7 +27,7 @@ if verbose,
     end
     fprintf([verboseLabel 'LP-filtering %s...'], name);
     tinit = tic;
-    by100 = floor(size(x,1)/100);
+    by25 = floor(size(x,1)/25);
     clear +misc/eta;
 end
 
@@ -36,7 +36,7 @@ for i = 1:size(x, 1)
         continue;
     end
     x(i, :) = filter(obj.H, x(i,:));
-    if verbose && ~mod(i, by100),
+    if verbose && ~mod(i, by25),
         eta(tinit, size(x,1), i, 'remaintime', false);
     end
 end

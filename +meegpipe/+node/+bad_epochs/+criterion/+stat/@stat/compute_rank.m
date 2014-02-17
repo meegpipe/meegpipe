@@ -24,24 +24,31 @@ if verbose,
     tinit = tic;
 end
 
-[dataEpochs, ~, ~, ~, ev] = epoch_get(data, ev, false);
+statVal2 = nan(1, numel(ev));
 
-statVal2 = nan(1, size(dataEpochs, 3));
-
-for i = 1:size(dataEpochs, 3)
+for i = 1:numel(ev)
     
-    statVal1 = zeros(1, size(dataEpochs, 1));
-    for j = 1:size(dataEpochs, 1)
-        statVal1(j) = stat1(squeeze(dataEpochs(j, :, i)));
+    dataEpoch = epoch_get(data, ev(i), false);
+    
+    if isempty(dataEpoch),
+        continue; 
+    end
+    
+    statVal1 = zeros(1, size(dataEpoch, 1));
+    for j = 1:size(dataEpoch, 1)
+        statVal1(j) = stat1(squeeze(dataEpoch(j, :)));
     end
     
     statVal2(i) = stat2(statVal1);  
     
     if verbose,
-        eta(tinit, size(dataEpochs, 3), i);
+        eta(tinit, numel(ev), i);
     end
     
 end
+
+ev(isnan(statVal2)) = [];
+statVal2(isnan(statVal2)) = [];
 
 
 if verbose,

@@ -44,7 +44,6 @@ hdr.DeltaCompressionFlag  = fread(fid, 1, 'int16');
 hdr.TrailingZeros         = fread(fid, [1 64], 'uchar');
 
 % Signal description
-sensLabels = cell(1, hdr.NumberOfSignals);
 for g=1:hdr.NumberOfSignals,
     hdr.description(g).SignalName        = fread(fid, [1 41], 'uchar');
     hdr.description(g).Reserved          = fread(fid, [1 4], 'uchar');
@@ -60,8 +59,6 @@ for g=1:hdr.NumberOfSignals,
     % conversion of char values (to right format)
     hdr.description(g).SignalName = char(hdr.description(g).SignalName(2:hdr.description(g).SignalName(1)+1));
     hdr.description(g).UnitName   = char(hdr.description(g).UnitName(2:hdr.description(g).UnitName(1)+1));
-    
-    sensLabels{g} = hdr.description(g).SignalName;
 end  %for
 
 %conversion to char of text values
@@ -131,7 +128,7 @@ end
 % Events are read with read_events()
 ev = [];
 sr = hdr.FS;
-sens = poly5.labels2sensors(sensLabels);
+sens = poly5.descriptions2sensors(hdr.description);
 
 
 end

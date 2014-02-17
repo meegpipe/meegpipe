@@ -14,6 +14,7 @@ classdef periodic_generator < physioset.event.generator & ...
     
     properties
         
+        FillData  = false; % Should the last epoch be extended to fill the data?
         StartTime = 0;    % In seconds from beginning of recording
         Period    = 10;   % In seconds
         Template  = physioset.event.periodic_generator.default_template;
@@ -106,10 +107,21 @@ classdef periodic_generator < physioset.event.generator & ...
             
             sampl = startTime:period:size(data,2);
             
+            if isempty(sampl),
+                evArray = [];
+                return;
+            end
+            
             evArray = obj.Template(sampl(1), 1, data);
             evArray = repmat(evArray, 1, numel(sampl));
             for i = 2:numel(sampl)
                 evArray(i) = obj.Template(sampl(i), i, data);
+            end
+            if obj.FillData,
+                missingSampl = 1 + size(data,2) - ...
+                    (get_sample(evArray(end)) + get_duration(evArray(end)));
+               evArray(end) = set_duration(evArray(end), ...
+                   get_duration(evArray(end)) + missingSampl);
             end
         end
         
@@ -123,6 +135,7 @@ classdef periodic_generator < physioset.event.generator & ...
             opt.StartTime = 0;
             opt.Period    = 10;
             opt.Template  = [];
+            opt.FillData = false;
             
             % We keep this for backwards compatibility
             opt.Type     = [];
@@ -156,6 +169,7 @@ classdef periodic_generator < physioset.event.generator & ...
             obj.Template = opt.Template;
             obj.Period    = opt.Period;
             obj.StartTime = opt.StartTime;
+            obj.FillData = opt.FillData;
         end
         
     end
