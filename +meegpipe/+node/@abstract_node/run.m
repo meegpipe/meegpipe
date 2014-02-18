@@ -129,7 +129,7 @@ try
             data = {data};
         end
         for i = 1:numel(data),
-            add_processing_history(data, clone(obj));
+            add_processing_history(data{i}, clone(obj));
         end
     end
     
