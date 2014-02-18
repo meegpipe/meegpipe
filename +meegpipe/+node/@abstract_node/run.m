@@ -141,13 +141,14 @@ try
         clear_selection(data);
         % The problem with restore_selection is that we don't know how many
         % cascaded selections were peformed at the input of the node. Using
-        % clear_selection is safer and it doesn't really have any major
-        % drawback (as far as I know...)
+        % clear_selection will work as expected more often.
         %restore_selection(data);
     end
     
-    % Important: DO NOT DO finalize(obj, data). It would break the bss node
-    % when Reject=[]
+    % Important: output argument is necessary. Otherwise we would break the
+    % bss node when Reject=[] because in that case the output physioset is
+    % not the same as the input physioset. Other nodes may also have the
+    % same behavior.
     data = finalize(obj, data);
     
 catch ME

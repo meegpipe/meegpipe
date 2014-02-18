@@ -220,7 +220,7 @@ classdef abstract_physioset_import < ...
         pObj = import(obj, varargin);
         
         function [fileName, obj] = resolve_link(obj, fileName)
-            
+            % We keep obj as output for backwards compatibility
             
             import safefid.safefid;
             
@@ -236,14 +236,8 @@ classdef abstract_physioset_import < ...
             tline = fid.fgetl;
             
             if ~isempty(tline) && fid.feof && exist(tline, 'file'),
-                
-                dataFileExt = meegpipe.get_config('pset', 'data_file_ext');
-                [path, name] = fileparts(fileName);
-                obj.FileName = [path name dataFileExt];
-                fileName = tline;
-                
-            end
-            
+                fileName = tline;                
+            end            
             
         end
         

@@ -14,8 +14,7 @@ switch lower(designmethod),
         y = ellipord(wp, ws, rp, rs);
         
     otherwise,
-        error('EEGC:filter:filt_ord_lp:unsupported', ...
-            'Unsupported design method ''%s''.', designmethod);
+        error('Unsupported filter design method ''%s''.', designmethod);
 end
 while y > max_filt_order,
     if strcmpi(type, 'low')
@@ -23,8 +22,7 @@ while y > max_filt_order,
     elseif strcmpi(type, 'high'),
         ws = max(0.00001, 0.95*ws);
     else
-        error('EEGC:filter:filt_ord:unknownType', ...
-            'Unknown filter type ''%s''.', type);
+        error('Unknown filter type ''%s''.', type);
     end
     rs = max(0.95*rs, 20);
     rp = min(3, 1.01*rp);
@@ -39,7 +37,6 @@ while y > max_filt_order,
             y = ellipord (wp, ws, rp, rs);
             
         otherwise,
-            error('EEGC:filter:filt_ord_lp:unsupported', ...
-                'Unsupported design method ''%s''.', designmethod);
+            error('Unsupported filter design method ''%s''.', designmethod);
     end
 end

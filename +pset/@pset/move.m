@@ -32,6 +32,7 @@ if isempty(pathNew),
 end
 
 fileNew = [pathNew filesep nameNew globals.get.DataFileExt];
+fileNewHdr = [pathNew filesep nameNew globals.get.HdrFileExt];
 
 if exist(fileNew, 'file') && opt.overwrite,
     delete(fileNew);
@@ -58,12 +59,11 @@ if status > 0,
     error(res);
 end
 obj.DataFile = fileNew;
+obj.HdrFile  = fileNewHdr;
 make_mmemmapfile(obj);
 
-headerFileOld = [pathOld filesep nameOld globals.get.HdrFileExt];
-if exist(headerFileOld, 'file')
-    headerFileNew = [pathNew filesep nameNew globals.get.HdrFileExt];
-    movefile(headerFileOld, headerFileNew);
+if ~obj.Temporary,
+    save(obj);
 end
 if opt.verbose,
    fprintf(stdout, '[done]\n'); 

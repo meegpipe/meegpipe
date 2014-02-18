@@ -12,7 +12,7 @@ myImporter = physioset.import.poly5('Sensors', mySensors);
 myNode = physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
-%% Node 2: Discard any data that is not EEG
+%% Node 2: Select the relevant subset of data
 mySelector = pset.selector.sensor_idx(5:32);
 myNode = subset.new('DataSelector', mySelector);
 nodeList = [nodeList {myNode}];
@@ -33,13 +33,13 @@ nodeList = [nodeList {myNode}];
 nodeList = [nodeList {center.new}];
 % 
 
-% %% Node 5: LASIP filtering
-myFilter = filter.lasip;
+% %% Node 5: High pass filtering
+myFilter = @(sr) filter.hpfilt('Fp', 1/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
-% %% Node 5: Band pass filtering
-myFilter = @(sr) filter.bpfilt('Fp', [1 42]/(sr/2));
+%% Node 5: Low pass filtering
+myFilter = @(sr) filter.lpfilt('Fp', 40/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 

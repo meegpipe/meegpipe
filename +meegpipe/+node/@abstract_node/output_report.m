@@ -14,7 +14,7 @@ print_paragraph(report, ...
 
 % Add a link to the binary output in the report
 
-% Node output may be a cell of physiosets
+% Node output may be a physioset or a list (cell) of physiosets
 if ~iscell(data),
     cData = {data};
 else
