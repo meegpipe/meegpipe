@@ -36,12 +36,12 @@ nodeList = [nodeList {myNode}];
 
 %% Node 5: reject bad channels (at least 2 will be rejected!)
 myCrit = bad_channels.criterion.var.new(...
-    'Max', @(x) min(prctile(x, 90), median(x) + 2*mad(x)));
+    'Max', @(x) median(x) + 2*mad(x));
 myNode = bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
 %% Node 6: High pass filtering
-myFilter = @(sr) filter.hpfilt('fc', 1/(sr/2));
+myFilter = @(sr) filter.hpfilt('fc', 3/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
@@ -79,53 +79,63 @@ myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2}, ...
     'MinCard',  2, ...
     'MaxCard',  6);
 myNode = bss.eog(...
-    'RetainedVar',  99.975, ...
+    'RetainedVar',  99.99, ...
     'Criterion',    myCrit, ...
     'IOReport',     report.plotter.io, ...
     'Filter',       []);
-nodeList = [nodeList {myNode}];
-
-%% Node 8: Harsher highpass filtering
-myFilter = @(sr) filter.hpfilt('fc', 3/(sr/2));
-myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
 %% Node 9: channel interpolation
 myNode = chan_interp.new;
 nodeList = [nodeList {myNode}];
 
-%% Node 10: average reference
-nodeList = [nodeList {reref.avg}];
-
-%% Node 11-?: Spectral features
-% The bands of interest.
-% Features and topographies will be plotted for these bands only.
-myROI = mjava.hash;
-myROI('theta') = {[4 8], [4 40]};
-myROI('alpha') = {[8 12], [4 40]}; 
-myROI('beta1') = {[12 20], [4 40]}; 
-myROI('beta2') = {[20 40], [4 40]}; 
-
-% Plot PSDs only between 4 and 40 Hz
-plotterPSD = @(sr) plotter.psd.psd(...
-            'FrequencyRange', [4 40]/(sr/2), ...
-            'LogData',        false);
-
-% We need to compute spectral features for each epoch separately
+%% Node 10: Split epochs
 [~, ~, ~, evType] = tmsi_eeg.epoch_definitions;
 
-for evItr = 1:numel(evType)
- 
-    evSel   = physioset.event.class_selector('Type', evType{evItr});
-    dataSel = pset.selector.event_selector(evSel);
-    myNode = spectra.new(...
-        'ROI',          myROI, ...
-        'Name',         ['spectra-' evType{evItr}], ...
-        'DataSelector', dataSel, ...
-        'PlotterPSD',   plotterPSD);
-    nodeList = [nodeList {myNode}];
+namingPolicy = @(physO, ev, evIdx) [get(ev, 'Type') '-' num2str(evIdx)];
+for i = 1:numel(evType),
+    evSel = physioset.event.class_selector('Type', evType{i});
     
+    myNode = split.new( ...
+        'DataSelector',      pset.selector.all_data, ...
+        'EventSelector',     evSel, ...
+        'SplitNamingPolicy', namingPolicy, ...
+        'Name',              evType{i});
+    nodeList = [nodeList {myNode}]; %#ok<AGROW>
 end
+
+%% Node 10: average reference
+% nodeList = [nodeList {reref.avg}];
+
+% %% Node 11-?: Spectral features
+% % The bands of interest.
+% % Features and topographies will be plotted for these bands only.
+% myROI = mjava.hash;
+% myROI('theta') = {[4 8], [4 40]};
+% myROI('alpha') = {[8 12], [4 40]}; 
+% myROI('beta1') = {[12 20], [4 40]}; 
+% myROI('beta2') = {[20 40], [4 40]}; 
+% 
+% % Plot PSDs only between 4 and 40 Hz
+% plotterPSD = @(sr) plotter.psd.psd(...
+%             'FrequencyRange', [4 40]/(sr/2), ...
+%             'LogData',        false);
+% 
+% % We need to compute spectral features for each epoch separately
+% [~, ~, ~, evType] = tmsi_eeg.epoch_definitions;
+% 
+% for evItr = 1:numel(evType)
+%  
+%     evSel   = physioset.event.class_selector('Type', evType{evItr});
+%     dataSel = pset.selector.event_selector(evSel);
+%     myNode = spectra.new(...
+%         'ROI',          myROI, ...
+%         'Name',         ['spectra-' evType{evItr}], ...
+%         'DataSelector', dataSel, ...
+%         'PlotterPSD',   plotterPSD);
+%     nodeList = [nodeList {myNode}];
+%     
+% end
 
 %% Create the pipeline
 myPipe = pipeline.new(...

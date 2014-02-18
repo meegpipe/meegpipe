@@ -125,10 +125,11 @@ try
             end
             add_processing_history(data, inStr);
         end
-        if iscell(data),
-            cellfun(@(x) isa(add_processing_history(x, obj), 'd'), data);
-        else
-            add_processing_history(data, obj);
+        if ~iscell(data),
+            data = {data};
+        end
+        for i = 1:numel(data),
+            add_processing_history(data, clone(obj));
         end
     end
     
