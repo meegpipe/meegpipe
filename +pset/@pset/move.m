@@ -38,7 +38,7 @@ if exist(fileNew, 'file') && opt.overwrite,
     delete(fileNew);
     headerFile = [pathNew filesep nameNew globals.get.HdrFileExt];
     if exist(headerFile, 'file'),
-       delete(headerFile); 
+        delete(headerFile);
     end
 elseif exist(fileNew, 'file'),
     ME = MException('move:invalidFile', ...
@@ -48,13 +48,18 @@ elseif exist(fileNew, 'file'),
 end
 
 if opt.verbose,
-   fprintf(stdout, '(move) Moving %s -> %s ...', nameOld, nameNew); 
+    fprintf(stdout, '(move) Moving %s -> %s ...', nameOld, nameNew);
 end
 destroy_mmemmapfile(obj);
 % For some stupid reason MATAB movefile refuses to just "rename" the file
 % and instead copies it. So don't use it!
 % movefile(obj.DataFile, fileNew);
-[status, res] = system(sprintf('move %s %s', obj.DataFile, fileNew));
+if isunix,
+    cmd = 'mv %s %s';
+else
+    cmd = 'move %s %s';
+end
+[status, res] = system(sprintf(cmd, obj.DataFile, fileNew));
 if status > 0,
     error(res);
 end
@@ -66,7 +71,7 @@ if ~obj.Temporary,
     save(obj);
 end
 if opt.verbose,
-   fprintf(stdout, '[done]\n'); 
+    fprintf(stdout, '[done]\n');
 end
 
 if ischar(opt.stdout),
