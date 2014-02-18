@@ -54,11 +54,8 @@ end
 
 % Reject trials that are out of range
 pos = get_sample(trialEv);
-try
+
 outOfRange = (pos + off) < 1 | (pos + off + dur -1) > size(x,2);
-catch ME
-    caca = 5;
-end
     
 trialEv(outOfRange) = [];
 pos(outOfRange)     = [];

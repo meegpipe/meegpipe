@@ -76,23 +76,6 @@ if ~any(isFolderKey),
     
 end
     
-% if ~localSOMSDS
-%     % Translate the path
-%     regex = get_config('somsds', 'path_regex');
-%     valList = varargin(2:2:end);
-%     folder  = valList(isFolderKey);
-%     folder  = folder{end};
-%     if ~isempty(regex),
-%        res = regexp(regex, '^s%(?<orig>.+)?%(?<new>.+)?%$', 'names');
-%        if ~isempty(res.orig),
-%            folder = strrep(folder, res.orig, res.new);
-%            folder = strrep(folder, '\', '/');
-%        end
-%     end
-%     valList(isFolderKey) = {folder};
-%     varargin(2:2:end) = valList;
-% end
-
 vals      = 2:2:numel(varargin);
 keys      = 1:2:numel(varargin);
 varargin(keys) = cellfun(@(x) regexprep(x, '^-*(\w)', '--$1'), ...

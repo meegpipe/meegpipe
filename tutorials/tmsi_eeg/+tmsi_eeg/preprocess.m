@@ -4,7 +4,7 @@ function preprocess
 % 
 
 import mperl.file.spec.catdir;
-import mperl.file.find.finddepth_regex_match;
+import misc.dir;
 
 INPUT_DIR = pwd;
 OUTPUT_DIR = catdir(pwd, 'tmsi_eeg_tutorial');
@@ -23,9 +23,9 @@ myPipe = tmsi_eeg.basic_pipeline(...
     'Parallelize',    PARALELLIZE);
 
 regex = '.Poly5$';
-inputFiles = finddepth_regex_match(INPUT_DIR, regex, false);
+inputFiles = dir(INPUT_DIR, regex, true, false, true);
 somsds.link2files(inputFiles, OUTPUT_DIR);
-links2Files = finddepth_regex_match(OUTPUT_DIR, regex);
+links2Files = dir(OUTPUT_DIR, regex, true, false, true);
 
 run(myPipe, links2Files{:});
 

@@ -73,7 +73,9 @@ classdef spectra < meegpipe.node.abstract_node
             import pset.selector.sensor_class;
             import misc.prepend_varargin;
             
-            dataSel = sensor_class('Type', {'EEG', 'MEG'});
+            dataSel1 = sensor_class('Type', {'EEG', 'MEG'});
+            dataSel2 = good_samples;
+            dataSel = cascade(dataSel1, dataSel2);
             varargin = prepend_varargin(varargin, 'DataSelector', dataSel);       
            
             obj = obj@meegpipe.node.abstract_node(varargin{:});

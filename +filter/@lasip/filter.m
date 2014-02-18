@@ -24,7 +24,7 @@ for i = 1:size(dataD, 1)
     if ~all(abs(data(i,:)-mean(data(i,:))) < eps),
         
         if obj.Decimation > 1,
-            dataDi = resample(data(i,:), obj.Decimation);
+            dataDi = downsample(data(i,:), obj.Decimation);
         else
             dataDi = data(i,:);
         end

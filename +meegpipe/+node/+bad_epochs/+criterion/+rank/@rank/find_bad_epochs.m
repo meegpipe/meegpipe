@@ -78,9 +78,11 @@ evBad = ev(selected);
 
 rejIdx = find(selected);
 
-[~, ~, samplIdx] = epoch_get(data, evBad);
-
-set_bad_sample(data, samplIdx(:));    
+for i = 1:numel(evBad),
+    [~, ~, samplIdx] = epoch_get(data, evBad(i));
+    
+    set_bad_sample(data, samplIdx(:));
+end
 
 if ~isempty(rep),
    rankStats = get_config(obj, 'RankPlotStats');

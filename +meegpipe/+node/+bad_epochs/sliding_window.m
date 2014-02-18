@@ -19,7 +19,7 @@ if ~isnumeric(period) || ~isnumeric(dur) || period < 0 || dur < 0,
     error('Both period and duration must be positive scalars');
 end
 
-crit = stat;
+crit = stat('Max', @(x) min(400, prctile(x, 95)));
 
 randomEvType = ['__' DataHash(rand(1,100))];
 
