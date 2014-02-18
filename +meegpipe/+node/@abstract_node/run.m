@@ -17,12 +17,12 @@ verboseLabel = get_verbose_label(obj);
 
 % Common mistake: user passes multiple files/datasets as a cell array
 if nargin == 2 && iscell(varargin{1}) && numel(varargin{1}) == 1,
-     varargin = varargin{1};
+    varargin = varargin{1};
 end
 
 % Another common mistake: user passes an empty cell
 if nargin == 2 && isempty(varargin{1})
-   error('You need to provide at least one data file to be processed!') 
+    error('You need to provide at least one data file to be processed!')
 end
 
 %% Take care of multiple input datasets using recursion
@@ -116,8 +116,8 @@ try
     end
     
     %% save processing history
-    if ~isa(obj, 'meegpipe.node.pipeline.pipeline'),        
-        if ischar(dataIn),            
+    if ~isa(obj, 'meegpipe.node.pipeline.pipeline'),
+        if ischar(dataIn),
             if exist(dataIn, 'file'),
                 inStr = rel2abs(dataIn);
             else
@@ -125,12 +125,14 @@ try
             end
             add_processing_history(data, inStr);
         end
-        if ~iscell(data),
-            data = {data};
+        if iscell(data),
+            for i = 1:numel(data),
+                add_processing_history(data{i}, clone(obj));
+            end
+        else
+            add_processing_history(data, clone(obj));
         end
-        for i = 1:numel(data),
-            add_processing_history(data{i}, clone(obj));
-        end
+        
     end
     
     % data is always a physioset, but varargin{1} may not be!
