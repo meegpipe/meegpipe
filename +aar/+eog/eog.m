@@ -1,6 +1,6 @@
 function myNode = eog(varargin)
 % EOG - Default EOG correction node
 
-myNode = aar.bcg.eog(varargin{:});
+myNode = aar.eog.bss_psd_ratio(varargin{:});
 
 end

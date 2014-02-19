@@ -88,6 +88,10 @@ myNode = bss.eog(...
     'Filter',       []);
 nodeList = [nodeList {myNode}];
 
+%% Node 8: Sensor noise?
+myNode = aar.sensor_noise.new;
+nodeList = [nodeList {myNode}];
+
 % %% Node 9: channel interpolation
 % myNode = chan_interp.new;
 % nodeList = [nodeList {myNode}];
