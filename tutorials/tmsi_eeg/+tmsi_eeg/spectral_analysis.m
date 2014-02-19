@@ -1,5 +1,5 @@
-function split_files
-% SPLIT_FILES - Split grungerb recordings into multiple epochs
+function spectral_analysis
+% SPECTRAL_ANALYSIS - Simple spectral analysis on each data split
 
 meegpipe.initialize;
 
@@ -14,20 +14,19 @@ else
     ROOT_PATH = pwd;
 end
 
-PREPROC_DATE = '1402191116';
-INPUT_DIR = catdir(ROOT_PATH, 'tmsi_eeg_tutorial', 'preprocess', PREPROC_DATE);
-OUTPUT_DIR = catdir(ROOT_PATH, 'tmsi_eeg_tutorial', 'split_files', ...
+PREPROC_DATE = '1402191156';
+INPUT_DIR = catdir(ROOT_PATH, 'tmsi_eeg_tutorial', 'split_files', PREPROC_DATE);
+OUTPUT_DIR = catdir(ROOT_PATH, 'tmsi_eeg_tutorial', 'spectral_analysis', ...
     datestr(now, 'yymmddHHMM'));
 
 PARALELLIZE = true; % Should each file be split in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
-% Create an instance of the feature extraction pipeline
-myPipe = tmsi_eeg.split_files_pipeline(...
+myPipe = tmsi_eeg.spectral_analysis_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
 
-regex = 'preprocess-pipeline\.pset';
+regex = '-\d\.pset';
 splittedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
 somsds.link2files(splittedFiles, OUTPUT_DIR);
 regex = '\.pseth$';

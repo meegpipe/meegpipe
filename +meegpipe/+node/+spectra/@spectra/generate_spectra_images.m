@@ -12,7 +12,12 @@ import meegpipe.node.spectra.eeg_bands;
 verbose = goo.globals.get.Verbose;
 
 roi     = get_config(obj, 'ROI');
-boi     = subset(roi, keys(eeg_bands));
+
+boi     = get_config(plotterObj, 'BOI');
+
+if isempty(boi),
+    boi     = subset(roi, keys(eeg_bands));
+end
 
 myGallery = gallery;
 
