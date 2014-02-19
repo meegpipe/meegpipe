@@ -24,10 +24,12 @@ if version == 203
     frewind(fid);
     hdr.FID                   = fread(fid,[1 31],'uchar');
     hdr.VersionNumber         = fread(fid, 1,'int16');
-else % version 204
+elseif version == 204
     frewind(fid);
     hdr.FID                   = fread(fid, [1 32],'uchar');
     hdr.VersionNumber         = fread(fid, 1,'int16');
+else
+    error('Invalid Poly5 file (version %d)', version);
 end
 hdr.MeasurementName       = fread(fid, [1 81],'uchar');
 hdr.FS                    = fread(fid, 1,'int16');

@@ -3,11 +3,21 @@ function preprocess
 %
 % 
 
+meegpipe.initialize;
+
 import mperl.file.spec.catdir;
 import misc.dir;
+import misc.get_hostname;
+
+if ispc && strcmp(get_hostname, 'NIN271'),
+    ROOT_PATH = 'D:/';
+else
+    ROOT_PATH = pwd;
+end
 
 INPUT_DIR = pwd;
-OUTPUT_DIR = catdir(pwd, 'tmsi_eeg_tutorial');
+OUTPUT_DIR = catdir(ROOT_PATH, 'tmsi_eeg_tutorial', 'preprocess', ...
+    datestr(now, 'yymmddHHMM'));
 
 % Should each file be processed in parallel? Set this to false to ensure
 % that files will be processed sequentially within the current MATLAB
@@ -18,7 +28,7 @@ PARALELLIZE = true;
 % Should full HTML reports be generated?
 DO_REPORT   = true; 
 
-myPipe = tmsi_eeg.basic_pipeline(...
+myPipe = tmsi_eeg.preprocess_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE);
 

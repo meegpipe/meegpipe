@@ -7,11 +7,6 @@ function split_files
 % single-block we mean a single condition block (Baseline, PVT, RS, RSQ)
 % within a given experimental manipulation.
 
-% Start in a completely clean state
-close all;
-clear all;
-clear classes;
-
 meegpipe.initialize;
 
 % Import some miscellaneous utilities

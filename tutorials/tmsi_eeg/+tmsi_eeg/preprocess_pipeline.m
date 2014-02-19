@@ -1,5 +1,5 @@
-function myPipe = basic_pipeline(varargin)
-% BASIC_PIPELINE - A very basic preprocessing pipeline
+function myPipe = preprocess_pipeline(varargin)
+% PREPROCESS_PIPELINE - A very basic preprocessing pipeline
 
 import meegpipe.node.*;
 
@@ -34,20 +34,10 @@ myNode = bad_epochs.sliding_window(5, 5, 'Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
 
-%% Node 5: reject bad channels (at least 2 will be rejected!)
+%% Node 5: reject bad channels
 myCrit = bad_channels.criterion.var.new(...
     'Max', @(x) median(x) + 2*mad(x));
 myNode = bad_channels.new('Criterion', myCrit);
-nodeList = [nodeList {myNode}];
-
-%% Node 6: High pass filtering
-myFilter = @(sr) filter.hpfilt('fc', 3/(sr/2));
-myNode = filter.new('Filter', myFilter);
-nodeList = [nodeList {myNode}];
-
-%% Node 5: Low pass filtering
-myFilter = @(sr) filter.lpfilt('fc', 43/(sr/2));
-myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
 %% Node 4: center
@@ -56,10 +46,24 @@ nodeList = [nodeList {myNode}];
 % more similar dynamic range). 
 nodeList = [nodeList {center.new}];
 
+%% Node 6: High pass filtering
+myFilter = @(sr) filter.hpfilt('fc', 3/(sr/2));
+myNode = filter.new('Filter', myFilter);
+nodeList = [nodeList {myNode}];
+
+%% Node 7: downsampling
+myNode = resample.new('OutputRate', 250);
+nodeList = [nodeList {myNode}];
+
+%% Node 5: Low pass filtering
+myFilter = @(sr) filter.lpfilt('fc', 43/(sr/2));
+myNode = filter.new('Filter', myFilter);
+nodeList = [nodeList {myNode}];
+
 %% Node 3: reject bad epochs (again)
 % Trying to get rid off large filtering artifacts
 myCrit = bad_epochs.criterion.stat.new(...
-    'Max',              @(stats) min(prctile(stats, 90), median(stats)+2*mad(stats)), ...
+    'Max',              @(stats) min(prctile(stats, 95), median(stats)+2*mad(stats)), ...
     'EpochStat',        @(x) max(x));
 myNode = bad_epochs.sliding_window(1, 5, ...
     'Criterion',      myCrit, ...
@@ -67,8 +71,7 @@ myNode = bad_epochs.sliding_window(1, 5, ...
 nodeList = [nodeList {myNode}];
 
 %% Node 6: reject ECG components
-myNode = bss.ecg('RetainedVar', 99.99, ...
-    'GenerateReport', false);
+myNode = bss.ecg('RetainedVar', 99.99);
 nodeList = [nodeList {myNode}];
 
 %% Node 7: reject EOG components
@@ -85,24 +88,24 @@ myNode = bss.eog(...
     'Filter',       []);
 nodeList = [nodeList {myNode}];
 
-%% Node 9: channel interpolation
-myNode = chan_interp.new;
-nodeList = [nodeList {myNode}];
-
-%% Node 10: Split epochs
-[~, ~, ~, evType] = tmsi_eeg.epoch_definitions;
-
-namingPolicy = @(physO, ev, evIdx) [get(ev, 'Type') '-' num2str(evIdx)];
-for i = 1:numel(evType),
-    evSel = physioset.event.class_selector('Type', evType{i});
-    
-    myNode = split.new( ...
-        'DataSelector',      pset.selector.all_data, ...
-        'EventSelector',     evSel, ...
-        'SplitNamingPolicy', namingPolicy, ...
-        'Name',              evType{i});
-    nodeList = [nodeList {myNode}]; %#ok<AGROW>
-end
+% %% Node 9: channel interpolation
+% myNode = chan_interp.new;
+% nodeList = [nodeList {myNode}];
+% 
+% %% Node 10: Split epochs
+% [~, ~, ~, evType] = tmsi_eeg.epoch_definitions;
+% 
+% namingPolicy = @(physO, ev, evIdx) [get(ev, 'Type') '-' num2str(evIdx)];
+% for i = 1:numel(evType),
+%     evSel = physioset.event.class_selector('Type', evType{i});
+%     
+%     myNode = split.new( ...
+%         'DataSelector',      pset.selector.all_data, ...
+%         'EventSelector',     evSel, ...
+%         'SplitNamingPolicy', namingPolicy, ...
+%         'Name',              evType{i});
+%     nodeList = [nodeList {myNode}]; %#ok<AGROW>
+% end
 
 %% Node 10: average reference
 % nodeList = [nodeList {reref.avg}];
@@ -139,7 +142,7 @@ end
 
 %% Create the pipeline
 myPipe = pipeline.new(...
-    'Name',             'tmsi-basic-pipeline', ...
+    'Name',             'preprocess-pipeline', ...
     'NodeList',         nodeList, ...
     'Save',             true, ...
     varargin{:});
