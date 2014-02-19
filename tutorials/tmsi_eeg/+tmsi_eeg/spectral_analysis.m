@@ -14,7 +14,7 @@ else
     ROOT_PATH = pwd;
 end
 
-PREPROC_DATE = '1402191156';
+PREPROC_DATE = '1402191356';
 INPUT_DIR = catdir(ROOT_PATH, 'tmsi_eeg_tutorial', 'split_files', PREPROC_DATE);
 OUTPUT_DIR = catdir(ROOT_PATH, 'tmsi_eeg_tutorial', 'spectral_analysis', ...
     datestr(now, 'yymmddHHMM'));
