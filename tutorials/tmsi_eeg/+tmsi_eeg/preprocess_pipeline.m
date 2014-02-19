@@ -36,7 +36,7 @@ nodeList = [nodeList {myNode}];
 
 %% Node 5: reject bad channels
 myCrit = bad_channels.criterion.var.new(...
-    'Max', @(x) median(x) + 2*mad(x));
+    'Max', @(x) median(x) + mad(x), 'MaxCard', 6);
 myNode = bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 

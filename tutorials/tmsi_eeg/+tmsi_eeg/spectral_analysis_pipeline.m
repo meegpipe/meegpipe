@@ -5,7 +5,7 @@ import meegpipe.node.*;
 nodeList = {};
 
 %% Node 1: Data import
-load('sensors_grunberg');
+load('sensors_grunberg_subset');
 myImporter = physioset.import.physioset('Sensors', mySensors);
 myNode = physioset_import.new('Importer', myImporter);
 nodeList = [ nodeList {myNode}];
