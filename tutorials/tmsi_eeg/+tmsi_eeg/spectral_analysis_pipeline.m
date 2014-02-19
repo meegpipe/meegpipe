@@ -15,12 +15,12 @@ nodeList = [ nodeList {copy.new} ];
 
 %% Node 5: reject bad channels
 myCrit = bad_channels.criterion.var.new(...
-    'Max', @(x) median(x) + 2*mad(x), 'MaxCard', 5);
+    'Max', @(x) median(x) + 1.5*mad(x), 'MaxCard', 5);
 myNode = bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
 %% Node 3: channel interpolation
-myNode = chan_interp.new;
+myNode = chan_interp.new('NN', 2);
 nodeList = [nodeList {myNode}];
 
 %% Node 4: Spectral analysis
