@@ -41,5 +41,8 @@ psetObj = physObj.PointSet;
 
 psetObj.AutoDestroyMemMap = obj.AutoDestroyMemMap;
 
+if ~isempty(obj.Sensors)
+   set_sensors(physObj, obj.Sensors); 
+end
 
 end
