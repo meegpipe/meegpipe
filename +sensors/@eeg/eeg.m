@@ -249,15 +249,17 @@ classdef eeg < sensors.physiology
             if ~all(isValid),
                 warning('sensors:InvalidLabel', ...
                     ['Sensor labels are not EDF+ compatible. \n' ...
-                    'Automatically creating compatible EEG labels: ' ...
-                    'EEG 1, EEG 2, ...']),
+                    'Automatically creating compatible EEG labels ']),
                 
                 newLabels = cell(size(obj.Label));
                 for i = 1:numel(obj.Label),   
                     % The EGI net uses E# naming -> EEG #
                     match = regexp(obj.Label{i}, 'E(?<number>\d+)$', 'names');
-                    if isempty(match),
-                        newLabels{i} = ['EEG ' num2str(i)];
+                    if isempty(match),       
+                        spec = regexprep(obj.Label{i}, '^Unknown\s+', '');
+                        spec = genvarname(spec);
+                        if isempty(spec), spec = num2str(i); end                                                
+                        newLabels{i} = ['EEG ' spec];
                     else
                         newLabels{i} = ['EEG ' match.number];
                     end
