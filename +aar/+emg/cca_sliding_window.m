@@ -35,7 +35,8 @@ import misc.split_arguments;
 import aar.emg.cca_sliding_window.*;
 
 opt.WindowLength = 5;
-opt.CorrectionTh   = 10;
+opt.CorrectionTh = 20;
+opt.VarTh        = 99.99;         
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 
 [~, opt] = process_arguments(opt, thisArgs);
@@ -50,12 +51,17 @@ if opt.CorrectionTh < 0 || opt.CorrectionTh > 100
        'Invalid CorrectionTh: must be a percentage (in the range 0-100)'); 
 end
 
+myPCA = spt.pca('RetainedVar', opt.VarTh);
+
 myCCA = spt.bss.cca('MinCorr', opt.CorrectionTh/100);
 myFilter = filter.cca('CCA', myCCA);
 myFilter = filter.sliding_window(myFilter, ...
     'WindowLength', @(sr) opt.WindowLength*sr);
 
-myNode = meegpipe.node.filter.new('Filter', myFilter, varargin{:});
+myNode = meegpipe.node.filter.new(...
+    'Filter', myFilter, ...
+    'PCA',    myPCA, ...
+    varargin{:});
 
 
 end

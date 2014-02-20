@@ -56,18 +56,13 @@ myFilter = @(sr) filter.hpfilt('fc', 3/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
-%% Node 9: EMG
-% I think is best to remove the EMG noise before downsampling (next node)
-myNode = bss.emg('IOReport',     report.plotter.io);
+%% Node 11: Low pass filtering
+myFilter = @(sr) filter.lpfilt('fc', 43/(sr/2));
+myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
 %% Node 10: downsampling
 myNode = resample.new('OutputRate', 250);
-nodeList = [nodeList {myNode}];
-
-%% Node 11: Low pass filtering
-myFilter = @(sr) filter.lpfilt('fc', 43/(sr/2));
-myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
 %% Node 12: reject bad epochs (again)
@@ -97,6 +92,13 @@ myNode = bss.eog(...
     'IOReport',     report.plotter.io, ...
     'Filter',       []);
 nodeList = [nodeList {myNode}];
+
+
+%% Node 9: EMG
+% I think is best to remove the EMG noise before downsampling (next node)
+myNode = bss.emg('CorrectionTh', 50, 'IOReport',     report.plotter.io);
+nodeList = [nodeList {myNode}];
+
 
 %% Create the pipeline
 myPipe = pipeline.new(...
