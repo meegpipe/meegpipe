@@ -45,7 +45,7 @@ for i = 1:numel(rankVal)
            % NaN due to one of either of the two channels being flat
            continue;
        end
-       rankVal(i) = rankVal(i) + thisCorr;
+       rankVal(i) = rankVal(i) + abs(thisCorr);
     end
     
     
