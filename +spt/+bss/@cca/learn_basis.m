@@ -91,7 +91,7 @@ if isa(obj.MaxCorr, 'function_handle'),
 else
     maxTh = obj.MaxCorr;
 end
-selected(r > maxTh) = false;
+selected(r > (maxTh+1e-6)) = false;
 
 if isa(obj.MinCorr, 'function_handle'),
     minTh = obj.MinCorr(r);

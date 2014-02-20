@@ -20,7 +20,15 @@ showDiffRep     = get_config(obj, 'ShowDiffReport');
 pca             = get_config(obj, 'PCA');
 
 if isa(filtObj, 'function_handle'),
-    filtObj = filtObj(data.SamplingRate);
+    try
+        filtObj = filtObj(data.SamplingRate);
+    catch ME
+        if strcmp(ME.identifier, 'MATLAB:nonStrucReference'),
+            filtObj = filtObj(data);
+        else
+            rethrow(ME);
+        end        
+    end
 end
 
 %% Find chop boundaries

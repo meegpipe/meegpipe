@@ -33,10 +33,8 @@ classdef filter < meegpipe.node.abstract_node
                 elseif isa(filtObj, 'filter.dfilt') && ...
                         ~isempty(get_name(filtObj)),
                     obj = set_name(obj, ['filter-' get_name(filtObj)]);
-                elseif isa(filtObj, 'function_handle'),
-                    % A function_handle of the input data sampling rate
-                    tmpObj = filtObj(500);
-                    set_name(obj, ['filter-' get_name(tmpObj)]);
+                else
+                    set_name(obj, 'filter');
                 end
             end
             

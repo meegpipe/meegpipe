@@ -262,7 +262,6 @@ end
 function [data, S, N, snr, bndry] = sample_data_with_bursts()
 
 f = 1/100;
-snr = 4;
 
 % boundary of the burst
 bndry = [20001 21000];
@@ -280,7 +279,8 @@ for i = 1:size(N,1)
     end
 end
 
-N = (1/sqrt(snr))*N;
+% Increase the 0.5 factor for better SNR
+N = 0.5*N;
 X = S + N;
 
 snr = 0;
