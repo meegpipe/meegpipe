@@ -72,13 +72,21 @@ end
 
 % calculate W
 [W,r] = eig(pinv(Cxx)*Cxy*invCyy*Cyx);
+
+% Do we have an ill-conditioned cov matrix?
+if any(imag(W(:))),
+    warning('cca:IllConditioned', ...
+        'Covariance is ill-conditioned: results might be inaccurate!');   
+end
+
+
 r = sqrt(abs(real(r)));
 if obj.TopCorrFirst,
     [r, I] = sort(diag(r),'descend');
 else
     [r, I] = sort(diag(r),'ascend');
 end
-obj.W = W(:,I)';
+obj.W = real(W(:,I))';
 obj.A = pinv(obj.W);
 obj.ComponentSelection = 1:size(obj.W,1);
 obj.DimSelection       = 1:size(X,1);

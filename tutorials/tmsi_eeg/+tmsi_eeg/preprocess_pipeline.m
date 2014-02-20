@@ -56,30 +56,35 @@ myFilter = @(sr) filter.hpfilt('fc', 3/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
-%% Node 9: downsampling
+%% Node 9: EMG
+% I think is best to remove the EMG noise before downsampling (next node)
+myNode = bss.emg('IOReport',     report.plotter.io);
+nodeList = [nodeList {myNode}];
+
+%% Node 10: downsampling
 myNode = resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
-%% Node 10: Low pass filtering
+%% Node 11: Low pass filtering
 myFilter = @(sr) filter.lpfilt('fc', 43/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
-%% Node 11: reject bad epochs (again)
+%% Node 12: reject bad epochs (again)
 % Trying to get rid off large filtering artifacts
 myCrit = bad_epochs.criterion.stat.new(...
-    'Max',              @(stats) min(prctile(stats, 95), median(stats)+2*mad(stats)), ...
+    'Max',              @(stats) median(stats)+2*mad(stats), ...
     'EpochStat',        @(x) max(x));
 myNode = bad_epochs.sliding_window(1, 5, ...
     'Criterion',      myCrit, ...
     'DataSelector',   pset.selector.all_data);
 nodeList = [nodeList {myNode}];
 
-%% Node 12: reject ECG components
+%% Node 13: reject ECG components
 myNode = bss.ecg('RetainedVar', 99.99);
 nodeList = [nodeList {myNode}];
 
-%% Node 13: reject EOG components
+%% Node 14: reject EOG components
 myFeat1 = spt.feature.psd_ratio.eog;
 myFeat2 = spt.feature.bp_var;
 myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2}, ...
@@ -91,14 +96,6 @@ myNode = bss.eog(...
     'Criterion',    myCrit, ...
     'IOReport',     report.plotter.io, ...
     'Filter',       []);
-nodeList = [nodeList {myNode}];
-
-%% Node 14: Sensor noise?
-myNode = aar.sensor_noise.new;
-nodeList = [nodeList {myNode}];
-
-%% Node 15: Very regular (low complexity) noise components
-myNode = aar.misc.lpa_noise;
 nodeList = [nodeList {myNode}];
 
 %% Create the pipeline
