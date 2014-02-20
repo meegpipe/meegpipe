@@ -24,9 +24,8 @@ myNode = meegpipe.node.ev_gen.new(...
     'DataSelector',   pset.selector.all_data);
 nodeList = [nodeList {myNode}];
 
-%% Node 4: reject bad epochs (to minimize filteringa artifacts)
-% For whatever reason, there are large outliers at the end of the Poly5
-% files. 
+%% Node 4: Preliminary bad epoch rejection
+% To minimize filteringa artifacts in the following filter nodes
 myCrit = bad_epochs.criterion.stat.new(...
     'Max',              @(stats) median(stats)+2*mad(stats), ...
     'EpochStat',        @(x) max(x));
@@ -34,33 +33,39 @@ myNode = bad_epochs.sliding_window(5, 5, 'Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
 
-%% Node 5: reject bad channels
+%% Node 5: reject bad channels using variance
 myCrit = bad_channels.criterion.var.new(...
-    'Max', @(x) median(x) + mad(x), 'MaxCard', 6);
+    'Max', @(x) median(x) + 2*mad(x), 'MaxCard', 5);
 myNode = bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
-%% Node 4: center
+%% Node 6: reject bad channels using cross correlation
+myCrit = bad_channels.criterion.xcorr.new(...
+    'Min', 0.2, 'MaxCard', 5);
+myNode = bad_channels.new('Criterion', myCrit);
+nodeList = [nodeList {myNode}];
+
+%% Node 7: center
 % This is not really required but will make the report of the subsequent
 % filtering node more meaningful (since filter input and output will have a
 % more similar dynamic range). 
 nodeList = [nodeList {center.new}];
 
-%% Node 6: High pass filtering
+%% Node 8: High pass filtering
 myFilter = @(sr) filter.hpfilt('fc', 3/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
-%% Node 7: downsampling
+%% Node 9: downsampling
 myNode = resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
-%% Node 5: Low pass filtering
+%% Node 10: Low pass filtering
 myFilter = @(sr) filter.lpfilt('fc', 43/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
-%% Node 3: reject bad epochs (again)
+%% Node 11: reject bad epochs (again)
 % Trying to get rid off large filtering artifacts
 myCrit = bad_epochs.criterion.stat.new(...
     'Max',              @(stats) min(prctile(stats, 95), median(stats)+2*mad(stats)), ...
@@ -70,15 +75,15 @@ myNode = bad_epochs.sliding_window(1, 5, ...
     'DataSelector',   pset.selector.all_data);
 nodeList = [nodeList {myNode}];
 
-%% Node 6: reject ECG components
+%% Node 12: reject ECG components
 myNode = bss.ecg('RetainedVar', 99.99);
 nodeList = [nodeList {myNode}];
 
-%% Node 7: reject EOG components
+%% Node 13: reject EOG components
 myFeat1 = spt.feature.psd_ratio.eog;
 myFeat2 = spt.feature.bp_var;
 myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2}, ...
-    'Max',      {25 10}, ...
+    'Max',      {15 15}, ...
     'MinCard',  2, ...
     'MaxCard',  6);
 myNode = bss.eog(...
@@ -88,61 +93,13 @@ myNode = bss.eog(...
     'Filter',       []);
 nodeList = [nodeList {myNode}];
 
-%% Node 8: Sensor noise?
+%% Node 14: Sensor noise?
 myNode = aar.sensor_noise.new;
 nodeList = [nodeList {myNode}];
 
-% %% Node 9: channel interpolation
-% myNode = chan_interp.new;
-% nodeList = [nodeList {myNode}];
-% 
-% %% Node 10: Split epochs
-% [~, ~, ~, evType] = tmsi_eeg.epoch_definitions;
-% 
-% namingPolicy = @(physO, ev, evIdx) [get(ev, 'Type') '-' num2str(evIdx)];
-% for i = 1:numel(evType),
-%     evSel = physioset.event.class_selector('Type', evType{i});
-%     
-%     myNode = split.new( ...
-%         'DataSelector',      pset.selector.all_data, ...
-%         'EventSelector',     evSel, ...
-%         'SplitNamingPolicy', namingPolicy, ...
-%         'Name',              evType{i});
-%     nodeList = [nodeList {myNode}]; %#ok<AGROW>
-% end
-
-%% Node 10: average reference
-% nodeList = [nodeList {reref.avg}];
-
-% %% Node 11-?: Spectral features
-% % The bands of interest.
-% % Features and topographies will be plotted for these bands only.
-% myROI = mjava.hash;
-% myROI('theta') = {[4 8], [4 40]};
-% myROI('alpha') = {[8 12], [4 40]}; 
-% myROI('beta1') = {[12 20], [4 40]}; 
-% myROI('beta2') = {[20 40], [4 40]}; 
-% 
-% % Plot PSDs only between 4 and 40 Hz
-% plotterPSD = @(sr) plotter.psd.psd(...
-%             'FrequencyRange', [4 40]/(sr/2), ...
-%             'LogData',        false);
-% 
-% % We need to compute spectral features for each epoch separately
-% [~, ~, ~, evType] = tmsi_eeg.epoch_definitions;
-% 
-% for evItr = 1:numel(evType)
-%  
-%     evSel   = physioset.event.class_selector('Type', evType{evItr});
-%     dataSel = pset.selector.event_selector(evSel);
-%     myNode = spectra.new(...
-%         'ROI',          myROI, ...
-%         'Name',         ['spectra-' evType{evItr}], ...
-%         'DataSelector', dataSel, ...
-%         'PlotterPSD',   plotterPSD);
-%     nodeList = [nodeList {myNode}];
-%     
-% end
+%% Node 15: Very regular (low complexity) noise components
+myNode = aar.misc.lpa_noise;
+nodeList = [nodeList {myNode}];
 
 %% Create the pipeline
 myPipe = pipeline.new(...

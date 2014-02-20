@@ -1,5 +1,6 @@
 function preprocess
-% PREPROCESS - Preprocess TMSi data files
+% PREPROCESS - Clean files and prepare them for spectral analysis
+%
 %
 % 
 

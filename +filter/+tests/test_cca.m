@@ -10,7 +10,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Create a new session
 try
@@ -71,6 +71,37 @@ catch ME
     
 end
 
+%% Filtering out noise bursts
+try
+    
+    name = 'filtering out noise bursts';
+    
+    [data, ~, S, snr, bndry] = sample_data_with_bursts();
+    idx = bndry(1):bndry(2);
+    myCCA = spt.bss.cca('MinCorr', 0.1);
+    myFilter = filter.cca('CCA', myCCA);
+    myFilter = filter.sliding_window(myFilter, ...
+        'WindowLength', numel(idx));
+    
+    filter(myFilter, data);
+    
+    snrAfter = 0;
+    
+    for i = 1:size(data,1)
+        snrAfter = snrAfter + var(S(i,idx))/var(data(i,idx)-S(i,idx));
+    end
+    snrAfter = snrAfter/numel(idx);
+    ok(snrAfter > 20*snr, name);
+    
+catch ME
+    
+    ok(ME, name);
+    status = finalize();
+    return;
+    
+end
+
+
 %% Sample filtering
 try
     
@@ -87,7 +118,8 @@ try
     for i = 1:size(data,1)
         snrAfter = snrAfter + var(S(i,:))/var(data(i,:)-S(i,:));
     end
-    snrAfter = snrAfter/size(data,1);
+    snrAfter = snrAfter/size(data,1);    
+   
     ok(snrAfter > 20*snr, name);
     
 catch ME
@@ -109,7 +141,7 @@ try
     myFilter = filter.cca(...
         'CCA',              myCCA, ...
         'CCFilter',         filter.lpfilt('fc', 0.1));
-    
+ 
     filter(myFilter, data);
     
     snrAfter = 0;
@@ -225,7 +257,40 @@ R(2,:) = cos(2*pi*f*t);
 
 data = import(physioset.import.matrix, X);
 
+end
 
+function [data, S, N, snr, bndry] = sample_data_with_bursts()
+
+f = 1/100;
+snr = 4;
+
+% boundary of the burst
+bndry = [20001 21000];
+
+S = zeros(10, 50000);
+S(:, bndry(:,1):bndry(:,2)) = rand(10,2) * randn(2, 1000);
+
+N = zeros(10, 50000);
+
+t = 0:size(S,2)-1;
+for i = 1:size(N,1)
+    N(i,:) = sqrt(2)*sin(2*pi*f*t+randi(100));
+    if i > 1,
+        N(i,:) = N(i,:).*N(i-1, :);
+    end
+end
+
+N = (1/sqrt(snr))*N;
+X = S + N;
+
+snr = 0;
+idx = bndry(1):bndry(2);
+for i = 1:size(X,1)
+    snr = snr + var(N(i,idx))/var(X(i,idx)-N(i,idx));
+end
+snr = snr/numel(idx);
+
+data = import(physioset.import.matrix, X);
 
 end
 
