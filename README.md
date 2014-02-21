@@ -49,7 +49,7 @@ The engine responsible for generating data processing reports in HTML
 relies on several Python packages and [Inkscape][inkscape]. _meegpipe_ will
  be fully functional without these dependencies, but the processing reports
 will be generated in a plain text format (using [Remark][remark] syntax). 
-Inspecting these plain text reports is __very inconvenient__ because they
+Inspecting plain text reports is __very inconvenient__ because they
 contain many embedded images. Please consider installing
  these [highly recommended dependencies][recommended-dep]. 
 
