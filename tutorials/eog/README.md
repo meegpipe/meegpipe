@@ -69,21 +69,34 @@ origData = import(physioset.import.eeglab, 'eeglab_data_epochs_ica.set');
 plot(origData, cleanData);
 ````
 
+
+![Simple multiple-lag regression](regression.png "Multiple lag regression")
+
+As you can see, simple regression does minimize the ocular artifacts, but 
+leaves quite some residuals behind. One reason for this poor performance is
+that our regression filter is not able to adapt to intrinsically 
+non-stationary events such as blinks or saccades. 
+
+
 ## Adaptive regression
 
-One could regress out the EOG reference signals using an adaptive filter, 
-such as a [Recursive Least Squares (RLS)][rls] filter. Adaptive 
-regression algorithms are able to handle, to certain degree, nonstationary
- data. However, most adaptive regression filters (especially RLS-based) 
-easily become unstable and are rarely suitable for processing long-duration
-EEG datasets. There are ways to overcome these stability problems at the 
-expense of increasing the complexity of the algorithm, but at this point 
-`meegpipe` does not implement any stable adaptive filter (but see [1]). 
-But, `meegpipe` does allow you to account for non-stationary data
- by performing simple least squares regression in sliding (possibly 
-overlapping) windows. This approach does not have stability issues and, 
-in practice, it removes ocular activity as effectively as stable versions 
-of the RLS algorithm [2].  
+To tackle non-stationarity, we could regress out the EOG reference signals
+using an adaptive filter that re-learns the regression weights at each
+time instant, using only past data according to a forgetting factor. For
+this approach to be computationally feasible one has to learn the 
+regression weights using adaptive algorithms such as a 
+[Recursive Least Squares (RLS)][rls]. However, most adaptive filters 
+(especially RLS-based) can easily become unstable and are hardly suitable
+for processing long-duration EEG datasets. There are ways to overcome 
+these stability problems at the expense of increasing the complexity of the
+algorithm, but at this point `meegpipe` does not implement any such stable
+adaptive filter (but see [1]). 
+
+What `meegpipe` does implement is a way of performing simple least squares
+regression in sliding (overlapping) windows. This approach does not have
+stability issues and is very effective at removing ocular artifacts. The 
+obvious downside is that computation time can be considerably longer than 
+for truly adaptive (e.g. RLS-based) algorithms.  
 
 [rls]: http://en.wikipedia.org/wiki/Recursive_least_squares_filter
 
@@ -111,6 +124,11 @@ Let's compare the cleaned and the original data:
 origData = import(physioset.import.eeglab, 'eeglab_data_epochs_ica.set');
 plot(origData, cleanData);
 ````
+
+![Sliding window regression](adaptive_regression.png "Sliding window regression")
+
+As expected, sliding-window regression is more effective at removing 
+ocular activity. 
 
 ## References
 
