@@ -14,6 +14,7 @@ classdef config < meegpipe.node.abstract_config
         PCA              = [];
         TargetSelector   = [];   
         RegrSelector     = [];
+        RegrPreFilter    = []; % Pre-filtering of the regressors
         
     end
     

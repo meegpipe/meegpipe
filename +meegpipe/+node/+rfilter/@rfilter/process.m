@@ -19,6 +19,7 @@ showDiffRep     = get_config(obj, 'ShowDiffReport');
 pca             = get_config(obj, 'PCA');
 targetSel       = get_config(obj, 'TargetSelector');
 regrSel         = get_config(obj, 'RegrSelector');
+regrPreFilter   = get_config(obj, 'RegrPreFilter');
 
 if isa(filtObj, 'function_handle'),
     try
@@ -67,6 +68,14 @@ end
 select(regrSel, data);
 regressors = subset(data);
 restore_selection(data);
+
+%% Pre-filter the regressors
+if ~isempty(regrPreFilter),
+    if isa(regrPreFilter, 'function_handle'),
+        regrPreFilter = regrPreFilter(data.SamplingRate);
+    end
+    filter(regrPreFilter, regressors);
+end
 
 %% Filter each segment separately
 for segItr = 1:numel(evSample)

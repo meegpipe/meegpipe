@@ -5,9 +5,10 @@ import misc.process_arguments;
 import misc.split_arguments;
 
 % The indices of the EOG channels, or a list of channel labels
-opt.EOGChannels  = [];
-opt.Order        = 3;
-opt.WindowLength = 5; % in seconds
+opt.EOGChannels   = [];
+opt.Order         = 3;
+opt.WindowLength  = 5; % in seconds
+opt.WindowOverlap = 50;
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 
 [~, opt] = process_arguments(opt, thisArgs);
@@ -27,7 +28,8 @@ end
 
 myFilter = filter.mlag_regr('Order', opt.Order);
 myFilter = filter.sliding_window(myFilter, ...
-    'WindowLength', @(sr) opt.WindowLength*sr);
+    'WindowLength', @(sr) opt.WindowLength*sr, ...
+    'WindowOverlap', opt.WindowOverlap);
 
 % Second node is a dummy (transparent) node
 myNode = meegpipe.node.rfilter.new(...

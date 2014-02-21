@@ -14,12 +14,17 @@ sens = sensors(data);
 if ~isempty(sens), sens = eeglab(sens); end
 
 if nargin == 2
+    S.subs = {':', ':'};
+    S.type = '()';
+    sr = data.SamplingRate;
+    data2 = subsref(varargin{1}, S);
+    data = subsref(data, S);
     if isempty(ev),
         eegplot(data, 'eloc_file', sens, ...
-            'srate', data.SamplingRate, 'data2', varargin{1});
+            'srate', sr, 'data2', data2);
     else
         eegplot(data, 'events', ev, 'eloc_file', sens, ...
-            'srate', data.SamplingRate, 'data2', varargin{1});
+            'srate', sr, 'data2', data2);
     end
 else
     if isempty(ev),
