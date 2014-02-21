@@ -54,7 +54,7 @@ contain many embedded images. Please consider installing
  these [highly recommended dependencies][recommended-dep]. 
 
 [remark]: http://kaba.hilvi.org/remark/remark.htm
-[recommended-dep] : ./recommended.md
+[recommended-dep]: ./recommended.md
 
 
 ### Optional
