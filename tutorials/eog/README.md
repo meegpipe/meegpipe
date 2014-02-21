@@ -70,7 +70,7 @@ plot(origData, cleanData);
 ````
 
 
-![Simple multiple-lag regression](regression.png "Multiple lag regression")
+![Simple multiple-lag regression](./regression.png "Multiple lag regression")
 
 As you can see, simple regression does minimize the ocular artifacts, but 
 leaves quite some residuals behind. One reason for this poor performance is
@@ -125,7 +125,7 @@ origData = import(physioset.import.eeglab, 'eeglab_data_epochs_ica.set');
 plot(origData, cleanData);
 ````
 
-![Sliding window regression](adaptive_regression.png "Sliding window regression")
+![Sliding window regression](./adaptive_regression.png "Sliding window regression")
 
 As expected, sliding-window regression is more effective at removing 
 ocular activity. 
