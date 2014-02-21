@@ -55,6 +55,7 @@ contain many embedded images. Please consider installing
 
 [remark]: http://kaba.hilvi.org/remark/remark.htm
 [recommended-dep]: ./recommended.md
+[inkscape]: http://www.inkscape.org/en/
 
 
 ### Optional
