@@ -98,7 +98,7 @@ if ~isempty(str.chanlocs),
 else
     for i = 1:numel(uTypes)
         nbSensors = numel(find(ismember(opt.SensorClass, uTypes{i})));
-        sensorGroups{i} = eval(sprintf('sensors.%s.empty(%d);', ...
+        sensorGroups{i} = eval(sprintf('sensors.%s.dummy(%d);', ...
             uTypes{i}, nbSensors));
     end
 end

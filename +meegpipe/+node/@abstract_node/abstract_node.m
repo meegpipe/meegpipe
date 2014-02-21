@@ -53,10 +53,6 @@ classdef abstract_node < ...
     %
     % See also: node
     
-    
-    %% IMPLEMENTATION .....................................................
-    
-    %% Private properties
     properties
         Name           = '';
         DataSelector   = pset.selector.all_data;
@@ -237,9 +233,7 @@ classdef abstract_node < ...
         dirName = get_data_dir(obj, data);
         
     end
-    
-    %% PROTECTED INTERFACE
-    
+  
     % Construction keys handled by this class, to be used in constructors
     % of children classes to split own and parent arguments
     methods (Access = protected, Static)
@@ -317,9 +311,7 @@ classdef abstract_node < ...
         
         
     end
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+  
     %% meegpipe.node.node interface
     methods
         

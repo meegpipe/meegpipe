@@ -13,7 +13,6 @@ function dirName = get_data_dir(~, data)
 %
 % See also: node
 
-import goo.pkgisa;
 import misc.var2name;
 import pset.session;
 import mperl.file.spec.catdir;
@@ -24,8 +23,8 @@ if ischar(data),
     
     [dirName, dataName] = fileparts(data);
     
-elseif pkgisa(data, {'goo.abstract_named_object', ...
-        'goo.abstract_named_object_handle'}),
+elseif isa(data, 'goo.abstract_named_object') ||  ...
+        isa(data, 'goo.abstract_named_object_handle'),
     % data is a named object
     
     dataName = get_name(data);

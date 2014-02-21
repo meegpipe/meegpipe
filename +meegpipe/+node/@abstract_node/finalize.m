@@ -20,7 +20,7 @@ end
 output_report(obj, data);
 
 %% Remark report (only the top-level node does this!)
-if isempty(get_parent(obj)),
+if isempty(get_parent(obj)) && obj.GenerateReport,
     report.remark(obj.RootDir_);
 end
 

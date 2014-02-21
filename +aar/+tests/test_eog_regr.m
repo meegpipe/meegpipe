@@ -116,20 +116,31 @@ status = finalize();
 
 end
 
-function data = sample_eeglab_data()
+function data = sample_eeglab_data(type)
 
 import pset.session;
 import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 
-fileName = 'eeglab_data_epochs_ica.set';
+if nargin < 1 || isempty(type),
+    type = 'epochs';
+end
+
+if strcmp(type, 'epochs'),
+    dataName = 'eeglab_data_epochs_ica';
+else
+    % Sensors 2 and 6 are EOG channels
+    dataName = 'eeglab_data';
+end
+
+fileName = [dataName '.set'];
 
 if ~exist(fileName, 'file') > 0,   
     % Try downloading the file
-    url = 'http://kasku.org/data/meegpipe/eeglab_data_epochs_ica.zip';
-    unzipDir = catdir(session.instance.Folder, 'eeglab_data_epochs_ica');
+    url = ['http://kasku.org/data/meegpipe/' dataName  '.zip'];
+    unzipDir = catdir(session.instance.Folder, dataName);
     unzip(url, unzipDir);
-    fileName = catfile(unzipDir, 'eeglab_data_epochs_ica.set');   
+    fileName = catfile(unzipDir, fileName);   
 end
 
 warning('off', 'sensors:InvalidLabel');
