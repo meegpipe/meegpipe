@@ -127,7 +127,7 @@ these stability problems at the expense of increasing the complexity of the
 algorithm [[2]][scrls], but at this point `meegpipe` does not implement any such
 stable adaptive filter (but see [[1]](http://germangh.com/aar)).
 
-[scrls]: http://dx.doi.org/10.1109/78.738242)
+[scrls]: http://dx.doi.org/10.1109/78.738242
 
 What `meegpipe` does implement is a way of performing simple least squares
 regression in sliding (overlapping) windows. This approach does not have
