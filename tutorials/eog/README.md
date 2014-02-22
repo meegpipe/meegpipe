@@ -11,7 +11,7 @@ For this tutorial we will use the sample (epoched) dataset that comes with
 [EEGLAB][eeglab]. You can find it on the `sample_data` directory within
 your EEGLAB's installation directory. You can also get it from here:
 
-http://kasku.org/data/meegpipe/eeglab_data_epochs_ica.zip
+http://kasku.org/data/meegpipe/eeglab_data_epochs_ica.set
 
 [eeglab]: http://sccn.ucsd.edu/eeglab/
 
@@ -180,10 +180,9 @@ myNode3 = meegpipe.node.physioset_export.new('Exporter', physioset.export.eeglab
 myPipe  = meegpipe.node.pipeline.new(...
     'NodeList',         { myNode1, myNode2, myNode3 }, ...
     'GenerateReport',   false);
-% Let's create a few copies of our sample data file to illustrate how you could
+% Let's create a copy of our sample data file to illustrate how you could
 % process multiple files in one go
 copyfile('eeglab_data_epochs_ica.set', 'eeglab_data_epochs_ica_copy.set');
-copyfile('eeglab_data_epochs_ica.fdt', 'eeglab_data_epochs_ica_copy.fdt');
 fileList = {'eeglab_data_epochs_ica.set', 'eeglab_data_epochs_ica_copy.set'};
 
 % Run the pipeline on all files
