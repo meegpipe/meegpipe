@@ -107,8 +107,8 @@ channel label). You can also enforce that channels with certain indices
 are used as EOG reference signals:
 
 ````matlab
-% Channels 4, 7 and 10 contain EOG reference signals
-mySel = pset.selector.sensor_idx([4 7 10]);
+% Channels with indices 2 and 6 contain EOG reference signals
+mySel = pset.selector.sensor_idx([2 6]);
 myNode2 = aar.eog.regression('Order', 5, 'RegrSelector', mySel);
 ````
 
