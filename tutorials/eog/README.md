@@ -26,7 +26,7 @@ Before anything else we need to initialize _meegpipe_. You need to do this
 only once (for each MATLAB session):
 
 ````matlab
-% You may consider adding this line to your startup file
+% You may consider adding this line to your startup script
 meegpipe.initialize
 ```` 
 
@@ -69,13 +69,31 @@ origData = import(physioset.import.eeglab, 'eeglab_data_epochs_ica.set');
 plot(origData, cleanData);
 ````
 
-
 ![Simple multiple-lag regression](./regression.png "Multiple lag regression")
 
 As you can see, simple regression does minimize the ocular artifacts, but 
 leaves quite some residuals behind. One reason for this poor performance is
 that our regression filter is not able to adapt to intrinsically 
 non-stationary events such as blinks or saccades. 
+
+### Converting the data back to EEGLAB's format
+
+Variable `cleanData` above (as well as variable `origData`) is a 
+[physioset][physioset] object, the main data structure used by the 
+_meegpipe_ toolbox. You can convert a _physioset_ object into an EEGLAB
+ structure as follows:
+
+````matlab
+EEG = eeglab(cleanData);
+````
+
+Among other ways, you can load `EEG` into EEGLAB using e.g.:
+
+````matlab
+eeglab; % Start EEGLAB
+[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
+eeglab redraw;
+````
 
 
 ## Adaptive regression
