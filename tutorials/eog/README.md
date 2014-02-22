@@ -176,7 +176,7 @@ find convenient to incorporate the EEGLAB conversion step into the processing
 pipeline:
 
 ````matlab
-myNode3 = meegpipe.node.physioset_export('Exporter', physioset.export.eeglab);
+myNode3 = meegpipe.node.physioset_export.new('Exporter', physioset.export.eeglab);
 myPipe  = meegpipe.node.pipeline.new(...
     'NodeList',         { myNode1, myNode2, myNode3 }, ...
     'GenerateReport',   false);
