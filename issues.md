@@ -21,7 +21,7 @@ using the [development version of Inkscape][inkscape-dev] (release r23126
 
 [maxpath]: http://msdn.microsoft.com/en-us/library/aa365247%28VS.85%29.aspx#maxpath
 [inkscape-dev]: https://skydrive.live.com/?cid=09706d11303fa52a&id=9706D11303FA52A%21217#cid=09706D11303FA52A&id=9706D11303FA52A%21275
-
+[inkscape]: http://www.inkscape.org/en/
 
 ## Local `.svg` files do not render under Windows 8
 
