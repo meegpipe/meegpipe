@@ -83,6 +83,8 @@ Variable `cleanData` above (as well as variable `origData`) is a
 _meegpipe_ toolbox. You can convert a _physioset_ object into an EEGLAB
  structure as follows:
 
+[physioset]: ../../+physioset/@physioset/README.md
+
 ````matlab
 EEG = eeglab(cleanData);
 ````
@@ -93,6 +95,21 @@ Among other ways, you can load `EEG` into EEGLAB using e.g.:
 eeglab; % Start EEGLAB
 [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
 eeglab redraw;
+````
+
+### How does the pipeline know which are the EOG channels?
+
+You may have noticed that we did not specify anywhere which data channels
+contain the reference EOG signals. This was not necessary because the labels
+of the EOG channels were `EOG1` and `EOG2`, which are automatically 
+identified by the pipeline as EOG channels (due to the string `EOG` in the 
+channel label). You can also enforce that channels with certain indices 
+are used as EOG reference signals:
+
+````matlab
+% Channels 4, 7 and 10 contain EOG reference signals
+mySel = pset.selector.sensor_idx([4 7 10]); 
+myNode2 = aar.eog.regression('Order', 5, 'RegrSelector', mySel);
 ````
 
 
