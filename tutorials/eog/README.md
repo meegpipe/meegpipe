@@ -42,7 +42,7 @@ myNode1 = meegpipe.node.physioset_import.new(...
 The second node will perform the actual regression:
 
 ````matlab
-% Will use a multiple-lag regression filter of order 10 (default is 3)
+% Will use a multiple-lag regression filter of order 5 (default is 3)
 myNode2 = aar.eog.regression('Order', 5);
 ````
 
