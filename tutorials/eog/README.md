@@ -1,14 +1,14 @@
 Regressing out ocular artifacts
 ===
 
-This tutorial illustrates how _meegpipe_ can be used to correct ocular 
+This tutorial illustrates how _meegpipe_ can be used to correct ocular
 artifacts using a classical technique: regressing out one or more reference
-EOG signals from your EEG data. 
+EOG signals from your EEG data.
 
 ## The sample dataset
 
 For this tutorial we will use the sample (epoched) dataset that comes with
-[EEGLAB][eeglab]. You can find it on the `sample_data` directory within 
+[EEGLAB][eeglab]. You can find it on the `sample_data` directory within
 your EEGLAB's installation directory. You can also get it from here:
 
 http://kasku.org/data/meegpipe/eeglab_data_epochs_ica.zip
@@ -18,9 +18,9 @@ http://kasku.org/data/meegpipe/eeglab_data_epochs_ica.zip
 
 ## Least squares regression
 
-The easiest way of regression consists on using the whole EEG dataset to 
-learn the regression filter weights. Despite its simplicity, this approach 
-often produces good results. 
+The easiest way of regression consists on using the whole EEG dataset to
+learn the regression filter weights. Despite its simplicity, this approach
+often produces good results.
 
 Before anything else we need to initialize _meegpipe_. You need to do this
 only once (for each MATLAB session):
@@ -28,10 +28,10 @@ only once (for each MATLAB session):
 ````matlab
 % You may consider adding this line to your startup script
 meegpipe.initialize
-```` 
+````
 
-Let's create a simple processing pipeline to perform the EOG regression. 
-The first node in our pipeline needs to take care of reading the 
+Let's create a simple processing pipeline to perform the EOG regression.
+The first node in our pipeline needs to take care of reading the
 data from the disk file, which is in EEGLAB's `.set/.fdt` format:
 
 ````matlab
@@ -71,15 +71,15 @@ plot(origData, cleanData);
 
 ![Simple multiple-lag regression](./regression.png "Multiple lag regression")
 
-As you can see, simple regression does minimize the ocular artifacts, but 
+As you can see, simple regression does minimize the ocular artifacts, but
 leaves quite some residuals behind. One reason for this poor performance is
-that our regression filter is not able to adapt to intrinsically 
-non-stationary events such as blinks or saccades. 
+that our regression filter is not able to adapt to intrinsically
+non-stationary events such as blinks or saccades.
 
 ### Converting the data back to EEGLAB's format
 
-Variable `cleanData` above (as well as variable `origData`) is a 
-[physioset][physioset] object, the main data structure used by the 
+Variable `cleanData` above (as well as variable `origData`) is a
+[physioset][physioset] object, the main data structure used by the
 _meegpipe_ toolbox. You can convert a _physioset_ object into an EEGLAB
  structure as follows:
 
@@ -101,14 +101,14 @@ eeglab redraw;
 
 You may have noticed that we did not specify anywhere which data channels
 contain the reference EOG signals. This was not necessary because the labels
-of the EOG channels were `EOG1` and `EOG2`, which are automatically 
-identified by the pipeline as EOG channels (due to the string `EOG` in the 
-channel label). You can also enforce that channels with certain indices 
+of the EOG channels were `EOG1` and `EOG2`, which are automatically
+identified by the pipeline as EOG channels (due to the string `EOG` in the
+channel label). You can also enforce that channels with certain indices
 are used as EOG reference signals:
 
 ````matlab
 % Channels 4, 7 and 10 contain EOG reference signals
-mySel = pset.selector.sensor_idx([4 7 10]); 
+mySel = pset.selector.sensor_idx([4 7 10]);
 myNode2 = aar.eog.regression('Order', 5, 'RegrSelector', mySel);
 ````
 
@@ -118,25 +118,27 @@ myNode2 = aar.eog.regression('Order', 5, 'RegrSelector', mySel);
 To tackle non-stationarity, we could regress out the EOG reference signals
 using an adaptive filter that re-learns the regression weights at each
 time instant, using only past data according to a forgetting factor. For
-this approach to be computationally feasible one has to learn the 
-regression weights using adaptive algorithms such as a 
-[Recursive Least Squares (RLS)][rls]. However, most adaptive filters 
+this approach to be computationally feasible one has to learn the
+regression weights using adaptive algorithms such as a
+[Recursive Least Squares (RLS)][rls]. However, most adaptive filters
 (especially RLS-based) can easily become unstable and are hardly suitable
-for processing long-duration EEG datasets. There are ways to overcome 
+for processing long-duration EEG datasets. There are ways to overcome
 these stability problems at the expense of increasing the complexity of the
-algorithm, but at this point `meegpipe` does not implement any such stable
-adaptive filter (but see [1]). 
+algorithm [[2]][scrls], but at this point `meegpipe` does not implement any such
+stable adaptive filter (but see [[1]](http://germangh.com/aar)).
+
+[scrls]: http://dx.doi.org/10.1109/78.738242)
 
 What `meegpipe` does implement is a way of performing simple least squares
 regression in sliding (overlapping) windows. This approach does not have
-stability issues and is very effective at removing ocular artifacts. The 
-obvious downside is that computation time can be considerably longer than 
-for truly adaptive (e.g. RLS-based) algorithms.  
+stability issues and is very effective at removing ocular artifacts. The
+obvious downside is that computation time can be considerably longer than
+for truly adaptive (e.g. RLS-based) algorithms.
 
 [rls]: http://en.wikipedia.org/wiki/Recursive_least_squares_filter
 
-The following code snippet will regress out the EOG signals from the EEG 
-channels, in sliding windows of 2 seconds, with 90% overlap between 
+The following code snippet will regress out the EOG signals from the EEG
+channels, in sliding windows of 2 seconds, with 90% overlap between
 correlative windows, using a multiple lag regression filter of order 3:
 
 ````matlab
@@ -162,14 +164,38 @@ plot(origData, cleanData);
 
 ![Sliding window regression](./adaptive_regression.png "Sliding window regression")
 
-As expected, sliding-window regression is more effective at removing 
-ocular activity. 
+As expected, sliding-window regression is more effective at removing
+ocular activity.
+
+### Exporting to EEGLAB as part of the pipeline
+
+Above we described how you can convert a [physioset][physioset] object back to
+an EEGLAB structure using method `eeglab()`. If you are planning to process many
+data files and you are planning to convert all results to EEGLAB format, then it
+is very convenient to incorporate the EEGLAB conversion step into the processing
+pipeline:
+
+````matlab
+myNode3 = meegpipe.node.physioset_export('Importer', physioset.export.eeglab);
+myPipe  = meegpipe.node.pipeline.new(...
+    'NodeList',         { myNode1, myNode2, myNode3 }, ...
+    'GenerateReport',   false);
+% Let's create a few copies of our sample data file to illustrate how you could
+% process multiple files in one go
+copyfile('eeglab_data_epochs_ica.set', 'eeglab_data_epochs_ica_copy.set');
+copyfile('eeglab_data_epochs_ica.fdt', 'eeglab_data_epochs_ica_copy.fdt');
+fileList = {'eeglab_data_epochs_ica.set', 'eeglab_data_epochs_ica_copy.set'};
+
+% Run the pipeline on all files
+run(myPipe, fileList{:});
+````
+
 
 ## References
 
 [1] _The Automatic Artifact Removal (AAR) plug-in for EEGLAB_. Available at:
 http://germangh.com/aar
 
-[2] Liavas and Regalia, _On the numerical stability and accuracy of the 
-conventional recursive least squares algorithm_, IEEE Transactions on 
+[2] Liavas and Regalia, _On the numerical stability and accuracy of the
+conventional recursive least squares algorithm_, IEEE Transactions on
 Signal Processing, 47 (1), 1999. DOI: [10.1109/78.738242](http://dx.doi.org/10.1109/78.738242)

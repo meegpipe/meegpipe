@@ -39,7 +39,7 @@ in the tutorials may not be publicly available.
   to minimize ocular artifacts in the EEG using a classical technique:
   regressing out one or more reference EOG signals acquired with peri-ocular
   electrodes. The raw data used in this tutorial is publicly available. Moreover
-  this tutorial is so simple that is should be pretty trivial for you to
-  follow all the steps using your own dataset.
+  this tutorial is so simple that is should be trivial to follow all the steps
+  using your own dataset.
 
 [eog-tut]: ./eog/README.md
