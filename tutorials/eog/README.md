@@ -190,8 +190,12 @@ cleanDataFiles = run(myPipe, fileList{:});
 ````
 
 Where `cleanDataFiles` will be a cell array with the names of the EEGLAB's files
-that contain the processed data.
+that contain the processed data. Notice that if [open grid engine][oge] or
+[Condor][condor] are installed on your system the two files may be processed in
+parallel.
 
+[oge]: http://gridscheduler.sourceforge.net/index.html
+[condor]: http://research.cs.wisc.edu/htcondor/
 
 ## References
 
