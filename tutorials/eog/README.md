@@ -32,7 +32,7 @@ meegpipe.initialize
 
 Let's create a simple processing pipeline to perform the EOG regression.
 The first node in our pipeline needs to take care of reading the
-data from the disk file, which is in EEGLAB's `.set/.fdt` format:
+data from the disk file, which is in EEGLAB's `.set` format:
 
 ````matlab
 myNode1 = meegpipe.node.physioset_import.new(...
