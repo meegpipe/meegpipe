@@ -186,13 +186,34 @@ copyfile('eeglab_data_epochs_ica.set', 'eeglab_data_epochs_ica_copy.set');
 fileList = {'eeglab_data_epochs_ica.set', 'eeglab_data_epochs_ica_copy.set'};
 
 % Run the pipeline on all files
-cleanDataFiles = run(myPipe, fileList{:});
+run(myPipe, fileList{:});
 ````
 
-Where `cleanDataFiles` will be a cell array with the names of the EEGLAB's files
-that contain the processed data. Notice that if [open grid engine][oge] or
-[Condor][condor] are installed on your system the two files may be processed in
-parallel.
+Notice that if [open grid engine][oge] or [Condor][condor] are installed on your
+system the two files may be processed in parallel. Whenever you run a pipeline
+on a disk file, the results are stored within a directory named as the
+input file and ending with the string `.meegpipe`. It should be quite
+straightforward to navigate the contents of such `.meegpipe` directories. But
+just in case, realize that the full paths to the generated EEGLAB files (in
+'.set'/'.fdt' format) are:
+
+````matlab
+% Import utility catfile
+import mperl.file.spec.catfile;
+
+% The result of processing eeglab_data_epochs_ica.set
+file1 = catfile( ...
+    get_full_dir(myPipe, 'eeglab_data_epochs_ica.set'), ...
+    'node-03-physioset_export', 'EEG-Data-epochs.set');
+
+% And the result of processing eeglab_data_epochs_ica_copy.set
+file2 = catfile( ...
+    get_full_dir(myPipe, 'eeglab_data_epochs_ica_copy.set'), ...
+    'node-03-physioset_export', 'EEG-Data-epochs.set');
+
+````
+
+
 
 [oge]: http://gridscheduler.sourceforge.net/index.html
 [condor]: http://research.cs.wisc.edu/htcondor/
