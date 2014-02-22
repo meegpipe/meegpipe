@@ -124,7 +124,7 @@ regression weights using adaptive algorithms such as a
 (especially RLS-based) can easily become unstable and are hardly suitable
 for processing long-duration EEG datasets. There are ways to overcome
 these stability problems at the expense of increasing the complexity of the
-algorithm [[2]][scrls], but at this point `meegpipe` does not implement any such
+algorithm [[2]][scrls], but at this point _meegpipe_ does not implement any such
 stable adaptive filter (but see [[1]](http://germangh.com/aar)).
 
 [scrls]: http://dx.doi.org/10.1109/78.738242
