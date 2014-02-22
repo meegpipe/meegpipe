@@ -195,7 +195,7 @@ on a disk file, the results are stored within a directory named as the
 input file and ending with the string `.meegpipe`. It should be quite
 straightforward to navigate the contents of such `.meegpipe` directories. But
 just in case, realize that the full paths to the generated EEGLAB files (in
-'.set'/'.fdt' format) are:
+`.set/.fdt` format) are:
 
 ````matlab
 % Import utility catfile
