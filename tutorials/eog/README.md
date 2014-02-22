@@ -187,8 +187,11 @@ copyfile('eeglab_data_epochs_ica.fdt', 'eeglab_data_epochs_ica_copy.fdt');
 fileList = {'eeglab_data_epochs_ica.set', 'eeglab_data_epochs_ica_copy.set'};
 
 % Run the pipeline on all files
-run(myPipe, fileList{:});
+cleanDataFiles = run(myPipe, fileList{:});
 ````
+
+Where `cleanDataFiles` will be a cell array with the names of the EEGLAB's files
+that contain the processed data.
 
 
 ## References
