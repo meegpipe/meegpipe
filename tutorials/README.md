@@ -19,9 +19,8 @@ in the tutorials may not be publicly available.
 
 * The [BATMAN tutorial][batman] illustrates the procedure for extracting signal
   features from Arterial Blood Pressure, Electroencephalography (ECG) and
-  task-respose events. Such features could them be subjected to statistical
-  modeling, but this is beyond the scope of the tutorial. The tutorial raw data
-  that is not yet publicly available. If you wonder about the funny name of this
+  task-respose events. The tutorial raw data
+  is not yet publicly available. If you wonder about the funny name of this
   tutorial, it is due to the acronym of a related
   [research project][batman-project] that we are carrying out at the NIN.
 
