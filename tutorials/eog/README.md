@@ -171,12 +171,12 @@ ocular activity.
 
 Above we described how you can convert a [physioset][physioset] object back to
 an EEGLAB structure using method `eeglab()`. If you are planning to process many
-data files and you are planning to convert all results to EEGLAB format, then it
-is very convenient to incorporate the EEGLAB conversion step into the processing
+data files and you want to convert all results to EEGLAB format, then you may
+find convenient to incorporate the EEGLAB conversion step into the processing
 pipeline:
 
 ````matlab
-myNode3 = meegpipe.node.physioset_export('Importer', physioset.export.eeglab);
+myNode3 = meegpipe.node.physioset_export('Exporter', physioset.export.eeglab);
 myPipe  = meegpipe.node.pipeline.new(...
     'NodeList',         { myNode1, myNode2, myNode3 }, ...
     'GenerateReport',   false);
