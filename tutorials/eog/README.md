@@ -219,7 +219,7 @@ EEGLAB files highlighted:
 
 ![Directory structure of the pipeline output](./dirtree.png "Ouput produced by the pipeline")
 
-Notice that the names of the `pipeline-` directories may differ on your system,
+The names of the `pipeline-` directories may differ on your system,
 depending on the operating system and MATLAB version that you are running, and
 depending also on the version of _meegpipe_ that you are using.
 
