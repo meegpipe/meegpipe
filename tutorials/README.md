@@ -41,3 +41,5 @@ in the tutorials may not be publicly available.
   electrodes. The raw data used in this tutorial is publicly available. Moreover
   this tutorial is so simple that is should be pretty trivial for you to
   follow all the steps using your own dataset.
+
+[eog-tut]: ./eog/README.md
