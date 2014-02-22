@@ -1,11 +1,11 @@
 meegpipe tutorials
 ========
 
-In this folder you will find some tutorials on how to use _meegpipe_. Most
-of these tutorials are not toy examples but real use-cases of analysis and data
-processing tasks performed at the [Sleep&Cognition][sc] team of the
-[Netherlands Institute for Neuroscience][nin]. These training
-materials are fairly advanced and you are strongly encouraged to first read
+The tutorials that you will find here are not necessarily toy examples but,
+often, they real use-cases of analysis and data processing tasks performed at
+the [Sleep&Cognition][sc] team of the
+[Netherlands Institute for Neuroscience][nin]. Thus, some of these materials are
+fairly advanced and you are strongly encouraged to first read
 [meegpipe's documentation][meegpipe-api].
 
 __IMPORTANT:__ These materials were originally designed for internal use within
@@ -17,13 +17,27 @@ in the tutorials may not be publicly available.
 [nin]: http://www.nin.knaw.nl/
 
 
-* The [BATMAN tutorial][batman] illustrates the procedure for extracting useful
+* The [BATMAN tutorial][batman] illustrates the procedure for extracting signal
   features from Arterial Blood Pressure, Electroencephalography (ECG) and
-  task-respose events.
+  task-respose events. Such features could them be subjected to statistical
+  modeling, but this is beyond the scope of the tutorial. The tutorial raw data
+  that is not yet publicly available. If you wonder about the funny name of this
+  tutorial, it is due to the acronym of a related
+  [research project][batman-project] that we are carrying out at the NIN.
+
+[batman-project]: http://www.neurosipe.nl/project.php?id=23&sess=6eccc41939665cfccccd8c94d8e0216f
 
 * The [ssmd_rs tutorial][ssmd_rs] illustrates a typical pre-processing and
-  data-cleaning workflow in a resting-state [hdEEG][hdeeg] study.
+  data-cleaning workflow in a resting-state [hdEEG][hdeeg] study. The raw data
+  is not publicly available yet.
 
-  [batman]:  ./batman/README.md
-  [ssmd_rs]: ./ssmd_rs/README.md
-  [hdeeg]: http://en.wikipedia.org/wiki/Electroencephalography
+[batman]:  ./batman/README.md
+[ssmd_rs]: ./ssmd_rs/README.md
+[hdeeg]: http://en.wikipedia.org/wiki/Electroencephalography
+
+* The [EOG regression tutorial][eog-tut] demonstrates how _meegpipe_ can be used
+  to minimize ocular artifacts in the EEG using a classical technique:
+  regressing out one or more reference EOG signals acquired with peri-ocular
+  electrodes. The raw data used in this tutorial is publicly available. Moreover
+  this tutorial is so simple that is should be pretty trivial for you to
+  follow all the steps using your own dataset.
