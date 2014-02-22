@@ -42,7 +42,10 @@ if isempty(regexpi(msg, '^\s+Usage\s')),
             cmd = 'source ~/.bashrc; remark.py';
             [~, msg] = system(cmd);
             if isempty(regexpi(msg, 'Usage:\s+remark.py')),
-                error('Remark is not installed in this system');
+                warning('report:remark:MissingDependency', ...
+                    ['Remark is not installed in this system: no '  ...
+                    'HTML report will be generated']);
+                return;
             else
                 cmd = 'source ~/.bashrc; remark.py';
             end
