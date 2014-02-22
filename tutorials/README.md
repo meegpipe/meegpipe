@@ -28,7 +28,7 @@ in the tutorials may not be publicly available.
 
 * The [ssmd_rs tutorial][ssmd_rs] illustrates a typical pre-processing and
   data-cleaning workflow in a resting-state [hdEEG][hdeeg] study. The raw data
-  is not publicly available yet.
+  is not publicly available yet. This tutorial is still work in progress.
 
 [batman]:  ./batman/README.md
 [ssmd_rs]: ./ssmd_rs/README.md
