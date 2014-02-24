@@ -4,18 +4,6 @@ Optional dependencies
 The dependencies listed here are not required for _meegpipe_ to work, but they
 can considerably enhance _meegpipe_'s functionality.
 
-
-### Google Chrome (strongly recommended)
-
-_meegpipe_ generates HTML reports with lots of [.svg][svg] graphics
-embedded. [Google Chrome][gc] is far superior to other browsers when handling
-`.svg` files and thus it is strongly recommended that you install Google
-Chrome. 
-
-[svg]: http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
-[gc]: https://www.google.com/intl/en/chrome/browser/
-
-
 ### Sun/Oracle grid engine
 
 If [Oracle Grid Engine][oge] (OGE) is installed on your system,
