@@ -78,14 +78,16 @@ unzip('https://github.com/meegpipe/meegpipe/zipball/master', 'meegpipe');
 addpath(genpath('meegpipe'));
 meegpipe.initialize;
 % Initialize meegpipe every time that MATLAB starts
+addpath(userpath);
 fid = fopen(which('startup'), 'a');
-fprintf(fid, '\n\naddpath(genpath(''%s''))\n', [pwd filesep 'meegpipe']);
-fprintf(fid, '\meegpipe.initialize\n\n');
+fprintf(fid, '\n\naddpath(genpath(''%s''));\n', [pwd filesep 'meegpipe']);
+fprintf(fid, 'meegpipe.initialize;\n\n');
 fclose(fid);
 ````
 
 Notice that the code above will install _meegpipe_ in directory `meegpipe`
-under your current working directory. 
+under your current working directory. Notice also that EEGLAB needs to be 
+part of your MATLAB search path for `meegpipe.initialize` to succeed. 
 
 
 ## Basic usage
