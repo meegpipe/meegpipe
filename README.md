@@ -205,7 +205,7 @@ This means that _meegpipe_ just created a directory `session_1`, which will be
 used to store, among other things, the data processing reports. Namely, you can
 find a node's HTML report under:
 
-    session_1/[DATA].meegpipe/[NODE]_[USR]_[SYS]/remark/index.htm
+    session_1/[DATA].meegpipe/[NODE]_[USR]_[SYS]/index.htm
 
 where
 
