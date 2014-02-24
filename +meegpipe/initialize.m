@@ -24,41 +24,50 @@ if nargin < 1 || isempty(cfg),
 end
 
 %% Add dependencies to the path
-depList = parameters(cfg, 'thirdparty');
+depList = group_members(cfg, 'matlab');
 
 if isempty(depList),
    warning('meegpipe:initialize:MissingDependencyList', ...
-       ['No dependencies were found in %s\n' ...
+       ['No matlab-dependencies section found in %s\n' ...
        'The configuration file may be invalid'], cfg.File); 
 end
 
 if ischar(depList) && ~isempty(depList), depList = {depList}; end
 
-unmetDeps = {};
 for i = 1:numel(depList)
     
-    dirList = val(cfg, 'thirdparty', depList{i}, true);
-    dirList = cellfun(@(x) rel2abs(x, root_path), dirList, ...
-        'UniformOutput', false);
-    thisDir = existing_dir(dirList);
-    if isempty(thisDir),
-        unmetDeps = [unmetDeps;depList(i)]; %#ok<AGROW>
+    uniqueFile = val(cfg, depList{i}, 'unique_mfile');
+    fullPathToFile = which(uniqueFile);
+    if isempty(fullPathToFile),
+        warning('meegpipe:initialize:MissingDependency', ...
+            'Could not find dependency: %s', depList{i});
     else
-        absDir = rel2abs(thisDir);
-        depRoot(depList{i}) = strrep(absDir, '\', '/');
-        fprintf([verboseLabel 'Found %s: %s\n\n'], upper(depList{i}), absDir);
-        addpath(genpath(absDir));
+        depPath = fileparts(fullPathToFile);
+        depPath = strrep(rel2abs(depPath), '\', '/');
+        depRoot(depList{i}) = depPath;
+        fprintf([verboseLabel 'Found %s: %s\n\n'], upper(depList{i}), depPath);
+        addpath(genpath(depPath));
+        % Remove problematic paths
+        probPaths = val(cfg, depList{i}, 'problematic_paths', true);
+        probPaths = cellfun(@(x, y) [depRoot(x) y], depList, probPaths, ...
+            'UniformOutput', false);  
+        remove_from_path(probPaths);
     end
-    
+
 end
 
-%% Remove some problematic folders from the path. Damn MATLAB!
-problematic = {...
-    [depRoot('fieldtrip') '/compat'] ...
-    [depRoot('fieldtrip') '/external/dss'] ...
-    [depRoot('fieldtrip') '/external/signal'] ...
-    [depRoot('eeglab') '/functions/octavefunc'] ...
-    };
+fprintf([verboseLabel 'Done with initialization\n\n']);
+
+
+end
+
+
+function remove_from_path(dirList)
+
+import mperl.join;
+import mperl.split;
+
+verboseLabel = '(meegpipe) ';
 
 if isunix, sep = ':'; else sep = ';'; end
 pathList = split(sep, path);
@@ -66,24 +75,15 @@ pathList2 = cellfun(@(x) strrep(x, '\', '/'), pathList, ...
     'UniformOutput', false);
 
 fprintf([verboseLabel 'Removing problematic dirs from path:\n\n']);
-fprintf(join('\n', problematic));
+fprintf(join('\n', dirList));
 fprintf('\n\n');
 
-for i = 1:numel(problematic)
+for i = 1:numel(dirList)
     
-    isProblematic = cellfun(@(x) ~isempty(strfind(x, problematic{i})), pathList2);
+    isProblematic = cellfun(@(x) ~isempty(strfind(x, dirList{i})), pathList2);
     
     cellfun(@(x) rmpath(x), pathList(isProblematic));
     
 end
-
-if ~isempty(unmetDeps),
-    fprintf([verboseLabel 'The following dependencies were not found:\n\n']);
-    fprintf(join('\n', unmetDeps));
-    fprintf('\n\n');
-end
-
-fprintf([verboseLabel 'Done with initialization\n\n']);
-
 
 end
