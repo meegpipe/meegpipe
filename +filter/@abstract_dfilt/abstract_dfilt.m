@@ -50,12 +50,25 @@ classdef abstract_dfilt < ...
     % Virtual constructor
     methods
         function obj = abstract_dfilt(varargin)
+            import misc.process_arguments;
+            import misc.split_arguments;
+            
+            opt.Verbose = [];
+            opt.VerboseLabel = @(x, meth) sprintf('(%s:%s) ', class(x), meth);
+            [thisArgs, varargin] = split_arguments(opt, varargin);
+            [~, opt] = process_arguments(opt, thisArgs);
             
             obj = obj@goo.abstract_named_object(varargin{:});
+           
+            if ~isempty(opt.Verbose),
+                obj = set_verbose(obj, opt.Verbose);
+            end
             
-            % Default verbose label
-            obj = set_verbose_label(obj, ...
-                @(x, meth) sprintf('(%s:%s) ', class(x), meth));
+            if ~isempty(opt.VerboseLabel),
+                obj = set_verbose_label(obj, opt.VerboseLabel);
+            end
+                
+            
         end
         
     end

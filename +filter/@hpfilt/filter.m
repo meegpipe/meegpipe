@@ -38,11 +38,20 @@ if verbose,
     clear +misc/eta;
 end
 
+if ~obj.PersistentMemory,
+    grpDelay = floor(max(grpdelay(obj.H)));
+end
+
 for i = 1:size(x, 1)
     if isa(obj, 'physioset.physioset') && obj.BadChan(i),
         continue;
     end
-    x(i, :) = filter(obj.H, x(i,:));
+    if obj.PersistentMemory,
+        x(i, :) = filter(obj.H, x(i,:));
+    else        
+        tmp = filter(obj.H, [x(i, grpDelay:-1:1) x(i,:) x(i, end:-1:end-grpDelay+1)]);
+        x(i, :) = tmp(grpDelay+1:end-grpDelay);
+    end
     if verbose && ~mod(i, by25)
         eta(tinit, size(x,1), i, 'remaintime', false);
     end

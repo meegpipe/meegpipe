@@ -42,8 +42,8 @@ for i = 1:size(x, 1)
         continue;
     end
     xi = x(i, :);
-    xi = filter(obj.H, xi);
-    xi = filter(obj.H, fliplr(xi));
+    xi = filter(set_verbose(obj, false), xi);
+    xi = filter(set_verbose(obj, false), fliplr(xi));
     x(i, :) = fliplr(xi);
     if verbose && ~mod(i, by100),
         eta(tinit, size(x,1), i, 'remaintime', false);

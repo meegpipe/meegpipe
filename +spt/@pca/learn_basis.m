@@ -30,13 +30,8 @@ A = pinv(W);
 % Compute model order selection criteria
 critName = setdiff(keys(spt.pca.valid_criteria), 'NONE');
 for critItr = 1:numel(critName)
-    try
     [kopt, critVal] = feval(['spt.pca.' lower(critName{critItr})], ...
-        sortedLambda, obj.Samples);
-    catch
-        cata=5;
-        keyboard;
-    end
+        sortedLambda, obj.Samples);    
     obj.(upper(critName{critItr})) = critVal;
     obj.([upper(critName{critItr}) 'Order']) = kopt;
 end

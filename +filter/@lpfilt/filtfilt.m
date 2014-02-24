@@ -42,8 +42,8 @@ for i = 1:size(x, 1)
     
     xi = x(i, :);
     
-    xi = filter(obj.H, xi);
-    xi = filter(obj.H, fliplr(xi));
+    xi = filter(obj, xi);
+    xi = filter(obj, fliplr(xi));
     x(i, :) = fliplr(xi);
    
     if verbose &&  ~mod(i, by100),

@@ -42,9 +42,7 @@ classdef bpfilt < filter.abstract_dfilt
     properties (SetAccess = private, GetAccess = private)
         MDFilt;     % Equivalent MATLAB dfilt object
     end
-    
-    % Public Interface ....................................................
-    
+  
     properties (SetAccess = private)
         LpFilter;
         HpFilter;
