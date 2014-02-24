@@ -48,7 +48,7 @@ try
     
     data = import(importer, X);
     
-    myNode = meegpipe.node.bss.lasip_fit('MinCard', 0);
+    myNode = aar.misc.lpa_noise('MinCard', 0);
     warning('off', 'snapshots:TooManyVertices');
     run(myNode, data);
     warning('on', 'snapshots:TooManyVertices');
@@ -81,7 +81,7 @@ try
     end
     dataCopy = copy(data);    
  
-    myNode = meegpipe.node.bss.lasip_fit(...
+    myNode = aar.misc.lpa_noise(...
         'MinCard',  0, ...
         'EpochDur', @(sr) 5*sr, ...
         'NbEpochs', 5);
