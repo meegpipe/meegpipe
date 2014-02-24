@@ -87,36 +87,11 @@ fclose(fid);
 
 Notice that the code above will install _meegpipe_ in directory `meegpipe`
 under your current working directory. Notice also that EEGLAB needs to be 
-part of your MATLAB search path for `meegpipe.initialize` to succeed. 
+part of your MATLAB search path for the `meegpipe.initialize` command to
+ succeed. 
 
 
 ## Basic usage
-
-Before anything else you will have to add _meegpipe_ and its dependencies
-to your MATLAB search path:
-
-``````matlab
-restoredefaultpath;
-addpath(genpath('~/meegpipe'));
-meegpipe.initialize;
-````
-
-The commands above will ensure that your MATLAB search path contains __only__
-the MATLAB sources that are needed for _meegpipe_ to run.
-Namely, _meegpipe_ itself, and a subset of Fieldtrip and EEGLAB. The
-`restoredefaultpath` command is important to ensure that other toolboxes do
-not interfere with _meegpipe_. On the other hand, _meegpipe_ components are
-all encapsulated in [MATLAB packages][matlab-pkg], which should prevent
-_meegpipe_ interfering with other toolboxes. Thus it should be relatively
- safe for you to add the three lines above to your MATLAB [startup][startup]
- function so that you don't need to type them every time you start MATLAB.
-
-[startup]: http://www.mathworks.nl/help/matlab/ref/startup.html
-[eeglab]: http://sccn.ucsd.edu/eeglab/
-[ftrip]: http://fieldtrip.fcdonders.nl/
-[ini]: http://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini
-[matlab-pkg]: http://www.mathworks.nl/help/matlab/matlab_oop/scoping-classes-with-packages.html
-
 
 ### Data import
 
