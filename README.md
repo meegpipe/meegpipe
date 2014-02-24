@@ -134,7 +134,7 @@ Create a node that will import data from a MATLAB matrix:
 myImporter = physioset.import.matrix('SamplingRate', 250);
 myNode0 = node.physioset_import.new('Importer', myImporter);
 % Run it! import the data!
-data = run(myNode0, randn(15,10000));
+data = run(myNode0, randn(15, 10000));
 ````
 
 A node that detrends the imported data using a 10th order polynomial:
@@ -252,8 +252,10 @@ import meegpipe.*;
 import physioset.import.*;
 
 myPipe = node.pipeline.new(...
-    'NodeList', {myNode1, myNode2, myNode3, myNode4, myNode5})
-data = run(myPipe, 'myfile.mff');
+    'NodeList', {n0, n1, n2, n3, n4, n5, n6});
+
+% Will produce an output file in EEGLAB format
+run(myPipe, randn(15, 10000));
 
 ````
 
