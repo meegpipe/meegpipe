@@ -89,3 +89,18 @@ For Windows and Mac OS X you can use the installation packages available at
 [pygments]: http://pygments.org/
 [markdown]: http://freewisdom.org/projects/python-markdown/
 [pil]: http://www.pythonware.com/products/pil/
+
+
+### Google Chrome
+
+_meegpipe_ generates HTML reports with lots of [.svg][svg] graphics
+embedded. [Google Chrome][gc] is far superior to other browsers when handling
+`.svg` files and thus it is strongly recommended that you install Google
+Chrome. 
+
+[svg]: http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
+[gc]: https://www.google.com/intl/en/chrome/browser/
+
+
+
+
