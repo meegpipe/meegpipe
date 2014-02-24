@@ -86,26 +86,6 @@ part of your MATLAB search path for the `meegpipe.initialize` command to
 
 ## Basic usage
 
-### Data import
-
-````matlab
-import physioset.import.*;
-% Import from an .mff file
-data = import(mff, 'myfile.mff');
-% Import from an EDF+ file
-data = import(edfplus, 'myfile.edf');
-% Import MATLAB built-in numerics
-data = import(matrix, randn(10,10000));
-````
-All data importer classes implement an `import()` method, which always
-produces a [physioset][physioset] object. For more information and a list
-of available data importers see the [documentation][import-docs].
-
-
-[import-docs]: https://github.com/meegpipe/meegpipe/blob/master/+physioset/+import/README.md
-[physioset]: https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md
-
-
 
 ### Data processing nodes
 
