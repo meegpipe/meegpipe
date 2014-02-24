@@ -8,7 +8,7 @@ import datahash.DataHash;
 
 MEh     = [];
 
-initialize(5);
+initialize(6);
 
 %% Create a new session
 try
@@ -40,6 +40,39 @@ try
         isa(obj, 'filter.eeglab_fir') & ~is_verbose(obj) & ...
         all(obj2.Fp == [0 20]) & all(obj.Fp == [0 20]), ...
         name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% band-pass filter
+try
+    
+    name = 'band-pass filter';
+    X = randn(5, 1000);
+    
+    X = filter(filter.bpfilt('Fp', [5 15]/(250/2)), X);
+    
+    N = 0.1*randn(5, 1000);   
+    
+    data = import(physioset.import.matrix('SamplingRate', 250), X+N);
+    
+    snr0 = 0;
+    for i = 1:size(X, 1)
+        snr0 = snr0 + var(X(i,:))/var(N(i,:));
+    end
+    
+    myFilt = filter.eeglab_fir('Fp', [5 15], 'Notch', false);
+    filter(myFilt, data);
+    
+    snr1 = 0;
+    for i = 1:size(X, 1)
+        snr1 = snr1 + var(X(i,:))/var(data(i,:) - X(i,:));
+    end
+    ok(snr1 > 5*snr0, name);
     
 catch ME
     
