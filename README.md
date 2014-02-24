@@ -132,30 +132,30 @@ Create a node that will import data from a MATLAB matrix:
 
 ````matlab
 myImporter = physioset.import.matrix('SamplingRate', 250);
-myNode0 = node.physioset_import.new('Importer', myImporter);
+n0 = node.physioset_import.new('Importer', myImporter);
 % Run it! import the data!
-data = run(myNode0, randn(15, 10000));
+data = run(n0, randn(15, 10000));
 ````
 
 A node that detrends the imported data using a 10th order polynomial:
 
 ````matlab
-myNode1 = node.filter.new('Filter', filter.polyfit('Order', 10));
-run(myNode1, data);
+n1 = node.filter.new('Filter', filter.polyfit('Order', 10));
+run(n1, data);
 ````
 
 Reject bad channels:
 
 ````matlab 
-myNode2  = node.bad_channels.new;
-run(myNode2, data);
+n2  = node.bad_channels.new;
+run(n2, data);
 ````
 Apply a band pass filter between 0.1 and 70 Hz:
 
 ````matlab
 myFilter = @(sr) filter.bpfilt('Fp', [0.1 70]/(sr/2));
-myNode3   = node.filter.new('Filter', myFilter);
-run(myNode3, data);
+n3   = node.filter.new('Filter', myFilter);
+run(n3, data);
 ````
 
 Remove powerline noise using [Blind Source Separation (BSS)][bss]: 
@@ -163,22 +163,23 @@ Remove powerline noise using [Blind Source Separation (BSS)][bss]:
 [bss]: http://en.wikipedia.org/wiki/Blind_signal_separation
 
 ````matlab
-myNode4   = node.bss.pwl;
-run(myNode4, data);
+n4   = node.bss.pwl;
+run(n4, data);
 ````
 
 Reject ocular artifacts using BSS:
 
 ````matlab
-myNode5   = node.bss.eog;
-run(myNode5, data);
+n5   = node.bss.eog;
+run(n5, data);
 ````
 
 Export to EEGLAB format:
 
 ````matlab
 myExporter = physioset.export.eeglab;
-myNode6 = node.physioset_export.new('Exporter', myExporter);
+n6 = node.physioset_export.new('Exporter', myExporter);
+run(n6, data);
 ````
 
 For more information and a list of available processing nodes, see the
