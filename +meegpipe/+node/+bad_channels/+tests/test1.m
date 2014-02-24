@@ -268,11 +268,13 @@ try
     myNode = bad_channels('Save', true, 'Criterion', crit, ...
         'DataSelector', dataSel);
     
+    % Must get output filename BEFORE running the node!
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
     
     pause(0.5);
     
-    ok( exist(get_output_filename(myNode, data), 'file')>0 ...
+    ok( exist(outputFileName, 'file')>0 ...
         && all(find(is_bad_channel(data)) ==  [10 20 40]), ...
         name);
     
