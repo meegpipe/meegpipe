@@ -75,7 +75,10 @@ Copy and paste the following code in the MATLAB command window:
 
 ````matlab
 unzip('https://github.com/meegpipe/meegpipe/zipball/master', 'meegpipe');
-fprintf(fopen(which('startup'), 'a'), '\n\nmeegpipe.initialize\n\n')
+fid = fopen(which('startup'), 'a');
+fprintf(fid, '\n\naddpath(genpath(''%s''))\n', [pwd filesep 'meegpipe']);
+fprintf(fid, '\meegpipe.initialize\n\n');
+fclose(fid);
 meegpipe.initialize;
 ````
 
