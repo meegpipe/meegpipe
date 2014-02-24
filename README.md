@@ -45,7 +45,7 @@ Inspecting plain text reports with embedded images is _very inconvenient_
 so please consider installing these [highly recommended dependencies][recommended-dep].
 
 [remark]: http://kaba.hilvi.org/remark/remark.htm
-[recommended-dep]: ./recommended.md
+[recommended-dep]: https://github.com/meegpipe/meegpipe/blob/master/recommended.md
 [inkscape]: http://www.inkscape.org/en/
 
 
