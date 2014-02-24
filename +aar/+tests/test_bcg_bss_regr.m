@@ -52,7 +52,7 @@ end
 %% constructor with config options
 try
     
-    name = 'constructor with config options';
+    name = 'constructor with config options';    
     
     myNode = aar.bcg.bss_regr('Name', 'myname');
     ok(...
@@ -75,10 +75,13 @@ try
     
     dataO = data(1,:);    
     
-    myNode = aar.bcg.bss_regr(...
+    myNode1 = meegpipe.node.qrs_detect.new;
+    myNode2 = aar.bcg.bss_regr(...
         'IOReport',         report.plotter.io, ...
         'Save',             true, ...
         'GenerateReport',   true);
+    
+    myNode = meegpipe.node.pipeline.new('NodeList', {myNode1, myNode2});
     run(myNode, data);    
     
     ok(prctile(abs(dataO), 90) > 2*prctile(abs(data(1,:)), 90), name);
@@ -116,7 +119,7 @@ import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 
 if exist('bcg_sample.pseth', 'file') > 0,
-    data = pset.load('bcg_sample.pseth');
+    data = pset.load('bcg_sample2.pseth');
 else
     % Try downloading the file
     url = 'http://kasku.org/data/meegpipe/bcg_sample.zip';
