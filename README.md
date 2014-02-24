@@ -75,11 +75,13 @@ Copy and paste the following code in the MATLAB command window:
 
 ````matlab
 unzip('https://github.com/meegpipe/meegpipe/zipball/master', 'meegpipe');
+addpath(genpath('meegpipe'));
+meegpipe.initialize;
+% Initialize meegpipe every time that MATLAB starts
 fid = fopen(which('startup'), 'a');
 fprintf(fid, '\n\naddpath(genpath(''%s''))\n', [pwd filesep 'meegpipe']);
 fprintf(fid, '\meegpipe.initialize\n\n');
 fclose(fid);
-meegpipe.initialize;
 ````
 
 Notice that the code above will install _meegpipe_ in directory `meegpipe`
