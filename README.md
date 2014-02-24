@@ -58,8 +58,11 @@ so please consider installing these [highly recommended dependencies][recommende
 ### Optional
 
 You are encouraged to install a few [additional components][optional] that
-can considerably enhance _meegpipe_'s functionality. 
+can enhance _meegpipe_'s functionality in terms of 
+[high-throughput computing][ht-comp].
 
+
+[ht-comp]: http://en.wikipedia.org/wiki/High-throughput_computing
 [optional]: https://github.com/meegpipe/meegpipe/blob/master/optional.md
 [gc]: http://www.google.com/chrome
 
