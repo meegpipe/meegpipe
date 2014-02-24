@@ -117,33 +117,62 @@ of available data importers see the <a href="https://github.com/meegpipe/meegpip
 <h3>
 <a name="data-processing-nodes" class="anchor" href="#data-processing-nodes"><span class="octicon octicon-link"></span></a>Data processing nodes</h3>
 
-<div class="highlight highlight-matlab"><pre><span class="n">import</span> <span class="n">meegpipe</span><span class="o">.*</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="p">.</span><span class="n">matrix</span><span class="p">;</span>
+<p><em>meegpipe</em> allows you to build processing pipelines by definining what you
+want to do with your data in terms of <em>processing nodes</em>. There are 
+processing nodes for a variaty of tasks: importing from disk, filtering, 
+bad channel rejection, removing artifacts, feature extraction, etc. You can 
+also easily define your own nodes that will integrate seamlessly with 
+the <em>meegpipe</em> framework.</p>
 
-<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10000</span><span class="p">));</span>
+<p>For convenience, we bring package <em>meegpipe</em> to the current name space:</p>
 
-<span class="c">% Detrend using a 10th order polynomial to remove very low freq. trends</span>
-<span class="n">myNode1</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">filter</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Filter'</span><span class="p">,</span> <span class="n">filter</span><span class="p">.</span><span class="n">polyfit</span><span class="p">(</span><span class="s">'Order'</span><span class="p">,</span> <span class="mi">10</span><span class="p">));</span>
-<span class="n">run</span><span class="p">(</span><span class="n">myNode1</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+<pre><code>import meegpipe.*;
+</code></pre>
 
-<span class="c">% Reject bad channels</span>
-<span class="n">myNode2</span>  <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">bad_channels</span><span class="p">.</span><span class="n">new</span><span class="p">;</span>
-<span class="n">run</span><span class="p">(</span><span class="n">myNode2</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+<p>Create a node that will import data from a MATLAB matrix: </p>
 
-<span class="c">% Apply a band pass filter between 0.1 and 70 Hz</span>
-<span class="n">myFilter</span> <span class="p">=</span> <span class="p">@(</span><span class="n">sr</span><span class="p">)</span> <span class="n">filter</span><span class="p">.</span><span class="n">bpfilt</span><span class="p">(</span><span class="s">'Fp'</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span> <span class="mi">70</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">sr</span><span class="o">/</span><span class="mi">2</span><span class="p">));</span>
-<span class="n">myNode3</span>   <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">filter</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Filter'</span><span class="p">,</span> <span class="n">myFilter</span><span class="p">);</span>
-<span class="n">run</span><span class="p">(</span><span class="n">myNode3</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+<div class="highlight highlight-matlab"><pre><span class="n">myImporter</span> <span class="p">=</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="p">.</span><span class="n">matrix</span><span class="p">(</span><span class="s">'SamplingRate'</span><span class="p">,</span> <span class="mi">250</span><span class="p">);</span>
+<span class="n">n0</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">physioset_import</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Importer'</span><span class="p">,</span> <span class="n">myImporter</span><span class="p">);</span>
+<span class="c">% Run it! import the data!</span>
+<span class="n">data</span> <span class="p">=</span> <span class="n">run</span><span class="p">(</span><span class="n">n0</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10000</span><span class="p">));</span>
+</pre></div>
 
-<span class="c">% Remove powerline noise using Blind Source Separation (BSS)</span>
-<span class="n">myNode4</span>   <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">bss</span><span class="p">.</span><span class="n">pwl</span><span class="p">;</span>
-<span class="n">run</span><span class="p">(</span><span class="n">myNode4</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+<p>A node that detrends the imported data using a 10th order polynomial:</p>
 
-<span class="c">% Reject ocular artifacts using BSS</span>
-<span class="n">myNode5</span>   <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">bss</span><span class="p">.</span><span class="n">eog</span><span class="p">;</span>
-<span class="n">run</span><span class="p">(</span><span class="n">myNode5</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+<div class="highlight highlight-matlab"><pre><span class="n">n1</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">filter</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Filter'</span><span class="p">,</span> <span class="n">filter</span><span class="p">.</span><span class="n">polyfit</span><span class="p">(</span><span class="s">'Order'</span><span class="p">,</span> <span class="mi">10</span><span class="p">));</span>
+<span class="n">run</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+</pre></div>
 
-<span class="c">% etc ...</span>
+<p>Reject bad channels:</p>
+
+<div class="highlight highlight-matlab"><pre><span class="n">n2</span>  <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">bad_channels</span><span class="p">.</span><span class="n">new</span><span class="p">;</span>
+<span class="n">run</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+</pre></div>
+
+<p>Apply a band pass filter between 0.1 and 70 Hz:</p>
+
+<div class="highlight highlight-matlab"><pre><span class="n">myFilter</span> <span class="p">=</span> <span class="p">@(</span><span class="n">sr</span><span class="p">)</span> <span class="n">filter</span><span class="p">.</span><span class="n">bpfilt</span><span class="p">(</span><span class="s">'Fp'</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span> <span class="mi">70</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">sr</span><span class="o">/</span><span class="mi">2</span><span class="p">));</span>
+<span class="n">n3</span>   <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">filter</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Filter'</span><span class="p">,</span> <span class="n">myFilter</span><span class="p">);</span>
+<span class="n">run</span><span class="p">(</span><span class="n">n3</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+</pre></div>
+
+<p>Remove powerline noise using <a href="http://en.wikipedia.org/wiki/Blind_signal_separation">Blind Source Separation (BSS)</a>: </p>
+
+<div class="highlight highlight-matlab"><pre><span class="n">n4</span>   <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">bss</span><span class="p">.</span><span class="n">pwl</span><span class="p">;</span>
+<span class="n">run</span><span class="p">(</span><span class="n">n4</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+</pre></div>
+
+<p>Reject ocular artifacts using BSS:</p>
+
+<div class="highlight highlight-matlab"><pre><span class="n">n5</span>   <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">bss</span><span class="p">.</span><span class="n">eog</span><span class="p">;</span>
+<span class="n">run</span><span class="p">(</span><span class="n">n5</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+</pre></div>
+
+<p>Export to EEGLAB format:</p>
+
+<div class="highlight highlight-matlab"><pre><span class="n">myExporter</span> <span class="p">=</span> <span class="n">physioset</span><span class="p">.</span><span class="n">export</span><span class="p">.</span><span class="n">eeglab</span><span class="p">;</span>
+<span class="n">n6</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">physioset_export</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Exporter'</span><span class="p">,</span> <span class="n">myExporter</span><span class="p">);</span>
+<span class="n">run</span><span class="p">(</span><span class="n">n6</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
 </pre></div>
 
 <p>For more information and a list of available processing nodes, see the
@@ -152,9 +181,10 @@ of available data importers see the <a href="https://github.com/meegpipe/meegpip
 <h3>
 <a name="processing-reports" class="anchor" href="#processing-reports"><span class="octicon octicon-link"></span></a>Processing reports</h3>
 
-<p>One of the great features of <em>meegpipe</em> is that it generates comprehensive
-HTML reports for every data processing task. In the example above, you
-should have got a warning saying something like:</p>
+<p>One of the great features of <em>meegpipe</em> is that every processing node
+generates comprehensive HTML reports for every data processing task. In the
+ examples above, you should have got an initial warning saying something
+like:</p>
 
 <blockquote>
 <p><strong>Warning</strong>: A new session was created in folder 'session_1' <br>
@@ -208,24 +238,11 @@ work could have been grouped into a pipeline:</p>
 <span class="n">import</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="o">.*</span><span class="p">;</span>
 
 <span class="n">myPipe</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">pipeline</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">'NodeList'</span><span class="p">,</span> <span class="p">{</span><span class="n">myNode1</span><span class="p">,</span> <span class="n">myNode2</span><span class="p">,</span> <span class="n">myNode3</span><span class="p">,</span> <span class="n">myNode4</span><span class="p">,</span> <span class="n">myNode5</span><span class="p">})</span>
-<span class="n">data</span> <span class="p">=</span> <span class="n">run</span><span class="p">(</span><span class="n">myPipe</span><span class="p">,</span> <span class="s">'myfile.mff'</span><span class="p">);</span>
+    <span class="s">'NodeList'</span><span class="p">,</span> <span class="p">{</span><span class="n">n0</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">n3</span><span class="p">,</span> <span class="n">n4</span><span class="p">,</span> <span class="n">n5</span><span class="p">,</span> <span class="n">n6</span><span class="p">});</span>
 
-</pre></div>
+<span class="c">% Will produce an output file in EEGLAB format</span>
+<span class="n">run</span><span class="p">(</span><span class="n">myPipe</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10000</span><span class="p">));</span>
 
-<h3>
-<a name="data-export" class="anchor" href="#data-export"><span class="octicon octicon-link"></span></a>Data export</h3>
-
-<div class="highlight highlight-matlab"><pre><span class="c">% Create a random EEG physioset for illustration purposes</span>
-<span class="n">mySensors</span>  <span class="p">=</span> <span class="n">sensors</span><span class="p">.</span><span class="n">eeg</span><span class="p">.</span><span class="n">from_template</span><span class="p">(</span><span class="s">'egi256'</span><span class="p">);</span>
-<span class="n">mySensors</span>  <span class="p">=</span> <span class="n">subset</span><span class="p">(</span><span class="n">mySensors</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">256</span><span class="p">);</span>
-<span class="n">myImporter</span> <span class="p">=</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="p">.</span><span class="n">matrix</span><span class="p">(</span><span class="s">'Sensors'</span><span class="p">,</span> <span class="n">mySensors</span><span class="p">);</span>
-<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">myImporter</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">2000</span><span class="p">));</span>
-
-<span class="c">% Export to EEGLAB</span>
-<span class="n">myEEGLABStr</span> <span class="p">=</span> <span class="n">eeglab</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
-<span class="c">% Export to Fieldtrip</span>
-<span class="n">myFTripStr</span> <span class="p">=</span> <span class="n">fieldtrip</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
 </pre></div>
 
 <h2>
@@ -233,17 +250,14 @@ work could have been grouped into a pipeline:</p>
 
 <p>See the practical <a href="http://github.com/meegpipe/meegpipe/tree/master/tutorials/README.md">tutorials</a>
 for some typical use cases of <em>meegpipe</em>. A high-level description of the API components
-can be found in the <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md">documentation</a>, which is still work
-in progress.</p>
-
-<h2>
-<a name="attribution" class="anchor" href="#attribution"><span class="octicon octicon-link"></span></a>Attribution</h2>
-
-<p>For convenience, <em>meegpipe</em> ships together with code from third-parties.
-You can find a comprehensive list <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">here</a>.</p>
+can be found in the <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md">documentation</a>. The documentation is still 
+work in progress.</p>
 
 <h2>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>For convenience, <em>meegpipe</em> ships together with code from third-parties.
+You can find a comprehensive list <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">here</a>.</p>
 
 <p>Any code that is not part of any of the bundled third-party dependencies
 (see <a href="https://github.com/meegpipe/meegpipe/blob/master/attribution.md">the list</a>), is released under the
