@@ -65,7 +65,7 @@ end
 
 dfArray = {df, [-df, df]; -df, [df, -df]};
 cutoffArray = edgeArray + dfArray{revfilt + 1, length(edgeArray)} / 2;
-winArray = windows('hamming', filtorder + 1);
+winArray = window('hamming', filtorder + 1);
 
 % Filter coefficients
 if revfilt == 1

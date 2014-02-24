@@ -106,10 +106,11 @@ try
     data = import(physioset.import.matrix, X);
     
     myNode = chopper('Algorithm', ged('MinChunkLength', 0), 'Save', true);
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
     
     
-    ok(exist(get_output_filename(myNode, data), 'file')>0, name);
+    ok(exist(outputFileName, 'file')>0, name);
     
 catch ME
     

@@ -20,13 +20,13 @@ but can also handle other modalities such as [ECG][ecg], temperature,
 
 If you are working at somerengrid (our lab's private computing grid), then
 all the pre-requisites are already there and you can go directly to the
-installation instructions. 
+installation instructions.
 
 
 ### EEGLAB
 
 [EEGLAB][eeglab] is required mostly for input/output of data from/to
- various data formats, and for plotting. Please ensure that EEGLAB is in 
+ various data formats, and for plotting. Please ensure that EEGLAB is in
 your MATLAB search path.
 
 [meegpipecfg]: http://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/meegpipe.ini
@@ -37,12 +37,12 @@ your MATLAB search path.
 
 ### Highly recommended dependencies
 
-The engine responsible for generating data processing reports in HTML 
+The engine responsible for generating data processing reports in HTML
 relies on several Python packages and on [Inkscape][inkscape]. _meegpipe_ will
  be fully functional without these dependencies, but the processing reports
-will be generated in a plain text format (using [Remark][remark] syntax). 
+will be generated in a plain text format (using [Remark][remark] syntax).
 Inspecting plain text reports with embedded images is _very inconvenient_
-so please consider installing these [highly recommended dependencies][recommended-dep]. 
+so please consider installing these [highly recommended dependencies][recommended-dep].
 
 [remark]: http://kaba.hilvi.org/remark/remark.htm
 [recommended-dep]: ./recommended.md
@@ -52,7 +52,7 @@ so please consider installing these [highly recommended dependencies][recommende
 ### Optional
 
 You are encouraged to install a few [additional components][optional] that
-can enhance _meegpipe_'s functionality in terms of 
+can enhance _meegpipe_'s functionality in terms of
 [high-throughput computing][ht-comp].
 
 
@@ -79,9 +79,9 @@ fclose(fid);
 ````
 
 Notice that the code above will install _meegpipe_ in directory `meegpipe`
-under your current working directory. Notice also that EEGLAB needs to be 
+under your current working directory. Notice also that EEGLAB needs to be
 part of your MATLAB search path for the `meegpipe.initialize` command to
- succeed. 
+ succeed.
 
 
 ## Basic usage
@@ -90,10 +90,10 @@ part of your MATLAB search path for the `meegpipe.initialize` command to
 ### Data processing nodes
 
 _meegpipe_ allows you to build processing pipelines by definining what you
-want to do with your data in terms of _processing nodes_. There are 
-processing nodes for a variaty of tasks: importing from disk, filtering, 
-bad channel rejection, removing artifacts, feature extraction, etc. You can 
-also easily define your own nodes that will integrate seamlessly with 
+want to do with your data in terms of _processing nodes_. There are
+processing nodes for a variaty of tasks: importing from disk, filtering,
+bad channel rejection, removing artifacts, feature extraction, etc. You can
+also easily define your own nodes that will integrate seamlessly with
 the _meegpipe_ framework.
 
 For convenience, we bring package _meegpipe_ to the current name space:
@@ -102,7 +102,11 @@ For convenience, we bring package _meegpipe_ to the current name space:
 import meegpipe.*;
 ````
 
-Create a node that will import data from a MATLAB matrix: 
+Generate a [physioset][physioset] object from a MATLAB matrix using a
+[physioset_import][physioset_import_node] node:
+
+[physioset]: ./+physioset/@physioset/README.md
+[physioset_import_node]: ./+meegpipe/+node/+physioset_import/README.md
 
 ````matlab
 myImporter = physioset.import.matrix('SamplingRate', 250);
@@ -120,7 +124,7 @@ run(n1, data);
 
 Reject bad channels:
 
-````matlab 
+````matlab
 n2  = node.bad_channels.new;
 run(n2, data);
 ````
@@ -132,7 +136,7 @@ n3   = node.filter.new('Filter', myFilter);
 run(n3, data);
 ````
 
-Remove powerline noise using [Blind Source Separation (BSS)][bss]: 
+Remove powerline noise using [Blind Source Separation (BSS)][bss]:
 
 [bss]: http://en.wikipedia.org/wiki/Blind_signal_separation
 
@@ -165,10 +169,9 @@ For more information and a list of available processing nodes, see the
 
 ### Processing reports
 
-One of the great features of _meegpipe_ is that every processing node
-generates comprehensive HTML reports for every data processing task. In the
- examples above, you should have got an initial warning saying something
-like:
+Every processing node generates a comprehensive HTML report for every data file
+that is processed. In the examples above, you should have got an initial warning
+saying something like:
 
 > <strong>Warning</strong>: A new session was created in folder 'session_1' <br>
 > In session.session>session.instance at 82 <br>
@@ -204,8 +207,8 @@ this problem.
 [issues]: https://github.com/meegpipe/meegpipe/blob/master/issues.md
 
 
-__NOTE:__ The HTML reports will be generated only if you have installed all 
-the [recommended dependencies][recommended-dep] on your system. 
+__NOTE:__ The HTML reports will be generated only if you have installed all
+the [recommended dependencies][recommended-dep] on your system.
 
 
 ### Pipelines
@@ -238,7 +241,7 @@ run(myPipe, randn(15, 10000));
 
 See the practical [tutorials](http://github.com/meegpipe/meegpipe/tree/master/tutorials/README.md)
 for some typical use cases of _meegpipe_. A high-level description of the API components
-can be found in the [documentation][doc-main]. The documentation is still 
+can be found in the [documentation][doc-main]. The documentation is still
 work in progress.
 
 [doc-main]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md

@@ -39,7 +39,7 @@ try
     name = 'topo_ratio with real data';
     data = get_real_data;  
     
-    lasipFilt = get_config(bss.eog_egi256_hcgsn1, 'Filter');
+    lasipFilt = get_config(aar.eog.topo_egi256_hcgsn1, 'Filter');
     lasipFilt = set_verbose_level(lasipFilt, 0);
     
     myNode = aar.eog.topo_egi256_hcgsn1(...
