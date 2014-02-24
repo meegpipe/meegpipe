@@ -105,8 +105,8 @@ import meegpipe.*;
 Generate a [physioset][physioset] object from a MATLAB matrix using a
 [physioset_import][physioset_import_node] node:
 
-[physioset]: ./+physioset/@physioset/README.md
-[physioset_import_node]: ./+meegpipe/+node/+physioset_import/README.md
+[physioset]: https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md
+[physioset_import_node]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/README.md
 
 ````matlab
 myImporter = physioset.import.matrix('SamplingRate', 250);
