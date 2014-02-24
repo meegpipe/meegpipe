@@ -115,35 +115,70 @@ of available data importers see the [documentation][import-docs].
 
 ### Data processing nodes
 
+_meegpipe_ allows you to build processing pipelines by definining what you
+want to do with your data in terms of _processing nodes_. There are 
+processing nodes for a variaty of tasks: importing from disk, filtering, 
+bad channel rejection, removing artifacts, feature extraction, etc. You can 
+also easily define your own nodes that will integrate seamlessly with 
+the _meegpipe_ framework.
+
+For convenience, we bring package _meegpipe_ to the current name space:
+
+````
+import meegpipe.*;
+````
+
+Create a node that will import data from a MATLAB matrix: 
 
 ````matlab
-import meegpipe.*;
-import physioset.import.matrix;
+myImporter = physioset.import.matrix('SamplingRate', 250);
+myNode0 = node.physioset_import.new('Importer', myImporter);
+% Run it! import the data!
+data = run(myNode0, randn(15,10000));
+````
 
-data = import(matrix, randn(10,10000));
+A node that detrends the imported data using a 10th order polynomial:
 
-% Detrend using a 10th order polynomial to remove very low freq. trends
+````matlab
 myNode1 = node.filter.new('Filter', filter.polyfit('Order', 10));
 run(myNode1, data);
+````
 
-% Reject bad channels
+Reject bad channels:
+
+````matlab 
 myNode2  = node.bad_channels.new;
 run(myNode2, data);
+````
+Apply a band pass filter between 0.1 and 70 Hz:
 
-% Apply a band pass filter between 0.1 and 70 Hz
+````matlab
 myFilter = @(sr) filter.bpfilt('Fp', [0.1 70]/(sr/2));
 myNode3   = node.filter.new('Filter', myFilter);
 run(myNode3, data);
+````
 
-% Remove powerline noise using Blind Source Separation (BSS)
+Remove powerline noise using [Blind Source Separation (BSS)][bss]: 
+
+[bss]: http://en.wikipedia.org/wiki/Blind_signal_separation
+
+````matlab
 myNode4   = node.bss.pwl;
 run(myNode4, data);
+````
 
-% Reject ocular artifacts using BSS
+Reject ocular artifacts using BSS:
+
+````matlab
 myNode5   = node.bss.eog;
 run(myNode5, data);
+````
 
-% etc ...
+Export to EEGLAB format:
+
+````matlab
+myExporter = physioset.export.eeglab;
+myNode6 = node.physioset_export.new('Exporter', myExporter);
 ````
 
 For more information and a list of available processing nodes, see the
@@ -155,9 +190,10 @@ For more information and a list of available processing nodes, see the
 
 ### Processing reports
 
-One of the great features of _meegpipe_ is that it generates comprehensive
-HTML reports for every data processing task. In the example above, you
-should have got a warning saying something like:
+One of the great features of _meegpipe_ is that every processing node
+generates comprehensive HTML reports for every data processing task. In the
+ examples above, you should have got an initial warning saying something
+like:
 
 > <strong>Warning</strong>: A new session was created in folder 'session_1' <br>
 > In session.session>session.instance at 82 <br>
@@ -196,6 +232,7 @@ this problem.
 __NOTE:__ HTML reports will be generated only if you have installed all 
 the [recommended dependencies][recommended-dep] on your system. 
 
+
 ### Pipelines
 
 A `pipeline` is just a concatenation of nodes. With the exception of
@@ -220,40 +257,23 @@ data = run(myPipe, 'myfile.mff');
 
 ````
 
-### Data export
-
-````matlab
-% Create a random EEG physioset for illustration purposes
-mySensors  = sensors.eeg.from_template('egi256');
-mySensors  = subset(mySensors, 1:10:256);
-myImporter = physioset.import.matrix('Sensors', mySensors);
-data = import(myImporter, randn(26, 2000));
-
-% Export to EEGLAB
-myEEGLABStr = eeglab(data);
-% Export to Fieldtrip
-myFTripStr = fieldtrip(data);
-````
-
-
 ## More information
 
 See the practical [tutorials](http://github.com/meegpipe/meegpipe/tree/master/tutorials/README.md)
 for some typical use cases of _meegpipe_. A high-level description of the API components
-can be found in the [documentation][doc-main], which is still work
-in progress.
+can be found in the [documentation][doc-main]. The documentation is still 
+work in progress.
 
 [doc-main]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md
 
-## Attribution
+
+## License
 
 For convenience, _meegpipe_ ships together with code from third-parties.
 You can find a comprehensive list [here][attribution].
 
 [attribution]: https://github.com/meegpipe/meegpipe/blob/master/attribution.md
 
-
-## License
 
 Any code that is not part of any of the bundled third-party dependencies
 (see [the list][attribution]), is released under the
