@@ -107,8 +107,8 @@ the <em>meegpipe</em> framework.</p>
 <pre><code>import meegpipe.*;
 </code></pre>
 
-<p>Generate a <a href="./+physioset/@physioset/README.md">physioset</a> object from a MATLAB matrix using a
-<a href="./+meegpipe/+node/+physioset_import/README.md">physioset_import</a> node:</p>
+<p>Generate a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> object from a MATLAB matrix using a
+<a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/README.md">physioset_import</a> node:</p>
 
 <div class="highlight highlight-matlab"><pre><span class="n">myImporter</span> <span class="p">=</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="p">.</span><span class="n">matrix</span><span class="p">(</span><span class="s">'SamplingRate'</span><span class="p">,</span> <span class="mi">250</span><span class="p">);</span>
 <span class="n">n0</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">physioset_import</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Importer'</span><span class="p">,</span> <span class="n">myImporter</span><span class="p">);</span>
@@ -180,8 +180,8 @@ find a node's HTML report under:</p>
 
 <p>where</p>
 
-<p><strong>DATA</strong> is a string identifying the processed <a href="./+physioset/@physioset/README.md">physioset</a>. Use
- method <code>get_name()</code> to find out the name of a <a href="./+physioset/@physioset/README.md">physioset</a> object.</p>
+<p><strong>DATA</strong> is a string identifying the processed <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a>. Use
+ method <code>get_name()</code> to find out the name of a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> object.</p>
 
 <p><strong>NODE</strong> is a string identifying the <em>processing node</em>. It is a combination of
  the node name (which can be obtained using method <code>get_name()</code>) and a hash code that
@@ -205,7 +205,7 @@ the <a href="https://github.com/meegpipe/meegpipe/blob/master/recommended.md">re
 
 <p>A <code>pipeline</code> is just a concatenation of nodes. With the exception of
 <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/%40physioset_import/physioset_import.m">physioset_import</a> nodes, all other node classes always
-take a <a href="./+physioset/@physioset/README.md">physioset</a> as input. And with the exception of
+take a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> as input. And with the exception of
 <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_export/%40physioset_export/physioset_export.m">physioset_export</a> nodes, all other node classes produce a
 <code>physioset</code> object as output.</p>
 
