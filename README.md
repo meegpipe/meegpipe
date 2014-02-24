@@ -15,12 +15,6 @@ but can also handle other modalities such as [ECG][ecg], temperature,
 [ecg]: http://en.wikipedia.org/wiki/Electrocardiography
 [acti]: http://en.wikipedia.org/wiki/Actigraphy
 
-In the documentation below I often assume a Linux-like system (e.g. use of
-frontslashes, `~` to denote home directory, etc). However, _meegpipe_ should
-also run under Windows. If you are using Windows, some of the commands that
-appear below might need minor modifications like replacing `~` by your home
-directory name.
-
 
 ## Pre-requisites (third-party dependencies)
 
