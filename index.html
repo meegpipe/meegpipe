@@ -93,22 +93,6 @@ part of your MATLAB search path for the <code>meegpipe.initialize</code> command
 <a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic usage</h2>
 
 <h3>
-<a name="data-import" class="anchor" href="#data-import"><span class="octicon octicon-link"></span></a>Data import</h3>
-
-<div class="highlight highlight-matlab"><pre><span class="n">import</span> <span class="n">physioset</span><span class="p">.</span><span class="n">import</span><span class="o">.*</span><span class="p">;</span>
-<span class="c">% Import from an .mff file</span>
-<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">mff</span><span class="p">,</span> <span class="s">'myfile.mff'</span><span class="p">);</span>
-<span class="c">% Import from an EDF+ file</span>
-<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">edfplus</span><span class="p">,</span> <span class="s">'myfile.edf'</span><span class="p">);</span>
-<span class="c">% Import MATLAB built-in numerics</span>
-<span class="n">data</span> <span class="p">=</span> <span class="n">import</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10000</span><span class="p">));</span>
-</pre></div>
-
-<p>All data importer classes implement an <code>import()</code> method, which always
-produces a <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a> object. For more information and a list
-of available data importers see the <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/+import/README.md">documentation</a>.</p>
-
-<h3>
 <a name="data-processing-nodes" class="anchor" href="#data-processing-nodes"><span class="octicon octicon-link"></span></a>Data processing nodes</h3>
 
 <p><em>meegpipe</em> allows you to build processing pipelines by definining what you
@@ -196,8 +180,8 @@ find a node's HTML report under:</p>
 
 <p>where</p>
 
-<p><strong>DATA</strong> is a string identifying the processed <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a>. Use
- method <code>get_name()</code> to find out the name of a <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a> object.</p>
+<p><strong>DATA</strong> is a string identifying the processed [physioset][physioset]. Use
+ method <code>get_name()</code> to find out the name of a [physioset][physioset] object.</p>
 
 <p><strong>NODE</strong> is a string identifying the <em>processing node</em>. It is a combination of
  the node name (which can be obtained using method <code>get_name()</code>) and a hash code that
@@ -221,7 +205,7 @@ the <a href="./recommended.md">recommended dependencies</a> on your system. </p>
 
 <p>A <code>pipeline</code> is just a concatenation of nodes. With the exception of
 <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_import/%40physioset_import/physioset_import.m">physioset_import</a> nodes, all other node classes always
-take a <a href="https://github.com/meegpipe/meegpipe/blob/master/+physioset/README.md">physioset</a> as input. And with the exception of
+take a [physioset][physioset] as input. And with the exception of
 <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_export/%40physioset_export/physioset_export.m">physioset_export</a> nodes, all other node classes produce a
 <code>physioset</code> object as output.</p>
 
