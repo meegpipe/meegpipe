@@ -204,7 +204,7 @@ this problem.
 [issues]: https://github.com/meegpipe/meegpipe/blob/master/issues.md
 
 
-__NOTE:__ HTML reports will be generated only if you have installed all 
+__NOTE:__ The HTML reports will be generated only if you have installed all 
 the [recommended dependencies][recommended-dep] on your system. 
 
 
