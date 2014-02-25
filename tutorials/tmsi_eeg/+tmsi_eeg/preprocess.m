@@ -10,14 +10,11 @@ import mperl.file.spec.catdir;
 import misc.dir;
 import misc.get_hostname;
 
-if ispc && strcmp(get_hostname, 'NIN271'),
-    ROOT_PATH = 'D:/';
-else
-    ROOT_PATH = pwd;
-end
 
-INPUT_DIR = pwd;
-OUTPUT_DIR = catdir(ROOT_PATH, 'tmsi_eeg_tutorial', 'preprocess', ...
+ROOT_PATH = '/data1/projects/grunberg/analysis';
+
+INPUT_DIR = '/data1/projects/grunberg/recordings';
+OUTPUT_DIR = catdir(ROOT_PATH, 'preprocess', ...
     datestr(now, 'yymmddHHMM'));
 
 % Should each file be processed in parallel? Set this to false to ensure
