@@ -194,27 +194,14 @@ This means that _meegpipe_ just created a directory `session_1`, which will be
 used to store, among other things, the data processing reports. Namely, you can
 find a node's HTML report under:
 
-    session_1/[DATA].meegpipe/[NODE]_[USR]_[SYS]/index.htm
-
-where
-
-__DATA__ is a string identifying the processed [physioset][physioset]. Use
- method `get_name()` to find out the name of a [physioset][physioset] object.
-
-__NODE__ is a string identifying the _processing node_. It is a combination of
- the node name (which can be obtained using method `get_name()`) and a hash code that
- summarizes the node configuration.
-
-__USR__ is just the name of the user that ran command `run()`.
-
-__SYS__ is a string identifying the operating system and MATLAB version (e.g. _PCWIN64-R2011b_).
+    session_1/[input_file_name].meegpipe/[pipe_name]_[blahblah]/index.htm
 
 
-Neither Firefox nor Google Chrome are able to display local .svg files, when
-running under Windows 8. Whenever trying to do so, both browsers attempt to
-download the file and thus the file is not displayed. Read the
-[document on known issues and limitations][issues] for ways to overcome
-this problem.
+__NOTE:__ Neither Firefox nor Google Chrome are able to display local .svg
+ files, when running under Windows 8. Whenever trying to do so, both
+ browsers attempt to download the file and thus the file is not displayed.
+Read the [document on known issues and limitations][issues] for ways to
+ overcome this problem.
 
 [issues]: https://github.com/meegpipe/meegpipe/blob/master/issues.md
 
