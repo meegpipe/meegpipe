@@ -1,4 +1,4 @@
-Manually cleaning the BATMAN EEG dataset
+Manually cleaning an EEG dataset
 ===
 
 This tutorial illustrates how to use _meegpipe_ to manually clean the
@@ -54,19 +54,26 @@ when the subject filled the resting state questionnaire.
 
 ## Objectives/Roadmap
 
-Note that the first two steps below are identical to the steps that we followed
-in [a previous tutorial][batman-tutorial] when we analyzed the non-EEG data that is
-part of the same BATMAN dataset that we are using here. Thus, the links of the
-first two steps take you to the corresponding steps of that previous tutorial.
+In [a previous tutorial][batman-tutorial] we went through the process of
+splitting the large BATMAN data files into single-sub-block files, which are
+more manageable. This tutorial uses the splitted files as input. Below you have
+the steps that we will take us to a perfectly clean and ready for analysis
+dataset:
 
-1. [Retrieve the relevant raw data files][getting_raw]. This step is only
-   relevant for those of you that are following this tutorial at _somerengrid_.
+[batman-tutorial]: ../batman/README.md
 
-2. [Split the large (20-30 Gb) files][splitting] that were obtained for
-   each subject into smaller, more manageable, files. Note that this step is not
-   really required as _meegpipe_ is able to handle such large files directly.
-   But, especially when you are building a new workflow, dealing with smaller
-   files can speed up the processing considerably and thus facilitate the
-   early detection of errors and inconsistencies.
+1. [Retrieve the relevant data files][getting_raw]. As I already mentioned
+   above, our start point will be the splitted `.pset/.pseth` files that we
+   generated in a [previous tutorial][batman-tutorial].
 
+[getting_raw]: ./getting_raw_data.md
 
+2. [Define a (supervised) cleaning pipeline][pipeline-def].
+
+[pipeline-def]: ./pipeline_definition.md
+
+3. [Process all files][pipeline-run] with the pipeline that we defined in 2).
+   It is in this last step when the input of the user is required for various
+   decisions that are taken internally in the processing nodes.
+
+[pipeline-run]: ./pipeline_run.md
