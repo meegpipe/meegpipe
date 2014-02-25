@@ -73,21 +73,33 @@ can enhance <em>meegpipe</em>'s functionality in terms of
 
 <p>Copy and paste the following code in the MATLAB command window:</p>
 
-<div class="highlight highlight-matlab"><pre><span class="n">unzip</span><span class="p">(</span><span class="s">'https://github.com/meegpipe/meegpipe/zipball/master'</span><span class="p">,</span> <span class="s">'meegpipe'</span><span class="p">);</span>
+<div class="highlight highlight-matlab"><pre><span class="c">% installDir is your installation directory</span>
+<span class="n">installDir</span> <span class="p">=</span> <span class="p">[</span><span class="n">pwd</span> <span class="n">filesep</span> <span class="s">'meegpipe'</span><span class="p">];</span>
+<span class="n">url</span> <span class="p">=</span> <span class="s">'https://github.com/meegpipe/meegpipe/zipball/master'</span><span class="p">;</span>
+<span class="n">unzip</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">installDir</span><span class="p">);</span>
 <span class="n">addpath</span><span class="p">(</span><span class="n">genpath</span><span class="p">(</span><span class="s">'meegpipe'</span><span class="p">));</span>
 <span class="n">meegpipe</span><span class="p">.</span><span class="n">initialize</span><span class="p">;</span>
+
 <span class="c">% Initialize meegpipe every time that MATLAB starts</span>
 <span class="n">addpath</span><span class="p">(</span><span class="n">userpath</span><span class="p">);</span>
+<span class="n">add2startup</span> <span class="p">=</span> <span class="p">[</span><span class="c">...</span>
+    <span class="s">'% Added by meegpipe (http://germangh.com/meegpipe\n'</span> <span class="c">...</span>
+    <span class="s">'\naddpath(genpath(''%s''));'</span> <span class="c">...</span>
+    <span class="s">'\nmeegpipe.initialize;\n'</span><span class="p">];</span>
 <span class="n">fid</span> <span class="p">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">which</span><span class="p">(</span><span class="s">'startup'</span><span class="p">),</span> <span class="s">'a'</span><span class="p">);</span>
-<span class="n">fprintf</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="s">'\n\naddpath(genpath(''%s''));\n'</span><span class="p">,</span> <span class="p">[</span><span class="n">pwd</span> <span class="n">filesep</span> <span class="s">'meegpipe'</span><span class="p">]);</span>
-<span class="n">fprintf</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="s">'meegpipe.initialize;\n\n'</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">add2startup</span><span class="p">,</span> <span class="n">installDir</span><span class="p">);</span>
 <span class="n">fclose</span><span class="p">(</span><span class="n">fid</span><span class="p">);</span>
 </pre></div>
 
 <p>Notice that the code above will install <em>meegpipe</em> in directory <code>meegpipe</code>
 under your current working directory. Notice also that EEGLAB needs to be
 part of your MATLAB search path for the <code>meegpipe.initialize</code> command to
- succeed.</p>
+ succeed. This means that you either add EEGLAB permanently to your MATLAB
+search path, or you add the following command to your <code>startup.m</code> file, 
+before <code>meegpipe.initialize</code> command:</p>
+
+<div class="highlight highlight-matlab"><pre><span class="n">addpath</span><span class="p">(</span><span class="n">genpath</span><span class="p">(</span><span class="s">'/path/to/your/eeglab/installation'</span><span class="p">));</span>
+</pre></div>
 
 <h2>
 <a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic usage</h2>
