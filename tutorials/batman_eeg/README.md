@@ -43,7 +43,7 @@ subjects performed a PVT response-time task, and filled the Amsterdam Resting
 State Questionnaire while being subjected to these experimental manipulations.
 In total there were 12 experimental blocks, as illustrated in the diagram below:
 
-![Experimental protocol](./img/batman-protocol.png "Experimental protocol")
+![Experimental protocol](../batman/img/batman-protocol.png "Experimental protocol")
 
 
 Note that each __experimental block__ consisted of four __sub-blocks__:
