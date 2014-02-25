@@ -89,7 +89,7 @@ under your current working directory. Notice also that EEGLAB needs to be
 part of your MATLAB search path for the `meegpipe.initialize` command to
  succeed. This means that you either add EEGLAB permanently to your MATLAB
 search path, or you add the following command to your `startup.m` file, 
-before `meegpipe.initialize` command:
+before the `meegpipe.initialize` command:
 
 ````matlab
 addpath(genpath('/path/to/your/eeglab/installation'));
@@ -127,14 +127,19 @@ n0 = node.physioset_import.new('Importer', myImporter);
 data = run(n0, randn(15, 10000));
 ````
 
-A node that detrends the imported data using a 10th order polynomial:
+Use a [filter][filter-node] node to detrend the imported data using a 10th
+ order polynomial:
+
+[filter-node]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bfilter/README.md
 
 ````matlab
 n1 = node.filter.new('Filter', filter.polyfit('Order', 10));
 run(n1, data);
 ````
 
-Reject bad channels:
+Use a [bad_channels][bad_channels-node] node to reject bad channels:
+
+[bad_channels-node]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bbad_channels/README.md
 
 ````matlab
 n2  = node.bad_channels.new;
@@ -148,8 +153,10 @@ n3   = node.filter.new('Filter', myFilter);
 run(n3, data);
 ````
 
-Remove powerline noise using [Blind Source Separation (BSS)][bss]:
+Remove powerline noise using [Blind Source Separation (BSS)][bss], i.e. 
+using a [bss][bss-node] node:
 
+[bss-node]: https://github.com/meegpipe/meegpipe/tree/master/%2Bmeegpipe/%2Bnode/%2Bbss/README.md
 [bss]: http://en.wikipedia.org/wiki/Blind_signal_separation
 
 ````matlab
@@ -164,7 +171,10 @@ n5   = node.bss.eog;
 run(n5, data);
 ````
 
-Export to EEGLAB format:
+Export to EEGLAB format using a [physioset_export][physioset_export-node] 
+node:
+
+[physioset_export-node]: https://github.com/meegpipe/meegpipe/tree/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_export/README.md
 
 ````matlab
 myExporter = physioset.export.eeglab;
