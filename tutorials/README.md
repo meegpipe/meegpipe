@@ -17,9 +17,9 @@ in the tutorials may not be publicly available.
 [nin]: http://www.nin.knaw.nl/
 
 
-* The [BATMAN tutorial][batman] illustrates the procedure for extracting signal
-  features from Arterial Blood Pressure, Electroencephalography (ECG) and
-  task-response events. The tutorial raw data
+* The [BATMAN physiology tutorial][batman] illustrates the procedure for
+  extracting signal features from Arterial Blood Pressure,
+  Electroencephalography (ECG) and task-response events. The tutorial raw data
   is not yet publicly available. If you wonder about the funny name of this
   tutorial, it is due to the acronym of a related
   [research project][batman-project] that we are carrying out at the NIN.

@@ -1,4 +1,4 @@
-BATMAN tutorial
+Extracting features from physiological time-series
 ===
 
 This tutorial illustrates a real data processing use-case that was performed
@@ -91,21 +91,20 @@ without going through the step-by-step explanations.
 [meegpipe]: http://meegpipe.github.io/meegpipe
 
 To ensure that the tutorial files will work as expected it is highly recommended
-that you restore your default MATLAB path:
+(but not required) that you restore your default MATLAB path:
 
 ````matlab
 restoredefaultpath
 ````
 
-Then you should add _meegpipe_ to the MATLAB path and initialize it:
+Then you should add EEGLAB and _meegpipe_ to the MATLAB path, and initialize
+_meegpipe_:
 
 ````matlab
-% If you are not working at somerengrid, edit the path below accordingly
+% If you are not working at somerengrid, edit the paths below accordingly
+addpath(genpath('/data1/toolbox/eeglab'));
 addpath(genpath('/data1/toolbox/meegpipe'));
 
-% If you are not at somerengrid, you will most likely need to edit meegpipe's
-% configuration file so that meegpipe can find Fieldtrip and EEGLAB in your
-% system. Follow the instructions in +meegpipe/meegpipe.ini
 meegpipe.initialize;
 ````
 
