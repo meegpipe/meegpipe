@@ -95,7 +95,7 @@ under your current working directory. Notice also that EEGLAB needs to be
 part of your MATLAB search path for the <code>meegpipe.initialize</code> command to
  succeed. This means that you either add EEGLAB permanently to your MATLAB
 search path, or you add the following command to your <code>startup.m</code> file, 
-before <code>meegpipe.initialize</code> command:</p>
+before the <code>meegpipe.initialize</code> command:</p>
 
 <div class="highlight highlight-matlab"><pre><span class="n">addpath</span><span class="p">(</span><span class="n">genpath</span><span class="p">(</span><span class="s">'/path/to/your/eeglab/installation'</span><span class="p">));</span>
 </pre></div>
@@ -127,13 +127,14 @@ the <em>meegpipe</em> framework.</p>
 <span class="n">data</span> <span class="p">=</span> <span class="n">run</span><span class="p">(</span><span class="n">n0</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10000</span><span class="p">));</span>
 </pre></div>
 
-<p>A node that detrends the imported data using a 10th order polynomial:</p>
+<p>Use a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bfilter/README.md">filter</a> node to detrend the imported data using a 10th
+ order polynomial:</p>
 
 <div class="highlight highlight-matlab"><pre><span class="n">n1</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">filter</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Filter'</span><span class="p">,</span> <span class="n">filter</span><span class="p">.</span><span class="n">polyfit</span><span class="p">(</span><span class="s">'Order'</span><span class="p">,</span> <span class="mi">10</span><span class="p">));</span>
 <span class="n">run</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
 </pre></div>
 
-<p>Reject bad channels:</p>
+<p>Use a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/%2Bnode/%2Bbad_channels/README.md">bad_channels</a> node to reject bad channels:</p>
 
 <div class="highlight highlight-matlab"><pre><span class="n">n2</span>  <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">bad_channels</span><span class="p">.</span><span class="n">new</span><span class="p">;</span>
 <span class="n">run</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
@@ -146,7 +147,8 @@ the <em>meegpipe</em> framework.</p>
 <span class="n">run</span><span class="p">(</span><span class="n">n3</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
 </pre></div>
 
-<p>Remove powerline noise using <a href="http://en.wikipedia.org/wiki/Blind_signal_separation">Blind Source Separation (BSS)</a>:</p>
+<p>Remove powerline noise using <a href="http://en.wikipedia.org/wiki/Blind_signal_separation">Blind Source Separation (BSS)</a>, i.e. 
+using a <a href="https://github.com/meegpipe/meegpipe/tree/master/%2Bmeegpipe/%2Bnode/%2Bbss/README.md">bss</a> node:</p>
 
 <div class="highlight highlight-matlab"><pre><span class="n">n4</span>   <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">bss</span><span class="p">.</span><span class="n">pwl</span><span class="p">;</span>
 <span class="n">run</span><span class="p">(</span><span class="n">n4</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
@@ -158,7 +160,8 @@ the <em>meegpipe</em> framework.</p>
 <span class="n">run</span><span class="p">(</span><span class="n">n5</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
 </pre></div>
 
-<p>Export to EEGLAB format:</p>
+<p>Export to EEGLAB format using a <a href="https://github.com/meegpipe/meegpipe/tree/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_export/README.md">physioset_export</a> 
+node:</p>
 
 <div class="highlight highlight-matlab"><pre><span class="n">myExporter</span> <span class="p">=</span> <span class="n">physioset</span><span class="p">.</span><span class="n">export</span><span class="p">.</span><span class="n">eeglab</span><span class="p">;</span>
 <span class="n">n6</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">physioset_export</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">'Exporter'</span><span class="p">,</span> <span class="n">myExporter</span><span class="p">);</span>
