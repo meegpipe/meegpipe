@@ -102,7 +102,8 @@ else
     
 end
 
-check_dependency('fieldtrip');
+% EEGLAB already contains fileio
+check_dependency('eeglab');
 
 %% Read header
 if verbose,

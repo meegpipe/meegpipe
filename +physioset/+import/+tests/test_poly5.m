@@ -68,8 +68,8 @@ try
         copyfile(DATA_FILE, dataFileCopy);
         copyfile(evFile, evFileCopy);
     else
-        urlwrite([DATA_URL fName ext], dataFileCopy);
-        urlwrite([DATA_URL name '.events.csv'], evFileCopy);
+        urlwrite([DATA_URL fName fExt], dataFileCopy);
+        urlwrite([DATA_URL fName '.events.csv'], evFileCopy);
     end
     stat = set_warning_status(WARN_IDS, 'off');
     data = import(poly5, dataFileCopy);
@@ -105,8 +105,8 @@ try
         copyfile(DATA_FILE_2, dataFileCopy);
         copyfile(evFile, evFileCopy);
     else
-        urlwrite([DATA_URL fName ext], dataFileCopy);
-        urlwrite([DATA_URL name '.events.csv'], evFileCopy);
+        urlwrite([DATA_URL fName fExt], dataFileCopy);
+        urlwrite([DATA_URL fName '.events.csv'], evFileCopy);
     end
     stat = set_warning_status(WARN_IDS, 'off');
     data = import(poly5, dataFileCopy);
@@ -141,8 +141,8 @@ try
         copyfile(DATA_FILE, dataFileCopy);
         copyfile(evFile, evFileCopy);
     else
-        urlwrite([DATA_URL fName ext], dataFileCopy);
-        urlwrite([DATA_URL name '.events.csv'], evFileCopy);
+        urlwrite([DATA_URL fName fExt], dataFileCopy);
+        urlwrite([DATA_URL fName '.events.csv'], evFileCopy);
     end
     
     myImporter = poly5(...

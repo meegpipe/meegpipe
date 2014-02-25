@@ -40,6 +40,7 @@ end
 mdFiltObj = mdfilt(obj);
 if ~obj.PersistentMemory,
     grpDelay = floor(max(grpdelay(mdFiltObj)));
+    grpDelay = min(grpDelay, size(x, 2));
 end
 
 for i = 1:size(x,1),

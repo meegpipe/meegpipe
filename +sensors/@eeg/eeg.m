@@ -84,7 +84,6 @@ classdef eeg < sensors.physiology
         
     end
     
-    %% Public interface ....................................................
     properties (SetAccess = 'private')
         Cartesian;          % Cartesian coordinates of the EEG sensors.
         Fiducials;          % Hash with the cartesian coordinates of the fiducials
@@ -237,12 +236,12 @@ classdef eeg < sensors.physiology
             import sensors.abstract_sensors
             import exceptions.InvalidPropValue;
             
-            %% Call parent constructor
+            % Call parent constructor
             obj = obj@sensors.physiology(varargin{:});
             
             if nargin < 1, return; end
             
-            %% Ensure that the labels are valid EEG labels
+            % Ensure that the labels are valid EEG labels
             isValid = cellfun(...
                 @(x) io.edfplus.is_valid_label(x, 'EEG'), ...
                 obj.Label);
@@ -252,13 +251,13 @@ classdef eeg < sensors.physiology
                     'Automatically creating compatible EEG labels ']),
                 
                 newLabels = cell(size(obj.Label));
-                for i = 1:numel(obj.Label),   
+                for i = 1:numel(obj.Label),
                     % The EGI net uses E# naming -> EEG #
                     match = regexp(obj.Label{i}, 'E(?<number>\d+)$', 'names');
-                    if isempty(match),       
+                    if isempty(match),
                         spec = regexprep(obj.Label{i}, '^Unknown\s+', '');
                         spec = genvarname(spec);
-                        if isempty(spec), spec = num2str(i); end                                                
+                        if isempty(spec), spec = num2str(i); end
                         newLabels{i} = ['EEG ' spec];
                     else
                         newLabels{i} = ['EEG ' match.number];
@@ -272,21 +271,21 @@ classdef eeg < sensors.physiology
                     throw(InvalidPropValue('Label', ...
                         'There cannot be multiple REF channels'));
                 end
-                                    
+                
                 obj.Label = newLabels;
                 obj.Label(isRef) = {'EEG REF'};
-
+                
                 
             end
             
-            %% Ensure valid PhysDims
+            % Ensure valid PhysDims
             if isempty(obj.PhysDim),
                 warning('sensors:MissingPhysDim', ...
                     'Physical dimensions not provided: assuming uV');
                 obj.PhysDim = repmat({'uV'}, numel(obj.Label), 1);
             end
             
-            %% Properties specific to EEG sensors.
+            % Properties specific to EEG sensors.
             opt.Fiducials           = [];
             opt.Extra               = [];
             [~, opt] = process_arguments(opt, varargin);
