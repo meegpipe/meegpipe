@@ -45,19 +45,13 @@ myCrit = bad_channels.criterion.xcorr.new(...
 myNode = bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
-%% Node 7: center
-% This is not really required but will make the report of the subsequent
-% filtering node more meaningful (since filter input and output will have a
-% more similar dynamic range). 
-nodeList = [nodeList {center.new}];
-
 %% Node 8: High pass filtering
 myFilter = @(sr) filter.hpfilt('fc', 3/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
-%% Node 11: Low pass filtering
-myFilter = @(sr) filter.lpfilt('fc', 43/(sr/2));
+%% Node 9: Low pass filtering
+myFilter = @(sr) filter.lpfilt('fc', 42/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
@@ -65,40 +59,13 @@ nodeList = [nodeList {myNode}];
 myNode = resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
-%% Node 12: reject bad epochs (again)
-% Trying to get rid off large filtering artifacts
-myCrit = bad_epochs.criterion.stat.new(...
-    'Max',              @(stats) median(stats)+2*mad(stats), ...
-    'EpochStat',        @(x) max(x));
-myNode = bad_epochs.sliding_window(1, 5, ...
-    'Criterion',      myCrit, ...
-    'DataSelector',   pset.selector.all_data);
+%% Node 11: supervised BSS
+myNode = aar.bss_supervised;
 nodeList = [nodeList {myNode}];
-
-%% Node 13: reject ECG components
-myNode = bss.ecg('RetainedVar', 99.99);
-nodeList = [nodeList {myNode}];
-
-%% Node 14: reject EOG components
-myFeat1 = spt.feature.psd_ratio.eog;
-myFeat2 = spt.feature.bp_var;
-myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2}, ...
-    'Max',      {15 15}, ...
-    'MinCard',  2, ...
-    'MaxCard',  6);
-myNode = bss.eog(...
-    'RetainedVar',  99.99, ...
-    'Criterion',    myCrit, ...
-    'IOReport',     report.plotter.io, ...
-    'Filter',       []);
-nodeList = [nodeList {myNode}];
-
 
 %% Node 9: EMG
-% I think is best to remove the EMG noise before downsampling (next node)
 myNode = bss.emg('CorrectionTh', 50, 'IOReport',     report.plotter.io);
 nodeList = [nodeList {myNode}];
-
 
 %% Create the pipeline
 myPipe = pipeline.new(...
