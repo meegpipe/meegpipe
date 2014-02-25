@@ -179,37 +179,6 @@ For more information and a list of available processing nodes, see the
 [nodes-docs]: http://github.com/meegpipe/meegpipe/blob/master/+meegpipe/+node/README.md
 
 
-### Processing reports
-
-Every processing node generates a comprehensive HTML report for every data file
-that is processed. In the examples above, you should have got an initial warning
-saying something like:
-
-> <strong>Warning</strong>: A new session was created in folder 'session_1' <br>
-> In session.session>session.instance at 82 <br>
->  In pset.generate_data at 35 <br>
->  In matrix.import at 62 <br>
-
-This means that _meegpipe_ just created a directory `session_1`, which will be
-used to store, among other things, the data processing reports. Namely, you can
-find a node's HTML report under:
-
-    session_1/[input_file_name].meegpipe/[pipe_name]_[blahblah]/index.htm
-
-
-__NOTE:__ Neither Firefox nor Google Chrome are able to display local .svg
- files, when running under Windows 8. Whenever trying to do so, both
- browsers attempt to download the file and thus the file is not displayed.
-Read the [document on known issues and limitations][issues] for ways to
- overcome this problem.
-
-[issues]: https://github.com/meegpipe/meegpipe/blob/master/issues.md
-
-
-__NOTE:__ The HTML reports will be generated only if you have installed all
-the [recommended dependencies][recommended-dep] on your system.
-
-
 ### Pipelines
 
 A `pipeline` is just a concatenation of nodes. With the exception of
@@ -235,6 +204,31 @@ myPipe = node.pipeline.new(...
 run(myPipe, randn(15, 10000));
 
 ````
+
+### Processing reports
+
+Every processing node (or pipeline) generates a comprehensive HTML report
+ for every data file that is processed. Namely, if you ran the pipeline 
+example above, you will find the corresponding HTML report under:
+
+
+    [input_file_name].meegpipe/[pipe_name]_[blahblah]/index.htm
+
+
+__NOTE:__ Neither Firefox nor Google Chrome are able to display local .svg
+ files, when running under Windows 8. Whenever trying to do so, both
+ browsers attempt to download the file and thus the file is not displayed.
+Read the [document on known issues and limitations][issues] for ways to
+ overcome this problem.
+
+[issues]: https://github.com/meegpipe/meegpipe/blob/master/issues.md
+
+
+__NOTE:__ The HTML reports will be generated only if you have installed all
+the [recommended dependencies][recommended-dep] on your system.
+
+
+
 
 ## More information
 
