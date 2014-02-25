@@ -1,8 +1,8 @@
-`config` for node `tfilter`
+`config` for node `filter`
 ===
 
 This class is a helper class that implements consistency checks necessary
-for building a valid [tfilter][tfilter] node.
+for building a valid [filter][filter] node.
 
 [erp]: ./README.md
 
@@ -15,9 +15,9 @@ import meegpipe.node.*;
 
 % The low-level filter object
 myFilter = @(sr) filter.bpfilt('fp', [2 30]/(sr/2))
-myConfig = tfilter.config('Filter', myFilter);
+myConfig = filter.config('Filter', myFilter);
 
-myNode = tfilter.new(myConfig);
+myNode = filter.new(myConfig);
 ````
 Altenatively, the following syntax is equivalent, and preferable for being
 more concise:
@@ -27,15 +27,14 @@ import meegpipe.node.*;
 
 % The low-level filter object
 myFilter = @(sr) filter.bpfilt('fp', [2 30]/(sr/2))
-myNode = tfilter.new('Filter', myFilter);
+myNode = filter.new('Filter', myFilter);
 ````
-
 
 ## Configuration properties
 
 
 The following construction options are accepted by the constructor of
-this config class, and thus by the constructor of the `tfilter` node class:
+this config class, and thus by the constructor of the `filter` node class:
 
 ### `Filter`
 

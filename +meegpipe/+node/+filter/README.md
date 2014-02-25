@@ -1,14 +1,14 @@
-`tfilter` - Time-domain filter
+`filter` - Digital filter node
 ====
 
-The `tfilter` filter the input `physioset` using a time-domain filter.
+The `filter` filter the input `physioset` using a time-domain filter.
 
 
 ## Usage synopsis
 
 ````matlab
 import meegpipe.*;
-obj = node.tfilter.new('key', value, ...);
+obj = node.filter.new('key', value, ...);
 data = run(obj, data);
 ````
 
@@ -19,7 +19,7 @@ where `data` is a [physioset][physioset] object.
 
 ## Construction arguments
 
-The `tfilter` node admits all the key/value pairs admitted by the
+The `filter` node admits all the key/value pairs admitted by the
 [abstract_node][abstract-node] class. For keys specific to this node
 class see the documentation of the helper [config][config] class.
 
@@ -77,11 +77,11 @@ for i = 1:size(data,1)
     data(i,:) = data(i,:) + 2*trend;
 end
 
-% Build the tfilter node. Note that tfilter.detrend is just a default 
-% constructor for tfilter nodes. See edit meegpipe.node.tfilter.detrend for
+% Build the filter node. Note that filter.detrend is just a default 
+% constructor for filter nodes. See edit meegpipe.node.filter.detrend for
 % more details
 import meegpipe.node.*;
-myNode = tfilter.detrend;
+myNode = filter.detrend;
 
 % Remove the low frequency trends
 run(myNode, data);
