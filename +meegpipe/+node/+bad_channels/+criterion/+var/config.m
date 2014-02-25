@@ -105,7 +105,7 @@ classdef config < meegpipe.node.bad_channels.criterion.rank.config
             end
             
             opt.Min = @(x) median(x) - 20;
-            opt.Max = @(x) median(x) + 20*mad(x);
+            opt.Max = @(x) median(x) + 4*mad(x);
             
             [~, opt] = process_arguments(opt, varargin);
             
