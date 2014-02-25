@@ -169,49 +169,6 @@ the <em>meegpipe</em> framework.</p>
 <a href="http://github.com/meegpipe/meegpipe/blob/master/+meegpipe/+node/README.md">documentation</a>.</p>
 
 <h3>
-<a name="processing-reports" class="anchor" href="#processing-reports"><span class="octicon octicon-link"></span></a>Processing reports</h3>
-
-<p>Every processing node generates a comprehensive HTML report for every data file
-that is processed. In the examples above, you should have got an initial warning
-saying something like:</p>
-
-<blockquote>
-<p><strong>Warning</strong>: A new session was created in folder 'session_1' <br>
-In session.session&gt;session.instance at 82 <br>
- In pset.generate_data at 35 <br>
- In matrix.import at 62 <br></p>
-</blockquote>
-
-<p>This means that <em>meegpipe</em> just created a directory <code>session_1</code>, which will be
-used to store, among other things, the data processing reports. Namely, you can
-find a node's HTML report under:</p>
-
-<pre><code>session_1/[DATA].meegpipe/[NODE]_[USR]_[SYS]/index.htm
-</code></pre>
-
-<p>where</p>
-
-<p><strong>DATA</strong> is a string identifying the processed <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a>. Use
- method <code>get_name()</code> to find out the name of a <a href="https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md">physioset</a> object.</p>
-
-<p><strong>NODE</strong> is a string identifying the <em>processing node</em>. It is a combination of
- the node name (which can be obtained using method <code>get_name()</code>) and a hash code that
- summarizes the node configuration.</p>
-
-<p><strong>USR</strong> is just the name of the user that ran command <code>run()</code>.</p>
-
-<p><strong>SYS</strong> is a string identifying the operating system and MATLAB version (e.g. <em>PCWIN64-R2011b</em>).</p>
-
-<p>Neither Firefox nor Google Chrome are able to display local .svg files, when
-running under Windows 8. Whenever trying to do so, both browsers attempt to
-download the file and thus the file is not displayed. Read the
-<a href="https://github.com/meegpipe/meegpipe/blob/master/issues.md">document on known issues and limitations</a> for ways to overcome
-this problem.</p>
-
-<p><strong>NOTE:</strong> The HTML reports will be generated only if you have installed all
-the <a href="https://github.com/meegpipe/meegpipe/blob/master/recommended.md">recommended dependencies</a> on your system.</p>
-
-<h3>
 <a name="pipelines" class="anchor" href="#pipelines"><span class="octicon octicon-link"></span></a>Pipelines</h3>
 
 <p>A <code>pipeline</code> is just a concatenation of nodes. With the exception of
@@ -233,6 +190,25 @@ work could have been grouped into a pipeline:</p>
 <span class="n">run</span><span class="p">(</span><span class="n">myPipe</span><span class="p">,</span> <span class="nb">randn</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10000</span><span class="p">));</span>
 
 </pre></div>
+
+<h3>
+<a name="processing-reports" class="anchor" href="#processing-reports"><span class="octicon octicon-link"></span></a>Processing reports</h3>
+
+<p>Every processing node (or pipeline) generates a comprehensive HTML report
+ for every data file that is processed. Namely, if you ran the pipeline 
+example above, you will find the corresponding HTML report under:</p>
+
+<pre><code>[input_file_name].meegpipe/[pipe_name]_[blahblah]/index.htm
+</code></pre>
+
+<p><strong>NOTE:</strong> Neither Firefox nor Google Chrome are able to display local .svg
+ files, when running under Windows 8. Whenever trying to do so, both
+ browsers attempt to download the file and thus the file is not displayed.
+Read the <a href="https://github.com/meegpipe/meegpipe/blob/master/issues.md">document on known issues and limitations</a> for ways to
+ overcome this problem.</p>
+
+<p><strong>NOTE:</strong> The HTML reports will be generated only if you have installed all
+the <a href="https://github.com/meegpipe/meegpipe/blob/master/recommended.md">recommended dependencies</a> on your system.</p>
 
 <h2>
 <a name="more-information" class="anchor" href="#more-information"><span class="octicon octicon-link"></span></a>More information</h2>
