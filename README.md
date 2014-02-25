@@ -67,21 +67,34 @@ can enhance _meegpipe_'s functionality in terms of
 Copy and paste the following code in the MATLAB command window:
 
 ````matlab
-unzip('https://github.com/meegpipe/meegpipe/zipball/master', 'meegpipe');
+% installDir is your installation directory
+installDir = [pwd filesep 'meegpipe'];
+url = 'https://github.com/meegpipe/meegpipe/zipball/master';
+unzip(url, installDir);
 addpath(genpath('meegpipe'));
 meegpipe.initialize;
+
 % Initialize meegpipe every time that MATLAB starts
 addpath(userpath);
+add2startup = [...
+    '% Added by meegpipe (http://germangh.com/meegpipe\n' ...
+    '\naddpath(genpath(''%s''));' ...
+    '\nmeegpipe.initialize;\n'];
 fid = fopen(which('startup'), 'a');
-fprintf(fid, '\n\naddpath(genpath(''%s''));\n', [pwd filesep 'meegpipe']);
-fprintf(fid, 'meegpipe.initialize;\n\n');
+fprintf(fid, add2startup, installDir);
 fclose(fid);
 ````
 
 Notice that the code above will install _meegpipe_ in directory `meegpipe`
 under your current working directory. Notice also that EEGLAB needs to be
 part of your MATLAB search path for the `meegpipe.initialize` command to
- succeed.
+ succeed. This means that you either add EEGLAB permanently to your MATLAB
+search path, or you add the following command to your `startup.m` file, 
+before `meegpipe.initialize` command:
+
+````matlab
+addpath(genpath('/path/to/your/eeglab/installation'));
+````
 
 
 ## Basic usage
