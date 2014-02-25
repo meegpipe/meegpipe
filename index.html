@@ -82,12 +82,11 @@ can enhance <em>meegpipe</em>'s functionality in terms of
 
 <span class="c">% Initialize meegpipe every time that MATLAB starts</span>
 <span class="n">addpath</span><span class="p">(</span><span class="n">userpath</span><span class="p">);</span>
-<span class="n">add2startup</span> <span class="p">=</span> <span class="p">[</span><span class="c">...</span>
-    <span class="s">'% Added by meegpipe (http://germangh.com/meegpipe\n'</span> <span class="c">...</span>
-    <span class="s">'\naddpath(genpath(''%s''));'</span> <span class="c">...</span>
-    <span class="s">'\nmeegpipe.initialize;\n'</span><span class="p">];</span>
 <span class="n">fid</span> <span class="p">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">which</span><span class="p">(</span><span class="s">'startup'</span><span class="p">),</span> <span class="s">'a'</span><span class="p">);</span>
-<span class="n">fprintf</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">add2startup</span><span class="p">,</span> <span class="n">installDir</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="p">[</span><span class="c">...</span>
+    <span class="s">'%%Added by meegpipe (http://germangh.com/meegpipe)'</span> <span class="c">...</span>
+    <span class="s">'\naddpath(genpath(''%s''));'</span> <span class="c">...</span>
+    <span class="s">'\nmeegpipe.initialize;\n'</span><span class="p">],</span> <span class="n">installDir</span><span class="p">);</span>
 <span class="n">fclose</span><span class="p">(</span><span class="n">fid</span><span class="p">);</span>
 </pre></div>
 
