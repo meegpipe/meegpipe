@@ -1,4 +1,4 @@
-function cleaning
+function cleaning(varargin)
 % CLEANING - Clean all BATMAN EEG files
 
 % Just in case you forgot to do it when you started MATLAB
@@ -24,7 +24,8 @@ DO_REPORT   = true; % Should full HTML reports be generated?
 % Create an instance of the feature extraction pipeline
 myPipe = batman_eeg.cleaning_pipeline(...
     'GenerateReport', DO_REPORT, ...
-    'Parallelize',    PARALELLIZE);
+    'Parallelize',    PARALELLIZE, ...
+    varargin{:});
 
 
 files = somsds.link2rec(...
