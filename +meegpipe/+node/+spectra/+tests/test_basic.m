@@ -166,9 +166,10 @@ try
     mySel  = class_selector('Type', 'myevent');
     myNode = spectra('EventSelector', mySel, 'Save', true, 'OGE', false);
     
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
     
-    ok(exist(get_output_filename(myNode, data), 'file')>0, name);
+    ok(exist(outputFileName, 'file')>0, name);
     
 catch ME
     

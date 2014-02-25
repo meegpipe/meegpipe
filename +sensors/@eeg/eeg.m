@@ -251,6 +251,7 @@ classdef eeg < sensors.physiology
                     'Automatically creating compatible EEG labels ']),
                 
                 newLabels = cell(size(obj.Label));
+                
                 for i = 1:numel(obj.Label),
                     % The EGI net uses E# naming -> EEG #
                     match = regexp(obj.Label{i}, 'E(?<number>\d+)$', 'names');
@@ -258,11 +259,20 @@ classdef eeg < sensors.physiology
                         spec = regexprep(obj.Label{i}, '^Unknown\s+', '');
                         spec = genvarname(spec);
                         if isempty(spec), spec = num2str(i); end
+                        
                         newLabels{i} = ['EEG ' spec];
                     else
                         newLabels{i} = ['EEG ' match.number];
                     end
                 end
+                
+                % Ensure that the new labels are unique
+                if numel(unique(newLabels)) < numel(newLabels),
+                    for i = 1:numel(newLabels),
+                        newLabels{i} = [newLabels{i} '_' num2str(i)];
+                    end
+                end
+                
                 % Take care of reference channels
                 isRef = cellfun(...
                     @(x) ~isempty(strfind(lower(x), 'unknown ref')), ...
