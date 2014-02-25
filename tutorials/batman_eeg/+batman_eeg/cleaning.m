@@ -27,13 +27,15 @@ myPipe = batman_eeg.cleaning_pipeline(...
     'Parallelize',    PARALELLIZE, ...
     varargin{:});
 
-
-files = somsds.link2rec(...
+somsds.link2rec(...
     'batman',       ...                  % The recording ID
     'subject',      1:10, ...            % The subject ID(s)
     'modality',     'eeg', ...           % The data modality
     'file_regex',   '\.pset', ...     % Only pset/pseth files
     'folder',       OUTPUT_DIR);
+
+regex = '\.pseth$';
+files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 % files should now be a cell array containing the full paths to the single
 % sub-block .pseth files that were generated in the data splitting stage.
