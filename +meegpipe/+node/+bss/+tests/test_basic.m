@@ -188,11 +188,12 @@ try
         'BSS',              myBSS, ...
         'Save',             true, ...
         'GenerateReport',   true);
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
    
     X = X - repmat(mean(X,2), 1, size(X,2));
     condition = max(abs(data(:)-X(:))) < 0.001;
-    outputFileName = get_output_filename(myNode, data);
+    
     clear data ans;
     
     ok( condition & ...
@@ -225,11 +226,13 @@ try
         'Criterion',        myCrit, ...
         'Save',             true, ...
         'GenerateReport',   true);
+    
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
    
     X = X - repmat(mean(X,2), 1, size(X,2));
     condition = max(abs(data(:)-X(:))) > 0.001;
-    outputFileName = get_output_filename(myNode, data);
+    
     clear data ans;
     pause(1)
     ok( condition & ...
@@ -297,10 +300,11 @@ try
         'Parallelize',      false, ...
         'GenerateReport',   false);
     
+    outputFileName = get_output_filename(myNode, x);
     run(myNode, data{:});
     
     ok(all(cellfun(@(x) ...
-        exist(get_output_filename(myNode, x), 'file') > 0, data)), ...
+        exist(outputFileName, 'file') > 0, data)), ...
         name);
     
     

@@ -146,9 +146,10 @@ try
     
     X = 3+randn(10, 1000);
     data = import(physioset.import.matrix, X);
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
     
-    ok(exist(get_output_filename(myNode, data), 'file')>0 & ...
+    ok(exist(outputFileName, 'file')>0 & ...
         numel(get_event(data)) == 4, name);
     
 catch ME

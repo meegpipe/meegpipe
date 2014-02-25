@@ -116,9 +116,10 @@ try
     add_event(data, eventArray);
     
     myNode = smoother('MergeWindow', 0.3, 'Save', true);
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
     
-    ok(exist(get_output_filename(myNode, data), 'file')>0, name);
+    ok(exist(outputFileName, 'file')>0, name);
     
 catch ME
     

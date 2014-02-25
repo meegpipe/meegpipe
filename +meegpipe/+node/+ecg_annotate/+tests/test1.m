@@ -87,10 +87,10 @@ try
     myNode2 = ecg_annotate;
     myNode = pipeline('NodeList', {myNode1, myNode2});
     
-    run(myNode, data);
-    
     featuresFile = catfile(get_full_dir(myNode, data), ...
         ['node-02-' get_name(myNode2)], 'features.txt');
+    
+    run(myNode, data);
     
     condition = check_features_file(featuresFile, 13, 1);
     
@@ -141,11 +141,9 @@ try
     myNode2 = ecg_annotate('EventSelector', {selDark, selBlue, selRed});
     myPipe = pipeline('NodeList', {myNode1,myNode2});
     
-    run(myPipe, data);
-    
     featuresFile = catfile(get_full_dir(myPipe, data), ...
         ['node-02-' get_name(myNode2)], 'features.txt');
-    
+    run(myPipe, data);
     condition = check_features_file(featuresFile, 14, 3);
     
     evs = get_event(data);

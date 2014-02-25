@@ -15,7 +15,7 @@ import meegpipe.node.merge.sample_data;
 
 MEh = [];
 
-initialize(10);
+initialize(9);
 
 %% Create a new session
 try
@@ -90,29 +90,6 @@ catch ME
     
 end
 
-%% Argument checking during construction
-try
-    name = 'argument checking during construction';
-    
-    caughtME = false;
-    
-    try
-        merge.new('Importer', {physioset.import.mff, 5});
-    catch ME
-        if ~strcmp(ME.identifier, 'config:set:Importer:InvalidPropValue'),
-            rethrow(ME);
-        end
-        caughtME = true;
-    end
-    
-    ok(caughtME, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
 
 %% process sample data
 try
