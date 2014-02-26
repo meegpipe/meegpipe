@@ -34,7 +34,7 @@ nodeList = [nodeList {myNode}];
 minVal = @(x) median(x) - 40;
 maxVal = @(x) median(x) + 15;
 myCrit = node.bad_channels.criterion.var.new('Min', minVal, 'Max', maxVal);
-myNode = bad_channels.new('Criterion', myCrit);
+myNode = node.bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
 %% bad channel rejection (using xcorr)
