@@ -22,17 +22,19 @@ nodeList = [nodeList {node.copy.new}];
 
 %% high-pass filter
 myNode = node.filter.new(...
-    'Filter', @(sr) filter.hpfilt('Fc', 1/(sr/2)));
+    'Filter', @(sr) filter.hpfilt('Fc', 1/(sr/2)), ...
+    'Name', 'HP-filter-1Hz');
 nodeList = [nodeList {myNode}];
 
 %% low-pass filter
 myNode = node.filter.new(...
-    'Filter', @(sr) filter.hpfilt('Fc', 70/(sr/2)));
+    'Filter', @(sr) filter.hpfilt('Fc', 70/(sr/2)), ...
+    'Name',   'LP-filter-70Hz');
 nodeList = [nodeList {myNode}];
 
 %% bad channel rejection (using variance)
 minVal = @(x) median(x) - 40;
-maxVal = @(x) median(x) + 15;
+maxVal = @(x) median(x) + 12;
 myCrit = node.bad_channels.criterion.var.new('Min', minVal, 'Max', maxVal);
 myNode = node.bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
@@ -67,7 +69,7 @@ myFeat = spt.feature.psd_ratio(...
 
 myCrit = spt.criterion.threshold(...
     'Feature',  myFeat, ...
-    'Max',      @(x) min(median(x) + 10*mad(x), 100), ...
+    'Max',      @(x) min(median(x) + 8*mad(x), 100), ...
     'MaxCard',  2);
 
 myPCA  = spt.pca(...
@@ -98,7 +100,8 @@ nodeList = [nodeList {myNode}];
 
 %% low-pass filter
 myNode = node.filter.new(...
-    'Filter', @(sr) filter.hpfilt('Fc', 42/(sr/2)));
+    'Filter', @(sr) filter.hpfilt('Fc', 42/(sr/2)), ...
+    'Name', 'LP-filter-42Hz');
 nodeList = [nodeList {myNode}];
 
 %% supervised BSS
