@@ -80,7 +80,13 @@ if exist(new_name, 'file'),
         delete(hdrFile);
     end
 end
+
 copyfile(obj.PointSet.DataFile, new_name);
+
+if isunix,
+    system(['chmod u+w ' new_name]);
+end
+
 
 %% Create an physioset object associated to the new memory-mapped file
 if isempty(opt.temporary),
