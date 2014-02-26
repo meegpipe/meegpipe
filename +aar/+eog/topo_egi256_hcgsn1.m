@@ -3,29 +3,33 @@ function obj = topo_egi256_hcgsn1(varargin)
 
 import misc.process_arguments;
 import misc.split_arguments;
+import misc.split_arguments;
 import pset.selector.sensor_class;
 import pset.selector.good_data;
 import pset.selector.cascade;
+
+%% Process input arguments
+opt.MinCard         = 2;
+opt.MaxCard         = @(d) ceil(0.25*length(d));
+opt.Max             = {10 10 @(feat) prctile(feat, 70)};
+opt.RetainedVar     = 99.75;
+opt.MaxPCs          = 40;
+opt.MinPCs          = @(lambda) max(3, ceil(0.1*numel(lambda)));
+opt.BSS             = spt.bss.efica;
+
+[thisArgs, varargin] = split_arguments(opt, varargin);
+
+[~, opt] = process_arguments(opt, thisArgs);
 
 %% Default criterion
 myFeat1 = spt.feature.psd_ratio.eog;
 myFeat2 = spt.feature.bp_var;
 myFeat3 =  spt.feature.topo_ratio.eog_egi256_hcgsn1;
 myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2, myFeat3}, ...
-    'Max',      {15 15 @(feat) prctile(feat, 70)}, ...
-    'MinCard',  2, ...
-    'MaxCard',  @(d) ceil(0.25*length(d)));
+    'Max',      opt.Max, ...
+    'MinCard',  opt.MinCard, ...
+    'MaxCard',  opt.MaxCard);
 
-%% Process input arguments
-opt.RetainedVar     = 99.75;
-opt.MaxPCs          = 40;
-opt.MinPCs          = @(lambda) max(3, ceil(0.1*numel(lambda)));
-opt.BSS             = spt.bss.efica;
-opt.Criterion       = myCrit; 
-
-[thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
-
-[~, opt] = process_arguments(opt, thisArgs);
 
 %% PCA
 myFilter = @(sr) filter.lpfilt('fc', 13/(sr/2));
@@ -40,7 +44,7 @@ myPCA = spt.pca(...
 dataSel = cascade(sensor_class('Class', {'EEG', 'MEG'}), good_data);
 obj = meegpipe.node.bss.new(...
     'DataSelector', dataSel, ...
-    'Criterion',    opt.Criterion, ...
+    'Criterion',    myCrit, ...
     'PCA',          myPCA, ...
     'BSS',          opt.BSS, ...
     'Filter',       filter.lasip.eog, ...
