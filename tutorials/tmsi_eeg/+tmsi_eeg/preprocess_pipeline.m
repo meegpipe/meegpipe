@@ -64,7 +64,10 @@ myNode = aar.bss_supervised;
 nodeList = [nodeList {myNode}];
 
 %% Node 9: EMG
-myNode = bss.emg('CorrectionTh', 50, 'IOReport',     report.plotter.io);
+myNode = bss.emg(...
+    'CorrectionTh',     80, ...
+    'ShowDiffReport',   true, ...
+    'IOReport',         report.plotter.io);
 nodeList = [nodeList {myNode}];
 
 %% Create the pipeline

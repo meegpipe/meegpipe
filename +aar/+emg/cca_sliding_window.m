@@ -35,7 +35,7 @@ import misc.split_arguments;
 import aar.emg.cca_sliding_window.*;
 
 opt.WindowLength = 5;
-opt.CorrectionTh = 20;
+opt.CorrectionTh = 25;
 opt.VarTh        = 99.99;         
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 
@@ -53,7 +53,9 @@ end
 
 myPCA = spt.pca('RetainedVar', opt.VarTh);
 
-myCCA = spt.bss.cca('MinCorr', opt.CorrectionTh/100);
+myCCA = spt.bss.cca(...
+    'MinCorr', opt.CorrectionTh/100, ...
+    'MaxCard', @(x) ceil(0.75*numel(x)));
 myFilter = filter.cca('CCA', myCCA);
 myFilter = filter.sliding_window(myFilter, ...
     'WindowLength', @(sr) opt.WindowLength*sr);
