@@ -1,6 +1,14 @@
 function cleaning(varargin)
 % CLEANING - Clean all BATMAN EEG files
 
+import misc.process_arguments;
+import misc.split_arguments;
+
+opt.Date = datestr(now, 'yymmdd_HHMMSS');
+
+[thisArgs, varargin] = split_arguments(opt, varargin);
+[~, opt] = process_arguments(opt, thisArgs);
+
 % Just in case you forgot to do it when you started MATLAB
 meegpipe.initialize;
 
@@ -10,7 +18,7 @@ import mperl.file.find.finddepth_regex_match;
 % The directory where the cleaning results should be stored
 OUTPUT_DIR = ...
     ['/data1/projects/batman/analysis/cleaning/' ...
-    datestr(now, 'yymmdd_HHMMSS')];
+    opt.Date];
 
 
 % Ensure the directory exists (Unix-specific)
