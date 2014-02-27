@@ -62,7 +62,19 @@ else
     distMax  = featValNorm-maxThMat;
     distMin  = minThMat-featValNorm; 
     
-    rankIdx  = max(max(distMax, distMin), [], 2);
+    % Use mean distance across features: more robust! 
+    rankIdx  = mean(max(distMax, distMin), 2);
+end
+
+% Those components that are not outside the hypercube will be ranked lower
+% that all components that are outside the hypercube. Otherwise you may end
+% up with the case of no components being selected and MinCard>0 leading to
+% the dangerous situation of removing a component that have a extreme value
+% is just one of the features.
+if any(selected),
+    maxRankIdxInside = min(rankIdx(selected));
+    rankIdx(~selected) = ...
+        rankIdx(~selected).*maxRankIdxInside/max(rankIdx(~selected))-eps;
 end
 
 obj.RankIndex = rankIdx;
