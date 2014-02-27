@@ -12,29 +12,45 @@ QUEUE = 'short.q@somerenserver.herseninstituut.knaw.nl';
 
 nodeList = {};
 
-mySel = pset.selector.sensor_class('Class', 'EEG');
-
 %% Import
 myImporter = physioset.import.physioset;
 myNode = node.physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
 %% copy data
-myNode = node.copy.new('DataSelector', mySel);
+myNode = node.copy.new;
 nodeList = [nodeList {myNode}];
 
-%% high-pass filter
-myNode = node.filter.new(...
-    'Filter', @(sr) filter.hpfilt('Fc', 1/(sr/2)), ...
-    'DataSelector', mySel, ...
-    'Name', 'HP-filter-1Hz');
-nodeList = [nodeList {myNode}];
+%% Node: remove large signal fluctuations using a LASIP filter
 
-%% low-pass filter
+% Setting the "right" parameters of the filter involves quite a bit of
+% trial and error. These values seemed OK to me but we should check
+% carefully the reports to be sure that nothing went terribly wrong. In
+% particular you should ensure that the LASIP filter is not removing
+% valuable signal. It is OK if some residual noise is left after the LASIP
+% filter so better to be conservative here.
+myScales =  [20, 29, 42, 60, 87, 100, 126, 140, 182, 215, 264, 310, 382];
+
+myFilter = filter.lasip(...
+    'Decimation',       12, ...
+    'GetNoise',         true, ... % Retrieve the filtering residuals
+    'Gamma',            15, ...
+    'Scales',           myScales, ...
+    'WindowType',       {'Gaussian'}, ...
+    'VarTh',            0.1);
+
+% This object especifies which subset of data should be processed by the
+% node. In this case we want to process only the EEG data, and ignore any
+% other modalities.
+mySel = pset.selector.sensor_class('Class', 'EEG');
+
 myNode = node.filter.new(...
-    'Filter', @(sr) filter.hpfilt('Fc', 70/(sr/2)), ...
-    'DataSelector', mySel, ...
-    'Name',   'LP-filter-70Hz');
+    'Filter',           myFilter, ...
+    'Name',             'lasip', ...
+    'DataSelector',     mySel, ...
+    'ShowDiffReport',   true ...
+    );
+
 nodeList = [nodeList {myNode}];
 
 %% bad channel rejection (using variance)
@@ -44,15 +60,20 @@ myCrit = node.bad_channels.criterion.var.new('Min', minVal, 'Max', maxVal);
 myNode = node.bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
-%% bad channel rejection (using xcorr)
-myCrit = node.bad_channels.criterion.xcorr.new('Min', 0.15, 'MaxCard', 4);
-myNode = node.bad_channels.new('Criterion', myCrit);
-nodeList = [nodeList {myNode}];
-
 %% bad epochs
 myNode = node.bad_epochs.sliding_window(1, 2, ...
-    'Max',          @(x) median(x) + 3*mad(x), ...
-    'DataSelector', mySel);
+    'Max',          @(x) median(x) + 3*mad(x));
+nodeList = [nodeList {myNode}];
+
+%% BP-pass filter
+mySel =  cascade(...
+    sensor_class('Class', 'EEG'), ...
+    good_data ...
+    );
+myNode = node.filter.new(...
+    'Filter',       @(sr) filter.bpfilt('Fp', [1 70]/(sr/2)), ...
+    'DataSelector', mySel, ...
+    'Name',         'BP-filter-1-70Hz');
 nodeList = [nodeList {myNode}];
 
 %% Node: Downsample
