@@ -109,7 +109,7 @@ end
 selected(r < minTh) = false;
 
 if isa(obj.MinCard, 'function_handle')
-    minCard = obj.MinCard(featVal);
+    minCard = obj.MinCard(r);
 else
     minCard = obj.MinCard;
 end
@@ -119,7 +119,7 @@ if minCard > 0,
 end
 
 if isa(obj.MaxCard, 'function_handle'),
-    maxCard = obj.MaxCard(featVal);
+    maxCard = obj.MaxCard(r);
 else
     maxCard = obj.MaxCard;
 end

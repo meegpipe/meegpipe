@@ -54,7 +54,7 @@ myNode = node.filter.new(...
 nodeList = [nodeList {myNode}];
 
 %% bad channel rejection (using variance)
-minVal = @(x) median(x) - 40;
+minVal = @(x) median(x) - 35;
 maxVal = @(x) median(x) + 12;
 myCrit = node.bad_channels.criterion.var.new('Min', minVal, 'Max', maxVal);
 myNode = node.bad_channels.new('Criterion', myCrit);
