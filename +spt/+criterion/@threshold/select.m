@@ -62,8 +62,7 @@ else
     distMax  = featValNorm-maxThMat;
     distMin  = minThMat-featValNorm; 
     
-    % Use mean distance across features: more robust! 
-    rankIdx  = mean(max(distMax, distMin), 2);
+    rankIdx  = max(max(distMax, distMin), 2);
 end
 
 % Those components that are not outside the hypercube will be ranked lower
