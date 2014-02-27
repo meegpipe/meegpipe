@@ -24,7 +24,7 @@ classdef psd_ratio < spt.feature.feature & goo.verbose
         
         function obj = eog(varargin)
            obj = spt.feature.psd_ratio(...
-               'TargetBand', [0.5 6], 'RefBand', [6 14;20 40]); 
+               'TargetBand', [1 7], 'RefBand', [8 12;20 40]); 
         end
         
         function obj = pwl(varargin)
