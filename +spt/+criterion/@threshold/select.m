@@ -49,31 +49,35 @@ selected(minSelected) = true;
 
 % Sort components by their distance to the hypercube delimited by the
 % various thresholds
-shift = min(featVal);
-featValNorm = featVal - repmat(shift, size(featVal, 1), 1);
-scale = max(featValNorm);
-featValNorm = featValNorm./repmat(scale, size(featVal, 1), 1);
-if all(isinf(maxTh)) && all(isinf(minTh)),    
-    rankIdx = mean(featValNorm, 2);
+if size(featVal, 2) > 1,
+    shift = min(featVal);
+    featValNorm = featVal - repmat(shift, size(featVal, 1), 1);
+    scale = max(featValNorm);
+    featValNorm = featValNorm./repmat(scale, size(featVal, 1), 1);
+    if all(isinf(maxTh)) && all(isinf(minTh)),
+        rankIdx = mean(featValNorm, 2);
+    else
+        maxThMat = repmat((maxTh-shift)./scale, size(tSeries, 1), 1);
+        minThMat = repmat((minTh-shift)./scale, size(tSeries, 1), 1);
+        
+        distMax  = featValNorm-maxThMat;
+        distMin  = minThMat-featValNorm;
+        
+        rankIdx  = max(max(distMax, distMin), [], 2);
+    end
+    
+    % Those components that are not outside the hypercube will be ranked lower
+    % that all components that are outside the hypercube. Otherwise you may end
+    % up with the case of no components being selected and MinCard>0 leading to
+    % the dangerous situation of removing a component that have a extreme value
+    % is just one of the features.
+    if any(selected),
+        maxRankIdxInside = min(rankIdx(selected));
+        rankIdx(~selected) = ...
+            rankIdx(~selected).*maxRankIdxInside/max(rankIdx(~selected))-eps;
+    end
 else
-    maxThMat = repmat((maxTh-shift)./scale, size(tSeries, 1), 1);
-    minThMat = repmat((minTh-shift)./scale, size(tSeries, 1), 1);
-    
-    distMax  = featValNorm-maxThMat;
-    distMin  = minThMat-featValNorm; 
-    
-    rankIdx  = max(max(distMax, distMin), 2);
-end
-
-% Those components that are not outside the hypercube will be ranked lower
-% that all components that are outside the hypercube. Otherwise you may end
-% up with the case of no components being selected and MinCard>0 leading to
-% the dangerous situation of removing a component that have a extreme value
-% is just one of the features.
-if any(selected),
-    maxRankIdxInside = min(rankIdx(selected));
-    rankIdx(~selected) = ...
-        rankIdx(~selected).*maxRankIdxInside/max(rankIdx(~selected))-eps;
+    rankIdx = featVal;
 end
 
 obj.RankIndex = rankIdx;
