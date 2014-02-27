@@ -12,23 +12,28 @@ QUEUE = 'short.q@somerenserver.herseninstituut.knaw.nl';
 
 nodeList = {};
 
+mySel = pset.selector.sensor_class('Class', 'EEG');
+
 %% Import
 myImporter = physioset.import.physioset;
 myNode = node.physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
 %% copy data
-nodeList = [nodeList {node.copy.new}];
+myNode = node.copy.new('DataSelector', mySel);
+nodeList = [nodeList {myNode}];
 
 %% high-pass filter
 myNode = node.filter.new(...
     'Filter', @(sr) filter.hpfilt('Fc', 1/(sr/2)), ...
+    'DataSelector', mySel, ...
     'Name', 'HP-filter-1Hz');
 nodeList = [nodeList {myNode}];
 
 %% low-pass filter
 myNode = node.filter.new(...
     'Filter', @(sr) filter.hpfilt('Fc', 70/(sr/2)), ...
+    'DataSelector', mySel, ...
     'Name',   'LP-filter-70Hz');
 nodeList = [nodeList {myNode}];
 
@@ -46,7 +51,8 @@ nodeList = [nodeList {myNode}];
 
 %% bad epochs
 myNode = node.bad_epochs.sliding_window(1, 2, ...
-    'Max',          @(x) median(x) + 3*mad(x));
+    'Max',          @(x) median(x) + 3*mad(x), ...
+    'DataSelector', mySel);
 nodeList = [nodeList {myNode}];
 
 %% Node: Downsample
@@ -101,6 +107,7 @@ nodeList = [nodeList {myNode}];
 %% low-pass filter
 myNode = node.filter.new(...
     'Filter', @(sr) filter.hpfilt('Fc', 42/(sr/2)), ...
+     'DataSelector', mySel, ...
     'Name', 'LP-filter-42Hz');
 nodeList = [nodeList {myNode}];
 
