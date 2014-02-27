@@ -59,10 +59,6 @@ nodeList = [nodeList {myNode}];
 myNode = resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
-%% Node: remove PWL noise
-myNode = aar.pwl.new('IOReport', report.plotter.io);
-nodeList = [nodeList {myNode}];
-
 %% Node: remove ECG components
 myNode = aar.ecg.new('IOReport', report.plotter.io);
 nodeList = [nodeList {myNode}];
