@@ -16,7 +16,7 @@ myCrit = spt.criterion.threshold('Feature', {myFeat1, myFeat2}, ...
     'MaxCard',  @(d) ceil(0.2*length(d)));
 
 %% Process input arguments
-opt.RetainedVar     = 99.75;
+opt.RetainedVar     = 99.95;
 opt.MaxPCs          = 40;
 opt.MinPCs          = @(lambda) max(3, ceil(0.1*numel(lambda)));
 opt.BSS             = spt.bss.efica;

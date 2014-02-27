@@ -64,7 +64,7 @@ myNode = aar.ecg.new('IOReport', report.plotter.io);
 nodeList = [nodeList {myNode}];
 
 %% Node: remove EOG components
-myNode = aar.eog.new('IOReport', report.plotter.io);
+myNode = aar.eog.new('IOReport', report.plotter.io, 'RetainedVar', 99.99);
 nodeList = [nodeList {myNode}];
 
 %% Node 11: supervised BSS
