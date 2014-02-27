@@ -59,6 +59,18 @@ nodeList = [nodeList {myNode}];
 myNode = resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
+%% Node: remove PWL noise
+myNode = aar.pwl.new('IOReport', report.plotter.io);
+nodeList = [nodeList {myNode}];
+
+%% Node: remove ECG components
+myNode = aar.ecg.new('IOReport', report.plotter.io);
+nodeList = [nodeList {myNode}];
+
+%% Node: remove EOG components
+myNode = aar.eog.new('IOReport', report.plotter.io);
+nodeList = [nodeList {myNode}];
+
 %% Node 11: supervised BSS
 myNode = aar.bss_supervised;
 nodeList = [nodeList {myNode}];
