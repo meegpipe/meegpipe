@@ -40,22 +40,24 @@ for sigIter = 1:size(tSeries, 1)
     pf  = pf./sum(pf);
     
     % Calculate power in band of interest
-    narrowBandPower = 0;
+    narrowBandPower = [];
     for bandItr = 1:size(obj.TargetBand, 1)
         f0  = obj.TargetBand(bandItr, 1);
         f1  = obj.TargetBand(bandItr, 2);
         isInBand        = freqs>= f0 & freqs<=f1;      
-        narrowBandPower = narrowBandPower + obj.TargetBandStat(pf(isInBand));
+        narrowBandPower = [narrowBandPower;pf(isInBand)]; %#ok<AGROW>
     end
+    narrowBandPower = obj.TargetBandStat(narrowBandPower);
     
     % Calculate power in the "other" band
-    otherPower = 0;
+    otherPower = [];
     for bandItr = 1:size(obj.RefBand, 1)
         f02  = obj.RefBand(bandItr, 1);
         f12  = obj.RefBand(bandItr, 2);
         isOtherBand = freqs>= f02 & freqs<=f12;    
-        otherPower  = otherPower + obj.RefBandStat(pf(isOtherBand));
+        otherPower  = [otherPower; pf(isOtherBand)]; %#ok<AGROW>
     end
+    otherPower = obj.RefBandStat(otherPower);
     
     featVal(sigIter) = narrowBandPower/otherPower;
     

@@ -10,8 +10,8 @@ import pset.selector.cascade;
 
 %% Process input arguments
 opt.MinCard         = 2;
-opt.MaxCard         = @(d) ceil(0.25*length(d));
-opt.Max             = {10 @(feat) min(median(feat), 10) @(feat) prctile(feat, 70)};
+opt.MaxCard         = @(d) min(6, ceil(0.25*length(d)));
+opt.Max             = {5 @(feat) min(median(feat), 10) @(feat) prctile(feat, 70)};
 opt.RetainedVar     = 99.75;
 opt.MaxPCs          = 40;
 opt.MinPCs          = @(lambda) max(3, ceil(0.1*numel(lambda)));
