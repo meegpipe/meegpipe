@@ -41,9 +41,8 @@ for i = 1:size(x, 1)
     end
     
     xi = x(i, :);
-    
-    xi = filter(obj, xi);
-    xi = filter(obj, fliplr(xi));
+    xi = filter(set_verbose(obj, false), xi);
+    xi = filter(set_verbose(obj, false), fliplr(xi));
     x(i, :) = fliplr(xi);
    
     if verbose &&  ~mod(i, by100),
@@ -51,6 +50,7 @@ for i = 1:size(x, 1)
     end
 end
 if verbose,
+    eta(tinit, size(x,1), i, 'remaintime', false);
     clear misc.eta;
     fprintf('\n\n');
 end

@@ -15,7 +15,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(12);
+initialize(13);
 
 %% Create a new session
 try
@@ -50,6 +50,25 @@ catch ME
     
 end
 
+%% BP filter
+try
+    
+    name = 'BP filter';
+
+    data = import(physioset.import.matrix, randn(2,500));
+    
+    myFilter = filter.bpfilt('Fp', [0.1 0.3]);
+    myNode = node.filter.new('Filter', myFilter); 
+    run(myNode, data);
+    
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
 
 %% process sample data
 try

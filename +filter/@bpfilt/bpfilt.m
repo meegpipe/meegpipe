@@ -115,7 +115,7 @@ classdef bpfilt < filter.abstract_dfilt
             opt.fp                  = [];
             opt.persistentmemory    = false;
             opt.verbose             = true;
-            opt.verboselabel        = '(filter.bpfilt)';
+            opt.verboselabel        = '(filter.bpfilt) ';
             
             [~, opt] = process_arguments(opt, varargin);
             
