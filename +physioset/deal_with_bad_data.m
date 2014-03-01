@@ -77,24 +77,7 @@ switch lower(policy)
     case 'reject',
         
         % Mark boundaries with a "boundary" event
-        winrej = eeglab_winrej(obj);
-        
-        evIdx = nan(1, size(winrej,1));
-        count = 0;
-        for i = 1:size(winrej,1)
-            pos = winrej(i,1);
-            if pos < 1, continue; end
-            
-            dur = diff(winrej(i,1:2))+1;
-            samplTime = get_sampling_time(obj);
-            lat = samplTime(pos);
-            thisEv = event(pos, 'Type', 'boundary', 'Time', lat, ...
-                'Duration', 1, 'Value', dur);
-            
-            [~, evIdx(i)] = add_event(obj, thisEv);
-            count = count + 1;
-        end
-        evIdx(count+1:end) = [];
+        [~, evIdx] = add_boundary_events(obj);
         select(obj, ~is_bad_channel(obj), ~is_bad_sample(obj));
         didSelection = true;
         

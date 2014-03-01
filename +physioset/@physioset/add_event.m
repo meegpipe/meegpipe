@@ -47,6 +47,12 @@ else
     idx = numel(obj.Event)+1:numel(obj.Event)+nbEvs;
 end
 
+[evArray, reIdx] = sort(evArray);
+
 obj.Event = evArray;
+
+newIdx = false(1, numel(evArray));
+newIdx(idx) = true;
+idx = find(newIdx(reIdx));
 
 end

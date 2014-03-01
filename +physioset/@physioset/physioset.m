@@ -195,11 +195,14 @@ classdef physioset < ...
                     'Must be (an array of) physioset.event.event object(s)'));
             end
             
-            if ~isempty(v),
-                obj.Event = sort(v);
-            else
-                obj.Event = v;
-            end
+            % Do not sort the events here. Method add_event takes care of
+            % that already
+            obj.Event = v;
+%             if ~isempty(v),
+%                 obj.Event = sort(v);
+%             else
+%                 obj.Event = v;
+%             end
         end
         
         function set.Sensors(obj, v)
@@ -549,6 +552,8 @@ classdef physioset < ...
     
     % Mutable public methods
     methods
+        
+        [obj, evIdx]    = add_boundary_events(obj);            
         
         obj             = set_sensors(obj, index);
         
