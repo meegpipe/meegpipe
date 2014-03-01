@@ -1,5 +1,5 @@
-function obj = bss_psd_ratio(varargin)
-% BSS_PSD_RATIO - EOG removal using BSS and PSD ratios as criterion
+function obj = bss_notopo(varargin)
+% BSS_NOTOPO - EOG removal using BSS, without any topographical feature
 
 import misc.process_arguments;
 import misc.split_arguments;

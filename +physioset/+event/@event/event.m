@@ -179,7 +179,7 @@ classdef event < goo.abstract_setget & ...
         
         [ev, idx] = select(ev, varargin);
         
-        evArray = sort(evArray, varargin);
+        [evArray, idx] = sort(evArray, varargin);
         
         [y, ca, cb] = unique(evArray, property)
         

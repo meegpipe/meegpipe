@@ -21,7 +21,7 @@ groupDelay = (length(b) - 1) / 2;
 % Find data discontinuities
 evBndry = get_event(data);
 if ~isempty(evBndry),
-    evBndry = select(ev, 'Type', 'boundary');
+    evBndry = select(evBndry, 'Type', 'boundary');
 end
 if ~isempty(evBndry),
     evBndry = eeglab(evBndry);
