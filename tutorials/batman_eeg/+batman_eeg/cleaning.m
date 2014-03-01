@@ -10,7 +10,7 @@ opt.Date     = datestr(now, 'yymmdd_HHMMSS');
 opt.Subjects = 1:10; 
 opt.Conditions = {'arsq', 'baseline', 'pvt', 'rs'};
 [thisArgs, varargin] = split_arguments(opt, varargin);
-[~, opt] = process_arguments(opt, thisArgs);
+[~, opt] = process_arguments(opt, thisArgs, [], true);
 
 % Just in case you forgot to do it when you started MATLAB
 meegpipe.initialize;
