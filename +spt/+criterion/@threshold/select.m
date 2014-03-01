@@ -54,6 +54,8 @@ if size(featVal, 2) > 1,
     featValNorm = featVal - repmat(shift, size(featVal, 1), 1);
     scale = max(featValNorm);
     featValNorm = featValNorm./repmat(scale, size(featVal, 1), 1);
+
+    
     if all(isinf(maxTh)) && all(isinf(minTh)),
         rankIdx = mean(featValNorm, 2);
     else
@@ -62,8 +64,17 @@ if size(featVal, 2) > 1,
         
         distMax  = featValNorm-maxThMat;
         distMin  = minThMat-featValNorm;
+
+        distMaxBothTh = max(distMax, distMin);
+
+        if isempty(obj.RankingFactor) || numel(obj.RankingFactor) == 1,
+            rFactor = ones(size(distMaxBothTh));
+        else
+            rFactor = repmat(obj.RankingFactor(:)', size(distMaxBothTh, 1), 1);
+        end
         
-        rankIdx  = max(max(distMax, distMin), [], 2);
+        rFactor(distMaxBothTh(:) < 0) = 1./rFactor(distMaxBothTh(:) < 0);
+        rankIdx  = max(rFactor.*distMaxBothTh, [], 2);
     end
     
     % Those components that are not outside the hypercube will be ranked lower

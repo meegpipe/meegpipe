@@ -24,7 +24,7 @@ classdef psd_ratio < spt.feature.feature & goo.verbose
         
         function obj = eog(varargin)
            obj = spt.feature.psd_ratio(...
-               'TargetBand', [1 7], 'RefBand', [8 12;20 40]); 
+               'TargetBand', [1 7], 'RefBand', [8 14;20 40]); 
         end
         
         function obj = pwl(varargin)
@@ -50,8 +50,8 @@ classdef psd_ratio < spt.feature.feature & goo.verbose
             opt.RefBand = [];
             opt.Estimator  = ...
                 @(x, sr) pwelch(x,  min(ceil(numel(x)/5),sr*3), [], [], sr);
-            opt.TargetBandStat = @(power) prctile(power, 75);
-            opt.RefBandStat = @(power) prctile(power, 25);
+            opt.TargetBandStat = @(power) prctile(power, 50);
+            opt.RefBandStat = @(power) max(power);
             obj = set_properties(obj, opt, varargin);      
         end
         
