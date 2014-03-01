@@ -90,6 +90,8 @@ for i = 1:numel(sensObj)
     % find_bad_epochs sets the bad samples on data as well
     evBad = find_bad_epochs(crit, data, ev, sgRep);
     
+    add_boundary_events(data);
+    
     fprintf(fid, evBad);
     
     restore_selection(data);
