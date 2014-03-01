@@ -1,19 +1,19 @@
 function cleaning(varargin)
 % CLEANING - Clean all BATMAN EEG files
 
+% Import some utilities
+import mperl.file.find.finddepth_regex_match;
 import misc.process_arguments;
 import misc.split_arguments;
 
-opt.Date = datestr(now, 'yymmdd_HHMMSS');
-
+opt.Date     = datestr(now, 'yymmdd_HHMMSS');
+opt.Subjects = 1:10; 
+opt.Conditions = {'arsq', 'baseline', 'pvt', 'rs'};
 [thisArgs, varargin] = split_arguments(opt, varargin);
 [~, opt] = process_arguments(opt, thisArgs);
 
 % Just in case you forgot to do it when you started MATLAB
 meegpipe.initialize;
-
-% Import some utilities
-import mperl.file.find.finddepth_regex_match;
 
 % The directory where the cleaning results should be stored
 OUTPUT_DIR = ...
@@ -37,8 +37,9 @@ myPipe = batman_eeg.cleaning_pipeline(...
 
 somsds.link2rec(...
     'batman',       ...                  % The recording ID
-    'subject',      1:10, ...            % The subject ID(s)
+    'subject',      opt.Subjects, ...    % The subject ID(s)
     'modality',     'eeg', ...           % The data modality
+    'condition',    opt.Conditions, ...
     'file_regex',   '\.pset', ...     % Only pset/pseth files
     'folder',       OUTPUT_DIR);
 
