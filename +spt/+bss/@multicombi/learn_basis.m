@@ -14,7 +14,7 @@ catch ME
         warning('learn_basis:Singular', ...
             ['multicombi failed due to a close to singular matrix ' ...
             'inversion: falling back to efica']);
-        W = efica(data);
+        W = efica(data(:,:));
     else
         rethrow(ME);
     end
