@@ -11,7 +11,10 @@ import pset.selector.cascade;
 %% Process input arguments
 opt.MinCard         = 2;
 opt.MaxCard         = @(d) min(6, ceil(0.25*length(d)));
-opt.Max             = {5 @(feat) min(median(feat), 10) @(feat) prctile(feat, 70)};
+opt.Max             = {@(feat) min(median(feat), 5) ...
+    @(feat) min(median(feat), 10) ...
+    @(feat) prctile(feat, 50) ...
+    @(feat) median(feat)};
 opt.RetainedVar     = 99.75;
 opt.MaxPCs          = 40;
 opt.MinPCs          = @(lambda) max(3, ceil(0.1*numel(lambda)));
@@ -25,11 +28,12 @@ opt.BSS             = spt.bss.efica;
 myFeat1 = spt.feature.psd_ratio.eog;
 myFeat2 = spt.feature.bp_var;
 myFeat3 = spt.feature.topo_ratio.eog_egi256_hcgsn1;
-myCrit  = spt.criterion.threshold('Feature', {myFeat1, myFeat2, myFeat3}, ...
+myFeat4 = spt.feature.tfd.eog;
+myCrit  = spt.criterion.threshold('Feature', {myFeat1, myFeat2, myFeat3, myFeat4}, ...
     'Max',                  opt.Max, ...
     'MinCard',              opt.MinCard, ...
     'MaxCard',              opt.MaxCard, ...
-    'RankingFactor',        [1 0.5 0.5]); %Only relevant if MinCard is in effect
+    'RankingFactor',        [1 0.5 0.5 0.5]); %Only relevant if MinCard is in effect
 
 
 %% PCA
