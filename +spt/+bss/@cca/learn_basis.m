@@ -2,6 +2,14 @@ function obj = learn_basis(obj, X, varargin)
 
 import misc.process_arguments;
 
+% Wh is used to keep track of the last well-conditioned separating matrix.
+% Wh will be returned if the current W is not accurate due to an
+% ill-conditioned covariance matrix
+persistent Wh;
+persistent Cxxh;
+persistent Cyyh;
+persistent Cxyh;
+
 opt.SamplingRate = [];
 [~, opt] = process_arguments(opt, varargin);
 
@@ -76,9 +84,34 @@ end
 % Do we have an ill-conditioned cov matrix?
 if any(imag(W(:))),
     warning('cca:IllConditioned', ...
-        'Covariance is ill-conditioned: results might be inaccurate!');   
-end
+        'Covariance is ill-conditioned: results might be inaccurate!');  
+    if ~isempty(Wh),
+        W = Wh;
+    elseif ~isempty(Cxxh)
+        % Use the global covariance estimates
+        Cyxh = (Cxyh');
+        invCyyh = pinv(Cyyh);
+        [W,r] = eig(pinv(Cxxh)*Cxyh*invCyyh*Cyxh);
+    else
+        % Last resort, throw a nasty warning and just don't filter
+        warning('cca:IllConditionedSurelyInaccurate', ...
+            'Using dummy basis: impossible to learn reasonable basis functions');
 
+    end
+else
+    % Last W estimate that was accurate
+    Wh = W;
+    % Update global covariance estimates
+    if isempty(Cyyh),
+        Cyyh = Cyy;
+        Cxxh = Cxx;
+        Cxyh = Cxy;
+    else
+        Cyyh = (Cyyh + Cyy)./2;
+        Cxxh = (Cxxh + Cxx)./2;
+        Cxyh = (Cxyh + Cxy)./2;
+    end
+end
 
 r = sqrt(abs(real(r)));
 if obj.TopCorrFirst,
