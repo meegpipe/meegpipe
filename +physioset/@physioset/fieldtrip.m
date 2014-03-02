@@ -21,7 +21,7 @@ obj = varargin(1:count);
 
 varargin = varargin(count+1:end);
 
-opt.BadData = 'reject';
+opt.BadDataPolicy = 'reject';
 [~, opt] = process_arguments(opt, varargin);
 
 if numel(obj) > 1,
@@ -36,7 +36,7 @@ end
 obj = obj{1};
 
 % Do something about the bad channels/samples
-[didSelection, evIdx] = deal_with_bad_data(obj, opt.BadData);
+[didSelection, evIdx] = deal_with_bad_data(obj, opt.BadDataPolicy);
 
 % Important to use method sensors here, instead of obj.Sensors. The
 % latter does not have into account "data selections" and would break the
@@ -96,7 +96,7 @@ if numel(eventArray) < 2,
 else
     nTrials = numel(eventArray);
     
-    if ~isempty(evIdx) && strcmpi(opt.BadData, 'reject'),
+    if ~isempty(evIdx) && strcmpi(opt.BadDataPolicy, 'reject'),
        error(['Cannot use bad data policy ''reject'' in the presence ' ...
            'of bad data samples']); 
     end    

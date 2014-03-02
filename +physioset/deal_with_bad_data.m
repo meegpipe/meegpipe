@@ -67,19 +67,16 @@ if ~any(is_bad_channel(obj)) && ~any(is_bad_sample(obj)),
     return;
 end
 
-
-
 if nargin < 2 || isempty(policy), policy = 'reject'; end
-
 
 switch lower(policy)
     
     case 'reject',
         
         % Mark boundaries with a "boundary" event
-        [~, evIdx] = add_boundary_events(obj);
         select(obj, ~is_bad_channel(obj), ~is_bad_sample(obj));
         didSelection = true;
+        evIdx = [];
         
     case 'flatten',
         

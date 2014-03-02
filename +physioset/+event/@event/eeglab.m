@@ -26,7 +26,7 @@ if nargin < 2 || isempty(makeEpochs), makeEpochs = true; end
 mySel = physioset.event.class_selector('Class', 'discontinuity');
 [evDisc, evIdx] = select(mySel, a);
 if ~isempty(evIdx),
-    a(idx) = [];
+    a(evIdx) = [];
     newEv = [];
     % Replace them with pairs of boundary events
     for i = 1:numel(evIdx)
@@ -34,11 +34,15 @@ if ~isempty(evIdx),
         dur = get_duration(evDisc(i));
         newEv = [newEv; physioset.event.new(pos, 'Type', 'boundary')]; %#ok<*AGROW>
         if dur > 1,
+            % One sample after the bad epoch ends so that the event is not
+            % removed when rejecting the bad data after conversion to
+            % EEGLAB
             newEv = [newEv; ...
-                physioset.event.new(pos+dur-1, 'Type', 'boundary')];
+                physioset.event.new(pos+dur, 'Type', 'boundary')];
         end
     end
     a = [a(:);newEv];
+    a = sort(a);
 end
 
 

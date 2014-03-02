@@ -25,7 +25,7 @@ obj = varargin(1:count);
 
 varargin = varargin(count+1:end);
 
-opt.BadData = 'reject';
+opt.BadDataPolicy = 'reject';
 opt.MemoryMapped = false;
 [~, opt] = process_arguments(opt, varargin);
 
@@ -41,7 +41,7 @@ end
 obj = obj{1};
 
 % Do something about the bad channels/samples
-[didSelection, evIdx] = deal_with_bad_data(obj, opt.BadData);
+[didSelection, evIdx] = deal_with_bad_data(obj, opt.BadDataPolicy);
 
 % Reconstruct trials, if necessary. This complicates things...
 evArray = get_event(obj);
