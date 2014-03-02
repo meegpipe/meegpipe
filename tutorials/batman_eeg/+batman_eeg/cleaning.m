@@ -40,7 +40,7 @@ somsds.link2rec(...
     'subject',      opt.Subjects, ...    % The subject ID(s)
     'modality',     'eeg', ...           % The data modality
     'condition',    opt.Conditions, ...
-    'file_regex',   'arsq_7\.pset', ...     % Only pset/pseth files
+    'file_regex',   '\.pset', ...     % Only pset/pseth files
     'folder',       OUTPUT_DIR);
 
 regex = '\.pseth$';

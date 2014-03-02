@@ -36,7 +36,8 @@ import aar.emg.cca_sliding_window.*;
 
 opt.WindowLength = 5;
 opt.CorrectionTh = 25;
-opt.VarTh        = 99.99;         
+opt.VarTh        = 99.99; 
+opt.WindowOverlap = 50;
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 
 [~, opt] = process_arguments(opt, thisArgs);
@@ -58,7 +59,8 @@ myCCA = spt.bss.cca(...
     'MaxCard', @(x) ceil(0.9*numel(x)));
 myFilter = filter.cca('CCA', myCCA);
 myFilter = filter.sliding_window(myFilter, ...
-    'WindowLength', @(sr) opt.WindowLength*sr);
+    'WindowLength', @(sr) opt.WindowLength*sr, ...
+    'WindowOverlap', opt.WindowOverlap);
 
 mySel = pset.selector.sensor_class('Class', 'EEG');
 
