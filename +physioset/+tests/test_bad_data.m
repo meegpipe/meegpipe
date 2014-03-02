@@ -43,10 +43,10 @@ try
     [data, evIdx] = set_bad_sample(data, [200:300 400:500]);
    
     ev = get_event(data);
-    
+    discClass = 'physioset.event.std.discontinuity';
     ok(numel(ev)==52 & numel(evIdx) == 2 & ...
-        strcmp(ev(evIdx(1)).Type, 'boundary') & ...
-        strcmp(ev(evIdx(2)).Type, 'boundary'), name);
+        isa(ev(evIdx(1)), discClass) & ...
+        isa(ev(evIdx(2)), discClass), name);
     
 catch ME
     
@@ -69,9 +69,10 @@ try
     
     ev = get_event(data);
     
+    discClass = 'physioset.event.std.discontinuity';
     ok(numel(ev)==52 & numel(evIdx) == 2 & ...
-        strcmp(ev(evIdx(1)).Type, 'boundary') & ...
-        strcmp(ev(evIdx(2)).Type, 'boundary') & isempty(newEvIdx), name);
+        isa(ev(evIdx(1)), discClass) & ...
+        isa(ev(evIdx(2)), discClass) & isempty(newEvIdx), name);
     
 catch ME
     
@@ -79,8 +80,6 @@ catch ME
     MEh = [MEh ME];
     
 end
-
-
 
 %% Cleanup
 try

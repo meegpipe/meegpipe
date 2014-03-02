@@ -1,4 +1,4 @@
-function EEG = eeglab(obj, varargin)
+function EEG = eeglab(varargin)
 % eeglab - Conversion to EEGLAB structure
 %
 % See: <a href="matlab:misc.md_help('+physioset/@physioset/eeglab.md')">misc.md_help(''+physioset/@physioset/eeglab.md'')</a>
@@ -15,17 +15,33 @@ import misc.process_arguments;
 
 check_dependency('eeglab');
 
-opt.BadDataPolicy = 'reject';
-opt.MemoryMapped  = false;
+count = 0;
+while count < numel(varargin) && ...
+        isa(varargin{count+1}, 'physioset.physioset'),
+   count = count + 1; 
+end
+
+obj = varargin(1:count);
+
+varargin = varargin(count+1:end);
+
+opt.BadData = 'reject';
+opt.MemoryMapped = false;
 [~, opt] = process_arguments(opt, varargin);
 
-% Do something about the bad channels/samples
-[didSelection, evIdx] = deal_with_bad_data(obj, opt.BadDataPolicy);
+if numel(obj) > 1,
+   % Merging multiple physiosets into a single ftrip structure
+   EEG = cell(size(obj));
+   for i = 1:numel(obj)
+      EEG{i} = eeglab(obj{i}, varargin{:});      
+   end
+   return;
+end
 
-% Convert data selection into events
-%selectionEv = epoch_begin(NaN, 'Type', '__DataSelection');
-%selectionEv = get_pnt_selection_events(obj, selectionEv);
-%add_event(obj, selectionEv);
+obj = obj{1};
+
+% Do something about the bad channels/samples
+[didSelection, evIdx] = deal_with_bad_data(obj, opt.BadData);
 
 % Reconstruct trials, if necessary. This complicates things...
 evArray = get_event(obj);

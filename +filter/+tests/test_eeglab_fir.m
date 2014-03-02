@@ -8,7 +8,7 @@ import datahash.DataHash;
 
 MEh     = [];
 
-initialize(6);
+initialize(7);
 
 %% Create a new session
 try
@@ -40,6 +40,41 @@ try
         isa(obj, 'filter.eeglab_fir') & ~is_verbose(obj) & ...
         all(obj2.Fp == [0 20]) & all(obj.Fp == [0 20]), ...
         name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% filtering across boundaries
+try
+    
+    name = 'filtering across boundaries';
+    X = randn(5, 1000);
+    
+    X = filter(filter.bpfilt('Fp', [5 15]/(250/2)), X);
+    
+    N = 0.1*randn(5, 1000);   
+    
+    data = import(physioset.import.matrix('SamplingRate', 250), X+N);
+    
+    set_bad_sample(data, [200:250 600:650]);
+    
+    snr0 = 0;
+    for i = 1:size(X, 1)
+        snr0 = snr0 + var(X(i,:))/var(N(i,:));
+    end
+    
+    myFilt = filter.eeglab_fir('Fp', [5 15], 'Notch', false);
+    filter(myFilt, data);
+    
+    snr1 = 0;
+    for i = 1:size(X, 1)
+        snr1 = snr1 + var(X(i,:))/var(data(i,:) - X(i,:));
+    end
+    ok(snr1 > 5*snr0, name);
     
 catch ME
     

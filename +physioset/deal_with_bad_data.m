@@ -89,41 +89,12 @@ switch lower(policy)
         
     case 'donothing',
         % do nothing
-        evIdx = add_bad_data_events(obj);
+        [~, evIdx] = add_boundary_events(obj, 'bad_data');
         
     otherwise,
         
         error('Invalid policy ''%s''', policy);
         
 end
-
-
-
-end
-
-
-
-function evIdx = add_bad_data_events(obj)
-import physioset.event.std.epoch_begin;
-% Mark boundaries with a "boundary" event
-winrej = eeglab_winrej(obj);
-
-evIdx = nan(1, size(winrej,1));
-count = 0;
-for i = 1:size(winrej,1)
-    pos = max(1, winrej(i,1)-1);
-    if pos < 1, continue; end
-    
-    dur = diff(winrej(i,1:2))+1;
-    samplTime = get_sampling_time(obj);
-    lat = samplTime(pos);
-    thisEv = epoch_begin(pos, 'Type', '__BadData', 'Time', lat, ...
-        'Duration', dur);
-    thisEv = set_meta(thisEv, 'Duration', dur);
-    [~, evIdx(i)] = add_event(obj, thisEv);
-    count = count+1;
-end
-evIdx(count+1:end) = [];
-
 
 end

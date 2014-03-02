@@ -19,6 +19,29 @@ function [ev, epochDur, trialBeginEv] = eeglab(a, makeEpochs)
 
 if nargin < 2 || isempty(makeEpochs), makeEpochs = true; end
 
+%% Discontinuity events are special.
+% In meegpipe a single discontinuity event encodes a bad epoch (using the
+% onset and duration of the discontinuity event). In EEGLAB, this
+% translates into two boundary events
+mySel = physioset.event.class_selector('Class', 'discontinuity');
+[evDisc, evIdx] = select(mySel, a);
+if ~isempty(evIdx),
+    a(idx) = [];
+    newEv = [];
+    % Replace them with pairs of boundary events
+    for i = 1:numel(evIdx)
+        pos = get_sample(evDisc(i));
+        dur = get_duration(evDisc(i));
+        newEv = [newEv; physioset.event.new(pos, 'Type', 'boundary')]; %#ok<*AGROW>
+        if dur > 1,
+            newEv = [newEv; ...
+                physioset.event.new(pos+dur-1, 'Type', 'boundary')];
+        end
+    end
+    a = [a(:);newEv];
+end
+
+
 %% Create trials if necessary
 epochDur = NaN;
 

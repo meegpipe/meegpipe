@@ -8,8 +8,8 @@ classdef (Sealed) discontinuity < physioset.event.event
                 obj.Type = '__Discontinuity';
                 return;
             end
-			
-			if nargin == 1 && isa(pos, 'physioset.event.event'),
+            
+            if nargin == 1 && isa(pos, 'physioset.event.event'),
                 % Copy constructor
                 varargin = {...
                     'Type',     pos.Type, ...
@@ -20,7 +20,7 @@ classdef (Sealed) discontinuity < physioset.event.event
                     'Dims',     pos.Dims ...
                     };
                 pos = pos.Sample;
-            end            
+            end
             
             obj = repmat(obj, size(pos));
             
