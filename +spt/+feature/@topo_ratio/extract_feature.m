@@ -4,8 +4,6 @@ import misc.peakdet;
 import misc.eta;
 import goo.pkgisa;
 
-NB_NEAREST = 4;
-
 verbose      = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);
 
@@ -19,21 +17,8 @@ symm        = obj.Symmetrical;
 
 M = bprojmat(sptObj);
 
-% Perform a spatial filtering to increase robustness
 sens = sensors(data);
-if size(data,1) > 30 && has_coords(sens),
-    dist = euclidean_dist(sens);
-    Mf = nan(size(M));
-    for i = 1:size(M,2)
-        for j = 1:size(M,1)
-            thisDist = dist(j, :);
-            [~, idx] = sort(thisDist, 'descend');
-            nearestIdx = idx(1:min(NB_NEAREST, numel(idx)));
-            Mf(j, i) = mean(M(nearestIdx, i));
-        end
-    end
-    M = Mf;
-end
+
 
 if isa(sensNumL, 'function_handle'),
     sensNumL = sensNumL(sens);
