@@ -109,7 +109,10 @@ EEG = tmp;
 % Undo temporary selections
 if didSelection,
     restore_selection(obj);
-    delete_event(obj, evIdx);
+    if ~isempty(evIdx),
+        % Careful, evIdx = [] means "delete all events"
+        delete_event(obj, evIdx);
+    end
 end
 
 
