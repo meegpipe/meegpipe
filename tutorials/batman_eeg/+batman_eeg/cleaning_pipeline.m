@@ -133,16 +133,17 @@ myNode = node.filter.new(...
     'Name', 'LP-filter-42Hz');
 nodeList = [nodeList {myNode}];
 
-%% supervised BSS
-myNode = aar.bss_supervised;
-nodeList = [nodeList {myNode}];
-
-%% Node 9: EMG
+%% Node: EMG correction
 myNode = node.bss.emg(...
     'CorrectionTh',     85, ...
     'ShowDiffReport',   true, ...
     'IOReport',         report.plotter.io);
 nodeList = [nodeList {myNode}];
+
+%% supervised BSS
+myNode = aar.bss_supervised;
+nodeList = [nodeList {myNode}];
+
 
 %% Pipeline
 myPipe = node.pipeline.new(...
