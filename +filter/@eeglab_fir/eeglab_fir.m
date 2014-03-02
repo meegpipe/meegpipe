@@ -55,7 +55,7 @@ classdef eeglab_fir < filter.abstract_dfilt
     
     methods (Access = private, Static)
         boundaries = findboundaries(event);
-        data = firfilt(data, b, nFrames, verbose, verboseLabel);
+        data = firfilt(data, b, nFrames, evBndry);
     end
     
     
@@ -69,11 +69,34 @@ classdef eeglab_fir < filter.abstract_dfilt
         end
         
         % filter.dfilt interface
-        function [y, obj] = filter(obj, data, varargin)              
-            b = make_b(obj, data);            
+        function [data, obj] = filter(obj, data, varargin) 
+            import misc.eta;
+            import physioset.event.class_selector;
+            b = make_b(obj, data); 
             v = is_verbose(obj);
             vL = get_verbose_label(obj);
-            y = filter.eeglab_fir.firfilt(data, b, obj.NbFrames, v, vL);    
+            evBndry = get_event(data);
+            if ~isempty(evBndry),
+                mySel = class_selector('Class', 'discontinuity');
+                evBndry = select(mySel, evBndry);
+            end
+            if v,
+                fprintf([vL ...
+                    'Filtering %dx%d data matrix with eeglab_fir ...'], ...
+                    size(data,1), size(data,2));
+                tinit = tic;
+            end
+            for i = 1:size(data,1)
+                data(i,:) = filter.eeglab_fir.firfilt(data(i,:), b, ...
+                    obj.NbFrames, evBndry); 
+                if v,
+                    misc.eta(tinit, size(data,1), i);
+                end
+            end
+            if v,
+                clear +misc/eta;
+                fprintf('\n\n');
+            end
         end
         
         function [y, obj] = filtfilt(obj, x, varargin)
