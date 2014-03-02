@@ -40,10 +40,8 @@ try
     myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(5));
     data = import(myImporter, randn(5,10000));
     add_event(data, physioset.event.std.qrs(1:100:5000));
-    set_bad_sample(data, [200:300 400:500]);
-    
-    [data, evIdx] = add_boundary_events(data);
-    
+    [data, evIdx] = set_bad_sample(data, [200:300 400:500]);
+   
     ev = get_event(data);
     
     ok(numel(ev)==52 & numel(evIdx) == 2 & ...
@@ -65,9 +63,7 @@ try
     myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(5));
     data = import(myImporter, randn(5,10000));
     add_event(data, physioset.event.std.qrs(1:100:5000));
-    set_bad_sample(data, [200:300 400:500]);
-    
-    [data, evIdx] = add_boundary_events(data);
+    [data, evIdx] = set_bad_sample(data, [200:300 400:500]);
     
     [data, newEvIdx] = add_boundary_events(data);
     

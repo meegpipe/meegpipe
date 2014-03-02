@@ -559,7 +559,7 @@ classdef physioset < ...
         
         obj             = set_bad_channel(obj, index);
         
-        obj             = set_bad_sample(obj, index);
+        [obj, bndryEvIdx] = set_bad_sample(obj, index);
         
         obj             = clear_bad_channel(obj, index);
         

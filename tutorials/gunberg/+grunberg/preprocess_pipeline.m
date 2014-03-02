@@ -26,13 +26,12 @@ myNode = meegpipe.node.ev_gen.new(...
 nodeList = [nodeList {myNode}];
 
 %% Node 4: Preliminary bad epoch rejection
-% To minimize filteringa artifacts in the following filter nodes
+% To minimize filtering artifacts in the following filter nodes
 myCrit = bad_epochs.criterion.stat.new(...
     'Max',              @(stats) median(stats)+2*mad(stats), ...
     'EpochStat',        @(x) max(x));
 myNode = bad_epochs.sliding_window(5, 5, 'Criterion', myCrit);
 nodeList = [nodeList {myNode}];
-
 
 %% Node 5: reject bad channels using variance
 myCrit = bad_channels.criterion.var.new(...
@@ -47,7 +46,7 @@ myNode = bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
 %% Node 8: Band pass filtering
-myFilter = @(sr) filter.eeglab_fir('Fp', [1 43]/(sr/2));
+myFilter = @(sr) filter.eeglab_fir('Fp', [0.5 43]/(sr/2));
 myNode = filter.new('Filter', myFilter);
 nodeList = [nodeList {myNode}];
 
@@ -90,25 +89,6 @@ nodeList = [nodeList {myNode}];
 
 %% Node 10: downsampling
 myNode = resample.new('OutputRate', 250);
-nodeList = [nodeList {myNode}];
-
-%% Node: remove ECG components
-myNode = aar.ecg.new('IOReport', report.plotter.io);
-nodeList = [nodeList {myNode}];
-
-%% Node: remove EOG components
-myNode = aar.eog.new('IOReport', report.plotter.io, 'RetainedVar', 99.99);
-nodeList = [nodeList {myNode}];
-
-%% Node 11: supervised BSS
-myNode = aar.bss_supervised;
-nodeList = [nodeList {myNode}];
-
-%% Node 9: EMG
-myNode = bss.emg(...
-    'CorrectionTh',     25, ...
-    'ShowDiffReport',   true, ...
-    'IOReport',         report.plotter.io);
 nodeList = [nodeList {myNode}];
 
 %% Create the pipeline

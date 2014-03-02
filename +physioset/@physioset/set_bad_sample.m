@@ -1,4 +1,4 @@
-function obj = set_bad_sample(obj, idx)
+function [obj, evIdx] = set_bad_sample(obj, idx)
 % SET_BAD_SAMPLE - Marks one or more sample(s) as bad
 %
 %
@@ -36,5 +36,9 @@ if isempty(obj.PntSelection),
 else
     obj.BadSample(obj.PntSelection(idx)) = true;   
 end
+
+% Add 'boundary' events at the onset of each bad data epoch
+[obj, evIdx] = add_boundary_events(obj);
+    
 
 end
