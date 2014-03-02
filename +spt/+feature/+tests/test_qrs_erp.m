@@ -111,6 +111,8 @@ try
     tmp = load(catfile(meegpipe.data.root_path, 'ecg.mat'));
     ecg = tmp.ecg;
     data = import(physioset.import.matrix, randn(4,size(ecg,2)));
+    ecg = ecg -mean(ecg);
+    ecg = ecg./sqrt(var(ecg));
     data(2,:) = ecg;
     
     myFilt = @(sr) filter.lpfilt('fc', 40/(sr/2));

@@ -45,6 +45,10 @@ myCrit = bad_channels.criterion.xcorr.new(...
 myNode = bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
+%% Smooth transitions between bad epochs
+myNode = smoother.new;
+nodeList = [nodeList {myNode}];
+
 %% Node 8: Band pass filtering
 myFilter = @(sr) filter.eeglab_fir('Fp', [0.5 43]/(sr/2));
 myNode = filter.new('Filter', myFilter);

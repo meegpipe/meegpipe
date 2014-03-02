@@ -11,7 +11,7 @@ import filter.bpfilt;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Create a new session
 try
@@ -58,6 +58,31 @@ try
     
     % A cell array of strings
     spt.feature.topo_ratio('SensorsDen', {'EEG 1','EEG 2'});
+    
+    ok( true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% spatial smoothing (dim>30 and has_coords)
+try
+    
+    name = 'spatial smoothing (dim>30 and has_coords)';
+    
+    mySens = sensors.eeg.from_template('egi256');
+    myImporter = physioset.import.matrix('Sensors', mySens);
+    
+    X = rand(257, 10)*randn(10, 1000);
+    data = import(myImporter, X);
+    
+    sptObj = learn(spt.pca('RetainedVar', 99.99), data);
+    
+    myFeat = spt.feature.topo_ratio.eog_egi256_hcgsn1;
+    extract_feature(myFeat, sptObj, randn(10, 1000), data);
     
     ok( true, name);
     

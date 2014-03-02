@@ -16,7 +16,7 @@ classdef config < meegpipe.node.abstract_config
     % * The bad_channels class constructor admits all the key/value pairs
     %   admitted by the abstract_node class.
     %
-    %       MergeWindow : Numeric scalar. Default: 0.1
+    %       MergeWindow : Numeric scalar. Default: 0.25
     %           The length of the data window on which the merging will
     %           take place, in seconds. Making this longer will lead to
     %           smoother results at the expense of increasing the amount of
@@ -29,14 +29,11 @@ classdef config < meegpipe.node.abstract_config
     %
     % See also: smoother, chopper
     
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+  
     properties
        
-        MergeWindow    = 0.1;
-        EventSelector  = ...
-            physioset.event.class_selector('Class', 'discontinuity');
+        MergeWindow    = meegpipe.node.smoother.default_config('MergeWindow');
+        EventSelector  = meegpipe.node.smoother.default_config('EventSelector');
         
     end
          
@@ -49,7 +46,7 @@ classdef config < meegpipe.node.abstract_config
            import exceptions.*;
            
            if isempty(value), 
-               value = meegpipe.node.smoother.globals.get.MergeWindow;
+               value = meegpipe.node.smoother.default_config('MergeWindow');
            end
            
            if numel(value) ~= 1 || ~isnumeric(value) || value < 0
@@ -66,7 +63,7 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.*;
             
             if isempty(value),
-                value = physioset.event.class_selector('Class', 'discontinuity');
+                value =  meegpipe.node.smoother.default_config('EventSelector');
             end
             
             if numel(value) ~= 1 || ~isa(value, 'physioset.event.selector')

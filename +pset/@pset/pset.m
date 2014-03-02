@@ -85,9 +85,6 @@ classdef pset < pset.mmappset & ...
         
     end
     
-
-    
-    %% PUBLIC INTERFACE ...................................................
     properties
         
         Temporary   = true;    % Is the object opt.temporary?
