@@ -60,21 +60,25 @@ try
     
     data = import(physioset.import.matrix('SamplingRate', 250), X+N);
     
-    set_bad_sample(data, [200:250 600:650]);
+    set_bad_sample(data, [200:250 600:750]);
     
     snr0 = 0;
     for i = 1:size(X, 1)
         snr0 = snr0 + var(X(i,:))/var(N(i,:));
     end
     
+    warning('off', 'eeglab_fir:TooShortBlock');
     myFilt = filter.eeglab_fir('Fp', [5 15], 'Notch', false);
     filter(myFilt, data);
+    warning('on', 'eeglab_fir:TooShortBlock');
     
     snr1 = 0;
     for i = 1:size(X, 1)
         snr1 = snr1 + var(X(i,:))/var(data(i,:) - X(i,:));
     end
-    ok(snr1 > 5*snr0, name);
+    [~, warnId] = lastwarn;
+    ok( ~isempty(warnId) & strcmp(warnId, 'eeglab_fir:TooShortBlock') & ...
+        snr1 > 2*snr0, name);
     
 catch ME
     

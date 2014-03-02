@@ -21,7 +21,8 @@ groupDelay = (length(b) - 1) / 2;
 % Find data discontinuities
 evBndry = get_event(data);
 if ~isempty(evBndry),
-    evBndry = select(evBndry, 'Type', 'boundary');
+    mySel = physioset.event.class_selector('Class', 'discontinuity');
+    evBndry = select(mySel, evBndry);
 end
 if ~isempty(evBndry),
     evBndry = eeglab(evBndry);
@@ -45,6 +46,14 @@ for iDc = 1:(length(dcArray) - 1)
         data(:, dcArray(iDc):(dcArray(iDc) + ziDataDur - 1))]), [], 2);
     
     blockArray = [(dcArray(iDc) + groupDelay):nFrames:(dcArray(iDc + 1) - 1) dcArray(iDc + 1)];
+    if length(blockArray) < 2,
+        warning('eeglab_fir:TooShortBlock', ...
+            ['Data block too short (%d samples) for filter length ' ...
+            '(%d samples): skipping block from sample %d to sample %d'], ...
+            dcArray(iDc+1)-1-dcArray(iDc), length(b), dcArray(iDc), ...
+            dcArray(iDc+1)-1);
+    end
+        
     if verbose,
         tinit = tic;
     end

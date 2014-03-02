@@ -31,7 +31,11 @@ if ~isempty(evIdx),
     % Replace them with pairs of boundary events
     for i = 1:numel(evIdx)
         pos = get_sample(evDisc(i));
-        dur = get_duration(evDisc(i));
+        % A peculiarity of discontinuity events: The duration of the
+        % missing data is placed in the Value property (not in Duration).
+        % The reason is that otherwise disc events would be removed when
+        % converting data to EEGLAB with a reject bad data policy.
+        dur = get(evDisc(i), 'Value');
         newEv = [newEv; physioset.event.new(pos, 'Type', 'boundary')]; %#ok<*AGROW>
         if dur > 1,
             % One sample after the bad epoch ends so that the event is not
