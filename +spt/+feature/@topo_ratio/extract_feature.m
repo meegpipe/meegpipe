@@ -3,6 +3,7 @@ function featVal = extract_feature(obj, sptObj, tSeries, data, varargin)
 import misc.peakdet;
 import misc.eta;
 import goo.pkgisa;
+NB_NEAREST = 4;
 
 verbose      = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);
@@ -15,10 +16,24 @@ funcDen     = obj.FunctionDen;
 funcNum     = obj.FunctionNum;
 symm        = obj.Symmetrical;
 
-M = bprojmat(sptObj);
+Mraw = bprojmat(sptObj);
 
 sens = sensors(data);
-
+if size(data,1) > 30 && has_coords(sens),
+    dist = euclidean_dist(sens);
+    Mf = nan(size(Mraw));
+    for i = 1:size(Mraw,2)
+        for j = 1:size(Mraw,1)
+            thisDist = dist(j, :);
+            [~, idx] = sort(thisDist, 'ascend');
+            nearestIdx = idx(1:min(NB_NEAREST, numel(idx)));
+            Mf(j, i) = median(Mraw(nearestIdx, i));
+        end
+    end
+    M = Mf;
+else
+    M = Mraw;
+end
 
 if isa(sensNumL, 'function_handle'),
     sensNumL = sensNumL(sens);
@@ -89,9 +104,12 @@ if symm && ~isempty(numSetL),
     
     for sigIter = 1:size(tSeries, 1)
         
-        asym = abs(abs(M(numSetL, sigIter)) - abs(M(numSetR, sigIter)))./...
-            max(abs([M(numSetL, sigIter) M(numSetR, sigIter)]), [], 2);
-        asymFactor(sigIter) = median(1-asym).^2;
+%         asym = abs(abs(Mraw(numSetL, sigIter)) - abs(Mraw(numSetR, sigIter)))./...
+%             max(abs([Mraw(numSetL, sigIter) Mraw(numSetR, sigIter)]), [], 2);
+%         asymFactor(sigIter) = min(1-asym).^2; 
+        asymFactor(sigIter) = ...
+            abs(mean(abs(Mraw(numSetL, sigIter)))-mean(abs(Mraw(numSetR, sigIter))))./...
+            median(abs(Mraw(:, sigIter)));
         
         if verbose,
             eta(tinit, size(tSeries, 1), sigIter, 'remaintime', false);
@@ -124,7 +142,7 @@ end
 if verbose, fprintf('\n\n'); end
 
 if symm,
-    featVal = featVal(:).*asymFactor(:);
+    featVal = featVal(:).*(1./asymFactor(:));
 end
 
 end
