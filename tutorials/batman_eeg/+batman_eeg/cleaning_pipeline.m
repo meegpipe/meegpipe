@@ -149,7 +149,7 @@ myNode = node.filter.new(...
 nodeList = [nodeList {myNode}];
 
 %% supervised BSS
-myNode = aar.bss_supervised;
+myNode = aar.bss_supervised_single_node;
 nodeList = [nodeList {myNode}];
 
 %% Node: EMG correction
