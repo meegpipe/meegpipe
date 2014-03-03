@@ -86,8 +86,9 @@ switch lower(policy)
         
     case 'donothing',
         % do nothing
-        [~, evIdx] = add_boundary_events(obj, 'bad_data');
-        
+        %[~, evIdx] = add_boundary_events(obj, 'bad_data');
+       evIdx = [];
+       
     otherwise,
         
         error('Invalid policy ''%s''', policy);

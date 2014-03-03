@@ -553,7 +553,7 @@ classdef physioset < ...
     % Mutable public methods
     methods
         
-        [obj, evIdx]    = add_boundary_events(obj);            
+        [obj, evIdx]    = add_boundary_events(obj, evClass);            
         
         obj             = set_sensors(obj, index);
         

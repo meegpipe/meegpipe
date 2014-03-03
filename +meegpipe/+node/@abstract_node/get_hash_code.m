@@ -1,6 +1,5 @@
 function hs = get_hash_code(obj)
 
-
 tmpHash = mjava.hash;
 
 tmpHash('Name')         = obj.Name;

@@ -7,7 +7,7 @@ classdef topo_ratio < spt.feature.feature & goo.verbose
         SensorsDen = [];        % A regular expression or cell array of labels
         SensorsNumLeft  = [];   % A regular expression or cell array of labels
         SensorsNumRight = [];   % A regular expression or cell array of labels
-        SensorsNumMid   = [];
+        SensorsNumMid   = [];       
         FunctionDen = @(x) sum(x.^2);
         FunctionNum = @(x) sum(x.^2);
         

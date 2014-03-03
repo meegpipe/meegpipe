@@ -10,7 +10,15 @@ mergeWindow = ceil(mergeWindow*data.SamplingRate);
 eventSelector = get_config(obj, 'EventSelector');
 eventArray = select(eventSelector, get_event(data));
 
-if isempty(eventArray), return; end
+verboseLabel = get_verbose_label(obj);
+verbose = is_verbose(obj);
+
+if isempty(eventArray), 
+    if verbose,
+        fprintf([verboseLabel 'No discontinuity events: skipping smoothing\n\n']);
+    end
+    return; 
+end
 
 eventArray = set_offset(eventArray, -mergeWindow);
 eventArray = set_duration(eventArray, 2*mergeWindow+1);

@@ -109,7 +109,7 @@ if symm && ~isempty(numSetL),
 %         asymFactor(sigIter) = min(1-asym).^2; 
         asymFactor(sigIter) = ...
             abs(mean(abs(Mraw(numSetL, sigIter)))-mean(abs(Mraw(numSetR, sigIter))))./...
-            median(abs(Mraw(:, sigIter)));
+            median(abs(M([numSetL;numSetR], sigIter)));
         
         if verbose,
             eta(tinit, size(tSeries, 1), sigIter, 'remaintime', false);
@@ -131,7 +131,7 @@ for sigIter = 1:size(tSeries, 1)
     
     num = funcNum(M(numSet, sigIter));
     
-    den = funcDen(M(denSet, sigIter));
+    den = funcDen(Mraw(denSet, sigIter));
     featVal(sigIter) = num/den;
     
     if verbose,

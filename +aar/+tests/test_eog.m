@@ -39,8 +39,8 @@ try
     name = 'topo_ratio with real data';
     data = get_real_data;  
    
-    myNode = aar.eog.topo_egi256_hcgsn1(...
-        'GenerateReport',   true);
+    myNode = aar.eog.topo_generic(...
+        'GenerateReport',   false);
     
     run(myNode, data);
  
@@ -277,7 +277,7 @@ import pset.session;
 import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 
-FILE_NAME = 'batman_0003_eeg_all_11-14_rs_14_cleaning-pipe';
+FILE_NAME = '20131121T171325_647f7';
 
 if exist([FILE_NAME '.pseth'], 'file') > 0,
     data = pset.load([FILE_NAME '.pseth']);
