@@ -137,6 +137,10 @@ nodeList = [nodeList {myNode}];
 myNode = aar.ecg.new;
 nodeList = [nodeList {myNode}];
 
+%% Sparse sensor noise
+myNode = aar.sensor_noise.sparse_sensor_noise;
+nodeList = [nodeList {myNode}];
+
 %% low-pass filter
 myNode = node.filter.new(...
     'Filter', @(sr) filter.lpfilt('Fc', 42/(sr/2)), ...

@@ -12,6 +12,7 @@ opt.MinCard         = 1;
 opt.MaxCard         = @(d) min(10, ceil(0.15*length(d)));
 opt.RetainedVar     = 99.85; 
 opt.BSS             = spt.bss.efica;
+opt.Max             = {@(fVal) median(fVal) + 2*mad(fVal), 10};
 
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 [~, opt] = process_arguments(opt, thisArgs);
@@ -22,7 +23,7 @@ myPCA = spt.pca(...
     'MaxCard',          40);
 
 %% Component selection criterion
-myFeat1 = spt.feature.sgini('Nonlinearity', @(x) x.^2);
+myFeat1 = spt.feature.tkurtosis;
 % Sometimes alpha and beta components have sparse topographies. By using a
 % psd_ratio feature we are able to prevent any alpha/beta component being
 % rejected by mistake
@@ -31,7 +32,7 @@ myFeat2 = spt.feature.psd_ratio(...
     'RefBand',      [6 14; 20 40] ...        % alpha and beta bands
     );
 myCrit  = spt.criterion.threshold(myFeat1, myFeat2, ...
-    'Max',     {@(fVal) prctile(fVal, 75), 10}, ...
+    'Max',     opt.Max, ...
     'MinCard', opt.MinCard, ...
     'MaxCard', opt.MaxCard);
 
