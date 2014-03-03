@@ -9,7 +9,8 @@ opt.PCAVar        = 99.9;
 opt.WindowOverlap = 50;
 [~, opt] = process_arguments(opt, varargin);
 
-myFilter = filter.cca('MinCorr', opt.Correction/100);
+myCCA = spt.bss.cca('MinCorr', opt.Correction/100);
+myFilter = filter.cca('CCA', myCCA);
 
 myFilter = filter.sliding_window(myFilter, ...
     'WindowLength',     @(sr) 5*sr, ...
