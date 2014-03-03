@@ -12,6 +12,24 @@ function obj = read(obj)
 
 import mperl.split;
 import misc.strtrim;
+import mperl.config.inifiles.inifile;
+
+if ~exist(obj.File, 'file'),
+    fid = fopen(obj.File, 'w');
+    if fid < 1,
+        % wait a bit and try again...
+        pause(2);
+        fid = fopen(obj.File, 'w');
+        if fid < 1
+            msg = sprintf('Unable to open/create file %s', obj.File);
+            throw(inifile.InvalidPropValue('File', msg));
+        end
+    end
+    [~, name] = fileparts(obj.File);
+    warning('inifile:CreatedIniFile', ...
+        'File %s did not exist so I created it', [name, '.ini']);
+    fclose(fid);
+end
 
 check_file(obj);
 
@@ -25,7 +43,7 @@ sections = split(repmat(char(10), 1, 5), value);
 myHash = mjava.hash;
 
 for secItr = 1:numel(sections)
-   
+    
     params = split(repmat(char(10),1,2), sections{secItr});
     
     if isempty(params),
@@ -35,7 +53,7 @@ for secItr = 1:numel(sections)
         params(1) = [];
     end
     
-    secHash = mjava.hash;    
+    secHash = mjava.hash;
     
     for paramItr = 1:numel(params)
         

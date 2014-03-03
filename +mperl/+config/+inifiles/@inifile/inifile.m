@@ -140,8 +140,7 @@ classdef inifile < handle & goo.hashable_handle
            fclose(fid);
         end
     end
-    
-    %% PUBLIC INTERFACE ...................................................
+   
     properties (SetAccess = private)
         File;
     end
@@ -164,20 +163,8 @@ classdef inifile < handle & goo.hashable_handle
             elseif isempty(value),
                 value = '';
             elseif ~exist(value, 'file'),
-                fid = fopen(value, 'w');
-                if fid < 1,
-                    % wait a bit and try again...
-                    pause(2);
-                    fid = fopen(value, 'w');
-                    if fid < 1
-                        msg = sprintf('Unable to open/create file %s', value);
-                        throw(inifile.InvalidPropValue('File', msg));
-                    end
-                end
-                [~, name] = fileparts(value);
-                warning('inifile:CreatedIniFile', ...
-                    'File %s did not exist so I created it', [name, '.ini']);
-                fclose(fid);
+                % We should not create the file until we really need to
+                % This is done in read(). Don't do it here!
             end
             obj.File = rel2abs(value);
             obj.File = strrep(obj.File, '\', '/');

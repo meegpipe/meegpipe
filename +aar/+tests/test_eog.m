@@ -277,14 +277,16 @@ import pset.session;
 import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 
-if exist('20131121T171325_647f7.pseth', 'file') > 0,
-    data = pset.load('20131121T171325_647f7.pseth');
+FILE_NAME = 'batman_0003_eeg_all_11-14_rs_14_cleaning-pipe';
+
+if exist([FILE_NAME '.pseth'], 'file') > 0,
+    data = pset.load([FILE_NAME '.pseth']);
 else
     % Try downloading the file
-    url = 'http://kasku.org/data/meegpipe/20131121T171325_647f7.zip';
-    unzipDir = catdir(session.instance.Folder, '20131121T171325_647f7');
+    url = ['http://kasku.org/data/meegpipe/' FILE_NAME '.zip'];
+    unzipDir = catdir(session.instance.Folder, FILE_NAME);
     unzip(url, unzipDir);
-    fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
+    fileName = catfile(unzipDir, [FILE_NAME '.pseth']);
     data = pset.load(fileName);
 end
 dataCopy = copy(data);

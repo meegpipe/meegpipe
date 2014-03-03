@@ -14,10 +14,12 @@ function y = subsref(obj, s)
 import misc.find_pattern;
 
 
-if strcmpi(s(1).type, '()') && ~isempty(obj) 
+if strcmpi(s(1).type, '()') && ~isempty(obj)
+    
     if isempty(obj.MemoryMap) || any(cellfun(@(x) isempty(x), obj.MemoryMap)) ,
         make_mmemmapfile(obj);
     end
+    
 end
 
 nbPoints = nb_pnt(obj);
@@ -65,10 +67,10 @@ switch s(1).type
                     'Index exceeds the dimensions of the pset object.');
             end
             
-            % Determine dimension indices           
+            % Determine dimension indices
             if ischar(s(1).subs{dOrder}) && strcmp(s(1).subs{dOrder},':'),
                 dIdx = 1:nbDims;
-               
+                
             elseif isnumeric(s(1).subs{dOrder}),
                 dIdx = s(1).subs{dOrder};
             elseif islogical(s(1).subs{dOrder}),
@@ -104,7 +106,7 @@ switch s(1).type
             end
             if ~isempty(obj.DimSelection),
                 dIdx = obj.DimSelection(dIdx);
-            end            
+            end
             
             [mIdx, pIdx] = get_map_index(obj, pIdx);
             umIdx = unique(mIdx);
@@ -120,9 +122,9 @@ switch s(1).type
                     this_map_subset = (mIdx==umIdx(i));
                     y(:, this_map_subset) = ...
                         obj.MemoryMap{umIdx(i)}.Data.Data(dIdx, ...
-                        pIdx(this_map_subset)); 
+                        pIdx(this_map_subset));
                     if obj.AutoDestroyMemMap,
-                       destroy_mmemmapfile(obj, umIdx(i));
+                        destroy_mmemmapfile(obj, umIdx(i));
                     end
                 end
             end
@@ -186,7 +188,7 @@ switch s(1).type
                     y = subsref(obj, thisS);
                     y = reshape(y, size(indices));
                 elseif all(diff(indices)==1) && ~isempty(pos)
-                    % At most the first and last point are "cut"                    
+                    % At most the first and last point are "cut"
                     for i = 1:(pos(1)-1)
                         thisS.type = '()';
                         thisS.subs = {rowIdx(i),colIdx(i)};
@@ -203,7 +205,7 @@ switch s(1).type
                         y(i) = subsref(obj, thisS);
                     end
                 else
-                    % Worst case: very slow -> think of something smarter?                    
+                    % Worst case: very slow -> think of something smarter?
                     for i = 1:length(indices)
                         thisS.type = '()';
                         thisS.subs = {rowIdx(i),colIdx(i)};
