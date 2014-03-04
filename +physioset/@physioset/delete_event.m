@@ -17,19 +17,14 @@ if nargin < 2,
     return;
 end
 
+if isempty(obj.Event),
+    return;
+end
+
 if isempty(idx),
     idx = 1:numel(obj.Event);
 end
 
-[ev, rawIdx] = get_event(obj);
-
-if islogical(idx) && numel(idx)~=numel(ev),
-    error(['Dimensions of logical array IDX do not match the ' ....
-        'dimensions of the event array OBJ']);    
-end
-
-obj.Event(rawIdx(idx)) = [];
-
-
+obj.Event(idx) = [];
 
 end
