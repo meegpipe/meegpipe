@@ -80,6 +80,10 @@ myNode = node.bad_epochs.sliding_window(1, 2, ...
     'GenerateReport',   false);
 nodeList = [nodeList {myNode}];
 
+%% Merge discontinuities created by bad epoch rejection
+myNode = node.smoother.new;
+nodeList = [nodeList {myNode}];
+
 %% LP filter
 mySel =  cascade(...
     sensor_class('Class', 'EEG'), ...
