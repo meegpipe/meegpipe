@@ -1,6 +1,5 @@
 function featVal = extract_feature(obj, sptObj, ~, data, varargin)
 
-import misc.euclidean_dist;
 NB_NEAREST = 5;
 
 sens = sensors(data);
