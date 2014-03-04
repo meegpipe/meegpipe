@@ -142,7 +142,7 @@ myNode = aar.ecg.new;
 nodeList = [nodeList {myNode}];
 
 %% Sparse sensor noise
-myNode = aar.sensor_noise.sparse_sensor_noise;
+myNode = aar.sensor_noise.sparse_sensor_noise('Max', 125);
 nodeList = [nodeList {myNode}];
 
 %% low-pass filter

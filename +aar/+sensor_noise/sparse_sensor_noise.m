@@ -9,10 +9,10 @@ import pset.selector.cascade;
 
 %% Process input arguments
 opt.MinCard         = 1;
-opt.MaxCard         = @(d) min(8, ceil(0.2*numel(d)));
+opt.MaxCard         = @(d) min(10, ceil(0.2*numel(d)));
 opt.RetainedVar     = 99.85; 
 opt.BSS             = spt.bss.efica;
-opt.Max             = {@(fVal) ceil(0.6*numel(fVal))};
+opt.Max             = {@(fVal) ceil(0.7*numel(fVal))};
 
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 [~, opt] = process_arguments(opt, thisArgs);
