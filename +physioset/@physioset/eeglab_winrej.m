@@ -14,8 +14,8 @@ function winrej = eeglab_winrej(obj)
 %
 % See also: pset.eegset
 
-first = find(diff(obj.BadSample)>0);
-last  = find(diff(obj.BadSample)<0);
+first = find(diff(is_bad_sample(obj))>0);
+last  = find(diff(is_bad_sample(obj))<0);
 
 if ~isempty(first),
     first = first + 1;

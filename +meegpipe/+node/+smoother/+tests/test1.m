@@ -15,7 +15,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(8);
+initialize(9);
 
 %% Create a new session
 try
@@ -69,10 +69,37 @@ catch ME
     
 end
 
-%% process sample data with a true discontinuity
+%% bad data
 try
     
-    name = 'process sample data';
+    name = 'bad data';
+    
+    % random data with some discontinuities
+    X = randn(5,10000);
+    
+    X(:,5000:7000) = X(:,5000:7000) + 10;
+    
+    data = import(physioset.import.matrix, X);
+    
+    % Add events at the location of the discontinuities
+    set_bad_sample(data, 4000:6000);
+    
+    myNode = smoother('MergeWindow', 0.1);
+    run(myNode, data);
+    
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% process sample data with a large discontinuity
+try
+    
+    name = 'process sample data with a large discontinuity';
     
     % random data with some discontinuities
     X = randn(5,10000);
@@ -96,7 +123,6 @@ catch ME
     MEh = [MEh ME];
     
 end
-
 
 %% process sample data
 try

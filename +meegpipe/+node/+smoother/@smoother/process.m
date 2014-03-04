@@ -82,7 +82,7 @@ if do_reporting(obj),
             eventArray(i).Duration;
         pos = min(size(data, 2), pos);
         endEv = physioset.event.new(pos, 'Type', 'MergeEnd');
-        mergeEventArray = [mergeEventArray; startEv(:); endEv(:)];        
+        mergeEventArray = [mergeEventArray; startEv(:); endEv(:)];         %#ok<AGROW>
     end
     [~, evIdx] = add_event(data, mergeEventArray);
     generate(subRep, data);

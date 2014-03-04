@@ -293,26 +293,23 @@ for groupItr = 1:numel(epochs)
         if isempty(groupNames{groupItr}),
             captions{groupItr}{epochItr} = ...
                 sprintf('%s: %4.0f sec to %4.0f sec', ...
-                groupNames{groupItr}, firstSample/data.SamplingRate, ...
-                lastSample/data.SamplingRate);
+                groupNames{groupItr}, get_sampling_time(data, firstSample), ...
+                get_sampling_time(data, lastSample));
         else
             captions{groupItr}{epochItr} = ...
                 sprintf('%s: %4.0f sec to %4.0f sec', ...
-                groupNames{groupItr}, firstSample/data.SamplingRate, ...
-                lastSample/data.SamplingRate);
+                groupNames{groupItr}, get_sampling_time(data, firstSample), ...
+                get_sampling_time(data, lastSample));
         end
         set(gcf, 'Name', captions{groupItr}{epochItr});
         set(gcf, 'Color', 'white');
         
         % Set the time properly
-        
-        tInit     = firstSample/data.SamplingRate;
-        firstTime = ceil(firstSample/data.SamplingRate);
-        lastTime  = floor(lastSample/data.SamplingRate);
-        firstMark = firstTime - tInit;            
-        lastMark  = lastTime - tInit;
-        tickPos   = (firstMark:1:lastMark)*data.SamplingRate/downsamplingFactor;
-        tickTimes = firstTime:1:lastTime;
+        epochTimes = get_sampling_time(data, firstSample:lastSample);
+        diffTimes  = epochTimes - round(epochTimes);
+        tickPos    = find( diffTimes >= 0 & ...
+            diffTimes < (1/data.SamplingRate)*0.9);
+        tickTimes  = epochTimes(tickPos);
         tickLabel = cell2ticks(num2strcell(tickTimes));
         set_axes(eegplotObj, ...
             'XTick', tickPos, 'XTickLabel', tickLabel);
