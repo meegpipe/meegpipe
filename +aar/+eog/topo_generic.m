@@ -11,7 +11,7 @@ import pset.selector.cascade;
 %% Process input arguments
 opt.MinCard         = 2;
 opt.MaxCard         = @(d) min(10, ceil(0.25*length(d)));
-opt.Max             = {@(feat) median(feat)+2*mad(feat), ...
+opt.Max             = {@(feat) median(feat), ... % Relaxed threshold for symmetry
     @(feat) median(feat)+2*mad(feat), ...
     @(feat) prctile(feat, 50)};
 opt.RetainedVar     = 99.75;
@@ -24,6 +24,7 @@ opt.BSS             = spt.bss.efica;
 [~, opt] = process_arguments(opt, thisArgs);
 
 %% Default criterion
+% The symmetry feature is not very reliable to identify ocular components.
 myFeat1 = spt.feature.topo_symmetry;
 myFeat2 = spt.feature.topo_frontal;
 myFeat3 = spt.feature.psd_ratio.eog;
@@ -31,7 +32,7 @@ myCrit  = spt.criterion.threshold('Feature', {myFeat1, myFeat2, myFeat3}, ...
     'Max',                  opt.Max, ...
     'MinCard',              opt.MinCard, ...
     'MaxCard',              opt.MaxCard, ...
-    'RankingFactor',        [1 1 1]); %Only relevant if MinCard is in effect
+    'RankingFactor',        [0.5 1 1]); %Only relevant if MinCard is in effect
 
 
 %% PCA
