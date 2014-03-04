@@ -10,10 +10,12 @@ end
 
 % Try to be smart about what channels to plot: plot those that should make
 % it evident whether a bad epoch is bad
-chanIdx = pick_top_var_chans(data, ev(rejIdx), NB_CHANS);
 
 epochIdx = unique(ceil(linspace(1, numel(rejIdx), NB_EPOCHS)));
 epochIdx = rejIdx(epochIdx);
+
+chanIdx = pick_top_var_chans(data, ev(epochIdx), NB_CHANS);
+
 generate_snapshots(rep, 'Sample Bad Epochs', epochIdx, chanIdx, data, ev);
 
 %% Plot a few borderline cases
