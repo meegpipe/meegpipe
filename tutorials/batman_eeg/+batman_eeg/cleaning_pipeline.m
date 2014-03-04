@@ -29,7 +29,7 @@ mySel =  cascade(...
 myNode = node.filter.new(...
     'Filter',       @(sr) filter.hpfilt('Fc', 1/(sr/2)), ...
     'DataSelector', mySel, ...
-    'Name',         'HP-filter-1Hz', 'GenerateReport', false);
+    'Name',         'HP-filter-1Hz');
 nodeList = [nodeList {myNode}];
 
 % %% Node: remove large signal fluctuations using a LASIP filter
@@ -68,12 +68,12 @@ nodeList = [nodeList {myNode}];
 minVal = @(x) median(x) - 35;
 maxVal = @(x) median(x) + 12;
 myCrit = node.bad_channels.criterion.var.new('Min', minVal, 'Max', maxVal);
-myNode = node.bad_channels.new('Criterion', myCrit, 'GenerateReport', false);
+myNode = node.bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {myNode}];
 
 %% bad epochs
 myNode = node.bad_epochs.sliding_window(1, 2, ...
-    'Max',          @(x) median(x) + 3*mad(x), 'GenerateReport', false);
+    'Max',          @(x) median(x) + 3*mad(x));
 nodeList = [nodeList {myNode}];
 
 %% LP filter
@@ -84,7 +84,7 @@ mySel =  cascade(...
 myNode = node.filter.new(...
     'Filter',       @(sr) filter.lpfilt('Fc', 70/(sr/2)), ...
     'DataSelector', mySel, ...
-    'Name',         'LP-filter-70Hz', 'GenerateReport', false);
+    'Name',         'LP-filter-70Hz');
 nodeList = [nodeList {myNode}];
 
 %% Node: Downsample
@@ -92,7 +92,7 @@ myNode = node.resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
 %% Node: remove PWL noise
-myNode = aar.pwl.new('IOReport', report.plotter.io, 'GenerateReport', false);
+myNode = aar.pwl.new('IOReport', report.plotter.io);
 nodeList = [nodeList {myNode}];
 
 % %% Node: remove MUX noise
