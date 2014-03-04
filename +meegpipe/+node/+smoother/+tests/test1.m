@@ -69,6 +69,35 @@ catch ME
     
 end
 
+%% process sample data with a true discontinuity
+try
+    
+    name = 'process sample data';
+    
+    % random data with some discontinuities
+    X = randn(5,10000);
+    
+    X(:,5000:7000) = X(:,5000:7000) + 10;
+    
+    data = import(physioset.import.matrix, X);
+    
+    % Add events at the location of the discontinuities
+    eventArray = physioset.event.std.discontinuity([5000 7000]);
+    add_event(data, eventArray);
+    
+    myNode = smoother('MergeWindow', 0.1);
+    run(myNode, data);
+    
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+
 %% process sample data
 try
     
@@ -97,6 +126,7 @@ catch ME
     MEh = [MEh ME];
     
 end
+
 
 %% save node output
 try
