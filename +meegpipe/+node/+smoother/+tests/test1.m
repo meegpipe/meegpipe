@@ -84,6 +84,9 @@ try
     % Add events at the location of the discontinuities
     set_bad_sample(data, 4000:6000);
     
+    set_bad_sample(data, 1:500);
+    set_bad_sample(data, 6800:7000);
+    
     myNode = smoother('MergeWindow', 0.1);
     run(myNode, data);
     
