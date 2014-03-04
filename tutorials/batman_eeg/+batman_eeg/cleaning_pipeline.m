@@ -29,8 +29,7 @@ mySel =  cascade(...
 myNode = node.filter.new(...
     'Filter',         @(sr) filter.hpfilt('Fc', 1/(sr/2)), ...
     'DataSelector',   mySel, ...
-    'Name',           'HP-filter-1Hz', ...
-    'GenerateReport', false);
+    'Name',           'HP-filter-1Hz');
 nodeList = [nodeList {myNode}];
 
 % %% Node: remove large signal fluctuations using a LASIP filter
@@ -70,17 +69,15 @@ minVal = @(x) median(x) - 35;
 maxVal = @(x) median(x) + 12;
 myCrit = node.bad_channels.criterion.var.new('Min', minVal, 'Max', maxVal);
 myNode = node.bad_channels.new(...
-    'Criterion',        myCrit, ...
-    'GenerateReport',   false);
+    'Criterion',        myCrit);
 nodeList = [nodeList {myNode}];
 
 %% bad epochs
 myNode = node.bad_epochs.sliding_window(1, 2, ...
-    'Max',              @(x) median(x) + 3*mad(x), ...
-    'GenerateReport',   false);
+    'Max',              @(x) median(x) + 3*mad(x));
 nodeList = [nodeList {myNode}];
 
-%% Merge discontinuities created by bad epoch rejection
+%% Smoooth out discontinuities created by bad epoch rejection
 myNode = node.smoother.new;
 nodeList = [nodeList {myNode}];
 
@@ -92,8 +89,7 @@ mySel =  cascade(...
 myNode = node.filter.new(...
     'Filter',           @(sr) filter.lpfilt('Fc', 70/(sr/2)), ...
     'DataSelector',     mySel, ...
-    'Name',             'LP-filter-70Hz', ...
-    'GenerateReport',   false);
+    'Name',             'LP-filter-70Hz');
 nodeList = [nodeList {myNode}];
 
 %% Node: Downsample
@@ -101,8 +97,7 @@ myNode = node.resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
 %% Node: remove PWL noise
-myNode = aar.pwl.new('IOReport', report.plotter.io, ...
-    'GenerateReport', false);
+myNode = aar.pwl.new('IOReport', report.plotter.io);
 nodeList = [nodeList {myNode}];
 
 % %% Node: remove MUX noise
@@ -136,7 +131,7 @@ nodeList = [nodeList {myNode}];
 % nodeList = [nodeList {myNode}];
 
 %% Node: ECG
-myNode = aar.ecg.new('GenerateReport', false);
+myNode = aar.ecg.new;
 nodeList = [nodeList {myNode}];
 
 %% Sparse sensor noise
@@ -147,8 +142,7 @@ nodeList = [nodeList {myNode}];
 myNode = node.filter.new(...
     'Filter',           @(sr) filter.lpfilt('Fc', 42/(sr/2)), ...
      'DataSelector',    mySel, ...
-    'Name',             'LP-filter-42Hz', ...
-    'GenerateReport',   false);
+    'Name',             'LP-filter-42Hz');
 nodeList = [nodeList {myNode}];
 
 %% Node: Reject EOG components using their topography
@@ -156,8 +150,7 @@ myNode = aar.eog.topo_generic(...
     'RetainedVar',      99.85, ...
     'MinCard',          2, ...
     'MaxCard',          10, ...
-    'IOReport',         report.plotter.io, ...
-    'GenerateReport',   true);
+    'IOReport',         report.plotter.io);
 nodeList = [nodeList {myNode}];
 
 %% supervised BSS
