@@ -3,6 +3,7 @@ classdef tkurtosis < spt.feature.feature & goo.verbose
     
     properties
        MedFiltOrder = 5;
+       Nonlinearity = @(x) x.^2;
     end
     
     methods
@@ -18,6 +19,7 @@ classdef tkurtosis < spt.feature.feature & goo.verbose
             if nargin < 1, return; end
             
             opt.MedFiltOrder  = 5;
+            opt.Nonlinearity  = @(x) x.^2;
             obj = set_properties(obj, opt, varargin);
             
         end
