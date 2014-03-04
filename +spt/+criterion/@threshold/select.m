@@ -73,7 +73,9 @@ if size(featVal, 2) > 1,
             rFactor = repmat(obj.RankingFactor(:)', size(distMaxBothTh, 1), 1);
         end
         
+       
         rFactor(distMaxBothTh(:) < 0) = 1./rFactor(distMaxBothTh(:) < 0);
+       
         rankIdx  = max(rFactor.*distMaxBothTh, [], 2);
     end
     

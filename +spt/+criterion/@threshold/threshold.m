@@ -53,6 +53,13 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
                     'feature']));
             end
             
+            if numel(obj.RankingFactor) > 1 && ...
+                    numel(obj.RankingFactor) ~= numel(obj.Feature),
+                throw(Inconsistent(sprintf(['numel(RankingFactor)=%d '  ...
+                    'does not match numel(Feature)=%d'], ...
+                    numel(obj.RankingFactor), numel(obj.Feature))));
+            end
+            
         end
         
         function obj = set.FeatPlotStats(obj, value)
@@ -149,6 +156,21 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
             end
             obj.Max = value;
             
+        end
+        
+        function obj = set.RankingFactor(obj, value)
+           import exceptions.InvalidPropValue;
+           
+           if isempty(value),
+               obj.RankingFactor = [];
+               return;
+           end
+           
+           if ndims(value) > 2 || all(size(value) > 1) || any(value < 0), %#ok<ISMAT>
+               throw(InvalidPropValue('RankingFactor', ...
+                   'Must be a numeric array of positive scalars'));
+           end
+           obj.RankingFactor = value;
         end
         
         
