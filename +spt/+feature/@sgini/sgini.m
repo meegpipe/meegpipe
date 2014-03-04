@@ -54,7 +54,4 @@ classdef sgini < spt.feature.feature & goo.verbose
         end
         
     end
-    
-    
-    
 end
