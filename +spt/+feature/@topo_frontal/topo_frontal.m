@@ -1,7 +1,7 @@
 classdef topo_frontal < spt.feature.feature & goo.verbose
     
     properties
-       R0 = 0.65;  % Skip the neighborhood of Cz
+       R0 = 0.65; 
        R1 = 1;
     end
     
