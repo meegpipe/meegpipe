@@ -8,7 +8,13 @@ if isempty(ev) || isempty(rejIdx),
     return;
 end
 
-chanIdx  = unique(ceil(linspace(1, size(data, 1), NB_CHANS)));
+% Try to be smart about what channels to plot: plot those that should make
+% it evident whether a bad epoch is bad, i.e. plot channels with highest
+% variance 
+chanVar = var(data(:,:), 1, 2);
+[~, idx] = sort(chanVar, 'descend');
+chanIdx = sort(idx(1:min(numel(idx), NB_CHANS)));
+
 epochIdx = unique(ceil(linspace(1, numel(rejIdx), NB_EPOCHS)));
 epochIdx = rejIdx(epochIdx);
 generate_snapshots(rep, 'Sample Bad Epochs', epochIdx, chanIdx, data, ev);
