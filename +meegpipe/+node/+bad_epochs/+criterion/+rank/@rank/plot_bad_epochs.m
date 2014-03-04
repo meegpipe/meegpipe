@@ -9,16 +9,12 @@ if isempty(ev) || isempty(rejIdx),
 end
 
 % Try to be smart about what channels to plot: plot those that should make
-% it evident whether a bad epoch is bad, i.e. plot channels with highest
-% variance 
-chanVar = var(data(:,:), 1, 2);
-[~, idx] = sort(chanVar, 'descend');
-chanIdx = sort(idx(1:min(numel(idx), NB_CHANS)));
+% it evident whether a bad epoch is bad
+chanIdx = pick_top_var_chans(data, ev(rejIdx), NB_CHANS);
 
 epochIdx = unique(ceil(linspace(1, numel(rejIdx), NB_EPOCHS)));
 epochIdx = rejIdx(epochIdx);
 generate_snapshots(rep, 'Sample Bad Epochs', epochIdx, chanIdx, data, ev);
-
 
 %% Plot a few borderline cases
 % sort the epochs according to how close they are to the rejection boundary
@@ -32,6 +28,37 @@ borderlineEpochIdx = sortedEpochIdx(1:min(NB_EPOCHS, numel(sortedEpochIdx)));
 
 generate_snapshots(rep, 'Sample Borderline Epochs', borderlineEpochIdx, ...
     chanIdx, data, ev);
+
+end
+
+function chanIdx = pick_top_var_chans(data, ev, nbChans)
+
+if nbChans >= size(data, 1),
+    chanIdx = 1:size(data, 1);
+    return;
+end
+
+topChans = nan(numel(ev), size(data,1));
+for i = 1:numel(ev),
+    thisEpoch = misc.epoch_get(data, ev(i));
+    chanVar = var(thisEpoch, 1, 2);
+    [~, idx] = sort(chanVar, 'descend');
+    topChans(i, :) = idx';
+end
+
+chanIdx = nan(1, nbChans);
+chanCount = 0;
+for i = 1:numel(topChans),
+   if ismember(topChans(i), chanIdx),        
+       continue; 
+   end
+   chanCount = chanCount + 1;
+   chanIdx(chanCount) = topChans(i);     
+   if chanCount == nbChans,
+       chanIdx = sort(chanIdx);
+       return;
+   end
+end
 
 end
 
