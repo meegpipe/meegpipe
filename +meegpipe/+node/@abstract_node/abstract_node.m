@@ -241,7 +241,7 @@ classdef abstract_node < ...
         
         function props = construction_keys
             props = {'Name', 'Save', 'Queue', 'Parallelize', ...
-                'DataSelector', 'GenerateReport'};
+                'DataSelector', 'GenerateReport', 'TempDir'};
         end
         
         
