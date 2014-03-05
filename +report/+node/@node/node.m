@@ -1,6 +1,6 @@
 classdef node < report.generic.generic
     
-    %% IMPLEMENTATION .....................................................
+  
     properties (SetAccess = private, GetAccess = private)
        
         Node_;  % A ref to a pset.node.node object
@@ -25,10 +25,7 @@ classdef node < report.generic.generic
             
         end
     end
-    
-   
-    %% PUBLIC INTERFACE ...................................................
-    
+ 
     % overrides methods of class report.generic.generic
     methods (Access = protected)
         
