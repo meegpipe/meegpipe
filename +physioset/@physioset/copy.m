@@ -67,10 +67,10 @@ else
 end
 if verbose,
     [~, nameIn] = fileparts(obj.PointSet.DataFile);
-    [~, nameOut] = fileparts(opt.datafile);
+    [pathOut, nameOut] = fileparts(opt.datafile);
     fprintf([verboseLabel, 'Copying ''%s'' -> ''%s''...'], ...
         nameIn, ...
-        nameOut);
+        [pathOut, nameOut]);
     pause(0.01);
 end
 if exist(new_name, 'file'),
