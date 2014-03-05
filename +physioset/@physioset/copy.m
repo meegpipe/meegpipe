@@ -66,11 +66,10 @@ else
     new_name = [pathstr filesep fname dataExt];
 end
 if verbose,
-    [~, nameIn] = fileparts(obj.PointSet.DataFile);
-    [pathOut, nameOut] = fileparts(opt.datafile);
+    [~, nameIn] = fileparts(obj.PointSet.DataFile);    
     fprintf([verboseLabel, 'Copying ''%s'' -> ''%s''...'], ...
         nameIn, ...
-        [pathOut, nameOut]);
+        opt.datafile);
     pause(0.01);
 end
 if exist(new_name, 'file'),
