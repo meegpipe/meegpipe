@@ -14,7 +14,7 @@ opt.MaxCard         = @(d) min(10, ceil(0.25*length(d)));
 opt.Max             = {...
     @(feat) median(feat), ... % Relaxed threshold for symmetry
     @(feat) median(feat)+2*mad(feat), ...
-    @(feat) prctile(feat, 50)};    
+    @(feat) min(2, prctile(feat, 50))};    
 opt.RetainedVar     = 99.75;
 opt.MaxPCs          = 35;
 opt.MinPCs          = @(lambda) max(3, ceil(0.1*numel(lambda)));
