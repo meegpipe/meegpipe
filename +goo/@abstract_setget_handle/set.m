@@ -18,7 +18,7 @@ end
 % Take care of first object
 for i = 1:2:numel(varargin)
     if numel(varargin) < i+1,
-        error('No value provided for %dth argument: %s', i, ...
+        error('No value provided for argument #1: %s', i, ...
             any2str(varargin{i}, 20));        
     end
     thisValue = varargin{i+1};

@@ -4,7 +4,7 @@ if nargin < 2,
     return;
 end
 
-if nargin < 3,
+if nargin < 3 && isa(varargin{1}, 'goo.configurable'),
     obj.Config = clone(varargin{1});
     return;
 end
