@@ -54,7 +54,7 @@ if size(featVal, 2) > 1,
     featValNorm = featVal - repmat(shift, size(featVal, 1), 1);
     scale = max(featValNorm);
     featValNorm = featValNorm./repmat(scale, size(featVal, 1), 1);
-
+    
     
     if all(isinf(maxTh)) && all(isinf(minTh)),
         rankIdx = mean(featValNorm, 2);
@@ -64,30 +64,31 @@ if size(featVal, 2) > 1,
         
         distMax  = featValNorm-maxThMat;
         distMin  = minThMat-featValNorm;
-
+        
         distMaxBothTh = max(distMax, distMin);
-
+        
         if isempty(obj.RankingFactor) || numel(obj.RankingFactor) == 1,
             rFactor = ones(size(distMaxBothTh));
         else
             rFactor = repmat(obj.RankingFactor(:)', size(distMaxBothTh, 1), 1);
         end
         
-       
+        
         rFactor(distMaxBothTh(:) < 0) = 1./rFactor(distMaxBothTh(:) < 0);
-       
-        rankIdx  = max(rFactor.*distMaxBothTh, [], 2);
-    end
-    
-    % Those components that are not outside the hypercube will be ranked lower
-    % that all components that are outside the hypercube. Otherwise you may end
-    % up with the case of no components being selected and MinCard>0 leading to
-    % the dangerous situation of removing a component that have a extreme value
-    % is just one of the features.
-    if any(selected),
-        maxRankIdxInside = min(rankIdx(selected));
-        rankIdx(~selected) = ...
-            rankIdx(~selected).*maxRankIdxInside/max(rankIdx(~selected))-eps;
+        
+        rankIdx = nan(size(distMaxBothTh, 1), 1);
+        for i = 1:size(distMaxBothTh, 1)
+            % If this signal exceeds the threshold for all features, then
+            % use as ranking how far from the threshold the component is in
+            % the most extreme feature
+            if all(distMaxBothTh(i,:) > 0),
+                rankIdx(i) = max(rFactor(i,:).*distMaxBothTh(i,:));
+            else
+                % How far from reaching the threshold the component is in
+                % the worst feature
+                rankIdx(i) = min(rFactor(i,:).*distMaxBothTh(i,:));
+            end
+        end
     end
 else
     rankIdx = featVal;
