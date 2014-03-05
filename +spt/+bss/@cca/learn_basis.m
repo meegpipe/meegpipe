@@ -102,7 +102,7 @@ else
     % Last W estimate that was accurate
     Wh = W;
     % Update global covariance estimates
-    if isempty(Cyyh),
+    if isempty(Cyyh) || size(Cyyh, 1) ~= size(Cyy, 1),
         Cyyh = Cyy;
         Cxxh = Cxx;
         Cxyh = Cxy;

@@ -60,6 +60,7 @@ classdef abstract_node < ...
         Queue          = meegpipe.node.globals.get.Queue;
         Save           = meegpipe.node.globals.get.Save;
         GenerateReport = meegpipe.node.globals.get.GenerateReport;
+        TempDir        = '';
     end
     
     properties (SetAccess = private, GetAccess = private)

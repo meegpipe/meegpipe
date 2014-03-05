@@ -61,7 +61,7 @@ try
     name = 'topo_ratio with real data (eyes closed)';
     data = get_real_data_ec;  
     
-    lasipFilt = get_config(aar.eog.bss.topo_egi256_hcgsn1, 'Filter');
+    lasipFilt = get_config(aar.eog.topo_egi256_hcgsn1, 'Filter');
     lasipFilt = set_verbose_level(lasipFilt, 0);
     
     myNode = aar.eog.topo_egi256_hcgsn1(...
