@@ -31,7 +31,7 @@ classdef smoother < meegpipe.node.abstract_node
         
         function str = whatfor(~)
             
-            str = ['Nodes of class _smoother_ smoothes data '  ...
+            str = ['Nodes of class _smoother_ smooth data '  ...
                 'discontinuities, as marked by suitable events.'];
             
         end
