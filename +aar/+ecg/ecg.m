@@ -12,7 +12,7 @@ import pset.selector.cascade;
 myFilter = @(sr) filter.bpfilt('fp', [3/(sr/2) 48/(sr/2);52/(sr/2) 1]);
 
 opt.MinCard         = 0;
-opt.MaxCard         = 2;
+opt.MaxCard         = 4;
 opt.CorrTh          = 0.6; % Correlation threshold
 opt.RetainedVar     = 99.75; 
 opt.BSS             = spt.bss.efica('LearningFilter', myFilter);
