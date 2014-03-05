@@ -154,24 +154,22 @@ else
 end
 
 %% Determine the data epochs that will be plotted
-winrej = eeglab_winrej(data);
-
 if isempty(config.Epochs),
     epochLength = config.WinLength*data.SamplingRate;
     [epochs, groupNames] = snapshots.summary_epochs(epochLength, ...
-        size(data,2), winrej, config);
+        size(data,2), [], config);
 else
     epochs = {config.Epochs};
     groupNames = {repmat('', numel(config.Epochs), 1)};
 end
 
-%% Decice the downsampling factor
+%% Decide the downsampling factor
 % It is often necessary to downsample the data in order to be able to
 % produce a .svg file of reasonable size. Moreover, certain versions of
 % inkscape cannot handle too large .svg files
 maxEpochLength = 0;
 for i = 1:numel(epochs)
-   maxEpochLength = max(maxEpochLength, max(diff(epochs{i}'))); 
+    maxEpochLength = max(maxEpochLength, max(diff(epochs{i}')));
 end
 nbPointsSnapshot   = numel(chanIdx)*maxEpochLength;
 maxNbVertices      = get_config(obj, 'MaxNbVertices');
@@ -180,11 +178,6 @@ if downsamplingFactor > 8
     downsamplingFactor = 8;
 end
 
-
-%% Downsample winrej
-if downsamplingFactor > 1 && ~isempty(winrej),
-    winrej(:,1:2) = winrej(:,1:2)/downsamplingFactor;
-end
 
 %% Convert sensObj to EEGLAB's format
 if ~isempty(sensors(data)) && ...
@@ -239,11 +232,6 @@ for groupItr = 1:numel(epochs)
         
         %% Plot only window selections within this epoch
         thisArguments = arguments;
-        thisWinrej = winrej_in_epoch(winrej, firstSample, ...
-            lastSample-firstSample+1, downsamplingFactor);
-        if ~isempty(thisWinrej),
-            thisArguments = [arguments, {'winrej', thisWinrej}];
-        end
         
         %% Plot only events within this epoch
         epochEv = get_event(data);
@@ -252,7 +240,7 @@ for groupItr = 1:numel(epochs)
             evSel = physioset.event.sample_selector(firstSample:lastSample);
             
             thisEvents = select(evSel, epochEv);
-
+            
             if ~isempty(thisEvents),
                 thisEvents = shift(thisEvents, -firstSample+1);
                 if downsamplingFactor > 1,
@@ -268,7 +256,7 @@ for groupItr = 1:numel(epochs)
         
         %% Do the plotting
         tmp = get_config(obj, 'Plotter');
-
+        
         if downsamplingFactor > 1,
             for i = 1:numel(thisEpoch)
                 thisEpoch{i} = downsample(thisEpoch{i}', downsamplingFactor)';
@@ -305,12 +293,12 @@ for groupItr = 1:numel(epochs)
         set(gcf, 'Color', 'white');
         
         % Set the time properly
-        epochTimes = get_sampling_time(data, firstSample:lastSample);
+        epochTimes = get_sampling_time(data, firstSample:downsamplingFactor:lastSample);
         diffTimes  = epochTimes - round(epochTimes);
         tickPos    = find( diffTimes >= 0 & ...
-            diffTimes < (1/data.SamplingRate)*0.9);
+            diffTimes < (downsamplingFactor/data.SamplingRate)*0.9);
         tickTimes  = epochTimes(tickPos);
-        tickLabel = cell2ticks(num2strcell(tickTimes));
+        tickLabel = cell2ticks(num2strcell(round(tickTimes)));
         set_axes(eegplotObj, ...
             'XTick', tickPos, 'XTickLabel', tickLabel);
         
@@ -331,16 +319,16 @@ for groupItr = 1:numel(epochs)
         fullFilename = catfile(path, name);
         filename = name;
         
-        %% Print figure in .svg format        
-        if get_config(obj, 'SVG'),           
-           
+        %% Print figure in .svg format
+        if get_config(obj, 'SVG'),
+            
             evalc('plot2svg([fullFilename ''.svg''], gcf)');
             if ~strcmpi(computer, 'pcwin64'),
                 svg2png([fullFilename '.svg'], []);
             else
                 % Inkscape crashes when converting large .svg files to a
-                % raster format under Windows 8. 
-                print('-dpng', [fullFilename '.png']);                 
+                % raster format under Windows 8.
+                print('-dpng', [fullFilename '.png']);
             end
             figNames{groupItr}{epochItr} = [filename '.svg'];
             
@@ -388,30 +376,3 @@ end
 
 end
 
-
-
-
-%% Helper function to select only winrejs within agiven epoch
-function thisWinrej = winrej_in_epoch(winrej, firstSample, dur, downsamplingFactor)
-
-if isempty(winrej), thisWinrej = []; return; end
-
-thisWinrej = winrej(:,1:2);
-thisWinrej = thisWinrej - firstSample + 1;
-toRemove = all(thisWinrej < 1, 2);
-thisWinrej(toRemove,:) = [];
-winrej(toRemove,:) = [];
-thisWinrej(thisWinrej > dur) = dur;
-
-if ~isempty(thisWinrej),
-    thisWinrej(thisWinrej < 1) = 1;
-    
-    if downsamplingFactor > 1,
-        thisWinrej = max(1, floor(thisWinrej)./downsamplingFactor);
-    end
-    
-    thisWinrej = [thisWinrej winrej(:,3:end)];
-    
-end
-
-end

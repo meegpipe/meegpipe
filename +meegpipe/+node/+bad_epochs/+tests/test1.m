@@ -15,8 +15,7 @@ import physioset.event.class_selector;
 MEh     = [];
 
 % Number of tests that should run if everything goes OK
-initialize(14);
-
+initialize(15);
 
 
 %% Create a new session
@@ -79,6 +78,29 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% process sample data with many channels
+try
+    
+    name = 'process sample data with many channels';
+    
+    data = my_sample_data(255);
+    
+    myNode = my_sample_node();
+    
+    set_bad_sample(data, 101:300);
+    
+    run(myNode, data);
+    
+    ok(numel(find(is_bad_sample(data))) == 250+200, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% process sample data with bad samples
 try
@@ -353,11 +375,13 @@ status = finalize();
 end
 
 %% Helper functions
-function [data, bad] = my_sample_data()
+function [data, bad] = my_sample_data(nbSensors)
 import physioset.event.event;
 
+if nargin < 1, nbSensors = 10; end
+
 X = sin(2*pi*(1/100)*(0:199));
-X = rand(10,1)*X;
+X = rand(nbSensors,1)*X;
 X = repmat(X, [1 1 50]);
 X = X + 0.25*rand(size(X));
 
@@ -366,7 +390,7 @@ X(1, 30, 20) = -30;
 bad = [10 20];
 
 sens = sensors.eeg.from_template('egi256');
-sens = subset(sens, ceil(linspace(1, nb_sensors(sens), 10)));
+sens = subset(sens, ceil(linspace(1, nb_sensors(sens), nbSensors)));
 data = import(physioset.import.matrix('Sensors', sens), X);
 
 pos = get(get_event(data), 'Sample');
