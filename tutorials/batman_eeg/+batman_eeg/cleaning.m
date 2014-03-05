@@ -6,6 +6,7 @@ import mperl.file.find.finddepth_regex_match;
 import misc.process_arguments;
 import misc.split_arguments;
 
+opt.Test     = false;
 opt.Date     = datestr(now, 'yymmdd_HHMMSS');
 opt.Subjects = 1:10; 
 opt.Conditions = {'arsq', 'baseline', 'pvt', 'rs'};
@@ -16,9 +17,12 @@ opt.Conditions = {'arsq', 'baseline', 'pvt', 'rs'};
 meegpipe.initialize;
 
 % The directory where the cleaning results should be stored
-OUTPUT_DIR = ...
-    ['/data1/projects/batman/analysis/cleaning/' ...
-    opt.Date];
+if opt.Test,
+   ROOT_DIR = '/data1/projects/batman/analysis/cleaning/tests_IGNORE_THIS/';  
+else
+   ROOT_DIR = '/data1/projects/batman/analysis/cleaning/'; 
+end
+OUTPUT_DIR = [ROOT_DIR opt.Date];
 
 % Ensure the directory exists (Unix-specific)
 system(['mkdir -p ' OUTPUT_DIR]);
