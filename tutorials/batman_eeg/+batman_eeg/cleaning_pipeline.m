@@ -18,7 +18,10 @@ myNode = node.physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
 %% copy data
-myNode = node.copy.new;
+% We create a temporary on the LOCAL temp dir. This should speed up
+% processing considerably when the job is running at a node other than
+% somerenserver (where the raw data is located).
+myNode = node.copy.new('Path', @() tempdir);
 nodeList = [nodeList {myNode}];
 
 %% HP filter

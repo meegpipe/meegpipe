@@ -34,9 +34,7 @@ classdef config < meegpipe.node.abstract_config
     %           If set to true, the output object will be temporary.
     %
     % See also: copy
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+  
     properties
         
         Path;

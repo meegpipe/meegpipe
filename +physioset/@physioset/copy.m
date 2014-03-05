@@ -46,7 +46,9 @@ if ~isempty(opt.datafile),
 end
 
 if ~isempty(opt.path),
-    path = opt.path;
+    if isa(opt.path, 'function_handle'),
+        path = opt.path();
+    end
 end
 
 opt.datafile = catfile(path, [opt.prefix name opt.postfix dataExt]);
