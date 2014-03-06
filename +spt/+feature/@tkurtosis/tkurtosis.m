@@ -15,11 +15,15 @@ classdef tkurtosis < spt.feature.feature & goo.verbose
         
         function obj = tkurtosis(varargin)
             import misc.set_properties;
+            import misc.process_arguments;
             
             if nargin < 1, return; end
             
             opt.MedFiltOrder  = 5;
             opt.Nonlinearity  = @(x) x.^2;
+            
+            [~, opt] = process_arguments(opt, varargin);
+            
             obj = set_properties(obj, opt, varargin);
             
         end

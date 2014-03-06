@@ -37,7 +37,7 @@ end
 try
     
     name = 'default constructor';
-    spt.feature.tkurtosis;   
+    spt.feature.tkurtosis;
     ok(true, name);
     
 catch ME
@@ -53,10 +53,10 @@ try
     name = 'Sample feature extraction';
     
     myFeat = spt.feature.tkurtosis(...
-        'MedFiltOrder', 10);
+        'Nonlinearity', @(x) x, 'MedFiltOrder', 10);
     
-    featVal = extract_feature(myFeat, [], randn(4,150000));        
-
+    featVal = extract_feature(myFeat, [], randn(4,150000));
+    
     ok( numel(featVal) == 4 & all(featVal>2.5) & all(featVal<3.5), name);
     
 catch ME
@@ -72,14 +72,14 @@ try
     name = 'Sample feature extraction from physioset';
     
     myFeat = spt.feature.tkurtosis(...
-        'MedFiltOrder', 10);
+        'Nonlinearity', @(x) x, 'MedFiltOrder', 10);
     
     data = import(physioset.import.matrix, randn(4,150000));
     
     dataOrig = data(:,:);
     
-    featVal = extract_feature(myFeat, [], data);        
-
+    featVal = extract_feature(myFeat, [], data);
+    
     ok( numel(featVal) == 4 & all(featVal>2.5) & all(featVal<3.5) & ...
         max(abs(data(1,:) - dataOrig(1,:))) < 0.01, name);
     
