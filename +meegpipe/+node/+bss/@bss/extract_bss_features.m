@@ -69,9 +69,4 @@ if ics.Transposed,
     transpose(ics);
 end
 
-rep = get_report(obj);
-print_paragraph(rep, 'Extracted BSS features: [features.txt][feat]');
-print_link(rep, '../features.txt', 'feat');
-
-
 end

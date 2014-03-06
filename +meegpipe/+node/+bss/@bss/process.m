@@ -121,8 +121,6 @@ end
 selArg  = num2cell(icSel);
 set_runtime(obj, 'bss', 'selection', selArg{:});
 
-extract_bss_features(obj, myBSS, ics, data, icSel);
-
 make_pca_report(obj, myPCA);
 if do_reporting(obj)
    % Wee need to copy the ics or otherwise some of the reports may modify
@@ -130,7 +128,16 @@ if do_reporting(obj)
    bssRep = make_bss_report(obj, myBSS, copy(ics), data);    
 end
 make_criterion_report(obj, myCrit, [], icSel, isAutoSel);
- 
+
+didExtraction = extract_bss_features(obj, myBSS, ics, data, icSel);
+
+if didExtraction,
+    rep = get_report(obj);
+    print_title(rep, 'BSS feature extraction', get_level(rep)+2);
+    print_paragraph(rep, 'Extracted BSS features: [features.txt][feat]');
+    print_link(rep, '../features.txt', 'feat');
+end
+
 if isempty(icSel),
     
     if isempty(reject),
