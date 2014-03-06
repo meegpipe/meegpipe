@@ -15,7 +15,7 @@ if exist(rPath, 'dir')
         rmdir(rPath, 's'); 
     else
         % No idea why MATLAB's rmdir sometimes fails under Linux
-        system(['rmdir -rf ' rPath]);
+        system(['rm -rf ' rPath]);
     end    
 end
 
