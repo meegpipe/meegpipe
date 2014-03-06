@@ -1,6 +1,7 @@
-function featVal = extract_feature(obj, sptObj, ~, data, varargin)
+function [featVal, featName] = extract_feature(obj, sptObj, ~, data, varargin)
 
 import misc.euclidean_dist;
+featName = [];
 
 sens = sensors(data);
 xyz  = cartesian_coords(sens);

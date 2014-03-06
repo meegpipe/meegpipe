@@ -44,7 +44,7 @@ classdef qrs_erp < spt.feature.feature & goo.verbose
     methods
         
         % spt.feature.feature interface
-        featVal = extract_feature(obj, ~, tSeries, varargin);
+        [featVal, featName] = extract_feature(obj, ~, tSeries, varargin);
         
         % Constructor
         function obj = qrs_erp(varargin)

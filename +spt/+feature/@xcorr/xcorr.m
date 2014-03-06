@@ -60,7 +60,7 @@ classdef xcorr < spt.feature.feature & goo.verbose
     
     methods
         
-        feature = extract_feature(obj, sptO, tSeries, raw, rep, varargin);
+        [featVal, featName] = extract_feature(obj, sptO, tSeries, raw, rep, varargin);
         
         % Constructor
         

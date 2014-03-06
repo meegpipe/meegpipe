@@ -1,4 +1,4 @@
-function featVal = extract_feature(obj, ~, tSeries,  raw, varargin)
+function [featVal, featName] = extract_feature(obj, ~, tSeries,  raw, varargin)
 
 import misc.eta;
 import misc.epoch_get;
@@ -8,6 +8,7 @@ verboseLabel = get_verbose_label(obj);
 verbose      = is_verbose(obj);
 
 featVal = zeros(size(tSeries,1), 1);
+featName = [];
 
 if nargin < 4 || isempty(raw),
     sr = tSeries.SamplingRate;

@@ -19,8 +19,8 @@ classdef thilbert < spt.feature.feature & goo.verbose
     methods
         
         % spt.feature.feature interface
-        function featVal = extract_feature(obj, ~, tSeries, varargin)
-            
+        function [featVal, featName] = extract_feature(obj, ~, tSeries, varargin)
+            featName = [];
             if ~isempty(obj.Filter) && isa(obj.Filter, 'function_handle'),
                 filtObj = obj.Filter(tSeries.SamplingRate);
             else

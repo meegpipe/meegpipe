@@ -10,6 +10,7 @@ classdef config < meegpipe.node.abstract_config
         Criterion       = spt.criterion.dummy;
         Reject          = true;
         Filter          = [];
+        Feature         = [];
         
         SnapshotPlotter    = meegpipe.node.bss.default_snapshot_plotter;
         TopoPlotter        = meegpipe.node.bss.default_topo_plotter;
@@ -20,6 +21,25 @@ classdef config < meegpipe.node.abstract_config
     
     % Consistency checks
     methods
+        
+        function obj = set.Feature(obj, value)
+            
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.Feature = [];
+                return;
+            end
+            
+            if ~iscell(value), value = {value}; end
+            
+            if ~all(cellfun(@(x) isa(x, 'spt.feature.feature'), value)),
+                throw(InvalidPropValue('Feature', ...
+                    'Must be a (cell array of) spt.feature.feature object(s)'));
+            end
+            obj.Feature = value;
+            
+        end
         
         function obj = set.SnapshotPlotter(obj, value)
             

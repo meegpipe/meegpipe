@@ -1,4 +1,6 @@
-function featVal = extract_feature(obj, sptObj, ~, varargin)
+function [featVal, featName] = extract_feature(obj, sptObj, ~, varargin)
+
+featName = [];
 
 M = bprojmat(sptObj);
 

@@ -1,8 +1,9 @@
-function featVal =  extract_feature(obj, sptObj, varargin)
+function [featVal, featName] =  extract_feature(obj, sptObj, varargin)
 
 import misc.eta;
 import misc.unit_norm;
 
+featName = [];
 % Candidate topographies
 A = bprojmat(sptObj);
 

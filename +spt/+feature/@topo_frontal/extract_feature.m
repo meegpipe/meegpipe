@@ -1,6 +1,8 @@
-function featVal = extract_feature(obj, sptObj, ~, data, varargin)
+function [featVal, featName] = extract_feature(obj, sptObj, ~, data, varargin)
 
 NB_NEAREST = 5;
+
+featName = [];
 
 sens = sensors(data);
 xyz  = cartesian_coords(sens);

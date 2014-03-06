@@ -25,9 +25,11 @@ classdef tgini < spt.feature.feature & goo.verbose
         end
         
         % spt.feature.feature interface
-        function featVal = extract_feature(obj, ~, tSeries, varargin)
+        function [featVal, featName] = extract_feature(obj, ~, tSeries, varargin)
             
             import misc.gini_idx;
+            
+            featName = [];
             
             featVal = nan(size(tSeries,1), 1);
             for i = 1:size(tSeries,1)

@@ -9,7 +9,7 @@ classdef tkurtosis < spt.feature.feature & goo.verbose
     methods
         
         % spt.feature.feature interface
-        idx = extract_feature(obj, sptObj, tSeries, raw, varargin)     
+        [idx, featVal] = extract_feature(obj, sptObj, tSeries, raw, varargin)     
         
         % Constructor
         

@@ -29,8 +29,11 @@ classdef sample_epochs < spt.feature.feature & goo.verbose
             
         end
         
-        function aggrFeatVal = extract_feature(obj, sptObj, tSeries, varargin)
+        function [aggrFeatVal, featName] = extract_feature(obj, sptObj, ...
+                tSeries, varargin)
             import exceptions.Inconsistent;
+            
+            featName = [];
             
             if isempty(obj.Feature),
                 throw(Inconsistent('Property Feature must be specified'));

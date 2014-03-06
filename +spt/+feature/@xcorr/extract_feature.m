@@ -1,7 +1,9 @@
-function featVal = extract_feature(obj, ~, tSeries,  data, varargin)
+function [featVal, featName] = extract_feature(obj, ~, tSeries,  data, varargin)
 
 
 import misc.eta;
+
+featName = [];
 
 featVal = zeros(size(tSeries,1), 1);
 

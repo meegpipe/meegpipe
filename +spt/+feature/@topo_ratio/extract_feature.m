@@ -1,9 +1,11 @@
-function featVal = extract_feature(obj, sptObj, tSeries, data, varargin)
+function [featVal, featName] = extract_feature(obj, sptObj, tSeries, data, varargin)
 
 import misc.peakdet;
 import misc.eta;
 import goo.pkgisa;
 NB_NEAREST = 4;
+
+featName = [];
 
 verbose      = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);

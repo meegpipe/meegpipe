@@ -1,6 +1,8 @@
-function featVal = extract_feature(obj, ~, tSeries, varargin)
+function [featVal, featName] = extract_feature(obj, ~, tSeries, varargin)
 
 featVal = nan(size(tSeries,1), 1);
+
+featName = [];
 
 if isempty(obj.Nonlinearity),
     nonlin = @(x) x;

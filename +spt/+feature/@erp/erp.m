@@ -76,7 +76,7 @@ classdef erp < spt.feature.feature & goo.verbose
     methods
         
         % spt.feature.feature interface
-        featVal = extract_feature(~, sptObj, varargin)
+        [featVal, featName] = extract_feature(~, sptObj, varargin)
         
         % Constructor
         function obj = erp(varargin)

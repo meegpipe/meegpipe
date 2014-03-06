@@ -49,9 +49,10 @@ classdef feature_aggregation < spt.feature.feature & goo.verbose
     methods
         
         % spt.feature.feature interface
-        function aggrFeatVal = extract_feature(obj, varargin)
+        function [aggrFeatVal, featName] = extract_feature(obj, varargin)
             
             featVal = [];
+            featName = [];
             for i = 1:numel(obj.Features)
                 this = extract_feature(obj.Features{i}, varargin{:});
                 featVal = [featVal this(:)]; %#ok<AGROW>

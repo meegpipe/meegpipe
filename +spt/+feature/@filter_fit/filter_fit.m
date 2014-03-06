@@ -38,8 +38,11 @@ classdef filter_fit < spt.feature.feature & goo.verbose
             obj.Filter = value;            
         end
         
-        function featVal = extract_feature(obj, ~, tSeries, varargin)           
+        function [featVal, featName] = extract_feature(obj, ~, tSeries, ...
+                varargin)           
             import exceptions.Inconsistent;
+            
+            featName = [];
             
             if isempty(obj.Filter),
                 throw(Inconsistent(['Cannot extract fetures without ' ...

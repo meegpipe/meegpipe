@@ -26,9 +26,11 @@ classdef sgini < spt.feature.feature & goo.verbose
         end
         
         % spt.feature.feature interface
-        function featVal = extract_feature(obj, sptObj, varargin)
+        function [featVal, featName] = extract_feature(obj, sptObj, varargin)            
             
             import misc.gini_idx;
+            
+            featName = [];
             
             M = bprojmat(sptObj);
             

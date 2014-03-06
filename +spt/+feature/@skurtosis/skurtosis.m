@@ -24,7 +24,7 @@ classdef skurtosis < spt.feature.feature & goo.verbose
         end
 
         % spt.feature.feature interface
-        idx = extract_feature(obj, sptObj, tSeries, raw, varargin)     
+        [idx, featName] = extract_feature(obj, sptObj, tSeries, raw, varargin)     
         
         % Constructor
         

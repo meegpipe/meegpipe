@@ -7,7 +7,7 @@ classdef topo_frontal < spt.feature.feature & goo.verbose
     
     methods
         
-        idx = extract_feature(obj, sptObj, tSeries, raw, varargin);
+        [idx, featName] = extract_feature(obj, sptObj, tSeries, raw, varargin);
 
         % Constructor
         function obj = topo_frontal(varargin)

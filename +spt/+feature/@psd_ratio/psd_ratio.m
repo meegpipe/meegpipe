@@ -43,7 +43,7 @@ classdef psd_ratio < spt.feature.feature & goo.verbose
     methods
         
         % spt.feature.feature interface
-        idx = extract_feature(obj, sptObj, tSeries, raw, varargin)
+        [idx, featName] = extract_feature(obj, sptObj, tSeries, raw, varargin)
         
         % Constructor
         

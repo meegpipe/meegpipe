@@ -1,4 +1,6 @@
-function featVal = extract_feature(obj, ~, tSeries, data, varargin)
+function [featVal, featName] = extract_feature(obj, ~, tSeries, data, varargin)
+
+featName = [];
 
 % Duration and number of sample analysis windows
 WIN_DUR = 40; % In seconds

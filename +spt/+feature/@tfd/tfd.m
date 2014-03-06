@@ -21,9 +21,11 @@ classdef tfd < spt.feature.feature & goo.verbose
     methods
         
         % spt.feature.feature interface
-        function featVal = extract_feature(obj, ~, tSeries, raw, varargin)
+        function [featVal, featName] = extract_feature(obj, ~, tSeries, raw, varargin)
             
             import misc.fd;
+            
+            featName = [];
             
             if nargin < 4 || isempty(raw),
                 sr = tSeries.SamplingRate;

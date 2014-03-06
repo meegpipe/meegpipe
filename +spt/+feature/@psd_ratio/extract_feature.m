@@ -1,8 +1,10 @@
-function featVal = extract_feature(obj, ~, tSeries, raw, varargin)
+function [featVal, featName] = extract_feature(obj, ~, tSeries, raw, varargin)
 
 import misc.peakdet;
 import misc.eta;
 import goo.pkgisa;
+
+featName = [];
 
 if nargin < 4 || isempty(raw),
     sr = tSeries.SamplingRate;
