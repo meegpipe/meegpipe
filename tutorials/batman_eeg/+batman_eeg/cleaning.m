@@ -44,7 +44,7 @@ somsds.link2rec(...
     'file_regex',   '\.pset', ...     % Only pset/pseth files
     'folder',       OUTPUT_DIR);
 
-regex = '\.pseth$';
+regex = 'rs_\d+\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 run(myPipe, files{:});
