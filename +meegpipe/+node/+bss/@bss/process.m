@@ -175,7 +175,12 @@ else
         % node. 
         select(ics, icSel);
         set_name(ics, get_name(data));
-        data = ics;       
+        data = ics;   
+        if verbose,
+           fprintf([verboseLabel 'Reject=[], so I wil produce %d ' ...
+               'BSS components as output ...\n\n'], size(ics, 1));
+        end
+        
     elseif reject,
         if ~isempty(myRegrFilter),
             % We need to keep a backup copy of the original ics.
