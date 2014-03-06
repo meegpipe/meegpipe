@@ -61,6 +61,12 @@ classdef abstract_node < ...
         Save           = meegpipe.node.globals.get.Save;
         GenerateReport = meegpipe.node.globals.get.GenerateReport;
         TempDir        = '';
+        % The pipeline ID is dependent on the version of meegpipe.
+        % Sometimes you want to override this default behavior and impose
+        % an explicit ID on the pipe. The reason: re-run the analysis on a
+        % pipeline result obtained with a version of meegpipe different from
+        % the current one.
+        FakeID = ''; 
     end
     
     properties (SetAccess = private, GetAccess = private)
@@ -241,7 +247,7 @@ classdef abstract_node < ...
         
         function props = construction_keys
             props = {'Name', 'Save', 'Queue', 'Parallelize', ...
-                'DataSelector', 'GenerateReport', 'TempDir'};
+                'DataSelector', 'GenerateReport', 'TempDir', 'FakeID'};
         end
         
         

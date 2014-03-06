@@ -36,5 +36,7 @@ catch ME
 end
 cd(currDir);
 
+id = id(1:7);
+
 
 end

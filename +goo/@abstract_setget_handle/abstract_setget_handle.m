@@ -104,13 +104,9 @@ classdef abstract_setget_handle < ...
                 return;
                 
             end
-            try
+            
             obj = set(obj, varargin{:});
-            catch ME
-                caca=5;
-            end
-            
-            
+          
         end
         
     end

@@ -4,15 +4,12 @@ classdef config < meegpipe.node.abstract_config
     % 
     %
     % See also: pipeline
-    
-    %% PUBLIC INTERFACE ...................................................
-      
-     %%% Private properties
+ 
     properties
-        NodeList;
+        NodeList;     
     end
     
-    %%% Consistency checks
+    % Consistency checks
     methods
         
         function obj = set.NodeList(obj, value)

@@ -9,35 +9,16 @@ import mperl.file.spec.abs2rel;
 import datahash.DataHash;
 
 % Cleanup the destination directory
-[remPath remFilesPath] = def_rootpath(obj);
-if exist(remPath, 'dir')
-    
-    % This is a re-run
-    oldPath = remPath;
-    if exist([oldPath '.zip'], 'file'),
-        % Just in case, but should not be necessary
-        delete([oldPath '.zip']);
-    end
-    if numel(dir(oldPath)) > 2,
-        zip([oldPath '.zip'], oldPath);
-        rmdir(oldPath, 's');
-    end
-    
+rPath = def_rootpath(obj);
+if exist(rPath, 'dir')
+    if ispc,
+        rmdir(rPath, 's'); 
+    else
+        % No idea why MATLAB's rmdir sometimes fails under Linux
+        system(['rmdir -rf ' rPath]);
+    end    
 end
-if exist(remFilesPath, 'dir')
-    
-    % This is a re-run
-    oldPath = remFilesPath;
-    if exist([oldPath '.zip'], 'file'),
-        % Just in case, but should not be necessary
-        delete([oldPath '.zip']);
-    end
-    if numel(dir(oldPath)) > 2,
-        zip([oldPath '.zip'], oldPath);
-        rmdir(oldPath, 's');
-    end
-    
-end
+
 
 obj = initialize@report.generic.generic(obj);
 

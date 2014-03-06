@@ -121,7 +121,8 @@ end
 selArg  = num2cell(icSel);
 set_runtime(obj, 'bss', 'selection', selArg{:});
 
-% Generate the HTML report
+extract_bss_features(obj, myBSS, ics, data, icSel);
+
 make_pca_report(obj, myPCA);
 if do_reporting(obj)
    % Wee need to copy the ics or otherwise some of the reports may modify

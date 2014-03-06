@@ -7,8 +7,6 @@ classdef pipeline < meegpipe.node.abstract_node
     %
     %
     % See also: node, abstract_node
-  
-    %% PUBLIC INTERFACE....................................................
     
     %%% Declared and defined here
     methods
