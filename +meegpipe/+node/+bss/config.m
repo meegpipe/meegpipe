@@ -11,7 +11,7 @@ classdef config < meegpipe.node.abstract_config
         Reject          = true;
         Filter          = [];
         Feature         = [];
-        FeatureExtractionSet = 'selected'; % or 'all'
+        FeatureTarget   = 'selected'; % or 'all'
         
         SnapshotPlotter    = meegpipe.node.bss.default_snapshot_plotter;
         TopoPlotter        = meegpipe.node.bss.default_topo_plotter;
@@ -23,18 +23,18 @@ classdef config < meegpipe.node.abstract_config
     % Consistency checks
     methods
         
-        function obj = set.FeatureExtractionSet(obj, value)
+        function obj = set.FeatureTarget(obj, value)
             import exceptions.InvalidPropValue;
             if isempty(value),
-                obj.FeatureExtractionSet = 'selected';
+                obj.FeatureTarget = 'selected';
                 return;
             end
             
             if ~ischar(value) || ~ismember(value, {'all', 'selected'}),
-                throw(InvalidPropValue('FeatureExtractionSet', ...
+                throw(InvalidPropValue('FeatureTarget', ...
                     'Must be ''all'' or ''selected'''));
             end
-            obj.FeatureExtractionSet = value;
+            obj.FeatureTarget = value;
             
         end
         

@@ -108,8 +108,8 @@ classdef abstract_spt < ...
         obj      = select(obj, compIdx, dimIdx, backup);
         
         function obj = clear_selection(obj)
-            obj.ComponentSelection = 1:nb_component(obj);
-            obj.DimSelection = 1:nb_dim(obj);
+            obj.ComponentSelection = 1:size(obj.A,1);
+            obj.DimSelection = 1:size(obj.A, 2);
         end
         
         obj = restore_selection(obj);
