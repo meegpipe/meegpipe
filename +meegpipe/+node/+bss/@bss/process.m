@@ -177,7 +177,7 @@ else
         set_name(ics, get_name(data));
         data = ics;   
         if verbose,
-           fprintf([verboseLabel 'Reject=[], so I wil produce %d ' ...
+           fprintf([verboseLabel 'Reject=[], so I will produce %d ' ...
                'BSS components as output ...\n\n'], size(ics, 1));
         end
         
