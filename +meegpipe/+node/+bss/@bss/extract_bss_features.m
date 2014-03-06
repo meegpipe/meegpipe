@@ -1,4 +1,4 @@
-function extract_bss_features(obj, bssObj, ics, data, icSel)
+function didExtraction = extract_bss_features(obj, bssObj, ics, data, icSel)
 
 import misc.num2strcell;
 import misc.eta;
@@ -10,7 +10,10 @@ featExtractor   = get_config(obj, 'Feature');
 featTarget      = get_config(obj, 'FeatureTarget');
 
 if isempty(featExtractor),
+    didExtraction = false;
     return;
+else
+    didExtraction = true;
 end
 
 fid = get_log(obj, 'features.txt');

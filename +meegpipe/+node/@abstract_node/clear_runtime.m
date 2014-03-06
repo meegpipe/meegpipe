@@ -16,31 +16,14 @@ function obj = clear_runtime(obj)
 %
 % See also: get_runtime, set_runtime
 
+import mperl.file.spec.catfile;
+
 if ~has_runtime_config(obj),
     return;
 end
 
-if isempty(obj.RunTime_),
-    obj.RunTime_ = get_runtime_config(obj);
-end
-
-cfg = obj.RunTime_;
-
-rtSections = sections(cfg);
-
-
-for sectItr = 1:numel(rtSections)
-   
-    
-    rtParams = parameters(cfg, rtSections{sectItr});
-   
-    for paramItr = 1:numel(rtParams)
-        
-        setval(cfg, rtSections{sectItr}, rtParams{paramItr}, '');        
-        
-    end
-    
-end
-
+obj.RunTime_ = [];
+iniFile = catfile(get_full_dir(obj), [get_name(obj) '.ini']);
+misc.delete(iniFile);
 
 end
