@@ -27,12 +27,10 @@ OUTPUT_DIR = [ROOT_DIR opt.Date];
 % Ensure the directory exists (Unix-specific)
 system(['mkdir -p ' OUTPUT_DIR]);
 
-% Some (optional) parameters that you may want to play with when experimenting
-% with your processing pipeline
 PARALELLIZE = true; % Should each file be processed in parallel?
 DO_REPORT   = true; % Should full HTML reports be generated?
 
-% Create an instance of the feature extraction pipeline
+
 myPipe = batman_eeg.cleaning_pipeline(...
     'GenerateReport', DO_REPORT, ...
     'Parallelize',    PARALELLIZE, ...
@@ -48,9 +46,6 @@ somsds.link2rec(...
 
 regex = '\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
-
-% files should now be a cell array containing the full paths to the single
-% sub-block .pseth files that were generated in the data splitting stage.
 
 run(myPipe, files{:});
 

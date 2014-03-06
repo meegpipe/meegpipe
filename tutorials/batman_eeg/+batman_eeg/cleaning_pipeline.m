@@ -8,7 +8,7 @@ import pset.selector.good_data;
 
 USE_OGE = true;
 DO_REPORT = true;
-QUEUE = 'short.q@somerenserver.herseninstituut.knaw.nl';
+QUEUE = 'short.q';
 
 nodeList = {};
 
