@@ -169,7 +169,7 @@ else
             fprintf([verboseLabel 'Filtering SPCs using %s ...\n\n'], ...
                 class(myFilt));
         end 
-        filtfilt(myFilt, ics);
+        ics = filtfilt(myFilt, ics);
         if do_reporting(obj),           
             bss.make_filtering_report(bssRep, icsIn, ics);
         end  

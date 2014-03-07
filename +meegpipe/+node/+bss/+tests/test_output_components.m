@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(11);
+initialize(12);
 
 %% Create a new session
 try
@@ -49,6 +49,49 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% filtering components
+try    
+
+    name = 'filtering components';
+    
+    X = rand(8, 20000); 
+    eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
+    eegSensors = subset(eegSensors, 1:32:256);
+    
+    importer = physioset.import.matrix(250, 'Sensors', eegSensors);
+    data = import(importer, X);
+    
+    myFilter = filter.lpfilt('fc', .5);
+    myBSS    = spt.bss.jade('LearningFilter', myFilter);
+    
+    myCrit = spt.criterion.threshold(spt.feature.tgini, ...
+        'MaxCard', 2, 'MinCard', 2);
+    
+    myNode = bss.new(...
+        'BSS',              myBSS, ...
+        'Save',             true, ...
+        'GenerateReport',   true, ...
+        'Reject',           [], ...
+        'Criterion',        myCrit, ...
+        'Filter',           @(sr) filter.bpfilt('Fp', [0 5;14 60]/(sr/2)));
+    
+    ics = run(myNode, data);
+   
+    condition = size(ics, 1) == 2 & isa(sensors(ics), 'sensors.dummy');
+    outputFileName = get_output_filename(myNode, data);
+    clear data ans;
+    
+    ok( condition & ...
+        exist(outputFileName, 'file') > 0, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% learning filter and saving node output
 try    
