@@ -1,6 +1,6 @@
 function myNode = eog(varargin)
 % EOG - Default EOG correction node
 
-myNode = aar.eog.bss_notopo(varargin{:});
+myNode = aar.eog.topo_generic(varargin{:});
 
 end

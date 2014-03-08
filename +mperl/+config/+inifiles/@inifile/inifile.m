@@ -4,21 +4,21 @@ classdef inifile < handle & goo.hashable_handle
     %
     % obj = inifile(filename, 'key', value, ...)
     %
-
+    
     properties (SetAccess = private, GetAccess = private)
         
-       HashObject = mjava.hash; 
-       Pause      = 0.1;
-       MaxTries   = 10;
-       
+        HashObject = mjava.hash;
+        Pause      = 0.1;
+        MaxTries   = 10;
+        
     end
     
     % Consistency checks
     
     methods
-       
+        
         function set.Pause(obj, value)
-           
+            
             import eegpipe.exceptions.*;
             
             if ~isnumeric(value) || numel(value) ~= 1 || value < 0 || ...
@@ -27,12 +27,12 @@ classdef inifile < handle & goo.hashable_handle
                     'Must be a scalar between 0 and 50 (seconds)'));
             end
             
-            obj.Pause = value;            
+            obj.Pause = value;
             
         end
         
         function set.MaxTries(obj, value)
-           
+            
             import eegpipe.exceptions.*;
             
             if numel(value) ~= 1 || ~isnatural(value) || value > 50,
@@ -61,7 +61,7 @@ classdef inifile < handle & goo.hashable_handle
         end
         
         function obj = InvalidArgument(msg)
-            if nargin < 1 || isempty(msg), msg = ''; end           
+            if nargin < 1 || isempty(msg), msg = ''; end
             
             obj = MException(...
                 'mperl:config:inifiles:inifile:InvalidArgument', ...
@@ -76,10 +76,10 @@ classdef inifile < handle & goo.hashable_handle
         end
         
         function obj = InvalidFile(msg)
-             if nargin < 1 || isempty(msg), msg = ''; end
-             obj = MException(...
-                 'mperl:config:inifiles:inifile:InvalidFile', ...
-                 sprintf('Invalid .ini file: %s', msg));
+            if nargin < 1 || isempty(msg), msg = ''; end
+            obj = MException(...
+                'mperl:config:inifiles:inifile:InvalidFile', ...
+                sprintf('Invalid .ini file: %s', msg));
         end
         
     end
@@ -95,57 +95,57 @@ classdef inifile < handle & goo.hashable_handle
             end
         end
         
-        success = ensure_crlf(fName); 
+        success = ensure_crlf(fName);
         
     end
-
+    
     properties (Dependent, GetAccess = private)
         
         NewString;
         
     end
     
-    methods 
+    methods
         
         function value = get.NewString(obj)
             import mperl.config.inifiles.inifile;
             import mperl.join;
-         
+            
             value = {...
                 inifile.bool2char(obj.NoCase), ...
                 inifile.bool2char(obj.AllowContinue), ...
                 inifile.bool2char(obj.AllowEmpty)};
-        end 
+        end
         
     end
     
     % Checks whether the ini file still exists and can be read
-    methods (Access = private)        
+    methods (Access = private)
         function check_file(obj)
-           import mperl.config.inifiles.inifile;
-           
-           if isempty(obj.File),
-               throw(inifile.MissingFile);
-           end
-           if ~exist(obj.File, 'file'),
-               throw(inifile.InvalidFile(...
-                   sprintf('File %s was not found', obj.File)));
-           end
-           try
-               fid = fopen(obj.File, 'r');
-           catch ME
-               throw(inifile.InvalidFile(sprintf(...
-                   'Could not open %s for reading', obj.File)));
-           end
-           fclose(fid);
+            import mperl.config.inifiles.inifile;
+            
+            if isempty(obj.File),
+                throw(inifile.MissingFile);
+            end
+            if ~exist(obj.File, 'file'),
+                throw(inifile.InvalidFile(...
+                    sprintf('File %s was not found', obj.File)));
+            end
+            try
+                fid = fopen(obj.File, 'r');
+            catch ME
+                throw(inifile.InvalidFile(sprintf(...
+                    'Could not open %s for reading', obj.File)));
+            end
+            fclose(fid);
         end
     end
-   
+    
     properties (SetAccess = private)
         File;
     end
     
-    properties     
+    properties
         NoCase;
         AllowContinue;
         AllowEmpty;
@@ -196,21 +196,21 @@ classdef inifile < handle & goo.hashable_handle
             end
             obj.AllowEmpty = value;
         end
-     
+        
     end
     
     % Public interface
     methods
-        value  = val(obj, section, parameter, asArray);        
+        value  = val(obj, section, parameter, asArray);
         status = setval(obj, section, parameter, varargin);
         status = set_section_comment(obj, section, varargin);
         obj    = set_file_name(obj, name);
-        value  = sections(obj);        
-        value  = section_exists(obj, section);        
+        value  = sections(obj);
+        value  = section_exists(obj, section);
         status = push(obj, section, parameter, varargin);
         value  = parameters(obj, section);
-        status = newval(obj, section, parameter, varargin);      
-        value  = groups(obj);        
+        status = newval(obj, section, parameter, varargin);
+        value  = groups(obj);
         value  = group_members(obj, group);
         value  = get_section_comment(obj, section, asArray);
         value  = exists(obj, section, parameter);
@@ -234,25 +234,26 @@ classdef inifile < handle & goo.hashable_handle
             import misc.process_arguments;
             import mperl.config.inifiles.inifile;
             
-            if nargin < 1, return; end            
-         
+            if nargin < 1, return; end
+            
             opt.nocase                   = false;
             opt.allowcontinue            = true;
             % Note that AllowEmpty is true by default in Perl's Config::IniFiles
             opt.allowempty               = true;
-          
-            [~, opt] = process_arguments(opt, varargin);            
-         
+            
+            [~, opt] = process_arguments(opt, varargin);
+            
             obj.NoCase                   = opt.nocase;
             obj.AllowContinue            = opt.allowcontinue;
             obj.AllowEmpty               = opt.allowempty;
-         
+            
             obj.File = filename;
             
             % Ensure that CR/LF are used as end of line characters
             % This function is broken right now. It sometimes leads to the
             % ini file being emptied. Please fix this !
             %inifile.ensure_crlf(obj.File);
+            
             
             obj = read(obj);
             

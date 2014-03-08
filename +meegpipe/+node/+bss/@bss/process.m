@@ -32,7 +32,10 @@ end
 
 % Random seed for BSS algorithms that require it
 seed = get_runtime(obj, 'bss', 'seed');
+if ischar(seed), seed = eval(seed); end
 init = get_runtime(obj, 'bss', 'init');
+if ischar(init), init = eval(init); end
+
 myBSS  = set_seed(myBSS, seed);
 myBSS  = set_init(myBSS, init);
 set_runtime(obj, 'bss', 'seed', get_seed(myBSS));
@@ -96,7 +99,9 @@ selected = selected(sortedIdx);
 % - Delete the "selection" parameter in section bss
 % - Set selection=NaN
 userSel = get_runtime(obj, 'bss', 'selection', true);
-if iscell(userSel), userSel = cell2mat(userSel); end
+if iscell(userSel), 
+    userSel = cellfun(@(x) eval(x), userSel);
+end
 autoSel = find(selected);
 
 if isempty(userSel) || ~all(isnan(userSel)) && ~isempty(setxor(userSel, autoSel))

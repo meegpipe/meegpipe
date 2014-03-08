@@ -25,8 +25,6 @@ function ok(bool, testName, reason)
 %
 % See also: test.simple
 
-% Description: Tests whether a test was passed
-% Documentation: pkg_simple.txt
 
 import test.simple.globals;
 import misc.str2multiline;
@@ -56,23 +54,29 @@ try
             fprintf('ok %d - %s\n', count + 1, testName);
         end
         
-    else        
+    else
         
-        errorMsg = '';        
+        errorMsg = '';
         
         if isa(bool, 'MException'),
             
             if globals.get.DebugMode,
                 rethrow(bool);
             else
-                [name, file, line] = st2debug(bool.stack);
+                file = cell(1, numel(bool.stack));
+                line = nan(1, numel(bool.stack));
+                name = cell(1, numel(bool.stack));
                 errorMsg = bool.message;
+                for i = 1:numel(bool.stack),
+                    [name{i}, file{i}, line(i)] = st2debug(bool.stack(i));
+                end
             end
             
-        elseif islogical(bool) || isnan(bool),            
-            [name, file, line] = st2debug(dbstack('-completenames'));         
-        else            
-            error('A boolean value or a MException object was expected');            
+        elseif islogical(bool) || isnan(bool),
+            [name, file, line] = st2debug(dbstack('-completenames'));
+            name = {name}; file = {file};
+        else
+            error('A boolean value or a MException object was expected');
         end
         
         if ~isa(bool, 'MException') && isnan(bool),
@@ -88,8 +92,6 @@ try
             end
         end
         
-        [~, fName, fExt] = fileparts(file);
-        
         if isempty(testName),
             fprintf('%s %d\n', msg, count + 1);
         else
@@ -101,23 +103,24 @@ try
             end
         end
         
-        if ~isempty(reason),            
-            fprintf('#\tFor reason ''%s''\n', reason);            
+        if ~isempty(reason),
+            fprintf('#\tFor reason ''%s''\n', reason);
         end
         
-        if ~isempty(testName),            
-            fprintf('#\tin ''%s''\n', name);            
-        end        
-        
-        if ~isempty(file)            
+        for i = 1:numel(name)
+            [~, fName, fExt] = fileparts(file{i});
+            
+            if ~isempty(testName),
+                fprintf('#\tin ''%s''\n', name{i});
+            end
+            
             fprintf(['#\tin file ' ...
-                quote(link2mfile(which(file), [fName fExt])), ...
+                quote(link2mfile(which(file{i}), [fName fExt])), ...
                 ' at ' ...
-                quote(link2mfile(which(file), ...
-                sprintf('line %d', line), line)) ...
-                '\n']);            
+                quote(link2mfile(which(file{i}), ...
+                sprintf('line %d', line(i)), line(i))) ...
+                '\n']);
         end
-        
         if ~isempty(errorMsg),
             errorMsg = str2multiline(errorMsg, [], ['# ' char(9)]);
             fprintf('#\tWith error message:\n%s\n', quote(errorMsg));
