@@ -32,9 +32,9 @@ end
 
 % Random seed for BSS algorithms that require it
 seed = get_runtime(obj, 'bss', 'seed');
-if ischar(seed), seed = eval(seed); end
+if iscell(seed), seed = eval(seed{1}); end
 init = get_runtime(obj, 'bss', 'init');
-if ischar(init), init = eval(init); end
+if iscell(init), init = eval(init{1}); end
 
 myBSS  = set_seed(myBSS, seed);
 myBSS  = set_init(myBSS, init);
