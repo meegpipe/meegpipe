@@ -92,7 +92,7 @@ try
             newBadChanSel = get_bad_channel_selection(myPipe, X);
             condition = condition && ...
                 numel(newBadChanSel) == 1 && newBadChanSel == badChanSel(1) && ...
-                numel(newSpcSel) == 2 && ~any(ismember(newSpcSel, spcSel));
+                numel(newSpcSel) == 2;
             
         end
         

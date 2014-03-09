@@ -75,14 +75,15 @@ end
 %% Should the runtime params be invalidated?
 obj.RunTime_ = get_runtime_config(obj, true);
 
-if globals.get.ResetNodes || has_changed_config(obj) 
-   
+if globals.get.ResetNodes,
+    clear_runtime(obj);
+elseif has_changed_config(obj) 
     % Following nodes' runtime params are invalid
     globals.set('ResetNodes', true);    
   
     if globals.get.FakeID,
         warning('abstract_node:FakeID', ...
-            'FakeID prevents node reset');
+            'FakeID prevents node reset at %s', get_name(obj));
     else
         clear_runtime(obj);
     end
