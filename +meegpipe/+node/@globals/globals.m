@@ -25,10 +25,7 @@ classdef (Sealed) globals < dynamicprops
     %
     %
     % See also: pset
-    
-    % Documentation: class_globals.txt
-    % Description: Global variables
-   
+ 
     properties (SetAccess = private)
         File;
         UserFile;        

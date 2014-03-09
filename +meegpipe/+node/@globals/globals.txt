@@ -13,7 +13,7 @@ Gallery         report.gallery.gallery
 
 
 #
-# These variables below are not to be edited!
+# These variables below are not to be edited! They are for internal only
 #
 
 OrigFile        ''  # The original name of the data file being processed
@@ -21,6 +21,7 @@ OrigFile        ''  # The original name of the data file being processed
 SavePath        ''  # Where the node outputs are to be stored
 
 ResetNodes      false
+FakeID          false
 
 HdrFileExt      pset.globals.get.HdrFileExt
 DataFileExt     pset.globals.get.DataFileExt

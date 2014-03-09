@@ -8,10 +8,16 @@ classdef pipeline < meegpipe.node.abstract_node
     %
     % See also: node, abstract_node
     
-    %%% Declared and defined here
+    % Declared and defined here
     methods
         
         templateFile = get_template_file(obj);
+        function obj = set_fake_id(obj, id)
+            obj.FakeID = id;
+        end
+        function id  = get_fake_id(obj)
+            id = obj.FakeID;
+        end
         
     end
     

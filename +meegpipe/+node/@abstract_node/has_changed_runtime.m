@@ -1,7 +1,5 @@
 function bool = has_changed_runtime(obj)
 
-
-
 storedHash = get_static(obj, 'hash', 'runtime');
 
 if isempty(storedHash),

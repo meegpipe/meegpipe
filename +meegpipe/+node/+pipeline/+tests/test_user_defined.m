@@ -12,7 +12,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(5);
+initialize(6);
 
 %% Create a new session
 try
@@ -33,6 +33,81 @@ catch ME
     
 end
 
+%% use fake ID
+try
+    
+    name = 'use fake ID';
+    
+    myPipe = sample_pipe();
+    
+    X      = randn(5, 1000);
+    data   = run(myPipe, X);
+    
+    condition = (rank(cov(data)) == 3);
+    
+    if condition,
+        spcSel = get_spcs_selection(myPipe, X);
+        badChanSel = get_bad_channel_selection(myPipe, X);
+        
+        % Change bad channel and spcs selections and re-run
+        clear data myPipe;
+        myPipe = sample_pipe();
+        spcSel = setdiff(1:5, spcSel);
+        badChanSel = setdiff(1:size(X,1), badChanSel);
+        set_bad_channel_selection(myPipe, X, badChanSel);
+        set_spcs_selection(myPipe, X, spcSel);
+        run(myPipe, X);
+        spcSel = get_spcs_selection(myPipe, X);
+        badChanSel = get_bad_channel_selection(myPipe, X);
+        % It should have ignored the BSS component selection since the bad
+        % channels node runtime configuration changed. But it should have
+        % taken into consideration the bad channel selections. This is
+        % despite FakeID being in effect, because FakeID only overrides
+        % changes in the static configuration of nodes.
+        condition = condition & ...
+            numel(spcSel) == 2 & ...
+            numel(badChanSel) == 3;
+        
+        
+        if condition
+            % If use FakeID then
+            % the user-defined bad_channels selection should be used
+            % (despite changes in the static config of the bad_channels
+            % node), but the user selection for the bss node should
+            % still be ignored because the runtime config of the
+            % bad_channels node has changed.
+            id = get_id(myPipe);
+            clear data myPipe;
+            % Again we change the configuration of the bad_chans node
+            myPipe = sample_pipe(true);
+            myPipe = set_fake_id(myPipe, id);
+            
+            set_bad_channel_selection(myPipe, X, badChanSel(1));
+            spcSel = setdiff(1:5, spcSel);
+            set_spcs_selection(myPipe, X, spcSel);
+            warning('off', 'abstract_node:FakeID');
+            run(myPipe, X);
+            warning('on', 'abstract_node:FakeID');
+            newSpcSel = get_spcs_selection(myPipe, X);
+            newBadChanSel = get_bad_channel_selection(myPipe, X);
+            condition = condition && ...
+                numel(newBadChanSel) == 1 && newBadChanSel == badChanSel(1) && ...
+                numel(newSpcSel) == 2 && ~any(ismember(newSpcSel, spcSel));
+            
+        end
+        
+    end
+    
+    ok(condition, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+
 %% invalidate user selections
 try
     
@@ -51,16 +126,32 @@ try
         
         % Change bad channel and spcs selections and re-run
         clear data myPipe;
-        myPipe = sample_pipe(true);
+        myPipe = sample_pipe();
         spcSel = setdiff(1:5, spcSel);
         badChanSel = setdiff(1:size(X,1), badChanSel);
         set_bad_channel_selection(myPipe, X, badChanSel);
         set_spcs_selection(myPipe, X, spcSel);
         run(myPipe, X);
-        newSpcSel = get_spcs_selection(myPipe, X);
+        spcSel = get_spcs_selection(myPipe, X);
+        badChanSel = get_bad_channel_selection(myPipe, X);
         % It should have ignored the BSS component selection since the bad
-        % channels node configuration changed
-        condition = condition & numel(newSpcSel) == 2;
+        % channels node configuration changed. But it should have taken
+        % into consideration the bad channel selections
+        condition = condition & ...
+            numel(spcSel) == 2 & ...
+            numel(badChanSel) == 3;
+        
+        if condition,
+            % If we run again, then we should get exactly the same result
+            clear data myPipe;
+            myPipe = sample_pipe();
+            run(myPipe, X);
+            newSpcSel = get_spcs_selection(myPipe, X);
+            newBadChanSel = get_bad_channel_selection(myPipe, X);
+            condition = condition & ...
+                numel(newSpcSel) == 2 & all(newSpcSel == spcSel) & ...
+                numel(newBadChanSel) == 3 & all(newBadChanSel == badChanSel);
+        end
         
     end
     
@@ -72,7 +163,6 @@ catch ME
     MEh = [MEh ME];
     
 end
-
 
 %% bad channels user selection
 try
@@ -188,8 +278,14 @@ function myPipe = sample_pipe(flag)
 import meegpipe.node.*;
 if nargin < 1, flag = false; end
 
-myCrit = bad_channels.criterion.var.var('MinCard', 2, 'MaxCard', 2, ...
-    'Max', 1000);
+if flag,
+    % If flag=true, change the configuration of the bad channels node
+    myCrit = bad_channels.criterion.var.var('MinCard', 2, 'MaxCard', 2, ...
+        'Max', 10000);
+else
+    myCrit = bad_channels.criterion.var.var('MinCard', 2, 'MaxCard', 2, ...
+        'Max', 1000);
+end
 
 if flag,
     myBadChan = ...

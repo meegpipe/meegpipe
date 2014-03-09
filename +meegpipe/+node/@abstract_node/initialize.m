@@ -46,6 +46,13 @@ end
 if isempty(get_parent(obj)),   
     session.subsession(get_tempdir(obj), 'Force', true);        
     globals.set('ResetNodes', false);
+    % This will prevent has_changed_method_config() to detect any
+    % configuration changes. FakeID can thus enforce that user selections
+    % in subsequent nodes are not reset despite changes in the 
+    % configuration of previous nodes. 
+    if ~isempty(obj.FakeID),
+        globals.set('FakeID', true);
+    end
 end
 
 %% Save node object, node input, and meegpipe version
@@ -70,11 +77,15 @@ obj.RunTime_ = get_runtime_config(obj, true);
 
 if globals.get.ResetNodes || has_changed_config(obj) 
    
-    % Following nodes' runtime params are also invalid
+    % Following nodes' runtime params are invalid
     globals.set('ResetNodes', true);    
   
-    clear_runtime(obj);
-   
+    if globals.get.FakeID,
+        warning('abstract_node:FakeID', ...
+            'FakeID prevents node reset');
+    else
+        clear_runtime(obj);
+    end
 end
 
 %% Store node configuration hash

@@ -19,6 +19,9 @@ fprintf('%20s : %s\n',  'Parallelize', bool2str(obj.Parallelize));
 fprintf('%20s : %s\n',  'Queue', get_queue(obj));
 fprintf('%20s : %s\n',  'Save', bool2str(obj.Save));
 fprintf('%20s : %s\n',  'TempDir', any2str(obj.TempDir));
+if ~isempty(obj.FakeID),
+   fprintf('%20s : %s\n',  'FakeID', obj.FakeID); 
+end
  
 
 end
