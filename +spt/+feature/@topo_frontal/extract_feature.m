@@ -11,7 +11,7 @@ maxY = max(xyz(:,2));
 
 isFront = xyz(:,2) >= obj.R0*maxY & xyz(:,2) <= obj.R1*maxY;
 
-Mraw = bprojmat(sptObj);
+Mraw = bprojmat(sptObj).^2;
 if size(data,1) > 20 && has_coords(sens),
     dist = euclidean_dist(sens);
     Mf = Mraw;
@@ -29,7 +29,7 @@ else
     M = Mraw;
 end
 
-M = misc.unit_norm(M.^2);
+M = misc.unit_norm(M);
 
 featVal = sum(M(isFront,:))./sum(M(~isFront,:));
 
