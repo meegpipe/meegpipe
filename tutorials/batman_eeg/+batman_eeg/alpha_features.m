@@ -7,7 +7,7 @@ import misc.process_arguments;
 import misc.split_arguments;
 
 opt.Test     = false;
-opt.Date     = datestr(now, 'yymmdd_HHMMSS');
+opt.Date     = '';
 opt.Subjects = 1:10; 
 opt.Conditions = {'arsq', 'baseline', 'pvt', 'rs'};
 [thisArgs, varargin] = split_arguments(opt, varargin);
@@ -17,15 +17,17 @@ opt.Conditions = {'arsq', 'baseline', 'pvt', 'rs'};
 meegpipe.initialize;
 
 % The directory where the cleaning results should be stored
-INPUT_DIR = '/data1/projects/batman/analysis/cleaning/140305_233618'; 
-
-if opt.Test,
-   ROOT_DIR = '/data1/projects/batman/analysis/alpha_features/tests_IGNORE_THIS/';  
+if ~isempty(opt.Date),
+    INPUT_DIR = ['/data1/projects/batman/analysis/cleaning/' opt.Date]; 
 else
-   ROOT_DIR = '/data1/projects/batman/analysis/alpha_features/';  
+   INPUT_DIR = misc.find_latest_dir('/data1/projects/batman/analysis/cleaning/');  
 end
 
-OUTPUT_DIR = [ROOT_DIR opt.Date];
+if opt.Test,
+   OUTPUT_DIR = '/data1/projects/batman/analysis/alpha_features/tests_IGNORE_THIS/';  
+else
+   OUTPUT_DIR = '/data1/projects/batman/analysis/alpha_features/';  
+end
 
 % Ensure the directory exists (Unix-specific)
 system(['mkdir -p ' OUTPUT_DIR]);
