@@ -16,7 +16,7 @@ opt.Conditions = {'arsq', 'baseline', 'pvt', 'rs'};
 % Just in case you forgot to do it when you started MATLAB
 meegpipe.initialize;
 
-% The directory where the cleaning results should be stored
+% The directory where the cleaning results are located
 if ~isempty(opt.Date),
     INPUT_DIR = ['/data1/projects/batman/analysis/cleaning/' opt.Date]; 
 else
@@ -28,6 +28,9 @@ if opt.Test,
 else
    OUTPUT_DIR = '/data1/projects/batman/analysis/alpha_features/';  
 end
+
+fprintf('\nINPUT DIR: %s\n', INPUT_DIR);
+fprintf('OUTPUT_DIR: %s\n\n', OUTPUT_DIR);
 
 % Ensure the directory exists (Unix-specific)
 system(['mkdir -p ' OUTPUT_DIR]);
