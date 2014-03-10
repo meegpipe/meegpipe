@@ -14,7 +14,6 @@ function h = plot(obj, varargin)
 import misc.split_arguments;
 import misc.process_arguments;
 
-
 if ~has_coords(obj),
     h = [];
     % Nothing to plot
@@ -41,7 +40,8 @@ else
     visible = 'off';
 end
 
-h = figure('Visible', visible);
+set(gcf, 'Visible', visible);
+h = gcf;
 if opt.Project2D,
     if opt.Labels,
         electrodes = 'labels';
@@ -51,14 +51,6 @@ if opt.Project2D,
     topoplot([], eeglab(obj), 'whitebk', 'on', ...
         'electrodes', electrodes);
     
-    % Make the labels smaller
-    if opt.Labels && obj.NbSensors > 64,
-        hT = findobj(h, 'type', 'text');
-        baseFontSize = get(hT(1), 'FontSize');
-        for i = 1:numel(hT)
-            set(hT, 'FontSize', floor(baseFontSize*0.7));
-        end
-    end     
 else
     scatter3(obj.Cartesian(:,1), cartesian(:,2), cartesian(:,3), varargin{:});
     
@@ -69,6 +61,30 @@ else
     if opt.Labels,
         text(cartesian(:,1), cartesian(:,2), cartesian(:,3), labels(obj));
     end
+end
+
+if opt.Labels,
+    fix_label_looks(h);
+end
+
+end
+
+
+
+function fix_label_looks(h)
+
+% Make the labels smaller
+hT = findobj(h, 'type', 'text');
+if numel(hT) > 64,
+   
+    baseFontSize = get(hT(1), 'FontSize');
+    for i = 1:numel(hT)
+        set(hT(i), 'FontSize', ceil(baseFontSize*0.7));
+    end
+end
+
+for i = 1:numel(hT)
+   set(hT, 'FontWeight', 'bold'); 
 end
 
 end

@@ -32,6 +32,8 @@ import external.fieldtrip.*;
 %
 % $Id: bounding_mesh.m 2885 2011-02-16 09:41:58Z roboos $
 
+import fieldtrip.*;
+
 global fb;
 if isempty(fb)
   fb = 0;
@@ -39,7 +41,6 @@ end
 
 npos = size(pos, 1);
 npnt = size(pnt, 1);
-ntri = size(tri, 1);
 
 % determine a cube that encompases the boundary triangulation
 bound_min = min(pnt);

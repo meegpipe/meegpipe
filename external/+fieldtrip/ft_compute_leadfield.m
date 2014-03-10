@@ -80,6 +80,8 @@ import external.fieldtrip.*;
 %
 % $Id: ft_compute_leadfield.m 4510 2011-10-18 18:53:15Z roboos $
 
+import fieldtrip.*;
+
 if iscell(sens) && iscell(vol) && numel(sens)==numel(vol)
   % this represents combined EEG and MEG sensors, where each modality has its own volume conduction model
   lf = cell(1,numel(sens));

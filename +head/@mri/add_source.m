@@ -44,9 +44,6 @@ function obj = add_source(obj, varargin)
 % See also: head.mri
 %
 
-% Description: Adds an EEG source
-% Documentation: class_head_mri.txt
-
 import misc.process_varargin;
 import misc.euclidean_dist;
 
@@ -63,7 +60,6 @@ keySet = {'name', 'centroid', 'minvolume', 'maxvolume', ...
     'angle', 'minstrength', 'maxstrength', 'strength', 'activation'};
 
 name        = [];
-centroid    = [];
 minvolume   = 1;
 maxvolume   = 1;
 volume      = [];
@@ -122,38 +118,13 @@ if numel(validPoints) < volume,
     throw(NotEnoughPoints);
 end
 
-
-
 selected = randperm(numel(validPoints));
 pickedPoints = validPoints(selected(1));
 
 dist = euclidean_dist(obj.SourceSpace.pnt(pickedPoints,:), obj.SourceSpace.pnt(validPoints, :));
-[val,idx] = sort(dist,'ascend');
+[~,idx] = sort(dist,'ascend');
 pickedPoints = validPoints(idx(1:volume));
 
-
-% % Pick the dipoles for this source
-% count = 0;
-% allPoints    = setdiff(1:obj.NbSourceVoxels, alreadyPickedPoints);
-% pickedPoints = nan(volume, 3);
-% d = euclidean_dist(sourcePoints(allPoints,:), centroid);
-% 
-% while (count < volume && ~isempty(allPoints))
-%     [~, index] = min(d);
-%     thisDepth = head.mri.point_depth(surfPoints, sourcePoints(allPoints(index), :));    
-%     if thisDepth >= mindepth && thisDepth <= maxdepth,
-%         count = count + 1;
-%         pickedPoints(count) = allPoints(index);        
-%     end        
-%     allPoints(index) = [];
-%     d(index) = [];    
-% end
-% if count == 0 || minvolume > count,
-%     throw(NotEnoughPoints);
-% end
-% pickedPoints = pickedPoints(1:count);
-% sourcePoints = sourcePoints(pickedPoints,:);
-% volume = count;
 
 % Randomize the strengths of the source dipoles
 strength = repmat(minstrength, volume, 1)+...
@@ -161,8 +132,7 @@ strength = repmat(minstrength, volume, 1)+...
 
 % Necessary for the dipole angles
 cmass       = mean(obj.InnerSkull.pnt);
-nVert       = size(obj.InnerSkull.pnt,1);
-surfPoints  = obj.InnerSkull.pnt - repmat(cmass, nVert,1);
+
 sourcePoints= obj.SourceSpace.pnt - repmat(cmass, obj.NbSourceVoxels, 1);
 
 sourcePoints = sourcePoints(pickedPoints,:);

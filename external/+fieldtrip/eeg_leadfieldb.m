@@ -39,7 +39,7 @@ function [lf] = eeg_leadfieldb(pos, elc, vol)
 %
 % $Id: eeg_leadfieldb.m 2344 2010-12-08 10:34:24Z crimic $
 
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 % do some sanity checks
 if ~isfield(vol, 'bnd')

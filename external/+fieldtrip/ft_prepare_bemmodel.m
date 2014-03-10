@@ -46,8 +46,8 @@ function [vol, cfg] = ft_prepare_bemmodel(cfg, mri)
 %
 % $Id: ft_prepare_bemmodel.m 4306 2011-09-27 07:52:27Z eelspa $
 
-import external.fieldtrip.*;
-import external.bemcp.*;
+import fieldtrip.*;
+import bemcp.*;
 
 ft_defaults
 
@@ -122,7 +122,7 @@ elseif strcmp(cfg.method, 'bemcp')
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % this uses an implementation that was contributed by Christophe Philips
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  ft_hastoolbox('bemcp', 1);
+  %ft_hastoolbox('bemcp', 1);
   
   % do some sanity checks
   if length(vol.bnd)~=3

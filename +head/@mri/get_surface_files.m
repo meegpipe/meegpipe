@@ -5,7 +5,7 @@ import mperl.file.spec.rel2abs;
 
 if nargin < 2, nbVertices = []; end
 
-files = misc.dir(surfacesPath);
+files = misc.dir(surfacesPath, [], true, false, false);
 
 info = struct( ...
     'id',               [], ...

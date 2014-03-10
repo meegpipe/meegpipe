@@ -89,10 +89,6 @@ classdef head
     % 
     %
     % See also: head.sphmodel, head.template
-    
-    % Documentation: vconductor.txt
-    % Description: @vconductor interface
-    
 
     
     methods (Abstract)

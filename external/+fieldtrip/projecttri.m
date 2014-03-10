@@ -27,7 +27,7 @@ function [tri] = projecttri(pnt, method)
 %    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
 %
 % $Id: projecttri.m 2885 2011-02-16 09:41:58Z roboos $
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 if nargin<2
   method = 'convhull';

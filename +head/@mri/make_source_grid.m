@@ -1,6 +1,5 @@
 function obj = make_source_grid(obj, density)
-% MAKE_SOURCE_GRID 
-% Creates a 3D grid of candidate source locations
+% MAKE_SOURCE_GRID - Creates a 3D grid of candidate source locations
 %
 % obj = make_source_grid(obj, density)
 %
@@ -15,8 +14,10 @@ function obj = make_source_grid(obj, density)
 %
 % See also: head.mri
 
-import head.globals;
-import external.fieldtrip.bounding_mesh;
+import fieldtrip.bounding_mesh;
+
+% Maximum number of voxels per axis
+MAX_NB_VOXELS = 30; 
 
 InvalidDensity = MException('head:mri:make_source_grid', ...
     'Invalid grid density');
@@ -33,7 +34,7 @@ end
 % Generate a source grid
 minValues   = ceil(min(obj.InnerSkull.pnt));
 maxValues   = floor(max(obj.InnerSkull.pnt));
-maxNbVoxels = globals.evaluate.MaxNbVoxels;
+maxNbVoxels = MAX_NB_VOXELS;
 nbVoxels = max(3, ceil(density*maxNbVoxels));
 xv = linspace(1.1*minValues(1), .9*maxValues(1), nbVoxels);
 yv = linspace(1.1*minValues(2), .9*maxValues(2), nbVoxels);

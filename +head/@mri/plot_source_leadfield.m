@@ -43,12 +43,9 @@ function h = plot_source_leadfield(obj, index, varargin)
 %
 % See also: head.mri
 
-% Description: Plot source leadfield
-% Documentation: class_head_mri.txt
-
-import external.fieldtrip.ft_plot_topo3d;
+import fieldtrip.ft_plot_topo3d;
 import misc.process_varargin;
-import external.fieldtrip.projecttri;
+import fieldtrip.projecttri;
 
 FACE_ALPHA = 0.7; %#ok<NASGU>
 

@@ -1,6 +1,5 @@
 function value = point_depth(surfPoints, point)
-% POINT_DEPTH
-% Depth of a point within a surface
+% POINT_DEPTH - Depth of a point within a surface
 
 import misc.euclidean_dist;
 

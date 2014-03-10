@@ -21,8 +21,8 @@ classdef mri < head.head
 
     properties (SetAccess =  private)
         Sensors;
-        Subject;
-        SubjectPath;
+        ID;
+        SurfacesPath;
         SourceSpace;
         Source;
         OuterSkin;
@@ -71,9 +71,10 @@ classdef mri < head.head
     end
     
     % Other public methods
-    methods
+    methods        
         obj = sensors_to_outer_skin(obj);
         obj = make_source_grid(obj, density);    
+        obj = make_source_surface(obj, density);
         obj = make_source_layers(obj, varargin);  % Not implemented yet!
         obj = make_bem(obj, varargin);
         index = source_index(obj, names);
@@ -89,6 +90,8 @@ classdef mri < head.head
         obj = add_source_activation(obj, index, activation, varargin);
         obj = get_source_centroid(obj, index, varargin);
         obj = inverse_solution(obj, varargin);
+        r   = brain_radius(obj);
+        pnt = source_layer(obj, dist);
     end
 
     % Dependent properties
@@ -122,62 +125,54 @@ classdef mri < head.head
     % Constructor
     methods
         function obj = mri(varargin)
-            import misc.process_varargin;
+            import misc.process_arguments;
             import head.mri;
             import misc.plot_mesh;
+            import mperl.file.spec.catdir;
+            import mperl.file.spec.rel2abs;
+            import exceptions.MissingData;
           
-            keySet = {'subjectpath', 'sensors'};
-            subjectpath  = [];
-            sensors      = [];
-            nbvertices   = [];
+            opt.SurfacesPath = catdir(...
+                rel2abs([meegpipe.root_path filesep '..']), ...
+                'data', 'head_models', '0003');
+            opt.NbVertices   = 5120;
+            opt.Sensors      = sensors.eeg.from_template('egi256');
            
-            eval(process_varargin(keySet, varargin));
+            [~, opt] = process_arguments(opt, varargin);  
             
-            if isempty(subjectpath),
-                return;
-            end            
-            
-            if ~ismember(subjectpath(1), {'/', '\'}) && ...
-                    isempty(regexpi(subjectpath, '^\w:', 'match')),
-                subjectpath = [pwd filesep subjectpath];                
-            end               
-            
+            if isempty(opt.Sensors),
+                throw(MissingData('Sensor coordinates'));
+            end
+
             % Load surface files and identify the subject name
-            files = head.mri.get_subject_files(subjectpath, nbvertices);
+            info = head.mri.get_surface_files(opt.SurfacesPath, opt.NbVertices);
                      
-            obj.Subject = files.subject;
-            obj.SubjectPath = subjectpath;
-            if isempty(files.outerskin),  throw(MissingOuterSkin);  end
-            if isempty(files.outerskull), throw(MissingOuterSkull); end
-            if isempty(files.innerskull), throw(MissingInnerSkull); end           
+            obj.ID = info.id;
+            obj.SurfacesPath = rel2abs(opt.SurfacesPath);
+            if isempty(info.outerskin),  
+                throw(MissingData('Outer Skin surface'));  
+            end
+            if isempty(info.outerskull), 
+                throw(MissingData('Outer Skull surface'));
+            end
+            if isempty(info.innerskull), 
+                throw(MissingData('Inner Skull surface')); 
+            end           
             
             surfaces = {'OuterSkin', 'OuterSkull', 'InnerSkull', ...
                 'OuterSkinDense', 'OuterSkullDense', 'InnerSkullDense'};            
             
             for surfIter = surfaces
                thisSurf = lower(surfIter{1});
-               thisFile = files.(thisSurf);
+               thisFile = info.(thisSurf);
                [pnt, tri] = io.tri.read(thisFile);
                tmp = struct('pnt', pnt, 'tri', tri, 'file', thisFile);
                obj.(surfIter{1}) = tmp; 
-            end            
-            
-            % Load sensor information
-            if isempty(sensors),
-                sensors = files.sensors;
             end
             
-            if ischar(sensors),
-                obj.Sensors = read(eeg, sensors);
-            else
-                id = cell(size(sensors,1),1);
-                for i = 1:size(sensors,1),
-                    id{i} = sprintf('e%d', i);
-                end
-                obj.Sensors = eeg(...
-                    'Cartesian', sensors, ...
-                    'label', id);
-            end                        
+            sensNew = map2surf(opt.Sensors, obj.OuterSkin, 'fig', false, ...
+                'verbose', false);
+            obj.Sensors = sensNew;    
         end
         
     end

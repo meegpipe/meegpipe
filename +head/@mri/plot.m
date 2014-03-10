@@ -38,12 +38,8 @@ function h = plot(obj, varargin)
 %
 % See also: head.mri
 
-% Documentation: class_head_mri.txt
-% Description: Plots an anatomical head model
-
-import misc.process_varargin;
+import misc.process_arguments;
 import misc.plot_mesh;
-
 
 SURF_COLOR.OUTERSKIN        = [.3 .3 .3];
 SURF_COLOR.OUTERSKINDENSE   = [.7 .7 .7];
@@ -55,22 +51,22 @@ SIZE_DATA = 50;
 SIZE_DATA_GRID = 30; %#ok<*NASGU>
 GRID_COLOR='k';
 
-keySet      = {'surface', 'sensors', 'sourcespace'};
-surface     = {'OuterSkin', 'InnerSkull'};
-sensors     = true;
-sourcespace = false;
+opt.Surface     = {'OuterSkin', 'InnerSkull'};
+opt.Sensors     = true;
+opt.SourceSpace = false;
+opt.Labels      = false;
 
-eval(process_varargin(keySet, varargin));
+[~, opt] = process_arguments(opt, varargin);
 
 h = [];
 
-if ischar(surface), surface = {surface}; end
+if ischar(opt.Surface), opt.Surface = {opt.Surface}; end
 
-if numel(surface) == 1 && strcmpi(surface{1},'none'),
-    surface = [];
+if numel(opt.Surface) == 1 && strcmpi(opt.Surface{1},'none'),
+    opt.Surface = [];
 end
 
-for surfIter = surface
+for surfIter = opt.Surface
     thisSurf = surfIter{1};
     thisH = plot_mesh(obj.(thisSurf).pnt, ...
         obj.(thisSurf).tri, 'facecolor', SURF_COLOR.(upper(thisSurf)));
@@ -78,15 +74,14 @@ for surfIter = surface
     hold on;
 end
 
-if sensors,
-    thisH = plot(obj.Sensors);
-    set(thisH, 'SizeData', SIZE_DATA);
+if opt.Sensors,
+    thisH = plot(obj.Sensors, 'Labels', opt.Labels);
     h = [h thisH];
 end
 
-if (~islogical(sourcespace) || sourcespace) && ~isempty(obj.SourceSpace),
-    if ~islogical(sourcespace),
-        index = sourcespace;
+if (~islogical(opt.SourceSpace) || opt.SourceSpace) && ~isempty(obj.SourceSpace),
+    if ~islogical(opt.SourceSpace),
+        index = opt.SourceSpace;
     else
         index = 1:size(obj.SourceSpace.pnt,1);
     end
@@ -99,10 +94,5 @@ if (~islogical(sourcespace) || sourcespace) && ~isempty(obj.SourceSpace),
     set(gca, 'visible', 'off');
     set(gcf, 'color', 'white');
 end
-
-
-
-
-
 
 end

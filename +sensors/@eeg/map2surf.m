@@ -1,4 +1,4 @@
-function [sensorNew, M, distProj] = map2surf(sensor, scalp, varargin)
+function [sensor, M, distProj] = map2surf(sensor, scalp, varargin)
 % MAP2SURF - Maps EEG sensors.onto the scalp surface
 %
 % [sensorNew, M] = map2surf(sensor, scalp)
@@ -28,10 +28,6 @@ function [sensorNew, M, distProj] = map2surf(sensor, scalp, varargin)
 %
 % See also: sensors.eeg
 
-% Documentation: class_sensors.eeg.txt
-% Description: Maps sensors.to scalp surface
-
-
 import misc.process_arguments;
 import misc.nn_all;
 import misc.nn_radius;
@@ -39,7 +35,8 @@ import misc.rdir;
 import misc.eta;
 import misc.plot_mesh;
 import io.hpts.write;
-import external.icp.ICP_finite;
+import icp.ICP_finite;
+import misc.euclidean_dist;
 
 verboseLabel = '(sensors.eeg:map2surf) ';
 
@@ -53,7 +50,6 @@ opt.reIcp       = false;
 opt.icpPoints   = 30;
 opt.hpts        = [];
 opt.fig         = true;
-opt.fig         = 'sensors.;
 opt.verbose     = true;
 [~, opt] = process_arguments(opt, varargin);
 
@@ -79,6 +75,20 @@ else
     facesScalp = scalp.tri;
     scalp = scalp.pnt;
 end
+
+% Fix displacement between surface and sensors
+nbSens = size(sensorCoord, 1);
+headCenterSens = mean(sensorCoord);
+headCenterSurf = mean(scalp);
+displacement = headCenterSurf - headCenterSens;
+sensorCoord = repmat(displacement, nbSens, 1) + sensorCoord;
+
+% Fix the scale
+radiusSens = mean(euclidean_dist(headCenterSurf, sensorCoord));
+radiusSurf = mean(euclidean_dist(headCenterSurf, scalp));
+scaleFactor = radiusSurf/radiusSens;
+sensorCoord = scaleFactor*(sensorCoord-repmat(headCenterSurf, nbSens, 1))+...
+    repmat(headCenterSurf, nbSens, 1);
 
 % How close can two points be?
 [~, radius] = nn_all(sensorCoord);
@@ -136,7 +146,7 @@ if opt.verbose && (runs <= opt.icpPoints || ~opt.reIcp),
     fprintf('\n');
 end
 
-sensorNew = sensors.eeg('Cartesian', sensorNew, 'label', sensor.Label);
+sensor.Cartesian = sensorNew;
 
 if ~isempty(opt.hpts),
     [~, ~, ext] = fileparts(opt.hpts);

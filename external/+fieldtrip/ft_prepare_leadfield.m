@@ -109,6 +109,8 @@ import external.fieldtrip.*;
 %
 % $Id: ft_prepare_leadfield.m 4359 2011-10-06 09:28:10Z crimic $
 
+import fieldtrip.*;
+
 ft_defaults
 
 % record start time and total processing time

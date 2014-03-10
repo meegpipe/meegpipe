@@ -36,6 +36,8 @@ import external.bemcp.*;
 %
 % $Id: ft_hastoolbox.m 4567 2011-10-21 14:47:37Z roboos $
 
+import fieldtrip.*;
+
 % this function is called many times in FieldTrip and associated toolboxes
 % use efficient handling if the same toolbox has been investigated before
 persistent previous previouspath

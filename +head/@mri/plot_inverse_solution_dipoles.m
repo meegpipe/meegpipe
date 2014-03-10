@@ -74,6 +74,7 @@ thisH = scatter3(points(:,1), points(:,2), points(:,3), 'filled');
 if ~isempty(time),
     act = abs(thisSource.strength.*thisSource.activation(:,time)).^exp;
     act = act./max(abs(act));
+    act(act<eps) = 0.000001*max(abs(act));
     set(thisH, 'SizeData', sizedata*abs(act));   
 else
     set(thisH, 'SizeData', sizedata);

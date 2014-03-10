@@ -1,5 +1,5 @@
 function obj = make_leadfield(obj)
-import external.fieldtrip.ft_prepare_leadfield;
+import fieldtrip.ft_prepare_leadfield;
 
 MissingBEM = MException('head:mri:make_source_grid_leadfield', ...
     'You need to run make_bem() first!');
@@ -11,6 +11,8 @@ end
 
 % Generate the leadfield matrix
 cfg.grid.pos = obj.SourceSpace.pnt;
+cfg.grid.inside = 1:size(obj.SourceSpace.pnt, 1);
+cfg.grid.outside = [];
 cfg.vol = obj.FieldTripVolume;
 cfg.elec = fieldtrip(obj.Sensors);
 try

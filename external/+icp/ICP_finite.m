@@ -65,7 +65,7 @@ function [Points_Moved,M]=ICP_finite(Points_Static, Points_Moving, Options)
 
 % Display registration process
 
-import external.icp.*;
+import icp.*;
 
 defaultoptions=struct('Registration','Rigid','TolX',0.0001,'TolP',0.0001,'Optimizer','fminlbfgs','Verbose', true);%0.001 both
 if(~exist('Options','var')),
@@ -75,9 +75,7 @@ else
     for i=1:length(tags)
         if(~isfield(Options,tags{i})),  Options.(tags{i})=defaultoptions.(tags{i}); end
     end
-    if(length(tags)~=length(fieldnames(Options))),
-        warning('register_images:unknownoption','unknown options found');
-    end
+ 
 end
 
 % Process Inputs

@@ -79,6 +79,8 @@ import external.fieldtrip.*;
 %
 % %Log$
 
+import fieldtrip.*;
+
 cfg = ft_checkconfig(cfg, 'deprecated', 'mriunits');
 
 % set the defaults

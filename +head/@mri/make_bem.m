@@ -11,7 +11,7 @@ function obj = make_bem(obj, varargin)
 % See also: external.fieldtrip.ft_prepare_bemmodel
 
 import misc.process_varargin;
-import external.fieldtrip.ft_prepare_bemmodel;
+import fieldtrip.ft_prepare_bemmodel;
 
 keySet = {'method'};
 method = 'bemcp';
@@ -25,8 +25,6 @@ volume.bnd(2) = obj.OuterSkull;
 volume.bnd(3) = obj.OuterSkin;
 cfg.method = method;
 obj.FieldTripVolume = ft_prepare_bemmodel(cfg, volume);
-
-
 
 
 end

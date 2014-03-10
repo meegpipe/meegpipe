@@ -36,6 +36,8 @@ import external.fieldtrip.*;
 %
 % $Id: triangle4pt.m 2885 2011-02-16 09:41:58Z roboos $
 
+import fieldtrip.*;
+
 Ns = length(vol.bnd);
 for ii=1:Ns % treat each mesh one at a time
   tri = vol.bnd(ii).tri;

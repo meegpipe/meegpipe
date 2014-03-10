@@ -30,6 +30,8 @@ import external.fieldtrip.*;
 %
 % $Id: find_outermost_boundary.m 2885 2011-02-16 09:41:58Z roboos $
 
+import fieldtrip.*;
+
 ncmp = length(bnd);
 
 % try to locate the outermost compartment
