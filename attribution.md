@@ -75,6 +75,10 @@ Selection filters developed by [Alessandro Foi][foi] and others at
 
 [shadederrorbar]: http://www.mathworks.com/matlabcentral/fileexchange/26311
 
+* D. Kroon's [ICP_finite][ICP_finite].
+
+[ICP_finite]: http://www.mathworks.nl/matlabcentral/fileexchange/24301-finite-iterative-closest-point
+
 ### Runica
 
 [runica][runica] is the implementation of the [Infomax][infomax] ICA
@@ -83,6 +87,22 @@ algorithm that is included with [EEGLAB][eeglab].
 [eeglab]: http://sccn.ucsd.edu/eeglab/
 [runica]: http://sccn.ucsd.edu/eeglab/allfunctions/runica.html
 [infomax]: http://en.wikipedia.org/wiki/Infomax
+
+
+### Fieldtrip
+
+_meegpipe_ ships with a subset of [Fieldtrip][fieldtrip]. This subset
+includes the BEMCP toolbox by C. Phillips, which is part of the standard
+Fieldtrip distribution.
+
+[fieldtrip]: http://fieldtrip.fcdonders.nl/
+
+
+
+
+
+
+
 
 
 
