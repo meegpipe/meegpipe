@@ -18,12 +18,7 @@ classdef mri < head.head
     % 
     % See also: head.mri
     %
-    
-    % Description: Head model based on an MRI scan
-    % Documentation: class_head_mri.txt
-    
-    
-    
+
     properties (SetAccess =  private)
         Sensors;
         Subject;
@@ -54,6 +49,18 @@ classdef mri < head.head
         NbSources;
     end
     
+        
+    % Global consistency check
+    methods (Access=private)
+        check_sources(obj); 
+    end   
+
+    % Helper methods
+    methods (Static, Access = private)
+        [subj, filesOut] = get_surface_files(subjectPath, nbVertices)
+        value = point_depth(surfPoints, point)
+    end
+
     
     % head.head interface
     methods
@@ -82,34 +89,43 @@ classdef mri < head.head
         obj = add_source_activation(obj, index, activation, varargin);
         obj = get_source_centroid(obj, index, varargin);
         obj = inverse_solution(obj, varargin);
-        
     end
-    
-    % Private method
-    methods (Access=private)
-        check_sources(obj); 
-    end
-    
 
+    % Dependent properties
+    methods
+        function value = get.NbSensors(obj)
+            if isempty(obj.Sensors),
+                value = 0;
+            else
+                value = size(obj.Sensors.Cartesian, 1);
+            end
+        end
+        
+        function value = get.NbSources(obj)
+            if isempty(obj.Source),
+                value = 0;
+            else
+                value = numel(obj.Source);
+            end
+        end
+        
+        function value = get.NbSourceVoxels(obj)
+            if isempty(obj.SourceSpace),
+                value = 0;
+            else
+                value = size(obj.SourceSpace.pnt,1);
+            end
+        end
+        
+    end    
+    
     % Constructor
     methods
         function obj = mri(varargin)
             import misc.process_varargin;
             import head.mri;
             import misc.plot_mesh;
-            import sensors.eeg;
-            
-            % Exceptions that this constructor may throw
-            MissingOuterSkin     = ...
-                MException('head:mri:missingOuterSkinSurface', ...
-                'Missing Outer Skin Surface');
-            MissingOuterSkull    = ...
-                 MException('head:mri:missingOuterSkullSurface', ...
-                'Missing Outer Skull Surface');
-            MissingInnerSkull    = ...
-                 MException('head:mri:missingInnerSkullSurface', ...
-                'Missing Inner Skull Surface');            
-            
+          
             keySet = {'subjectpath', 'sensors'};
             subjectpath  = [];
             sensors      = [];
@@ -165,41 +181,5 @@ classdef mri < head.head
         end
         
     end
-    
-    % Dependent methods
-    methods
-        function value = get.NbSensors(obj)
-            if isempty(obj.Sensors),
-                value = 0;
-            else
-                value = size(obj.Sensors.Cartesian, 1);
-            end
-        end
-        
-        function value = get.NbSources(obj)
-            if isempty(obj.Source),
-                value = 0;
-            else
-                value = numel(obj.Source);
-            end
-        end
-        
-        function value = get.NbSourceVoxels(obj)
-            if isempty(obj.SourceSpace),
-                value = 0;
-            else
-                value = size(obj.SourceSpace.pnt,1);
-            end
-        end
-        
-    end
-    
-    % Helper methods
-    methods (Static)
-        [subj, filesOut] = get_subject_files(subjectPath, nbVertices)
-        value = point_depth(surfPoints, point)
-    end
-    
-    
-    
+  
 end
