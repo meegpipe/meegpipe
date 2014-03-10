@@ -68,9 +68,9 @@ if numel(files) < 1,
     return;
 end
 
-fprintf('Input file #%d: %s', 1, files{1});
+fprintf('Input file #%d: %s\n\n', 1, files{1});
 if numel(files) > 1,
-    fprintf('Input file #%d: %s', numel(files), files{end});
+    fprintf('Input file #%d: %s\n\n', numel(files), files{end});
 end
 
 run(myPipe, files{:});
