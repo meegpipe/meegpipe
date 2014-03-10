@@ -61,6 +61,12 @@ regex = '\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 fprintf('Number of input files: %d\n\n', numel(files));
+
+if numel(files) < 1,
+    fprintf('No files to process: nothing done\n\n');
+    rmdir(OUTPUT_DIR);
+end
+
 fprintf('Input file #%d: %s', 1, files{1});
 if numel(files) > 1,
     fprintf('Input file #%d: %s', numel(files), files{end});
