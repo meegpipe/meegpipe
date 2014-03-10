@@ -25,10 +25,10 @@ end
 
 if opt.Test,
    OUTPUT_DIR = ['/data1/projects/batman/analysis/alpha_features/tests_IGNORE_THIS/' ...
-       datestr(now, 'yymmdd_HHMM')];  
+       datestr(now, 'yymmdd_HHMMSS')];  
 else
    OUTPUT_DIR = ['/data1/projects/batman/analysis/alpha_features/' ...
-       datestr(now, 'yymmdd_HHMM')];  
+       datestr(now, 'yymmdd_HHMMSS')];  
 end
 
 fprintf('\nINPUT DIR: %s\n', INPUT_DIR);
@@ -65,6 +65,7 @@ fprintf('Number of input files: %d\n\n', numel(files));
 if numel(files) < 1,
     fprintf('No files to process: nothing done\n\n');
     rmdir(OUTPUT_DIR);
+    return;
 end
 
 fprintf('Input file #%d: %s', 1, files{1});
