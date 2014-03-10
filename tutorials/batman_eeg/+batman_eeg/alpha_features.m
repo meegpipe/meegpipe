@@ -58,6 +58,8 @@ somsds.link2files(cleanedFiles, OUTPUT_DIR);
 regex = '\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
+fprintf('Number of input files: %d\n\n', numel(files));
+
 run(myPipe, files{:});
 
 end
