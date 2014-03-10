@@ -5,6 +5,7 @@ import meegpipe.node.globals;
 import misc.var2name;
 import pset.session;
 import mperl.cwd.abs_path;
+import mperl.file.spec.rel2abs;
 
 dataNew = [];
 
@@ -32,10 +33,16 @@ importer = get_config(obj, 'Importer');
 
 importer.FileName = fileName;
 
+inputData = data;
 data = import(importer, data);
 
 if verbose,
-   fprintf([verboseLabel 'Imported dataset ''%s'': %d channels and %d ' ...
+    if ischar(inputData),
+        fprintf([verboseLabel 'Imported dataset ''%s'' from ''%s''\n\n'], ...
+            get_name(data), rel2abs(inputData));
+    end
+   
+   fprintf([verboseLabel 'Dataset %s has %d channels and %d ' ...
        ' samples (%.1f seconds) ...\n\n'], ...
        get_name(data), size(data,1), size(data,2), ...
        size(data,2)/data.SamplingRate);
