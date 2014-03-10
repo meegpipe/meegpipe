@@ -59,6 +59,10 @@ regex = '\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 fprintf('Number of input files: %d\n\n', numel(files));
+fprintf('Input file #%d: ', files{1});
+if numel(files) > 1,
+    fprintf('Input file #%d: ', files{end});
+end
 
 run(myPipe, files{:});
 
