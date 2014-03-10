@@ -24,9 +24,11 @@ else
 end
 
 if opt.Test,
-   OUTPUT_DIR = '/data1/projects/batman/analysis/alpha_features/tests_IGNORE_THIS/';  
+   OUTPUT_DIR = ['/data1/projects/batman/analysis/alpha_features/tests_IGNORE_THIS/' ...
+       datestr(now, 'yymmdd_HHMM')];  
 else
-   OUTPUT_DIR = '/data1/projects/batman/analysis/alpha_features/';  
+   OUTPUT_DIR = ['/data1/projects/batman/analysis/alpha_features/' ...
+       datestr(now, 'yymmdd_HHMM')];  
 end
 
 fprintf('\nINPUT DIR: %s\n', INPUT_DIR);
