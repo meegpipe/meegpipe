@@ -28,7 +28,9 @@ filename = rel2abs(filename);
 % Broken function_handles in the processing history generate 
 % ugly/useless warnings
 warning('off', 'MATLAB:dispatcher:UnresolvedFunctionHandle');
+warning('off', 'MATLAB:load:classNotFound');
 tmp = load(filename, '-mat');
+warning('on', 'MATLAB:load:classNotFound');
 warning('on', 'MATLAB:dispatcher:UnresolvedFunctionHandle');
 
 obj = tmp.obj;
