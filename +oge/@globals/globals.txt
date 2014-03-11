@@ -13,5 +13,4 @@ HRt                 '100:00:00'
 # nodes. This may prevent using the default OS temporary folder
 TempDir             [mperl.file.homedir.my_home, filesep '.meegpipe' filesep 'tmp']
    
-Queue               short.q@somerenserver.herseninstituut.knaw.nl             
-
+Queue               short.q

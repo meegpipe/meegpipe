@@ -16,7 +16,7 @@ opt.DiscardMissingResp = true;
 PIPE_NAME = 'erp';
 USE_OGE   = true;
 DO_REPORT = true;
-QUEUE     = 'short.q@somerenserver.herseninstituut.knaw.nl';
+QUEUE     = 'short.q';
 
 nodeList = {};
 
