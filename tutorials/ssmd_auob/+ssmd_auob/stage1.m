@@ -32,7 +32,7 @@ fprintf('ANALYSIS PARAMETERS:\n');
 fprintf('--------------------\n\n');
 fNames = fieldnames(opt);
 for i = 1:numel(fNames),
-   fprintf('%40s : %200s\n', fNames{i}, opt.(fNames{i})); 
+   fprintf('%40s : %s\n', fNames{i}, misc.any2str(opt.(fNames{i}), 100)); 
 end
 fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
 pause;
