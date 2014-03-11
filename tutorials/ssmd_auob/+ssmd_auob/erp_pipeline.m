@@ -2,6 +2,8 @@ function myPipe = erp_pipeline(varargin)
 % ERP_PIPELINE - ERP analysis pipeline
 
 import meegpipe.node.*;
+import misc.process_arguments;
+import misc.split_arguments;
 
 CHAN_SELECTION = {'EEG 15', 'EEG REF', 'EEG 81', 'EEG 90', 'EEG 101'};
 
