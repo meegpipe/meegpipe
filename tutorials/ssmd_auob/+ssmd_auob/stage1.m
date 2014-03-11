@@ -23,6 +23,27 @@ myFiles  = somsds.link2rec('ssmd', ...
     'subject',      opt.Subject, ...
     'folder',       opt.OutputDir);
 
+if isempty(myFiles),
+    fprintf('No input files were found: nothing done\n\n');
+    return;
+end
+
+fprintf('ANALYSIS PARAMETERS:\n');
+fprintf('--------------------\n\n');
+fNames = fieldnames(opt);
+for i = 1:numel(fNames),
+   fprintf('%40s : %200s\n', fNames{i}, opt.(fNames{i})); 
+end
+fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
+pause;
+
+fprintf('Going to process %d file(s):\n', numel(myFiles));
+fprintf('%s\n', myFiles{1});
+if numel(myFiles) > 1,
+    fprintf('...\n');
+    fprintf('%s\n\n', myFiles{end});
+end
+
 myPipe = ssmd_auob.basic_preprocessing_pipeline(varargin{:});
 
 run(myPipe, myFiles{:});
