@@ -66,13 +66,13 @@ if ~ischar(cmd),
     error('oge:qsub', 'A string is expected as input argument');
 end
 
-opt.hmemory     = oge.globals.eval.HVmem;
+opt.hmemory     = oge.globals.get.HVmem;
 opt.smemory     = [];
-opt.walltime    = oge.globals.eval.HRt;
-opt.queue       = oge.globals.eval.Queue;
+opt.walltime    = oge.globals.get.HRt;
+opt.queue       = oge.globals.get.Queue;
 opt.name        = 'oge.qsub';
 opt.cleanup     = true;
-opt.tempdir     = oge.globals.eval.TempDir;
+opt.tempdir     = oge.globals.get.TempDir;
 
 [~, opt] = process_arguments(opt, varargin);
 

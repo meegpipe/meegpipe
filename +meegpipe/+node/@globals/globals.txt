@@ -3,7 +3,7 @@
 
 # Construction defaults for class abstract_node
 Parallelize     true
-Queue           short.q@somerenserver.herseninstituut.knaw.nl
+Queue           oge.globals.get.Queue
 Save            false
 DataSelector    []
 

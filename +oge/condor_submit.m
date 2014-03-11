@@ -67,7 +67,7 @@ end
 
 opt.name        = '';
 opt.cleanup     = true;
-opt.tempdir     = oge.globals.eval.TempDir;
+opt.tempdir     = oge.globals.get.TempDir;
 opt.stdout      = '$(Process).out';
 opt.stderr      = '$(Process).error';
 opt.log         = '$(Process).log';
