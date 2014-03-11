@@ -9,7 +9,6 @@ import mperl.join;
 import misc.process_arguments;
 import misc.split_arguments;
 
-
 % Subjects 151 and 152 are special because for those subjects we should not
 % discard events that have missing responses
 opt.Subject                 = setdiff(1:200, [151 152]);

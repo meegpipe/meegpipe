@@ -2,8 +2,6 @@ function myPipe = erp_pipeline(varargin)
 % ERP_PIPELINE - ERP analysis pipeline
 
 import meegpipe.node.*;
-import misc.process_arguments;
-import misc.split_arguments;
 
 CHAN_SELECTION = {'EEG 15', 'EEG REF', 'EEG 81', 'EEG 90', 'EEG 101'};
 
@@ -11,12 +9,6 @@ CHAN_SELECTION = {'EEG 15', 'EEG REF', 'EEG 81', 'EEG 90', 'EEG 101'};
 opt.DiscardMissingResp = true;
 [thisArgs, varargin] = split_arguments(fieldnames(opt), varargin);
 [~, opt] = process_arguments(opt, thisArgs);
-
-% Default pipeline parameters, can be overriden by varargin
-PIPE_NAME = 'erp';
-USE_OGE   = true;
-DO_REPORT = true;
-QUEUE     = 'short.q';
 
 nodeList = {};
 
@@ -106,7 +98,6 @@ thisNode = erp.new(...
     'Name',             'erp-correct-Targ-P3');
 nodeList = [nodeList {thisNode}];
 
-
 % Node: Compute ERP for all cel=1 stimuli -> N1
 evSelector = ssmd_auob.erp_event_selector('StimCel', 1);
 thisNode = erp.new(...
@@ -163,16 +154,11 @@ thisNode = erp.new(...
     'Name',             'erp-Targ-P3');
 nodeList = [nodeList {thisNode}];
 
-
 % The actual pipeline
 myPipe = pipeline.new(...
     'NodeList',         nodeList, ...
     'Save',             true,  ...
-    'GenerateReport',   DO_REPORT, ...
-    'Name',             PIPE_NAME, ...
-    'OGE',              USE_OGE, ...
-    'Queue',            QUEUE, ...
+    'Name',             'erp_pipeline', ...
     varargin{:});
-
 
 end
