@@ -32,17 +32,19 @@ fprintf('ANALYSIS PARAMETERS:\n');
 fprintf('--------------------\n\n');
 fNames = fieldnames(opt);
 for i = 1:numel(fNames),
-   fprintf('%40s : %s\n', fNames{i}, misc.any2str(opt.(fNames{i}), 100)); 
+   fprintf('%20s : %s\n', fNames{i}, misc.any2str(opt.(fNames{i}), 100)); 
 end
 fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
 pause;
 
-fprintf('Going to process %d file(s):\n', numel(myFiles));
+fprintf('\n\nGoing to process %d file(s):\n', numel(myFiles));
 fprintf('%s\n', myFiles{1});
 if numel(myFiles) > 1,
     fprintf('...\n');
     fprintf('%s\n\n', myFiles{end});
 end
+fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
+pause;
 
 myPipe = ssmd_auob.basic_preprocessing_pipeline(varargin{:});
 

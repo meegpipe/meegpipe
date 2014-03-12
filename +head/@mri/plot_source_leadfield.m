@@ -51,7 +51,7 @@ FACE_ALPHA = 0.7; %#ok<NASGU>
 
 
 MissingSourceLeadField = MException('head:mri:plot_source_leadfield', ...
-    'You need to run make_source_leadfield() first!');
+    'You need to run make_leadfield() first!');
 
 MissingIndex = MException('head:mri:plot_source_leadfield', ...
     'A source index or multiple source indices must be provided');

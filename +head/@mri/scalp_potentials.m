@@ -1,21 +1,20 @@
 function data = scalp_potentials(obj, varargin)
 
-import misc.process_varargin;
+import misc.process_arguments;
 
-keySet = {'time'};
-time = [];
-eval(process_varargin(keySet, varargin));
+opt.time = [];
+[~, opt] = process_arguments(opt, varargin);
 
-if isempty(time),
-    time = 1;
-   for i = 1:obj.NbSources
-       time = max(time, numel(obj.Source(i).pnt));
-   end
+if isempty(opt.time),
+    opt.time = 1;
+    for i = 1:obj.NbSources
+        opt.time = max(opt.time, numel(obj.Source(i).pnt));
+    end
 end
 
-data = nan(obj.NbSensors, numel(time));
-for i = 1:numel(time)
-   data(:, i) = sum(source_leadfield(obj, 1:obj.NbSources, 'Time', time, ...
+data = nan(obj.NbSensors, numel(opt.time));
+for i = 1:numel(opt.time)
+   data(:, i) = sum(source_leadfield(obj, 1:obj.NbSources, 'opt.time', opt.time, ...
        varargin{:}),2); 
    
    if ~isempty(obj.MeasNoise),
@@ -23,7 +22,6 @@ for i = 1:numel(time)
    end
    
 end
-
 
 
 end

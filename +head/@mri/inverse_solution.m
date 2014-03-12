@@ -13,27 +13,32 @@ function obj = inverse_solution(obj, varargin)
 % See also: head.mri
 
 import misc.process_arguments;
+import misc.unit_norm;
 
-opt.lambda = 0;
-opt.method = 'mne';
-opt.time   = 1;
+opt.lambda      = 0;
+opt.method      = 'mne';
+opt.time        = 1;
+opt.potentials  = [];
 
 [~, opt] = process_arguments(opt, varargin);
 
+if isempty(opt.potentials),
+    v = scalp_potentials(obj, 'time', opt.time);  
+else
+    v = opt.potentials;
+end
+
 switch lower(opt.method),
-    case 'mne'
+    case 'mne'      
         A = obj.SourceDipolesLeadField;
         M = A'*pinv(A*A'+opt.lambda*eye(size(A,1)));
+        strength = M*v;        
         
-        potentials = scalp_potentials(obj, 'time', opt.time);
-        
-        strength = M*potentials;
-        orientation = zeros(obj.NbSourceVoxels,3);
-        momentum = zeros(obj.NbSourceVoxels,3);
+        momentum = obj.InnerSkullNormals;
+        orientation = unit_norm(momentum')';    
         
     case 'dipfit'
-        A = obj.LeadField;
-        v = scalp_potentials(obj, 'time', opt.time);
+        A = obj.LeadField;        
         res = zeros(1, obj.NbSourceVoxels);
         for i = 1:obj.NbSourceVoxels,
             M = squeeze(A(:,:,i));
@@ -43,9 +48,10 @@ switch lower(opt.method),
         m = pinv(A(:,:,pos))*v;
         strength = zeros(obj.NbSourceVoxels, 1);
         strength(pos) = norm(m);
-        momentum = zeros(obj.NbSourceVoxels,3);
-        momentum(pos,:) = m./norm(m);
-        orientation = zeros(obj.NbSourceVoxels,3);
+        momentum = zeros(obj.NbSourceVoxels, 3);
+        momentum(pos,:) = m;
+        orientation = zeros(obj.NbSourceVoxels, 3);
+        orientation(pos, :) = m./norm(m);
         
     otherwise
         

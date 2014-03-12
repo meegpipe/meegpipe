@@ -23,11 +23,12 @@ classdef mri < head.head
         Sensors;
         ID;
         SurfacesPath;
-        SourceSpace;
+        SourceSpace;        
         Source;
         OuterSkin;
         OuterSkull;
         InnerSkull; 
+        InnerSkullNormals;
         OuterSkinDense;
         OuterSkullDense;
         InnerSkullDense; 
@@ -35,7 +36,7 @@ classdef mri < head.head
         LeadField;
         SourceDipolesLeadField;
         InverseSolution; 
-        MeasNoise;
+        MeasNoise; 
     end
     
     properties (GetAccess = private, SetAccess = private)
@@ -71,11 +72,10 @@ classdef mri < head.head
     end
     
     % Other public methods
-    methods        
+    methods                
         obj = sensors_to_outer_skin(obj);
         obj = make_source_grid(obj, density);    
-        obj = make_source_surface(obj, density);
-        obj = make_source_layers(obj, varargin);  % Not implemented yet!
+        obj = make_source_surface(obj, density);        
         obj = make_bem(obj, varargin);
         index = source_index(obj, names);
         h = plot_source(obj, index, varargin);
@@ -84,14 +84,13 @@ classdef mri < head.head
         h = plot_inverse_solution_dipoles(obj, varargin);
         h = plot_inverse_solution_leadfield(obj, varargin);
         obj = make_leadfield(obj);
-        obj = make_source_leadfield(obj);
-        obj = make_source_dipoles_leadfield(obj);
         obj = add_source_noise(obj, varargin);
         obj = add_source_activation(obj, index, activation, varargin);
         obj = get_source_centroid(obj, index, varargin);
         obj = inverse_solution(obj, varargin);
+        [coord, m] = get_inverse_solution_centroid(obj);
         r   = brain_radius(obj);
-        pnt = source_layer(obj, dist);
+        [pnt, tri] = source_layer(obj, dist);
     end
 
     % Dependent properties

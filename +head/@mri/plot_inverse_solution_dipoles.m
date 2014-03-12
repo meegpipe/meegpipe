@@ -1,6 +1,5 @@
 function h = plot_inverse_solution_dipoles(obj, varargin)
-% PLOT_INVERSE_SOLUTION_DIPOLES
-% Plots the strength of the inverse solution at each source voxel
+% PLOT_INVERSE_SOLUTION_DIPOLES - Plots the strength of the inverse solution at each source voxel
 %
 % plot_inverse_solution_dipoles(obj)
 %
@@ -18,7 +17,7 @@ function h = plot_inverse_solution_dipoles(obj, varargin)
 %                 considered. Use time=1 if the scalp potentials do not
 %                 have any temporal variation. Default: 1
 %
-% 'Momemtum'    : A scalar that modifies the length of the plotted dipole
+% 'Momentum'    : A scalar that modifies the length of the plotted dipole
 %                 momemtums. If not provided, the momemtums will not be
 %                 plotted
 %
@@ -43,60 +42,69 @@ function h = plot_inverse_solution_dipoles(obj, varargin)
 %
 % See also: head.mri
 
-% Description: Plot inverse solution strength
-% Documentation: class_head_mri.txt
-
-
 import misc.process_varargin;
 
-keySet = {'momemtum', 'surface', 'linewidth','sizedata','time','exp'};
-momemtum = false;
-surface = true;
+keySet = {'momentum', 'surface', 'linewidth','sizedata','time','exp', ...
+    'linewidth', 'threshold'};
+momentum = false;
+surface = false;
 sizedata=100;
 exp=2;
 time=[];
+linewidth  =3; %#ok<*NASGU>
+threshold = 1e-6;
 
 eval(process_varargin(keySet, varargin));
 
-h = []; %#ok<NASGU>
 % Plot the brain surface
 if surface,
-    h = plot(obj, 'surface', 'InnerSkull', 'sensors', false);
+    h = plot(obj, 'surface', 'InnerSkull', 'sensors', false); %#ok<*UNRCH>
     set(h(1), 'facealpha', 0.02);
     set(h(1), 'edgealpha', 0.03);
+else
+    h = gcf;
 end
 
+hold on;
 
 thisSource = obj.InverseSolution;
 points = obj.SourceSpace.pnt(thisSource.pnt,:);
 
+% Only plot points with non-negligible strength
+negligible = thisSource.strength < threshold*max(thisSource.strength);
+points     = points(~negligible, :);
+strength   = thisSource.strength(~negligible);
+activation = thisSource.activation(~negligible, :);
+thisSource.momentum = thisSource.momentum(~negligible, :);
+
 thisH = scatter3(points(:,1), points(:,2), points(:,3), 'filled');
 if ~isempty(time),
-    act = abs(thisSource.strength.*thisSource.activation(:,time)).^exp;
+    act = abs(strength.*activation(:,time)).^exp;
     act = act./max(abs(act));
     act(act<eps) = 0.000001*max(abs(act));
-    set(thisH, 'SizeData', sizedata*abs(act));   
+    set(thisH, 'SizeData', sizedata*abs(act));
 else
     set(thisH, 'SizeData', sizedata);
 end
-set(thisH, 'CData', [0 0 0]);
+set(thisH, 'CData', [1 0 0]);
 h = [h thisH]; %#ok<*AGROW>
 
-
-sourceIdx = [];
-for i = 1:obj.NbSources,
-    if strcmpi(obj.Source(i).name,'noise'), continue; end
-    sourceIdx = [sourceIdx i];
-end
-if ~isempty(sourceIdx)
+if momentum
     hold on;
-    thisH = plot_source_dipoles(obj, sourceIdx, 'sizedata', sizedata, ...
-        'time', time, 'exp', exp, 'momemtum', momemtum, 'inversesolution',true);
-    set(thisH(2), 'MarkerFaceColor', 'none');
-    set(thisH(2), 'MarkerEdgeColor', 'flat');
-    set(thisH(2), 'LineWidth',2);
+    m = thisSource.momentum*momentum;
+    
+    if ~isempty(time),
+        m = m.*abs(repmat((strength.*activation(:,time)),1,3));
+    end
+    thisH = quiver3(points(:,1), points(:,2), points(:,3), m(:,1), m(:,2), m(:,3),0);
+    set(thisH, 'color', [1 0 0]);
+    set(thisH, 'linewidth', linewidth);
+    set(thisH, 'autoscale', 'off');
+    set(thisH, 'autoscalefactor', 1);
     h = [h thisH];
 end
-
+axis equal;
+set(gca, 'visible', 'off');
+set(gcf, 'color', 'white');
 
 end
