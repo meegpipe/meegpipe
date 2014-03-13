@@ -16,7 +16,8 @@ opt.Subject                 = setdiff(1:200, [151 152]);
 opt.DiscardMissingResp      = true;
 opt.Queue                   = 'short.q';    
 opt.InputDir                = '';
-opt.OutputDir               = ['/data1/projects/ssmd-erp/analysis/stage2/' datestr(now, 'yymmdd-HHMMSS')];
+opt.OutputDir               = ...
+    ['/data1/projects/ssmd-erp/analysis/stage2/' datestr(now, 'yymmdd-HHMMSS')];
 
 [thisArgs, varargin] = split_arguments(opt, varargin);
 [~, opt] = process_arguments(opt, thisArgs);

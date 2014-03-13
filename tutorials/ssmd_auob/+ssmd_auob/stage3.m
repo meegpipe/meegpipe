@@ -8,17 +8,29 @@ import somsds.link2files;
 import mperl.join;
 import misc.process_arguments;
 import misc.split_arguments;
+import misc.find_latest_dir;
 
 % Subjects 151 and 152 are special because for those subjects we should not
 % discard events that have missing responses
 opt.Subject                 = setdiff(1:200, [151 152]);
 opt.DiscardMissingResp      = true;
 opt.Queue                   = 'short.q';    
-opt.InputDir                = '/data1/projects/ssmd-erp/analysis/stage2_130904-131456';
-opt.OutputDir               = ['/data1/projects/ssmd-erp/analysis/stage3/' datestr(now, 'yymmdd-HHMMSS')];
+opt.InputDir                = '';
+opt.OutputDir               = ...
+    ['/data1/projects/ssmd-erp/analysis/stage3/' datestr(now, 'yymmdd-HHMMSS')];
 
 [thisArgs, varargin] = split_arguments(opt, varargin);
 [~, opt] = process_arguments(opt, thisArgs);
+
+if isempty(opt.InputDir),
+   % use the latest dir under /data1/projects/ssmd-erp/analysis/stage2
+   opt.InputDir = find_latest_dir(...
+       '/data1/projects/ssmd-erp/analysis/stage2');
+end
+
+if isempty(opt.InputDir) || ~exist(opt.InputDir, 'dir')
+    error('You must specify a valid output directory!');
+end
 
 % First we create links to all relevant files in the OUTPUT_DIR
 if numel(opt.Subject) > 1,
