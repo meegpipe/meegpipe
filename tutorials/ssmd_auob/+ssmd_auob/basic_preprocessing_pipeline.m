@@ -46,10 +46,16 @@ thisNode = resample.new('OutputRate', 250);
 nodeList = [nodeList {thisNode}];
 
 % The actual pipeline
+
+% Note that we manually set the tempory dir to be the local OS dir. This
+% can make a real different in processing speed when the processing takes
+% place in a grid node that is not directly attached to the data storage
+% that holds the input data file.
 myPipe = pipeline.new(...
     'NodeList',         nodeList, ...
     'Save',             true,  ...
     'Name',             'basic_preproc', ...
+    'TempDir',          @() tempdir, ...
     varargin{:});
 
 end
