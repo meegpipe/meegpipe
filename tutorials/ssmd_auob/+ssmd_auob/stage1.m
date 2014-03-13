@@ -46,7 +46,8 @@ end
 fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
 pause;
 
-myPipe = ssmd_auob.basic_preprocessing_pipeline(varargin{:});
+myPipe = ssmd_auob.basic_preprocessing_pipeline(...
+    'Name', 'stg1', varargin{:});
 
 run(myPipe, myFiles{:});
 
