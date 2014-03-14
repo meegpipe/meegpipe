@@ -14,7 +14,17 @@ if iscell(chanSet),
     end
 end
 
-if numel(chanSet) > 2 && strcmp(chanSet(1), '^') && ...
+if isnumeric(chanSet)
+    if numel(chanSet) == 1,
+        chanSetName = num2str(chanSet);
+    elseif numel(chanSet) == 2,
+        chanSetName = [num2str(chanSet(1)) '_' num2str(chanSet(2))];
+    else
+        hashCode = datahash.DataHash(chanSet);
+        chanSetName = [num2str(chanSet(1)) '_' hashCode(1:6) ...
+            '_' num2str(chanSet(2))];
+    end
+elseif numel(chanSet) > 2 && strcmp(chanSet(1), '^') && ...
         strcmp(chanSet(end), '$'),
     chanSetName = chanSet(2:end-1);
 else
