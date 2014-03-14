@@ -13,7 +13,7 @@ classdef config < meegpipe.node.abstract_config
         Estimator      = ...
             @(fs)spectrum2.percentile('Estimator', ...
             spectrum.welch('Hamming', fs*3));
-        Channels       = meegpipe.node.spectra.config.default_channels;
+        Channels       = 1:300;
         Channels2Plot  = [];  % The channel sets to plot
         ROI            = meegpipe.node.spectra.eeg_bands;
         Normalized     = true;
@@ -128,7 +128,7 @@ classdef config < meegpipe.node.abstract_config
             import meegpipe.node.spectra.config;
             
             if isempty(value),
-                obj.Channels = config.default_channels;
+                obj.Channels = 1:300;
                 return;
             end
             
@@ -138,17 +138,8 @@ classdef config < meegpipe.node.abstract_config
             
             ME = InvalidPropValue('Channels', ...
                 ['Must be a cell array of '  ...
-                'strings/cellarrays/function_handles or a regex']);
-            
-            if iscell(value),
-                if any(cellfun(@(x) ~ischar(x) & ~iscell(x) & ...
-                        ~isa(x, 'function_handle'), value)),
-                    throw(ME);
-                end
-            elseif ~isa(value, 'function_handle')
-                throw(ME);
-            end
-            
+                'strings/cellarrays/function_handles or a regex']);            
+          
             obj.Channels = value;
             
         end
@@ -161,19 +152,7 @@ classdef config < meegpipe.node.abstract_config
                 obj.Channels2Plot = [];
                 return;
             end
-            
-            if (iscell(value) && ~all(cellfun(@(x) ischar(x) || ...
-                    iscell(x) || isa(x, 'function_handle'), value))),
-                throw(InvalidPropValue('Channels2Plot', ...
-                    ['Must be a cell array of '  ...
-                    'strings/cellarrays/function_handles or a regex']));
-            end
-            
-            if ~iscell(value) && ~isnumeric(value),
-                throw(InvalidPropValue('Channels2Plot', ...
-                    'Must be a cell array or a numeric array of indices'));
-            end
-            
+          
             obj.Channels2Plot = value;
             
         end
@@ -279,17 +258,7 @@ classdef config < meegpipe.node.abstract_config
         end
         
     end
-    
-    methods (Static)
-        
-        function fh = default_channels()
-            fh = @(data) [cellfun(@(x) ['^' x '$'], ...
-                labels(sensors(data)), 'UniformOutput', false); ...
-                {'.+'}];
-        end
-        
-    end
-    
+ 
     % Constructor
     methods
         

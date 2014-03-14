@@ -77,7 +77,11 @@ end
 obj.Spectra = cell(numel(channels), 1);
 for i = 1:numel(channels)
     
-    chanSel = pset.selector.sensor_label(channels{i});
+    if isnumeric(channels{i}),
+        chanSel = pset.selector.sensor_idx(channels{i});
+    else
+        chanSel = pset.selector.sensor_label(channels{i});
+    end
     try
         select(chanSel, data);
     catch ME

@@ -15,11 +15,11 @@ nodeList = [ nodeList {copy.new('Path', @() tempdir)} ];
 %% Node 5: reject bad channels (again!)
 myCrit = bad_channels.criterion.var.new(...
     'Max', @(x) median(x) + 1.5*mad(x), 'MaxCard', 5);
-myNode = bad_channels.new('Criterion', myCrit);
+myNode = bad_channels.new('Criterion', myCrit, 'GenerateReport', false);
 nodeList = [nodeList {myNode}];
 
 %% Node 3: channel interpolation
-myNode = chan_interp.new('NN', 4);
+myNode = chan_interp.new('NN', 4, 'GenerateReport', false);
 nodeList = [nodeList {myNode}];
 
 %% Node 4: Spectral analysis
@@ -52,7 +52,7 @@ myNode = spectra.new(...
     'ROI',          myROI, ...
     'PlotterPSD',   plotterPSD, ...
     'Channels2Plot', {channels}, ...
-    'Channels',     [{channels} {spectra.config.default_channels}]);
+    'Channels',     {1:257;{channels}});
 nodeList = [nodeList {myNode}];
 
 %% Create the pipeline

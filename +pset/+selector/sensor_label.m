@@ -41,7 +41,7 @@ classdef sensor_label < pset.selector.abstract_selector
                 value = {'.+'};
             end            
            
-            if ischar(value),
+            if ~iscell(value),
                 value = {value};
             end
             
