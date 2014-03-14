@@ -1,4 +1,4 @@
-classdef criterion
+classdef criterion < goo.abstract_named_object & goo.printable & goo.hashable
     % CRITERION - Interface for spatial components selection criteria
     
     
@@ -19,23 +19,7 @@ classdef criterion
             import exceptions.NotImplemented;
             throw(NotImplemented);
             
-        end
-        
-        function count = fprintf(fid, critObj, varargin)
-            import misc.fid2fname;
-            
-            % Default implementation simply prints the criterion props into
-            % a separate sub-report
-            count = 0;
-            objRep = report.object.new(critObj);
-            objRep = childof(objRep, fid2fname(fid));
-            initialize(objRep);
-            generate(objRep);
-            [~, repName] = fileparts(get_filename(objRep));
-            count = count + ...
-                fprintf(fid, '[%s](%s)', class(critObj), [repName '.htm']);
-        end
-        
+        end       
         
     end
     

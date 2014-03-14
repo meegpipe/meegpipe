@@ -1,6 +1,5 @@
 function h = plot(obj, varargin)
-% PLOT
-% Plots a head model
+% PLOT - Plots the surfaces in a head model
 %
 % plot(obj)
 %
@@ -58,7 +57,9 @@ opt.Labels      = false;
 
 [~, opt] = process_arguments(opt, varargin);
 
-h = [];
+h = gcf;
+
+hold on;
 
 if ischar(opt.Surface), opt.Surface = {opt.Surface}; end
 

@@ -91,6 +91,12 @@ classdef mri < head.head
         [coord, m] = get_inverse_solution_centroid(obj);
         r   = brain_radius(obj);
         [pnt, tri] = source_layer(obj, dist);
+        
+        function obj = set_sensors(obj, sens)
+            sensNew = map2surf(sens, obj.OuterSkin, 'fig', false, ...
+                'verbose', false);
+            obj.Sensors = sensNew;
+        end
     end
 
     % Dependent properties
@@ -169,9 +175,7 @@ classdef mri < head.head
                obj.(surfIter{1}) = tmp; 
             end
             
-            sensNew = map2surf(opt.Sensors, obj.OuterSkin, 'fig', false, ...
-                'verbose', false);
-            obj.Sensors = sensNew;    
+            obj = set_sensors(obj, opt.Sensors);
         end
         
     end

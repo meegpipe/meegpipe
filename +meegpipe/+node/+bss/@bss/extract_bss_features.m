@@ -1,4 +1,4 @@
-function didExtraction = extract_bss_features(obj, bssObj, ics, data, icSel)
+function extract_bss_features(obj, bssObj, ics, data, icSel)
 
 import misc.num2strcell;
 import misc.eta;
@@ -10,15 +10,24 @@ featExtractor   = get_config(obj, 'Feature');
 featTarget      = get_config(obj, 'FeatureTarget');
 
 if isempty(featExtractor),
-    didExtraction = false;
     return;
-else
-    didExtraction = true;
 end
 
 fid = get_log(obj, 'features.txt');
 if verbose,
     fprintf([verboseLabel 'Writing BSS features to %s ...\n\n'], fid.FileName);
+end
+
+rep = get_report(obj);
+print_title(rep, 'BSS feature extraction', get_level(rep)+2);
+print_paragraph(rep, 'Extracted BSS features: [features.txt][feat]');
+print_link(rep, '../features.txt', 'feat');
+
+if do_reporting(obj),
+    % A sub-report to hold feature extraction reports
+    featRep = report.generic.new('Title', 'BSS feature extraction report');
+    featRep = childof(featRep, rep);
+    print_link2report(rep, featRep);
 end
 
 if strcmpi(featTarget, 'selected'),
@@ -27,7 +36,7 @@ if strcmpi(featTarget, 'selected'),
 else
     clear_selection(bssObj);
 end
-        
+
 icsHdr = arrayfun(@(i) ['BSS' num2str(i)], 1:size(ics,1), ...
     'UniformOutput', false);
 hdr = ['feature_extractor,feature_name,', mperl.join(',', icsHdr) '\n'];
@@ -39,15 +48,27 @@ for i = 1:numel(featExtractor)
         fprintf([verboseLabel 'Extracting feature %s ...\n\n'], ...
             get_name(featExtractor{i}));
     end
-    [fVal, fName] = extract_feature(featExtractor{i}, bssObj, ics, data);
+    if do_reporting(obj),
+       print_title(featRep, get_name(featExtractor{i}), get_level(featRep)+1);
+       fprintf(featRep, featExtractor{i});
+       fprintf(featRep, '\n\n');
+    else
+        featRep = [];
+    end
+    [fVal, fName] = ...
+        extract_feature(featExtractor{i}, bssObj, ics, data, featRep);
     if isempty(fName), fName = num2strcell(1:size(fVal, 1)); end
     fmt = repmat(',%.4f', 1, size(fVal, 2));
-   
+    
     if verbose,
         fprintf([verboseLabel, 'Writing feature %s ...'], ...
             get_name(featExtractor{i}));
         nIterBy100 = floor(size(fVal, 1)/100);
         tinit = tic;
+    end
+    
+    if size(fVal, 1) ~= size(ics, 1),
+        fVal = fVal';
     end
     
     for j = 1:size(fVal, 1)
@@ -57,7 +78,7 @@ for i = 1:numel(featExtractor)
             misc.eta(tinit, size(fVal, 1), j);
         end
     end
-    if verbose, 
+    if verbose,
         fprintf('\n\n');
         clear +misc/eta;
     end
@@ -68,8 +89,10 @@ if strcmpi(featTarget, 'selected'),
 end
 
 if ics.Transposed,
-    % The tstat feature extractor tranposes the ics physioset
+    % The tstat extractor simply returns a transposed version of the ics
     transpose(ics);
 end
+
+
 
 end

@@ -86,7 +86,7 @@ if nargin < 9,
 end
 
 if verbose, tinit = tic; end
-featVal = zeros(size(tSeries,1), 1);
+featVal = zeros(1, size(tSeries,1));
 allPeakLocs = cell(size(tSeries, 1), numel(init));
 
 for j = 1:size(tSeries,1)

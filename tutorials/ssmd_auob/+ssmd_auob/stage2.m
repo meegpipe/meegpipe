@@ -13,6 +13,7 @@ import misc.find_latest_dir;
 % Subjects 151 and 152 are special because for those subjects we should not
 % discard events that have missing responses
 opt.Subject                 = setdiff(1:200, [151 152]);
+opt.Condition               = {'arsq', 'baseline', 'pvt', 'rs'};
 opt.DiscardMissingResp      = true;
 opt.Queue                   = 'short.q';    
 opt.InputDir                = '';
@@ -29,9 +30,8 @@ if isempty(opt.InputDir),
 end
 
 if isempty(opt.InputDir) || ~exist(opt.InputDir, 'dir')
-    error('You must specify a valid output directory!');
+    error('You must specify a valid input directory!');
 end
-
 
 % First we create links to all relevant files in the OUTPUT_DIR
 if numel(opt.Subject) > 1,
