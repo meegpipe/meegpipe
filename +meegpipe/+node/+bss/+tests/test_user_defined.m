@@ -14,7 +14,7 @@ import meegpipe.node.*;
 
 MEh     = [];
 
-initialize(4);
+initialize(5);
 
 %% Create a new session
 try
@@ -34,6 +34,84 @@ catch ME
     return;
     
 end
+%% user-defined component rejection
+try
+    
+    name = 'user-defined component rejection';
+    
+    X = rand(3, 5000);
+    
+    warning('off', 'sensors:InvalidLabel');
+    eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
+    warning('on', 'sensors:InvalidLabel');
+    
+    eegSensors = subset(eegSensors, 1:3);
+    
+    importer = physioset.import.matrix(250, 'Sensors', eegSensors);
+    
+    data = import(importer, X);
+    
+    myFeat = spt.feature.tkurtosis;
+    myCrit = spt.criterion.threshold(myFeat, 'MaxCard', 0, 'MinCard', 0);
+    myNode = bss.new(...
+        'Reject',           true, ...
+        'Criterion',        myCrit, ...
+        'GenerateReport',   false);
+    
+    run(myNode, data);
+    
+    condition = max(var(data, [], 2)) > 1e-2;
+    
+    if condition,
+        cfgFile = catfile(get_full_dir(myNode, data), [get_name(myNode) '.ini']);
+        cfg = inifile(cfgFile);
+        newSelection = num2cell([1 2]);
+        setval(cfg, 'bss', 'selection', newSelection{:});
+        
+        % Run the node again: it should remember the manual selection
+        clear myNode ans;
+        myNode = bss.new(...
+            'Reject',           true, ...
+            'GenerateReport',   false, ...
+            'Criterion',        myCrit);
+        data = data + rand(size(data));
+        run(myNode, data);
+        
+        cfg = inifile(cfgFile);
+        icSelection = val(cfg, 'bss', 'selection', true);
+        icSelection = cellfun(@(x) str2double(x), icSelection);
+        condition = condition & ...
+            isempty(setdiff([1 2], icSelection));
+        
+        if condition,
+            % Run the node again: it should still remember!
+            clear myNode ans;
+            myNode = bss.new(...
+                'Reject',           true, ...
+                'GenerateReport',   true, ...
+                'Criterion',        myCrit);
+            data = data + rand(size(data));
+            run(myNode, data);
+            
+            cfg = inifile(cfgFile);
+            icSelection = val(cfg, 'bss', 'selection', true);
+            icSelection = cellfun(@(x) str2double(x), icSelection);
+            condition = condition & ...
+                isempty(setdiff([1 2], icSelection));   
+        end
+        
+    end
+    
+    
+    ok(condition, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% user-defined component rejection
 try

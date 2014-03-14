@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(4);
+initialize(5);
 
 %% Create a new session
 try
@@ -30,6 +30,40 @@ catch ME
     ok(ME, name);
     status = finalize();
     return;
+    
+end
+
+%% extract brainloc features 
+try    
+  
+    name = 'extract brainloc features ';
+    
+    X = rand(4, 5000);
+   
+    eegSensors = sensors.eeg.from_template('egi256', 'PhysDim', 'uV');
+   
+    eegSensors   = subset(eegSensors, 1:4);
+    
+    importer = physioset.import.matrix(250, 'Sensors', eegSensors);
+    
+    data = import(importer, X);
+    
+    myCrit = spt.criterion.threshold(spt.feature.tkurtosis, ...
+        'Max', @(x) median(x));
+    myNode = meegpipe.node.bss.new(...
+        'GenerateReport', false, ...
+        'Criterion',      myCrit, ...
+        'Feature',       {spt.feature.brainloc}, ...
+        'FeatureTarget', 'all');
+    run(myNode, data);
+   
+    featFile = catfile(get_full_dir(myNode, data), 'features.txt');
+    ok(exist(featFile, 'file'), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
     
 end
 
@@ -51,7 +85,7 @@ try
     myCrit = spt.criterion.threshold(spt.feature.tkurtosis, ...
         'Max', @(x) median(x));
     myNode = meegpipe.node.bss.new(...
-        'GenerateReport', false, ...
+        'GenerateReport', true, ...
         'Criterion',      myCrit, ...
         'Feature',       {spt.feature.tstat, spt.feature.topo_full}, ...
         'FeatureTarget', 'all');

@@ -86,7 +86,6 @@ end
 myBSS  = reorder_component(myBSS, sortedIdx);
 myCrit = reorder(myCrit, sortedIdx);
 
-myBSS = select(myBSS, selected(sortedIdx));
 ics   = select(ics, sortedIdx);
 ics   = set_sensors(ics, sensors.dummy(size(ics,1)));
 
@@ -118,6 +117,8 @@ else
     isAutoSel = true;
 end
 
+myBSS = select(myBSS, icSel);
+
 if verbose,    
     fprintf( [verboseLabel, 'Denoising ...\n\n']);   
 end
@@ -134,14 +135,10 @@ if do_reporting(obj)
 end
 make_criterion_report(obj, myCrit, [], icSel, isAutoSel);
 
-didExtraction = extract_bss_features(obj, myBSS, ics, data, icSel);
-
-if didExtraction,
-    rep = get_report(obj);
-    print_title(rep, 'BSS feature extraction', get_level(rep)+2);
-    print_paragraph(rep, 'Extracted BSS features: [features.txt][feat]');
-    print_link(rep, '../features.txt', 'feat');
-end
+% This may also add information regarding the features to the node report.
+% If the bss node does not contain any feature extrators, then this does
+% nothing.
+extract_bss_features(obj, myBSS, ics, data, icSel);
 
 if isempty(icSel),
     

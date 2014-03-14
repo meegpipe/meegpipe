@@ -13,9 +13,21 @@ classdef hashable
    %
    % See also: hashable_handle
    
-   methods (Abstract)
+   methods
        
-       hash = get_hash_code(obj);
+       function code = get_hash_code(obj)
+           import datahash.DataHash;
+           
+           warning('off', 'MATLAB:structOnObject');
+           
+           str = struct(obj);
+           warning('on', 'MATLAB:structOnObject');
+           
+           warning('off', 'JSimon:BadDataType');
+           code = DataHash({str, class(obj)});
+           warning('on', 'JSimon:BadDataType');
+           
+        end
        
    end
     

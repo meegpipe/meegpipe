@@ -16,7 +16,7 @@ classdef bss < meegpipe.node.abstract_node
         
         bssRep = make_bss_report(obj, bssObj, ics, data);
         
-        didExtraction = extract_bss_features(obj, bssObj, ics, data, icSel);
+        extract_bss_features(obj, bssObj, ics, data, icSel);
         
         % These are called by make_bss_report()
         make_bss_object_report(obj, bss, ics, rep, verb, verbL);

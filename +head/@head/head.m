@@ -96,6 +96,9 @@ classdef head
         h = plot(obj, sensor, dipole, varargin);
         obj = add_source(obj, varargin);
         obj = remove_source(obj, sourceName);
+        obj = inverse_solution(obj, varargin);
+        [coord, m] = get_inverse_solution_centroid(obj);
+        obj = set_sensors(obj, sens);
     end
     
     
