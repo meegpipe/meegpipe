@@ -26,7 +26,6 @@ end
 singleSensorLabels = cellfun(@(x) x{1}, spectraSens(isSingleSensor), ...
     'UniformOutput', false);
 
-
 [~, chanSetIdx] = ismember(singleChanSets, singleSensorLabels);
 
 % The set of channels for which we actually have computed the features

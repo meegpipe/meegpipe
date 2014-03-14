@@ -174,7 +174,7 @@ if ~isempty(roi),
         fprintf(fid,formatStr, chanSetName, feat(i,:));
     end
     
-    if verbose, fprintf('[done]\n\n'); end
+    if verbose, fprintf('\n\n'); end
     
 else
     
@@ -203,7 +203,7 @@ if do_reporting(obj),
     
     print_link2report(rep, spectraRep);
     
-    generate_spectra_images(obj, spectraRep, plotterPSD);
+    generate_spectra_images(obj, spectraRep, plotterPSD, data);
     
     
     if is_verbose(obj),
@@ -212,7 +212,7 @@ if do_reporting(obj),
     
     % Generate topographies
     if verbose,
-        fprintf([verboseLabel 'Generating spectra topographies...']);
+        fprintf([verboseLabel 'Generating spectra topographies...\n\n']);
     end
     topoRep = generic('Title', 'Topograhies');
     topoRep = childof(topoRep, rep);

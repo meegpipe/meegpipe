@@ -2,6 +2,9 @@ function spectral_analysis(varargin)
 % SPECTRAL_ANALYSIS - Perform spectral analysis on the clean dataset
 
 import misc.find_latest_dir;
+import misc.split_arguments;
+import misc.process_arguments;
+import  mperl.file.find.finddepth_regex_match;
 
 % Just in case you forgot to do it when you started MATLAB
 meegpipe.initialize;
@@ -16,7 +19,7 @@ opt.InputDir  = '';
 [~, opt] = process_arguments(opt, thisArgs, [], true);
 
 if isempty(opt.OutputDir),
-    opt.OutputDir = ['/data1/projects/batman/analysis/spectral_analysis/'  opt.Data];
+    opt.OutputDir = ['/data1/projects/batman/analysis/spectral_analysis/'  opt.Date];
 end
 
 if isempty(opt.InputDir),
@@ -35,10 +38,10 @@ subjRegex = ['(' mperl.join('|', subjRegex) ')'];
 condRegex = ['(' mperl.join('|', opt.Condition) ')'];
 regex = ['batman_' subjRegex '_eeg_' condRegex ...
     '_.+cleaning_pipe-ad49a8_.+cleaning-pipe\.pset'];
-cleanedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
-somsds.link2files(cleanedFiles, OUTPUT_DIR);
+cleanedFiles = finddepth_regex_match(opt.InputDir, regex, false);
+somsds.link2files(cleanedFiles, opt.OutputDir);
 regex = '\.pseth$';
-files = finddepth_regex_match(OUTPUT_DIR, regex);
+files = finddepth_regex_match(opt.OutputDir, regex);
 
 if isempty(files),
     fprintf('No input files were found: nothing done\n\n');
