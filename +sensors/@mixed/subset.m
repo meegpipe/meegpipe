@@ -1,5 +1,9 @@
 function obj = subset(obj, idx)
 
+if islogical(idx),
+    idx = find(idx);
+end
+
 if isempty(idx),
     obj = [];
     return;

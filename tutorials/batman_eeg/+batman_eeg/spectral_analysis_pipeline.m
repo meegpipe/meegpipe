@@ -46,11 +46,13 @@ z = z - min(z);
 z = z./max(z);
 isPeripheral = z < 0.4;
 channels = labels(subset(sens, ~isPeripheral));
+channels = cellfun(@(x) ['^' x '$'], channels, 'UniformOutput', false);
 
 myNode = spectra.new(...
     'ROI',          myROI, ...
     'PlotterPSD',   plotterPSD, ...
-    'Channels',     channels);
+    'Channels2Plot', {channels}, ...
+    'Channels',     [{channels} {spectra.config.default_channels}]);
 nodeList = [nodeList {myNode}];
 
 %% Create the pipeline

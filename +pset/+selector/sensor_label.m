@@ -45,7 +45,8 @@ classdef sensor_label < pset.selector.abstract_selector
                 value = {value};
             end
             
-            if ~iscell(value) || ~all(cellfun(@(x) ischar(x), value)),
+            if ~iscell(value) || ~all(cellfun(@(x) ischar(x) || ...
+                    isa(x, 'function_handle'), value)),
                 throw(InvalidPropValue('Regex', ...
                     'Must be a (cell array of) regex(es)'));
             end
@@ -80,8 +81,13 @@ classdef sensor_label < pset.selector.abstract_selector
             isSelected = false(numel(sensLabels), 1);
             
             for i = 1:numel(obj.Regex),
+                if isa(obj.Regex{i}, 'function_handle'),
+                    thisRegex = obj.Regex{i}(data);
+                else
+                    thisRegex = obj.Regex{i};
+                end
                 isSelected = isSelected | cellfun(...
-                    @(x) ~isempty(regexp(x, obj.Regex{i}, 'once')), ...
+                    @(x) ~isempty(regexp(x, thisRegex, 'once')), ...
                     sensLabels(:));
             end
             

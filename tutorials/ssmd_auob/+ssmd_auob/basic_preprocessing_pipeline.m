@@ -9,6 +9,14 @@ myImporter = physioset.import.mff('Precision', 'double');
 thisNode = physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {thisNode}];
 
+% Reject broken channels (a priori info)
+mySel = pset.selector.sensor_label({'EEG 133$', 'EEG 145$', 'EEG 165$', ...
+    'EEG 174$', 'EEG REF$'});
+myCrit = node.bad_channels.criterion.data_selector.new(mySel);
+myNode = node.bad_channels.new(...
+    'Criterion', myCrit);
+nodeList = [nodeList {myNode}];
+
 % Node: detrend
 mySel = pset.selector.sensor_class('Class', 'EEG');
 thisNode = filter.detrend('DataSelector', mySel);

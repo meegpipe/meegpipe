@@ -15,7 +15,7 @@ classdef spectra < meegpipe.node.abstract_node
     end
     
     methods (Access = private)
-        generate_spectra_images(obj, rep, plotter);
+        generate_spectra_images(obj, rep, plotter, data);
         [featNames, featM] = generate_spectra_topos(obj, rep, plotterObj, data);
     end
     

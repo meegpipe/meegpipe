@@ -89,7 +89,7 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.InvalidPropValue;
             
             if isempty(value),
-                value = @(fs) spectrum.welch('Hamming', 2*fs);
+                value = @(fs) spectrum.welch('Hamming', 2*fs); %#ok<*PDEPR>
             end
             
             if numel(value) ~= 1 || (~isa(value, 'function_handle') && ...
@@ -137,10 +137,12 @@ classdef config < meegpipe.node.abstract_config
             end
             
             ME = InvalidPropValue('Channels', ...
-                'Must be a cell array of strings or a regex');
+                ['Must be a cell array of '  ...
+                'strings/cellarrays/function_handles or a regex']);
             
             if iscell(value),
-                if any(cellfun(@(x) ~ischar(x) & ~iscell(x), value)),
+                if any(cellfun(@(x) ~ischar(x) & ~iscell(x) & ...
+                        ~isa(x, 'function_handle'), value)),
                     throw(ME);
                 end
             elseif ~isa(value, 'function_handle')
@@ -160,9 +162,11 @@ classdef config < meegpipe.node.abstract_config
                 return;
             end
             
-            if (iscell(value) && ~all(cellfun(@(x) ischar(x), value))),
+            if (iscell(value) && ~all(cellfun(@(x) ischar(x) || ...
+                    iscell(x) || isa(x, 'function_handle'), value))),
                 throw(InvalidPropValue('Channels2Plot', ...
-                    'Must be a cell array of strings'));
+                    ['Must be a cell array of '  ...
+                    'strings/cellarrays/function_handles or a regex']));
             end
             
             if ~iscell(value) && ~isnumeric(value),
@@ -276,7 +280,7 @@ classdef config < meegpipe.node.abstract_config
         
     end
     
-    methods (Static, Access = private)
+    methods (Static)
         
         function fh = default_channels()
             fh = @(data) [cellfun(@(x) ['^' x '$'], ...
