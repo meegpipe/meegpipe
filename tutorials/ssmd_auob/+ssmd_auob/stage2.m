@@ -35,7 +35,7 @@ end
 
 % First we create links to all relevant files in the OUTPUT_DIR
 if ~isempty(opt.SubjectDiscardMissingResp),
-    if numel(opt.Subject) > 1,
+    if numel(opt.SubjectDiscardMissingResp) > 1,
         subjRegex = join('|', opt.SubjectDiscardMissingResp);
     else
         subjRegex = num2str(opt.SubjectDiscardMissingResp);

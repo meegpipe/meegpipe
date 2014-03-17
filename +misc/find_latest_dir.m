@@ -7,7 +7,7 @@ if nargin < 2 || isempty(fullPath),
     fullPath = true;
 end
 
-dirNames = misc.dir(rootDir, '\d{6,}_\d+$');
+dirNames = misc.dir(rootDir, '\d{6,}(_|-)\d+$');
 
 if isempty(dirNames),
     dirName = '';
