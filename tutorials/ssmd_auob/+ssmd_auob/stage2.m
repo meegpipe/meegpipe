@@ -12,9 +12,9 @@ import misc.find_latest_dir;
 
 % Subjects 151 and 152 are special because for those subjects we should not
 % discard events that have missing responses
-opt.Subject                 = setdiff(1:200, [151 152]);
+opt.SubjectDiscardMissingResp = setdiff(1:200, [151 152]);
+opt.SubjectIncludeMissingResp = [151 152];
 opt.Condition               = {'arsq', 'baseline', 'pvt', 'rs'};
-opt.DiscardMissingResp      = true;
 opt.Queue                   = 'short.q';    
 opt.InputDir                = '';
 opt.OutputDir               = ...
@@ -24,9 +24,9 @@ opt.OutputDir               = ...
 [~, opt] = process_arguments(opt, thisArgs);
 
 if isempty(opt.InputDir),
-   % use the latest dir under /data1/projects/ssmd-erp/analysis/stage1
-   opt.InputDir = find_latest_dir(...
-       '/data1/projects/ssmd-erp/analysis/stage1');
+    % use the latest dir under /data1/projects/ssmd-erp/analysis/stage1
+    opt.InputDir = find_latest_dir(...
+        '/data1/projects/ssmd-erp/analysis/stage1');
 end
 
 if isempty(opt.InputDir) || ~exist(opt.InputDir, 'dir')
@@ -34,17 +34,35 @@ if isempty(opt.InputDir) || ~exist(opt.InputDir, 'dir')
 end
 
 % First we create links to all relevant files in the OUTPUT_DIR
-if numel(opt.Subject) > 1,
-    subjRegex = join('|', opt.Subject);
+if ~isempty(opt.SubjectDiscardMissingResp),
+    if numel(opt.Subject) > 1,
+        subjRegex = join('|', opt.SubjectDiscardMissingResp);
+    else
+        subjRegex = num2str(opt.SubjectDiscardMissingResp);
+    end
+    
+    regex = ['_0+(' subjRegex ')_.+_stg1\.pseth?$'];
+    myFilesDiscardMR = finddepth_regex_match(opt.InputDir, regex);
+    myFilesDiscardMR = link2files(myFilesDiscardMR, opt.OutputDir);
 else
-    subjRegex = num2str(opt.Subject);
+    myFilesDiscardMR = {};
 end
 
-regex = ['_0+(' subjRegex ')_.+_stg1\.pseth?$'];
-myFiles = finddepth_regex_match(opt.InputDir, regex);
-myFiles = link2files(myFiles, opt.OutputDir);
+if ~isempty(opt.SubjectIncludeMissingResp),
+    if numel(opt.SubjectIncludeMissingResp) > 1,
+        subjRegex = join('|', opt.SubjectIncludeMissingResp);
+    else
+        subjRegex = num2str(opt.Subject);
+    end
+    
+    regex = ['_0+(' subjRegex ')_.+_stg1\.pseth?$'];
+    myFilesIncludeMR = finddepth_regex_match(opt.InputDir, regex);
+    myFilesIncludeMR = link2files(myFilesIncludeMR, opt.OutputDir);
+else
+    myFilesIncludeMR = {};
+end
 
-if isempty(myFiles),
+if isempty(myFilesIncludeMR) && isempty(myFilesDiscardMR),
     fprintf('No input files were found: nothing done\n\n');
     return;
 end
@@ -58,20 +76,44 @@ end
 fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
 pause;
 
-fprintf('\n\nGoing to process %d file(s):\n', numel(myFiles));
-fprintf('%s\n', myFiles{1});
-if numel(myFiles) > 1,
+if numel(myFilesDiscardMR) > 1,
+    fprintf('\n\nGoing to process %d file(s) discarding missing responses:\n', ...
+        numel(myFilesDiscardMR));
+    fprintf('%s\n', myFilesDiscardMR{1});
+    
     fprintf('...\n');
-    fprintf('%s\n\n', myFiles{end});
+    fprintf('%s\n\n', myFilesDiscardMR{end});
 end
+
+if numel(myFilesIncludeMR) > 1,
+    fprintf('\n\nGoing to process %d file(s) including missing responses:\n', ...
+        numel(myFilesIncludeMR));
+    fprintf('%s\n', myFilesIncludeMR{1});
+    
+    fprintf('...\n');
+    fprintf('%s\n\n', myFilesIncludeMR{end});
+end
+
 fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
 pause;
 
-%% Run the pipeline
-myPipe = ssmd_auob.artifact_correction_pipeline(...
-    'Name',  'stg2', varargin{:});
+%% Run the pipeline(s)
+if numel(myFilesDiscardMR) > 1,
+    myPipe1 = ssmd_auob.artifact_correction_pipeline(...
+        'Name',                 'stg2', ...
+        'DiscardMissingResp',   true, ...
+        varargin{:});
+    
+    data = run(myPipe1, myFilesDiscardMR{:});
+end
 
-data = run(myPipe, myFiles{:});
-
+if numel(myFilesIncludeMR) > 1,
+    myPipe1 = ssmd_auob.artifact_correction_pipeline(...
+        'Name',                 'stg2', ...
+        'DiscardMissingResp',   false, ...
+        varargin{:});
+    
+    data = run(myPipe1, myFilesIncludeMR{:});
+end
 
 end
