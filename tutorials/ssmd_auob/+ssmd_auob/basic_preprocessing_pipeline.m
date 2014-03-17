@@ -1,8 +1,14 @@
 function myPipe = basic_preprocessing_pipeline(varargin)
 
 import meegpipe.node.*;
+import pset.selector.*;
 
 nodeList = {};
+
+myDefaultSel =  cascade(...
+    sensor_class('Class', 'EEG'), ...
+    good_data ...
+    );
 
 % Node: Import raw data file
 myImporter = physioset.import.mff('Precision', 'double');
@@ -18,18 +24,13 @@ myNode = bad_channels.new(...
 nodeList = [nodeList {myNode}];
 
 % Node: detrend
-mySel = pset.selector.sensor_class('Class', 'EEG');
-thisNode = filter.detrend('DataSelector', mySel);
+thisNode = filter.detrend('DataSelector', myDefaultSel);
 nodeList = [nodeList {thisNode}];
 
 % HP filter
-mySel =  cascade(...
-    sensor_class('Class', 'EEG'), ...
-    good_data ...
-    );
 myNode = node.filter.new(...
     'Filter',         @(sr) filter.hpfilt('Fc', 0.3/(sr/2)), ...
-    'DataSelector',   mySel, ...
+    'DataSelector',   myDefaultSel, ...
     'Name',           'HP-filter-0.3Hz');
 nodeList = [nodeList {myNode}];
 
@@ -52,23 +53,19 @@ thisNode = bad_channels.new('Criterion', myCrit);
 nodeList = [nodeList {thisNode}];
 
 % Node: reject bad epochs
-thisNode = bad_epochs.sliding_window;
+thisNode = bad_epochs.sliding_window('DataSelector', myDefaultSel);
 nodeList = [nodeList {thisNode}];
 
 % Merge discontinuities created by bad epoch rejection
-mySel =  cascade(...
-    sensor_class('Class', 'EEG'), ...
-    good_data ...
-    );
 myNode = smoother.new(...
-    'DataSelector',  mySel, ...
+    'DataSelector',  myDefaultSel, ...
     'MergeWindow',   0.15);
 
 nodeList = [nodeList {myNode}];
 
 % Node: Band-pass filter
 myFilter = @(sr) filter.lpfilt('Fc', 40/(sr/2));
-thisNode = filter.new('Filter', myFilter);
+thisNode = filter.new('Filter', myFilter, 'DataSelector', myDefaultSel);
 nodeList = [nodeList {thisNode}];
 
 % Node: Downsample to 250 Hz
