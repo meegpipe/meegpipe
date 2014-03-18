@@ -19,7 +19,8 @@ if ~isnumeric(period) || ~isnumeric(dur) || period < 0 || dur < 0,
     error('Both period and duration must be positive scalars');
 end
 
-crit = stat('Max', @(x) min(400, prctile(x, 95)));
+% Reject at most 50% of the epochs. Thus the median(x)
+crit = stat('Max', @(x) max(median(x), min(400, prctile(x, 95))));
 
 evGen = periodic_generator(...
     'Period',   period, ...
