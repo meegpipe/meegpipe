@@ -25,14 +25,8 @@ classdef ba < ...
         B;
         A;
         
-    end
-    
-    % consistency checks
-    methods
-        % to be done
-        
-    end
-    
+    end    
+   
     % filter.dfilt interface
     methods
         [y, obj] = filter(obj, x, d, varargin);

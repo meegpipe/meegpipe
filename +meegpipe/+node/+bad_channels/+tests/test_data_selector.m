@@ -13,7 +13,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(4);
+initialize(6);
 
 %% Create a new session
 try
@@ -56,6 +56,58 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% previous data selections
+try
+    
+    name = 'previous data selections';
+   
+    mySel  = pset.selector.sensor_idx([3 5]);
+    myCrit = bad_channels.criterion.data_selector.new(...
+        pset.selector.good_data, mySel);
+    
+    data = import(physioset.import.matrix, rand(10, 100));
+    
+    select(data, 6:10);
+    
+    [idx, rankVal] = find_bad_channels(myCrit, data);
+
+    ok(numel(idx) == 2 & all(sort(idx) == [3 5]) & ...
+        numel(rankVal) == 5 & all(rankVal([3 5]) == 1) & ...
+        all(rankVal(setdiff(1:5, [3 5])) == 0) & ...
+        size(data, 1) == 5, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% empty selection
+try
+    
+    name = 'empty selection';
+   
+    mySel  = pset.selector.sensor_label('nonexistent');
+    myCrit = bad_channels.criterion.data_selector.new(...
+        pset.selector.good_data, mySel);
+    
+    data = import(physioset.import.matrix, rand(10, 100));
+    
+    select(data, 6:10);
+    
+    [idx, rankVal] = find_bad_channels(myCrit, data);
+
+    ok(numel(rankVal) == 5 && isempty(idx), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 %% simple example
 try

@@ -445,8 +445,8 @@ classdef physioset < ...
         
         function dimSel = dim_selection(obj)
             dimSel = dim_selection(obj.PointSet);
-        end
-        
+        end        
+    
         function dimSel = relative_dim_selection(obj)
             dimSel = relative_dim_selection(obj.PointSet);
         end

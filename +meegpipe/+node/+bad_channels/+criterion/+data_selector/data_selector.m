@@ -6,10 +6,17 @@ classdef data_selector < meegpipe.node.bad_channels.criterion.abstract_criterion
         
         function [idx, rankVal] = find_bad_channels(obj, data, ~)
             
-            select(get_config(obj, 'DataSelector'), data);
-            idx = dim_selection(data);
-            restore_selection(data);
             rankVal = zeros(1, size(data, 1));
+            dataSel = get_config(obj, 'DataSelector');           
+            [~, emptySel] = select(dataSel, data);          
+            if emptySel,
+                idx = [];
+                % no need of restore_selection because for empty selections
+                % no actual selecion is done
+                return;
+            end
+            idx = relative_dim_selection(data);
+            restore_selection(data);            
             rankVal(idx) = 1;
             
         end

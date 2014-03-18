@@ -34,6 +34,7 @@ evSel  = get_config(obj, 'EventSelector');
 dur    = get_config(obj, 'Duration');
 off    = get_config(obj, 'Offset');
 delEvs = get_config(obj, 'DeleteEvents');
+preFilter = get_config(obj, 'PreFilter');
 
 
 ev = get_event(data);
@@ -87,8 +88,19 @@ for i = 1:numel(sensObj)
     
     select(data, sensIdx{i});
     
+   if ~isempty(preFilter),
+       dataC = copy(data);
+       dataC = filter(preFilter, dataC);
+   else
+       dataC = data;
+   end
+    
     % find_bad_epochs sets the bad samples on data as well
-    evBad = find_bad_epochs(crit, data, ev, sgRep);
+    evBad = find_bad_epochs(crit, dataC, ev, sgRep);
+    
+    if ~isempty(preFilter),
+       set_bad_sample(data, is_bad_sample(dataC)); 
+    end
     
     fprintf(fid, evBad);
     

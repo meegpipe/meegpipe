@@ -12,6 +12,7 @@ classdef config < meegpipe.node.abstract_config
             physioset.event.class_selector('Class', {'epoch_begin', 'trial_begin'});
         DeleteEvents    = false; % Should the epoch events be removed?
         Criterion       = meegpipe.node.bad_epochs.criterion.stat.stat;
+        PreFilter       = []; % A filter to apply before identifying bad epochs
     end
     
     % Consistency checks
@@ -32,6 +33,22 @@ classdef config < meegpipe.node.abstract_config
             end
             
             obj.Criterion = value;
+            
+        end
+        
+        function obj = set.PreFilter(obj, value)
+            import exceptions.InvalidPropValue;
+            
+            if isempty(value),
+                obj.PreFilter = [];
+                return;
+            end
+            
+            if ~isa(value, 'filter.dfilt'),
+                throw(InvalidPropValue('PreFilter', ...
+                    'Must be a filter.dfilt object'));
+            end
+            obj.PreFilter = value;
             
         end
         
