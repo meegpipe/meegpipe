@@ -1,4 +1,6 @@
-function [idx, featName] = extract_feature(obj, sptObj, ~, raw, rep, varargin)
+function [featVal, featName] = extract_feature(obj, sptObj, ~, raw, rep, varargin)
+
+if nargin < 5, rep = []; end
 
 verbose      = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);
@@ -31,6 +33,11 @@ for i = 1:size(M, 2)
     
 end
 
-error('Not implemented yet!');
+% Generate a report
+if isempty(rep), return; end
+
+
+
+
 
 end

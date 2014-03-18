@@ -5,7 +5,7 @@ import misc.process_arguments;
 opt.facecolor = [0.3 0.3 0.3];
 opt.facealpha = 0.5;
 opt.edgecolor = [0 0 0];
-opt.edgealpha = 1;
+opt.edgealpha = 0.1;
 opt.surfvalue = [];
 if nargin < 2
     opt.plotvertices = true;

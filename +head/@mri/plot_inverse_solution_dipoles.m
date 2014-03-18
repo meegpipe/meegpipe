@@ -46,7 +46,7 @@ import misc.process_varargin;
 
 keySet = {'momentum', 'surface', 'linewidth','sizedata','time','exp', ...
     'linewidth', 'threshold'};
-momentum = false;
+momentum = brain_radius(obj);
 surface = false;
 sizedata=100;
 exp=2;
@@ -89,12 +89,13 @@ end
 set(thisH, 'CData', [1 0 0]);
 h = [h thisH]; %#ok<*AGROW>
 
-if momentum
+if momentum > 0
     hold on;
-    m = thisSource.momentum*momentum;
+    m = thisSource.momentum/norm(thisSource.momentum);
+    m = momentum.*m;
     
     if ~isempty(time),
-        m = m.*abs(repmat((strength.*activation(:,time)),1,3));
+        m = m.*abs(repmat(act,1,3));
     end
     thisH = quiver3(points(:,1), points(:,2), points(:,3), m(:,1), m(:,2), m(:,3),0);
     set(thisH, 'color', [1 0 0]);

@@ -5,6 +5,6 @@ function [coord, m] = get_inverse_solution_centroid(obj)
 
 coord = obj.SourceSpace.pnt(idx,:);
 m     = obj.InverseSolution.momentum(idx,:);
-
+m = m/1e3;
 
 end
