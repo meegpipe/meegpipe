@@ -28,7 +28,6 @@ select(data, 1:nb_dim(data), ~is_bad_sample(data));
 % Iterate across sensor groups
 [sensObj, sensIdx] = sensor_groups(sensors(data));
 
-
 crit   = get_config(obj, 'Criterion');
 evSel  = get_config(obj, 'EventSelector');
 dur    = get_config(obj, 'Duration');
@@ -36,6 +35,9 @@ off    = get_config(obj, 'Offset');
 delEvs = get_config(obj, 'DeleteEvents');
 preFilter = get_config(obj, 'PreFilter');
 
+if ~isempty(preFilter) && isa(preFilter, 'function_handle'),
+    preFilter = preFilter(data.SamplingRate);
+end
 
 ev = get_event(data);
 if ~isempty(ev) && ~isempty(evSel),

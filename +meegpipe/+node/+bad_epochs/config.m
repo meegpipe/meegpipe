@@ -44,9 +44,9 @@ classdef config < meegpipe.node.abstract_config
                 return;
             end
             
-            if ~isa(value, 'filter.dfilt'),
+            if ~isa(value, 'filter.dfilt') && ~isa(value, 'function_handle'),
                 throw(InvalidPropValue('PreFilter', ...
-                    'Must be a filter.dfilt object'));
+                    'Must be a filter.dfilt object or a function_handle'));
             end
             obj.PreFilter = value;
             
