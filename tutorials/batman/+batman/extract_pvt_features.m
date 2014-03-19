@@ -29,7 +29,7 @@ system(['mkdir -p ' opt.OutputDir]);
 myPipe = batman.extract_pvt_features_pipeline(...
     varargin{:});
 
-files = somsds.link2rec(...
+somsds.link2rec(...
     'batman',       ...                  % The recording ID
     'subject',      opt.Subject, ...     % The subject ID(s)
     'modality',     'eeg', ...           % The data modality
@@ -37,6 +37,8 @@ files = somsds.link2rec(...
     'file_regex',   '\.pset', ...        % Only pset/pseth files
     'folder',       opt.OutputDir);
 
+
+files = finddepth_regex_match(opt.OutputDir, '.pseth$');
 
 run(myPipe, files{:});
 

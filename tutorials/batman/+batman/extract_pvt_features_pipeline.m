@@ -2,7 +2,6 @@ function myPipe = extract_pvt_features_pipeline(varargin)
 % EXTRACT_PVT_FEATURES_PIPELINE - PVT feature extraction pipeline
 %
 % See also: batman
-
 import meegpipe.node.*;
 import physioset.event.class_selector;
 import pset.selector.sensor_label;
@@ -27,6 +26,8 @@ nodeList = [nodeList {thisNode}];
 % Note that we set property Save to false because we are not interested in
 % the actual physioset data values but only on the PVT features that are
 % extracted from the PVT and RSP events. 
+
+
 myPipe = pipeline.new(...
     'Name',             'batman-pvt', ...
     'NodeList',         nodeList, ...
