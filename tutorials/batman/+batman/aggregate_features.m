@@ -6,6 +6,7 @@ import misc.dir;
 import mperl.file.spec.catfile;
 import misc.get_hostname;
 import misc.process_arguments;
+import misc.find_latest_dir;
 
 
 if nargin < 1 || isempty(type),
@@ -16,8 +17,12 @@ if ~ismember(type, {'abp', 'pvt', 'temp'}),
     error('feature type must be any of: abp, pvt, temp');
 end
 
-opt.OutputDir = ['/data1/projects/batman/analysis/' type];
+opt.OutputDir = '';
 [~, opt] = process_arguments(opt, varargin);
+
+if isempty(opt.OutputDir),
+    opt.OutputDir = find_latest_dir(['/data1/projects/batman/analysis/' type]);
+end
 
 % We need to build a cell array with the names of all .pseth files that were
 % used as input to the feature extraction pipeline
@@ -30,6 +35,10 @@ regex = ['batman-' type '-.+features.txt$'];
 
 % The name of the .csv file where the joint feature table will be stored
 outputFile = catfile(opt.OutputDir, [type '_features.csv']);
+
+if isempty(files),
+    warning('No files matched the pattern: no features were aggregated');
+end
 
 aggregate2(files, regex, outputFile, @batman.fname2meta);
 

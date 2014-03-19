@@ -118,6 +118,10 @@ end
 header = textscan(header, '%[^\n]');
 header = header{1};
 if length(header) == 1,
+    % Fix problem when having Windows-like line endings
+    if double(header{1}(end)) == 13,
+        header{1} = header{1}(1:end-1);
+    end
     header = textscan(header{1}, '%s');
     if length(header) == 1,
         header = header{1};

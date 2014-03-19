@@ -5,11 +5,9 @@ function meta = fname2meta(fName)
 
 import batman.block2condition;
 
-regex = 'batman_(?<subject>\d+)_eeg_all.*_(?<sub_block>[^_]+)_(?<block_1_14>\d+)';
+regex = 'batman_(?<subject>\d+)_eeg_(?<sub_block>[^_]+)_(?<block_1_14>\d+)';
 
 meta = regexp(fName, regex, 'names');
-
-meta.subject = meta.subject;
 
 warning('off', 'block2condition:InvalidBlockID');
 [condID, condName] = block2condition(str2double(meta.subject), ...
