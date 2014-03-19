@@ -10,7 +10,7 @@ import misc.split_arguments;
 
 opt.Date     = datestr(now, 'yymmdd_HHMMSS');
 opt.Subject  = 1:10; 
-opt.Condition = {'arsq', 'baseline', 'pvt', 'rs'};
+opt.Condition = {'pvt'};
 opt.OutputDir = '';
 
 [thisArgs, varargin] = split_arguments(opt, varargin);
