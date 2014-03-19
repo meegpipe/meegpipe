@@ -1,51 +1,45 @@
-function extract_pvt_features
+function extract_pvt_features(varargin)
 % EXTRACT_PVT_FEATURES - Extract PVT features from BATMAN data
-
-meegpipe.initialize;
+%
+% 
 
 % Import some utilities
 import mperl.file.find.finddepth_regex_match;
-import misc.get_username;
+import misc.process_arguments;
+import misc.split_arguments;
 
-% The directory where the split data files are located
-INPUT_DIR = [ ...
-    '/data1/projects/meegpipe/batman_tut/' ...
-    get_username ...
-    '/split_files_output'];
+opt.Date     = datestr(now, 'yymmdd_HHMMSS');
+opt.Subject  = 1:10; 
+opt.Condition = {'arsq', 'baseline', 'pvt', 'rs'};
+opt.OutputDir = '';
 
-% The output directory where we want to store the features
-OUTPUT_DIR = [...
-    '/data1/projects/meegpipe/batman_tut/' ...
-    get_username ...
-    '/extract_pvt_features_output'];
+[thisArgs, varargin] = split_arguments(opt, varargin);
+[~, opt] = process_arguments(opt, thisArgs, [], true);
 
-% Ensure the output directory exists (Unix-specific)
-system(['mkdir -p ' OUTPUT_DIR])
+if isempty(opt.OutputDir),
+    opt.OutputDir = ['/data1/projects/batman/analysis/pvt/'  opt.Data];
+end
 
-% Some (optional) parameters that you may want to play with when experimenting
-% with your processing pipeline
-PARALLELIZE = true; % Should each file be processed in parallel?
-DO_REPORT   = true; % Should full HTML reports be generated?
+% Just in case you forgot to do it when you started MATLAB
+meegpipe.initialize;
 
-% Create an instance of the feature extraction pipeline
+% Ensure the directory exists (Unix-specific)
+system(['mkdir -p ' opt.OutputDir]);
+
 myPipe = batman.extract_pvt_features_pipeline(...
-    'GenerateReport', DO_REPORT, ...
-    'Parallelize',    PARALLELIZE);
+    varargin{:});
 
-% Note that we have not yet written function extract_pvt_feature_pipeline!
+somsds.link2rec(...
+    'batman',       ...                  % The recording ID
+    'subject',      opt.Subject, ...     % The subject ID(s)
+    'modality',     'eeg', ...           % The data modality
+    'condition',    opt.Condition, ...
+    'file_regex',   '\.pset', ...        % Only pset/pseth files
+    'folder',       opt.OutputDir);
 
-% Generate links to the relevant data files into the output directory. This
-% step is equivalent to copying the relevant data files into the output
-% directory but has the advantage of saving valuable disk space.
-regex = 'split_files-.+_\d+\.pseth?';
-splittedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
-somsds.link2files(splittedFiles, OUTPUT_DIR);
-% Note that we use a regex that will match only those files that contain
-% PVT events. 
+regex = 'rs_\d+\.pseth$';
 files = finddepth_regex_match(OUTPUT_DIR, regex);
 
-% files should now be a cell array containing the full paths to the single
-% sub-block .pseth files that were generated in the data splitting stage.
 run(myPipe, files{:});
 
 end
