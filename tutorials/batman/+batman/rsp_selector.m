@@ -42,15 +42,18 @@ classdef rsp_selector < physioset.event.selector
                         trspEv);
                     trspEv(~isSelected)  = [];                    
                 end
-                trspEv = nn_all(stimEv, trspEv, ...
-                    @(tx,ty) tx<ty);
                
+                [trspEv, trspEvIdx] = nn_all(stimEv, trspEv, ...
+                    @(tx,ty) tx<ty);
+ 
+                trspEvCount = 0;
                 for i = 1:numel(stimEv)
                     stimEv(i) = set(stimEv(i), ...
                         'Sample', get(timingEv(i), 'Sample'), ...
                         'Time',   get(timingEv(i), 'Time'));
-                    
-                    stimEv(i) = set_meta(stimEv(i), get_meta(trspEv(i)));
+                    if isnan(trspEvIdx(i)), continue; end
+                    trspEvCount = trspEvCount + 1;
+                    stimEv(i) = set_meta(stimEv(i), get_meta(trspEv(trspEvCount)));
                 end
                 
             end

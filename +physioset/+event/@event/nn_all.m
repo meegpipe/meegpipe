@@ -42,8 +42,6 @@ else
     idx = nn_all(sample1(:), sample2(:));
 end
 
-
-% IDX CAN CONTAIN NANS!!! FIX THI!!!
-evArray = evArray2(idx);
+evArray = evArray2(idx(~isnan(idx)));
 
 end
