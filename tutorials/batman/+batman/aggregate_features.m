@@ -37,7 +37,8 @@ regex = ['batman-' type '-.+features.txt$'];
 outputFile = catfile(opt.OutputDir, [type '_features.csv']);
 
 if isempty(files),
-    warning('No files matched the pattern: no features were aggregated');
+    warning('aggregate_features:NoFilesFound', ...
+        'No files matched the pattern: no features were aggregated');
 end
 
 aggregate2(files, regex, outputFile, @batman.fname2meta);
