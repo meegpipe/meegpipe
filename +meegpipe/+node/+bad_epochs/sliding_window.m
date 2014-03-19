@@ -12,7 +12,7 @@ if nargin < 1 || isempty(period),
 end
 
 if nargin < 2 || isempty(dur),
-    dur = 0.5*period; % in seconds
+    dur = 2*period; % in seconds
 end
 
 if ~isnumeric(period) || ~isnumeric(dur) || period < 0 || dur < 0,
