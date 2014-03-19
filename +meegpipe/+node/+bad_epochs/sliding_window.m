@@ -20,7 +20,7 @@ if ~isnumeric(period) || ~isnumeric(dur) || period < 0 || dur < 0,
 end
 
 % Reject at most 50% of the epochs. Thus the median(x)
-crit = stat('Max', @(x) max(median(x), min(400, prctile(x, 95))));
+crit = stat('Max', @(x) max(median(x), min(400, prctile(x, 99))));
 
 evGen = periodic_generator(...
     'Period',   period, ...
