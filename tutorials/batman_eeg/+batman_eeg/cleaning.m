@@ -15,7 +15,7 @@ opt.OutputDir = '';
 [~, opt] = process_arguments(opt, thisArgs, [], true);
 
 if isempty(opt.OutputDir),
-    opt.OutputDir = ['/data1/projects/batman/analysis/cleaning/'  opt.Data];
+    opt.OutputDir = ['/data1/projects/batman/analysis/cleaning/'  opt.Date];
 end
 
 % Just in case you forgot to do it when you started MATLAB
