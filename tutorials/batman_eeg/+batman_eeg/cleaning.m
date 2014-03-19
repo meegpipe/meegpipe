@@ -27,16 +27,13 @@ system(['mkdir -p ' opt.OutputDir]);
 myPipe = batman_eeg.cleaning_pipeline(...
     varargin{:});
 
-somsds.link2rec(...
+files = somsds.link2rec(...
     'batman',       ...                  % The recording ID
     'subject',      opt.Subject, ...     % The subject ID(s)
     'modality',     'eeg', ...           % The data modality
     'condition',    opt.Condition, ...
     'file_regex',   '\.pset', ...        % Only pset/pseth files
     'folder',       opt.OutputDir);
-
-regex = 'rs_\d+\.pseth$';
-files = finddepth_regex_match(OUTPUT_DIR, regex);
 
 run(myPipe, files{:});
 
