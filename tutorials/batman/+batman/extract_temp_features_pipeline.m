@@ -25,7 +25,7 @@ nodeList = [nodeList {myNode}];
 % files are quite large and it pays off to release as much VM as possible
 % as soon as possible
 tempSelector = pset.selector.sensor_class('Type', 'temp');
-myNode = subset.new('DataSelector', tempSelector);
+myNode = subset.new('DataSelector', tempSelector, 'TempDir', @() tempdir);
 nodeList = [nodeList {myNode}];
 
 %% NODE: Event generation (specification of data epochs)

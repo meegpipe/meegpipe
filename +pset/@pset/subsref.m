@@ -110,24 +110,38 @@ switch s(1).type
             
             [mIdx, pIdx] = get_map_index(obj, pIdx);
             umIdx = unique(mIdx);
+            
+            % Ensure the memory map can be read if even if we dont have
+            % write permissions
+            
+            
+            
             if obj.Transposed,
                 for i = 1:length(umIdx)
                     this_map_subset = (mIdx==umIdx(i));
+                    origWritable = obj.MemoryMap{umIdx(i)}.Writable;
+                    obj.MemoryMap{umIdx(i)}.Writable = false;
                     y(this_map_subset, :) = ...
                         obj.MemoryMap{umIdx(i)}.Data.Data(dIdx, ...
                         pIdx(this_map_subset))';
+                    obj.MemoryMap{umIdx(i)}.Writable = origWritable;
                 end
             else
                 for i = 1:length(umIdx)
                     this_map_subset = (mIdx==umIdx(i));
+                    origWritable = obj.MemoryMap{umIdx(i)}.Writable;
+                    obj.MemoryMap{umIdx(i)}.Writable = false;
                     y(:, this_map_subset) = ...
                         obj.MemoryMap{umIdx(i)}.Data.Data(dIdx, ...
                         pIdx(this_map_subset));
+                    obj.MemoryMap{umIdx(i)}.Writable = origWritable;
                     if obj.AutoDestroyMemMap,
                         destroy_mmemmapfile(obj, umIdx(i));
                     end
                 end
             end
+            
+            
             
             % Undo the sorting
             if ~isPidxOrdered
