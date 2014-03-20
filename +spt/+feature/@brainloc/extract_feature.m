@@ -16,6 +16,16 @@ else
     featVal  = nan(6, size(M, 2));
 end
 
+if verbose,
+    fprintf([verboseLabel 'Computing inverse solution for %d sources ...'], ...
+        size(M,2));
+    tinit = tic;
+end
+
+mySensLabels = labels(sensors(raw));
+[~, sensIdx] = ismember(mySensLabels, labels(myHead.Sensors));
+myHead = select_sensor(myHead, sensIdx);
+
 for i = 1:size(M, 2)
    
     myHead = inverse_solution(myHead, 'potentials', M(:,i), ...
@@ -27,13 +37,17 @@ for i = 1:size(M, 2)
         featVal(:, i) = [coords(:);m(:)];
     end
     
+    if verbose,
+        misc.eta(tinit, size(M,2), i);
+    end        
+    
 end
 
 % Generate a report
 if isempty(rep), return; end
 
-
-
+set_method_config(myHead, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
+fprintf(rep, myHead);
 
 
 end

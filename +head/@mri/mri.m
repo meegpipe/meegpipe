@@ -1,4 +1,4 @@
-classdef mri < head.head
+classdef mri < head.head & goo.method_config & goo.printable & goo.abstract_named_object
     % MRI
     % Head model based on an MRI scan
     %
@@ -72,7 +72,8 @@ classdef mri < head.head
     end
     
     % Other public methods
-    methods                
+    methods       
+       
         obj = sensors_to_outer_skin(obj);
         obj = make_source_grid(obj, density);    
         obj = make_source_surface(obj, density);        
