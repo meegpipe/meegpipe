@@ -32,9 +32,6 @@ function h = plot_inverse_solution_leadfield(obj, varargin)
 %
 % See also: head.mri.plot_source_leadfield
 
-% Description: Plot inverse solution leadfield
-% Documentation: class_head_mri.txt
-
 h = plot_source_leadfield(obj, 1, 'InverseSolution', true, varargin{:});
 
 

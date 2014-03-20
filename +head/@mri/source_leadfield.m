@@ -23,8 +23,6 @@ function sourceLeadField = source_leadfield(obj, index, varargin)
 %
 % See also: head.mri
 
-% Documentation: class_head_mri.txt
-% Description: Plots individual source leadfields
 
 import misc.process_varargin;
 

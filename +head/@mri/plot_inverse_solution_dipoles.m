@@ -30,6 +30,8 @@ function h = plot_inverse_solution_dipoles(obj, varargin)
 %                 marker size. Use higher values to highlight stronger
 %                 source activations. Default: 2
 %
+% 'SourceIndex' :
+%
 %
 % Less common key/value pairs:
 %
@@ -45,7 +47,7 @@ function h = plot_inverse_solution_dipoles(obj, varargin)
 import misc.process_varargin;
 
 keySet = {'momentum', 'surface', 'linewidth','sizedata','time','exp', ...
-    'linewidth', 'threshold'};
+    'linewidth', 'threshold', 'sourceindex'};
 momentum = brain_radius(obj);
 surface = false;
 sizedata=100;
@@ -53,6 +55,7 @@ exp=2;
 time=[];
 linewidth  =3; %#ok<*NASGU>
 threshold = 1e-6;
+sourceindex = numel(obj.InverseSolution); % plot the last solution by default
 
 eval(process_varargin(keySet, varargin));
 
@@ -67,7 +70,7 @@ end
 
 hold on;
 
-thisSource = obj.InverseSolution;
+thisSource = obj.InverseSolution(sourceIdx);
 points = obj.SourceSpace.pnt(thisSource.pnt,:);
 
 % Only plot points with non-negligible strength
