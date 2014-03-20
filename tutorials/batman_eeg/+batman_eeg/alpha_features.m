@@ -1,77 +1,72 @@
 function alpha_features(varargin)
-% ALPHA_FEATURES - Extract alpha features from BATMAN files
+% ALPHA_FEATURES - Pick alpha components and extract features from them
 
-% Import some utilities
-import mperl.file.find.finddepth_regex_match;
-import misc.process_arguments;
+import misc.find_latest_dir;
 import misc.split_arguments;
-
-opt.Test     = false;
-opt.Date     = '';
-opt.Subjects = 1:10; 
-opt.Conditions = {'arsq', 'baseline', 'pvt', 'rs'};
-[thisArgs, varargin] = split_arguments(opt, varargin);
-[~, opt] = process_arguments(opt, thisArgs, [], true);
+import misc.process_arguments;
+import  mperl.file.find.finddepth_regex_match;
 
 % Just in case you forgot to do it when you started MATLAB
 meegpipe.initialize;
 
-% The directory where the cleaning results are located
-if ~isempty(opt.Date),
-    INPUT_DIR = ['/data1/projects/batman/analysis/cleaning/' opt.Date]; 
-else
-   INPUT_DIR = misc.find_latest_dir('/data1/projects/batman/analysis/cleaning/');  
+opt.Date     = datestr(now, 'yymmdd_HHMMSS');
+opt.Subject  = 1:10; 
+opt.Condition = {'arsq', 'baseline', 'pvt', 'rs'};
+opt.OutputDir = '';
+opt.InputDir  = '';
+
+[thisArgs, varargin] = split_arguments(opt, varargin);
+[~, opt] = process_arguments(opt, thisArgs, [], true);
+
+if isempty(opt.OutputDir),
+    opt.OutputDir = ['/data1/projects/batman/analysis/alpha_features/'  opt.Date];
 end
 
-if opt.Test,
-   OUTPUT_DIR = ['/data1/projects/batman/analysis/alpha_features/tests_IGNORE_THIS/' ...
-       datestr(now, 'yymmdd_HHMMSS')];  
-else
-   OUTPUT_DIR = ['/data1/projects/batman/analysis/alpha_features/' ...
-       datestr(now, 'yymmdd_HHMMSS')];  
+if isempty(opt.InputDir),
+    opt.InputDir = find_latest_dir(...
+       '/data1/projects/batman/analysis/cleaning');
 end
 
-fprintf('\nINPUT DIR: %s\n', INPUT_DIR);
-fprintf('OUTPUT_DIR: %s\n\n', OUTPUT_DIR);
+if isempty(opt.InputDir) || ~exist(opt.InputDir, 'dir')
+    error('You must specify a valid input directory!');
+end
 
-% Ensure the directory exists (Unix-specific)
-system(['mkdir -p ' OUTPUT_DIR]);
-
-% Some (optional) parameters that you may want to play with when experimenting
-% with your processing pipeline
-PARALELLIZE = true; % Should each file be processed in parallel?
-DO_REPORT   = true; % Should full HTML reports be generated?
-
-% Create an instance of the feature extraction pipeline
-myPipe = batman_eeg.alpha_features_pipeline(...
-    'GenerateReport', DO_REPORT, ...
-    'Parallelize',    PARALELLIZE, ...
-    varargin{:});
-
-% Get the cleaned files and generate links to them in the output dir
-subjRegex = arrayfun(@(x) sprintf('%0.4d', x), opt.Subjects, ...
+% First we create links to all relevant files in the output dir
+subjRegex = arrayfun(@(x) sprintf('%0.4d', x), opt.Subject, ...
     'UniformOutput', false);
 subjRegex = ['(' mperl.join('|', subjRegex) ')'];
-condRegex = ['(' mperl.join('|', opt.Conditions) ')'];
+condRegex = ['(' mperl.join('|', opt.Condition) ')'];
 regex = ['batman_' subjRegex '_eeg_' condRegex ...
     '_.+cleaning_pipe-ad49a8_.+cleaning-pipe\.pset'];
-cleanedFiles = finddepth_regex_match(INPUT_DIR, regex, false);
-somsds.link2files(cleanedFiles, OUTPUT_DIR);
+cleanedFiles = finddepth_regex_match(opt.InputDir, regex, false);
+somsds.link2files(cleanedFiles, opt.OutputDir);
 regex = '\.pseth$';
-files = finddepth_regex_match(OUTPUT_DIR, regex);
+files = finddepth_regex_match(opt.OutputDir, regex);
 
-fprintf('Number of input files: %d\n\n', numel(files));
-
-if numel(files) < 1,
-    fprintf('No files to process: nothing done\n\n');
-    rmdir(OUTPUT_DIR);
+if isempty(files),
+    fprintf('No input files were found: nothing done\n\n');
     return;
 end
 
-fprintf('Input file #%d: %s\n\n', 1, files{1});
-if numel(files) > 1,
-    fprintf('Input file #%d: %s\n\n', numel(files), files{end});
+fprintf('ANALYSIS PARAMETERS:\n');
+fprintf('--------------------\n\n');
+fNames = fieldnames(opt);
+for i = 1:numel(fNames),
+   fprintf('%20s : %s\n', fNames{i}, misc.any2str(opt.(fNames{i}), 100)); 
 end
+fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
+pause;
+
+fprintf('\n\nGoing to process %d file(s):\n', numel(files));
+fprintf('%s\n', files{1});
+if numel(files) > 1,
+    fprintf('...\n');
+    fprintf('%s\n\n', files{end});
+end
+fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
+pause;
+
+myPipe = batman_eeg.alpha_features_pipeline(varargin{:});
 
 run(myPipe, files{:});
 
