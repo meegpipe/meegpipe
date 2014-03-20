@@ -97,6 +97,15 @@ classdef mri < head.head
                 'verbose', false);
             obj.Sensors = sensNew;
         end
+        
+        function obj = select_sensor(obj, idx)
+           
+            obj.LeadField = obj.LeadField(idx, :, :);
+            obj.Sensors = subset(obj.Sensors, idx);
+            obj.SourceDipolesLeadField = obj.SourceDipolesLeadField(idx,:);
+            
+            
+        end
     end
 
     % Dependent properties
