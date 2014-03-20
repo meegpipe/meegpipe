@@ -53,7 +53,7 @@ try
     % Select sparse components
     [featVal, featName] = extract_feature(spt.feature.brainloc, myBSS, [], data);
    
-    ok( all(size(featVal) == [6 10]) && numel(featName) == 6, name);
+    ok( all(size(featVal) == [3 10]) && numel(featName) == 3, name);
     
 catch ME
     
