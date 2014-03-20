@@ -79,7 +79,20 @@ end
 % Create an event per trial
 nEvents = numel(str.trial);
 ev = repmat(event, nEvents, 1);
+if isfield(str, 'cfg') && isfield(str.cfg, 'event'),
+    % Events already existing in the fieldtrip structrure
+    % If there are trials, then we need to fix the timings of these
+    % events later
+    origEv = event.from_fieldtrip(str.cfg.event);
+    % Fall these events within any of the trials? If not, ignore them!
+    inTrials = false(1, numel(origEv));
+    evSample = get_sample(origEv);
+    hasEvents = true;
+else
+    hasEvents = false;
+end
 durAll = 0;
+
 for i = 1:numel(str.trial),
   offset = -find(str.time{i} >= 0, 1)+1;
   if offset>=0,
@@ -87,8 +100,7 @@ for i = 1:numel(str.trial),
   end
   sample = -offset + 1 + durAll;
   dur    = size(str.time{i}, 2);
-  durAll = durAll + dur;
-  
+ 
   thisEvent  = trial_begin(sample, ...  
     'Offset',       offset, ...
     'Duration',     dur);
@@ -106,6 +118,25 @@ for i = 1:numel(str.trial),
   end
     
   ev(i) = thisEvent;
+  
+  if hasEvents
+      % Fix the timings of events that fall within the current trial
+      inThisTrial = evSample >= str.sampleinfo(i,1) & evSample <= str.sampleinfo(i,2);
+      
+      origEv(inThisTrial) = set_sample(origEv(inThisTrial), ...
+          get_sample(origEv(inThisTrial)) - str.sampleinfo(i,1) + 1 + durAll);
+      
+      % Keep track of the events that do fall within a trial
+      inTrials(inThisTrial) = true;
+  end
+  
+   durAll = durAll + dur;
+  
+end
+
+if hasEvents,
+    % Remove those events that do not fall within any trial
+    origEv(~inTrials) = [];
 end
 
 data = [str.trial{:}];
@@ -133,6 +164,9 @@ end
 
 %% Add to the physioset the trial events and the data events
 add_event(physObj, ev); 
-if isfield(str, 'cfg') && isfield(str.cfg, 'event')
-    add_event(physObj, event.from_fieldtrip(str.cfg.event));
+
+if hasEvents,
+    add_event(physObj, origEv);
+end
+
 end
