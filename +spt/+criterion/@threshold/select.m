@@ -16,6 +16,16 @@ featVal = nan(size(tSeries,1), numel(obj.Feature));
 for featItr = 1:numel(obj.Feature),
     thisFeat = extract_feature(obj.Feature{featItr}, objSpt, tSeries, ...
         varargin{:});
+    if size(thisFeat, 1) > 1 && size(thisFeat, 2) > 1,
+       % Multiple features produced by this feature extractor. Use only the
+       % first feature and discard the others. Try to be robust to the case
+       % that extract_feature returns an array of wrong dimensions
+       if size(thisFeat, 2) == size(tSeries, 1),
+           thisFeat = thisFeat(1,:);
+       else
+           thisFeat = thisFeat(:,1);
+       end
+    end
     featVal(:, featItr) = thisFeat(:);
 end
 

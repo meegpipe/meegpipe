@@ -8,8 +8,7 @@ classdef psd_ratio < spt.feature.feature & goo.verbose
         % estimator in physioset.plotter.psd.config. Otherwise the spectra
         % plotted in the report will not match the actual spectra used when
         % extracting the spectral power ratio features.
-        Estimator  = @(x, sr) pwelch(x,  min(ceil(numel(x)/5),sr*3), ...
-            [], [], sr);
+        Estimator  = @(x, sr) spt.feature.default_psd_estimator(x, sr);
         TargetBandStat = @(power) prctile(power, 75);
         RefBandStat = @(power) prctile(power, 25);
     end
@@ -55,7 +54,7 @@ classdef psd_ratio < spt.feature.feature & goo.verbose
             opt.TargetBand = [];
             opt.RefBand = [];
             opt.Estimator  = ...
-                @(x, sr) pwelch(x,  min(ceil(numel(x)/5),sr*3), [], [], sr);
+                @(x, sr) spt.feature.default_psd_estimator(x, sr);
             opt.TargetBandStat = @(power) prctile(power, 50);
             opt.RefBandStat = @(power) prctile(power, 50);
             obj = set_properties(obj, opt, varargin);      

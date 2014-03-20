@@ -4,6 +4,7 @@ classdef brainloc < spt.feature.feature & goo.verbose
     properties
        HeadModel;
        InverseSolver;
+       CoordinatesOnly = true; % Should only the location coordinates be produced
     end
     
     methods
@@ -16,7 +17,8 @@ classdef brainloc < spt.feature.feature & goo.verbose
             import misc.set_properties;            
 
             evalc('opt.HeadModel = make_bem(head.mri)');
-            opt.InverseSolver   = 'dipfit';           
+            opt.InverseSolver   = 'dipfit';  
+            opt.CoordinatesOnly = true;
             obj = set_properties(obj, opt, varargin);
         end
         

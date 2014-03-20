@@ -80,8 +80,7 @@ classdef config < goo.abstract_setget_handle
         % user to use the reports to decide the correct values for band1
         % and band2
         Estimator    = @(fs, L) spectrum2.percentile(...
-            'Estimator', ...
-            spectrum.welch('Hamming', min(ceil(L/5),fs*3)));
+            'Estimator', spt.feature.default_psd_estimator(fs, L));
         MaxChannels  = 50;
         MaxWindows   = 50;
         WinLength    = Inf;
