@@ -7,19 +7,6 @@ verboseLabel = get_verbose_label(obj);
 
 myHead = obj.HeadModel;
 
-if verbose,
-    fprintf([verboseLabel 'Projecting sensors onto scalp surface ...']);
-end
-myHead = set_sensors(myHead, sensors(raw));
-if verbose, fprintf('[done]\n\n'); end
-
-if verbose,
-    fprintf([verboseLabel 'Computing leadfield ...']);
-end
-evalc('myHead = make_source_surface(myHead, 5.5)');
-evalc('myHead = make_leadfield(myHead);');
-if verbose, fprintf('[done]\n\n'); end
-
 M = bprojmat(sptObj);
 if obj.CoordinatesOnly,
     featName = {'x', 'y', 'z'};
@@ -28,7 +15,6 @@ else
     featName = {'x', 'y', 'z', 'mx', 'my', 'mz'};
     featVal  = nan(6, size(M, 2));
 end
-
 
 for i = 1:size(M, 2)
    
