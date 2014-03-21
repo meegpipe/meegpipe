@@ -70,7 +70,7 @@ end
 
 hold on;
 
-thisSource = obj.InverseSolution(sourceIdx);
+thisSource = obj.InverseSolution(sourceindex);
 points = obj.SourceSpace.pnt(thisSource.pnt,:);
 
 % Only plot points with non-negligible strength
