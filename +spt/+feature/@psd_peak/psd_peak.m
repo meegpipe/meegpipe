@@ -26,14 +26,17 @@ classdef psd_peak < spt.feature.feature & goo.verbose
         
         function obj = psd_peak(varargin)
             import misc.set_properties;
-            
-            if nargin < 1, return; end
-            
+           
             opt.TargetBand = [];
             opt.Estimator  = ...
                 @(x, sr) spt.feature.default_psd_estimator(x, sr);
             opt.MainFeature = 'Peakyness'; % Other options: Width, PeakFreq
-            obj = set_properties(obj, opt, varargin);      
+            obj = set_properties(obj, opt, varargin);    
+            
+            if isempty(obj.TargetBand),
+                error('You must specify a TargetBand');
+            end
+            
         end
         
    end

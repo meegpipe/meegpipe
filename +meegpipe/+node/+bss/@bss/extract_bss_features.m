@@ -57,6 +57,13 @@ for i = 1:numel(featExtractor)
     end
     [fVal, fName] = ...
         extract_feature(featExtractor{i}, bssObj, ics, data, featRep);
+    
+    % Ensure the feature matrix has the right dimenions:
+    % (numFeat, numICs)
+    if size(fVal, 2) ~= size(ics, 1),
+        fVal = fVal';
+    end
+
     if isempty(fName), fName = num2strcell(1:size(fVal, 1)); end
     fmt = repmat(',%.4f', 1, size(fVal, 2));
     
@@ -66,11 +73,7 @@ for i = 1:numel(featExtractor)
         nIterBy100 = floor(size(fVal, 1)/100);
         tinit = tic;
     end
-    
-    if size(fVal, 1) ~= size(ics, 1),
-        fVal = fVal';
-    end
-    
+  
     for j = 1:size(fVal, 1)
         fid.fprintf('%s,%s', extractorName, fName{j});
         fid.fprintf([fmt '\n'], fVal(j,:));

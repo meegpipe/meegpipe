@@ -43,10 +43,12 @@ for i = 1:size(M, 2)
     
 end
 
+if verbose, fprintf('\n\n'); end
+
 % Generate a report
 if isempty(rep), return; end
 
-set_method_config(myHead, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
+myHead = set_method_config(myHead, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
 fprintf(rep, myHead);
 
 

@@ -56,7 +56,9 @@ for sigIter = 1:size(tSeries, 1)
     end    
     
     % Calculate the 3dB bandwidth
+
     afterPeak = freqs > freqs(peakPos);
+
     if ~any(afterPeak),
         peakWidth = NaN;
     else
