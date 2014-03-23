@@ -7,19 +7,6 @@ verboseLabel = get_verbose_label(obj);
 
 myHead = obj.HeadModel;
 
-if verbose,
-    fprintf([verboseLabel 'Projecting sensors onto scalp surface ...']);
-end
-myHead = set_sensors(myHead, sensors(raw));
-if verbose, fprintf('[done]\n\n'); end
-
-if verbose,
-    fprintf([verboseLabel 'Computing leadfield ...']);
-end
-evalc('myHead = make_source_surface(myHead, 5.5)');
-evalc('myHead = make_leadfield(myHead);');
-if verbose, fprintf('[done]\n\n'); end
-
 M = bprojmat(sptObj);
 if obj.CoordinatesOnly,
     featName = {'x', 'y', 'z'};
@@ -29,6 +16,15 @@ else
     featVal  = nan(6, size(M, 2));
 end
 
+if verbose,
+    fprintf([verboseLabel 'Computing inverse solution for %d sources ...'], ...
+        size(M,2));
+    tinit = tic;
+end
+
+mySensLabels = labels(sensors(raw));
+[~, sensIdx] = ismember(mySensLabels, labels(myHead.Sensors));
+myHead = select_sensor(myHead, sensIdx);
 
 for i = 1:size(M, 2)
    
@@ -41,13 +37,19 @@ for i = 1:size(M, 2)
         featVal(:, i) = [coords(:);m(:)];
     end
     
+    if verbose,
+        misc.eta(tinit, size(M,2), i);
+    end        
+    
 end
+
+if verbose, fprintf('\n\n'); end
 
 % Generate a report
 if isempty(rep), return; end
 
-
-
+myHead = set_method_config(myHead, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
+fprintf(rep, myHead);
 
 
 end

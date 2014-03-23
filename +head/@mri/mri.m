@@ -1,4 +1,8 @@
-classdef mri < head.head
+classdef mri < head.head & ...
+        goo.method_config & ...
+        goo.printable & ...
+        goo.abstract_named_object & ...
+        goo.hashable 
     % MRI
     % Head model based on an MRI scan
     %
@@ -72,7 +76,19 @@ classdef mri < head.head
     end
     
     % Other public methods
-    methods                
+    methods       
+        % goo.hashable interface
+        function code = get_hash_code(obj)
+            import datahash.DataHash;
+            if isempty(obj.Sensors),
+                code = DataHash([]);
+            else
+                code = get_hash_code(obj.Sensors);
+            end
+            if ~isempty(obj.SourceSpace),
+                code = DataHash([code;obj.SourceSpace(:)]);
+            end
+        end
         obj = sensors_to_outer_skin(obj);
         obj = make_source_grid(obj, density);    
         obj = make_source_surface(obj, density);        
@@ -185,6 +201,11 @@ classdef mri < head.head
             end
             
             obj = set_sensors(obj, opt.Sensors);
+            
+            % Do not attempt to print this type of objects using fprintf().
+            % It can lead to the object being serilized using XML. And this
+            % is a huge object!
+            obj = set_method_config(obj, 'fprintf', 'ParseDisp', false);
         end
         
     end

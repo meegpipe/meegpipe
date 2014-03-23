@@ -36,32 +36,34 @@ featVal = zeros(3, size(tSeries,1));
 featName = {'Peakyness', 'Width', 'PeakFreq'};
 
 for sigIter = 1:size(tSeries, 1)
-    % Normalized PSD  
+    % Normalized PSD
     pf  = hpsd{sigIter};
     pf  = pf./sum(pf);
-    
+
     % Find the largest peak within the target band(s)
     peakVal = -Inf;
     peakPos = [];
     for bandItr = 1:size(obj.TargetBand, 1)
         f0  = obj.TargetBand(bandItr, 1);
         f1  = obj.TargetBand(bandItr, 2);
-        isInBand        = freqs>= f0 & freqs<=f1;      
+        isInBand        = freqs>= f0 & freqs<=f1;
         pf(~isInBand) = -Inf;
         [thisPeakVal, thisPeakPos] = max(pf);
         if thisPeakVal > peakVal,
             peakVal = thisPeakVal;
             peakPos = thisPeakPos;
         end
-    end    
-    
+    end
+
     % Calculate the 3dB bandwidth
+
     afterPeak = freqs > freqs(peakPos);
+
     if ~any(afterPeak),
         peakWidth = NaN;
     else
         idx = find(pf(afterPeak) < peakVal/2, 1, 'first');
-        if isempty(idx), 
+        if isempty(idx),
             peakWidth = NaN;
         else
             peakWidth = freqs(peakPos+idx)-freqs(peakPos);
@@ -72,7 +74,7 @@ for sigIter = 1:size(tSeries, 1)
         peakWidth = NaN;
     else
         idx = find(pf(beforePeak) < peakVal/2, 1, 'last');
-        if isempty(idx), 
+        if isempty(idx),
             peakWidth = NaN;
         else
             beforePeakWidth = freqs(peakPos) - freqs(idx);
@@ -81,18 +83,18 @@ for sigIter = 1:size(tSeries, 1)
             end
         end
     end
-    
+
     if isnan(peakWidth),
         peakyness = NaN;
     else
         peakyness = peakVal/peakWidth;
     end
-     
+
     featVal(:, sigIter) = [peakyness;peakWidth;peakVal];
-    
+
     if verbose,
         eta(tinit, size(tSeries, 1), sigIter, 'remaintime', false);
-    end   
+    end
 end
 
 if verbose, fprintf('\n\n'); end

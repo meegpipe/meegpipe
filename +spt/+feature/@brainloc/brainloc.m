@@ -14,12 +14,24 @@ classdef brainloc < spt.feature.feature & goo.verbose
         
         % Constructor        
         function obj = brainloc(varargin)
-            import misc.set_properties;            
+            import misc.process_arguments;            
 
             evalc('opt.HeadModel = make_bem(head.mri)');
+            opt.HeadModel       = [];
             opt.InverseSolver   = 'dipfit';  
             opt.CoordinatesOnly = true;
-            obj = set_properties(obj, opt, varargin);
+            [~, opt] = process_arguments(opt, varargin);
+            
+            if isempty(opt.HeadModel),
+                evalc(['headModel = make_leadfield(make_source_surface(' ...
+                    'make_bem(head.mri(''Sensors'', ' ...
+                    ' sensors.eeg.from_template(''egi256'')))))']);
+                obj.HeadModel = headModel;
+            else
+                obj.HeadModel = opt.HeadModel;
+            end
+            obj.InverseSolver = opt.InverseSolver;
+            obj.CoordinatesOnly = opt.CoordinatesOnly;
         end
         
     end

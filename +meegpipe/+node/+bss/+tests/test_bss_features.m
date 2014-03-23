@@ -33,6 +33,7 @@ catch ME
     
 end
 
+
 %% extract brainloc features 
 try    
   
@@ -50,15 +51,17 @@ try
     
     myCrit = spt.criterion.threshold(spt.feature.tkurtosis, ...
         'Max', @(x) median(x));
+    featList = {spt.feature.brainloc};
     myNode = meegpipe.node.bss.new(...
         'GenerateReport', true, ...
         'Criterion',      myCrit, ...
-        'Feature',       {spt.feature.brainloc}, ...
+        'Feature',       featList, ...
         'FeatureTarget', 'all');
     run(myNode, data);
    
-    featFile = catfile(get_full_dir(myNode, data), 'features.txt');
-    ok(exist(featFile, 'file'), name);
+    featFile = catfile(get_full_dir(myNode, data), ['features_' ...
+        get_name(featList{1}) '.txt']);
+    ok(exist(featFile, 'file') > 0, name);
     
 catch ME
     
@@ -84,15 +87,21 @@ try
     
     myCrit = spt.criterion.threshold(spt.feature.tkurtosis, ...
         'Max', @(x) median(x));
+    featList = {spt.feature.tstat, spt.feature.topo_full};
     myNode = meegpipe.node.bss.new(...
         'GenerateReport', true, ...
         'Criterion',      myCrit, ...
-        'Feature',       {spt.feature.tstat, spt.feature.topo_full}, ...
+        'Feature',       featList, ...
         'FeatureTarget', 'all');
     run(myNode, data);
    
-    featFile = catfile(get_full_dir(myNode, data), 'features.txt');
-    ok(exist(featFile, 'file'), name);
+    featFileExist = true;
+    for i = 1:numel(featList)
+        featFileExist = featFileExist & ...
+            exist(catfile(get_full_dir(myNode, data), ...
+            ['features_' get_name(featList{i}) '.txt']), 'file');
+    end
+    ok(featFileExist, name);
     
 catch ME
     
@@ -100,6 +109,7 @@ catch ME
     MEh = [MEh ME];
     
 end
+
 
 %% Cleanup
 try
