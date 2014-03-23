@@ -46,9 +46,8 @@ classdef printable
                 % Save binary data
                 dataName    = get_name(obj);
                 
-                newDataFile = unique_filename(catfile(rPath, [dataName '.mat']));
-                sptObj = obj; %#ok<NASGU>
-                save(newDataFile, 'sptObj');
+                newDataFile = unique_filename(catfile(rPath, [dataName '.mat']));               
+                save(newDataFile, 'obj');
                 
                 count = count + fprintf(fid, '\n%-20s: [%s][%s]\n\n', ...
                     'Binary object', [dataName '.mat'], [dataName '-data']);
@@ -60,7 +59,7 @@ classdef printable
                 
                 count = count + fprintf(fid, '[[Code]]:\n');
                 
-                code  = sprintf('bss = load(''%s'', ''sptObj'')', newDataFile);
+                code  = sprintf('bss = load(''%s'', ''obj'')', newDataFile);
                 code  = code2multiline(code, [], char(9));
                 count = count + fprintf(fid, '%s\n\n', code);                
               
@@ -68,8 +67,7 @@ classdef printable
                 % by a gallery
                 count = count + fprintf(fid, '&nbsp;&nbsp;\n');
             end
-            
-            
+   
         end
         
     end

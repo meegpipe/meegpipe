@@ -13,15 +13,8 @@ if isempty(featExtractor),
     return;
 end
 
-fid = get_log(obj, 'features.txt');
-if verbose,
-    fprintf([verboseLabel 'Writing BSS features to %s ...\n\n'], fid.FileName);
-end
-
 rep = get_report(obj);
 print_title(rep, 'BSS feature extraction', get_level(rep)+2);
-print_paragraph(rep, 'Extracted BSS features: [features.txt][feat]');
-print_link(rep, '../features.txt', 'feat');
 
 if do_reporting(obj),
     % A sub-report to hold feature extraction reports
@@ -37,45 +30,47 @@ else
     clear_selection(bssObj);
 end
 
-icsHdr = arrayfun(@(i) ['BSS' num2str(i)], 1:size(ics,1), ...
-    'UniformOutput', false);
-hdr = ['feature_extractor,feature_name,', mperl.join(',', icsHdr) '\n'];
-
-fid.fprintf(hdr);
 for i = 1:numel(featExtractor)
     extractorName = get_name(featExtractor{i});
+    fid = get_log(obj, ['features_' extractorName '.txt']);
     if verbose,
-        fprintf([verboseLabel 'Extracting feature %s ...\n\n'], ...
-            get_name(featExtractor{i}));
+        fprintf([verboseLabel 'Writing %s features to %s ...\n\n'], ...
+            get_name(featExtractor{i}), fid.FileName);
     end
+    fid = get_log(obj, ['features_' extractorName '.txt']);
+    
     if do_reporting(obj),
-       print_title(featRep, get_name(featExtractor{i}), get_level(featRep)+1);
-       fprintf(featRep, featExtractor{i});
-       fprintf(featRep, '\n\n');
+        print_paragraph(rep, ['Extracted ' extractorName ...
+            ' BSS features: [features_' extractorName '.txt][feat]']);
+        print_link(rep, ['../features_' extractorName '.txt'], 'feat');
+        
+        print_title(featRep, get_name(featExtractor{i}), get_level(featRep)+1);
+        fprintf(featRep, featExtractor{i});
+        fprintf(featRep, '\n\n');
     else
         featRep = [];
     end
     [fVal, fName] = ...
         extract_feature(featExtractor{i}, bssObj, ics, data, featRep);
     
-    % Ensure the feature matrix has the right dimenions:
-    % (numFeat, numICs)
-    if size(fVal, 2) ~= size(ics, 1),
+    % Ensure the feature matrix has the right dimensions:
+    % (numICs,numFeat)
+    if size(fVal, 1) ~= bssObj.DimOut,
         fVal = fVal';
     end
+    if isempty(fName), fName = num2strcell(1:size(fVal, 2)); end
+    hdr = ['feature_extractor,BSS_alg,BSS,', mperl.join(',', fName) '\n'];
+    fid.fprintf(hdr);
 
-    if isempty(fName), fName = num2strcell(1:size(fVal, 1)); end
     fmt = repmat(',%.4f', 1, size(fVal, 2));
     
     if verbose,
-        fprintf([verboseLabel, 'Writing feature %s ...'], ...
-            get_name(featExtractor{i}));
         nIterBy100 = floor(size(fVal, 1)/100);
         tinit = tic;
     end
-  
+    
     for j = 1:size(fVal, 1)
-        fid.fprintf('%s,%s', extractorName, fName{j});
+        fid.fprintf('%s,%s,%d', extractorName, get_name(bssObj), j);
         fid.fprintf([fmt '\n'], fVal(j,:));
         if verbose && ~mod(j, nIterBy100),
             misc.eta(tinit, size(fVal, 1), j);
@@ -95,7 +90,5 @@ if ics.Transposed,
     % The tstat extractor simply returns a transposed version of the ics
     transpose(ics);
 end
-
-
 
 end
