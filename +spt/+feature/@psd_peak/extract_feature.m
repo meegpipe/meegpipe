@@ -90,7 +90,7 @@ for sigIter = 1:size(tSeries, 1)
         peakyness = peakVal/peakWidth;
     end
 
-    featVal(:, sigIter) = [peakyness;peakWidth;peakVal];
+    featVal(:, sigIter) = [peakyness;peakWidth;freqs(peakPos)];
 
     if verbose,
         eta(tinit, size(tSeries, 1), sigIter, 'remaintime', false);
