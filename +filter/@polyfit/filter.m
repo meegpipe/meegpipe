@@ -6,6 +6,7 @@ verbose         = is_verbose(obj);
 verboseLabel    = get_verbose_label(obj);
 
 tinit = tic;
+
 if verbose,
     if isa(data, 'goo.named_object') || isa(data, 'goo.named_object_handle'),
         name = get_name(data);
@@ -35,6 +36,7 @@ for i = 1:size(data, 1)
         % versions (e.g. R2011a)
         thisOrder = obj.Order;
         mu = [];
+       
         T = evalc('[p, ~, mu] = polyfit(dx(:), dataDi(:), thisOrder);');
         
         % If ill conditioning warning, redo for lower orders
@@ -45,6 +47,8 @@ for i = 1:size(data, 1)
             T = evalc('[p, ~, mu] = polyfit(dx(:), dataDi(:), thisOrder);');
             
         end
+    
+        
         if ~isempty(T), disp(T); end       
         
         if obj.GetNoise,

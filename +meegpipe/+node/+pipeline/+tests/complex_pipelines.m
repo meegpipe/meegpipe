@@ -45,23 +45,32 @@ try
     if has_oge,
         
         data = cell(1, 2);
+        fName = cell(1, 2);
+        myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(2));
         for i = 1:2,
-            data{i} = import(physioset.import.matrix, randn(2,1000));
+            data{i} = import(myImporter, randn(2,1000));
+            data{i} = fieldtrip(data{i});
+            fName{i} = catfile(session.instance.Folder, ['f' num2str(i) '.mat']);
+            ftripData = data{i}; %#ok<NASGU>
+            save(fName{i}, 'ftripData');
         end
         
-        myNode1 = copy.new;
-        
-        myNode2 = filter.detrend;
-        myPipe = pipeline.new('NodeList', {myNode1, myNode2}, ...
+        myNode1 = physioset_import.new('Importer', physioset.import.fieldtrip);
+        myNode2 = center.new;      myFilter=filter.polyfit('Order', 10);
+        myNode3 =filter.new('Filter', myFilter);        
+        myFilter =  @(sr) filter.hpfilt('fc', 0.5/(sr/2));
+        myNode4 = filter.new('Filter', myFilter);
+        myPipe = pipeline.new('NodeList', {myNode1, myNode2, myNode3, myNode4}, ...
             'Name', 'test-pipeline-complex_pipelines', ...
             'TempDir', @() tempdir, 'Save', true, 'OGE', true, ...
-            'Queue', 'short.q');
-        dataFiles = run(myPipe, data{:});
+            'Queue', 'short.q@somerenserver.herseninstituut.knaw.nl');
+        fName{1} = '/data1/projects/svui/subjects/0002/eeg/wm/svui_0002_eeg_wm-second-ns_04_seldata.mat';
+        dataFiles = run(myPipe, fName{:});
         
         pause(5); % give time for OGE to do its magic
         MAX_TRIES = 45;
         tries = 0;
-        while tries < MAX_TRIES && ~exist(dataFiles{end}, 'file'),
+        while tries < MAX_TRIES && ~exist(dataFiles{1}, 'file'),
             pause(5);
             tries = tries + 1;
         end

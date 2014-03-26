@@ -59,6 +59,9 @@ end
 str = load(fileName, '-mat');
 fNames = fieldnames(str);
 data = str.(fNames{1});
+if ~isfield(data, 'name'),
+    [~, data.name] = fileparts(fileName);
+end
 pObj = physioset.from_fieldtrip(data, 'FileName', newFileName);
 
 %% Undoing stuff 

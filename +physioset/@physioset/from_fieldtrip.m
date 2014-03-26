@@ -147,7 +147,13 @@ importer = matrix(str.fsample, ...
     'Sensors',      sensorsObj);
 physObj  = import(importer, data);
 
-set_name(physObj, 'fieldtripdata');
+if isfield(str, 'name'),
+    dataName = str.name;
+else
+    dataName = 'fieldtripdata';
+end
+
+set_name(physObj, dataName);
 
 %% Take care of the time property
 if isfield(str, 'time'),
