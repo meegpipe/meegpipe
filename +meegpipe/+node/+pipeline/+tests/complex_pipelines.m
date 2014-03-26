@@ -12,10 +12,11 @@ import oge.has_oge;
 import misc.get_username;
 import misc.get_hostname;
 
-
 MEh     = [];
 
-initialize(4);
+initialize(5);
+
+
 
 %% Create a new session
 try
@@ -33,6 +34,51 @@ catch ME
     ok(ME, name);
     status = finalize();
     return;
+    
+end
+
+%% oge
+try
+    
+    name = 'oge';
+    
+    if has_oge,
+        
+        data = cell(1, 2);
+        for i = 1:2,
+            data{i} = import(physioset.import.matrix, randn(2,1000));
+        end
+        
+        myNode1 = copy.new;
+        
+        myNode2 = filter.detrend;
+        myPipe = pipeline.new('NodeList', {myNode1, myNode2}, ...
+            'Name', 'test-pipeline-complex_pipelines', ...
+            'TempDir', @() tempdir, 'Save', true, 'OGE', true, ...
+            'Queue', 'short.q');
+        dataFiles = run(myPipe, data{:});
+        
+        pause(5); % give time for OGE to do its magic
+        MAX_TRIES = 45;
+        tries = 0;
+        while tries < MAX_TRIES && ~exist(dataFiles{end}, 'file'),
+            pause(5);
+            tries = tries + 1;
+        end
+        
+        [~, ~] = system(sprintf('qdel -u %s', get_username));
+        
+        ok(exist(dataFiles{end}, 'file') > 0, name);
+        
+    else
+        ok(NaN, name, 'OGE is not available');
+    end
+    
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
     
 end
 
