@@ -14,9 +14,7 @@ import misc.get_hostname;
 
 MEh     = [];
 
-initialize(5);
-
-
+initialize(4);
 
 %% Create a new session
 try
@@ -37,59 +35,60 @@ catch ME
     
 end
 
-%% oge
-try
-    
-    name = 'oge';
-    
-    if has_oge,
-        
-        data = cell(1, 2);
-        fName = cell(1, 2);
-        myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(2));
-        for i = 1:2,
-            data{i} = import(myImporter, randn(2,1000));
-            data{i} = fieldtrip(data{i});
-            fName{i} = catfile(session.instance.Folder, ['f' num2str(i) '.mat']);
-            ftripData = data{i}; %#ok<NASGU>
-            save(fName{i}, 'ftripData');
-        end
-        
-        myNode1 = physioset_import.new('Importer', physioset.import.fieldtrip);
-        myNode2 = center.new;      myFilter=filter.polyfit('Order', 10);
-        myNode3 =filter.new('Filter', myFilter);        
-        myFilter =  @(sr) filter.hpfilt('fc', 0.5/(sr/2));
-        myNode4 = filter.new('Filter', myFilter);
-        myPipe = pipeline.new('NodeList', {myNode1, myNode2, myNode3, myNode4}, ...
-            'Name', 'test-pipeline-complex_pipelines', ...
-            'TempDir', @() tempdir, 'Save', true, 'OGE', true, ...
-            'Queue', 'short.q@somerenserver.herseninstituut.knaw.nl');
-        fName{1} = '/data1/projects/svui/subjects/0002/eeg/wm/svui_0002_eeg_wm-second-ns_04_seldata.mat';
-        dataFiles = run(myPipe, fName{:});
-        
-        pause(5); % give time for OGE to do its magic
-        MAX_TRIES = 45;
-        tries = 0;
-        while tries < MAX_TRIES && ~exist(dataFiles{1}, 'file'),
-            pause(5);
-            tries = tries + 1;
-        end
-        
-        [~, ~] = system(sprintf('qdel -u %s', get_username));
-        
-        ok(exist(dataFiles{end}, 'file') > 0, name);
-        
-    else
-        ok(NaN, name, 'OGE is not available');
-    end
-    
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
+%% oge ( a one-off test, I leave it here just in case I need it again)
+% try
+%     
+%     name = 'oge';
+%     
+%     if has_oge,
+%         
+%         data = cell(1, 2);
+%         fName = cell(1, 2);
+%         myImporter = physioset.import.matrix('Sensors', sensors.eeg.dummy(2));
+%         for i = 1:2,
+%             data{i} = import(myImporter, randn(2,1000));
+%             data{i} = fieldtrip(data{i});
+%             fName{i} = catfile(session.instance.Folder, ['f' num2str(i) '.mat']);
+%             ftripData = data{i}; %#ok<NASGU>
+%             save(fName{i}, 'ftripData');
+%         end
+%         
+%         myNode1 = physioset_import.new('Importer', physioset.import.fieldtrip);
+%         myNode2 = center.new;      
+%         myFilter=filter.polyfit('Order', 10, 'Verbose', true);
+%         myNode3 =filter.new('Filter', myFilter);        
+%         myFilter =  @(sr) filter.hpfilt('fc', 0.5/(sr/2));
+%         myNode4 = filter.new('Filter', myFilter);
+%         myPipe = pipeline.new('NodeList', {myNode1, myNode2, myNode3, myNode4}, ...
+%             'Name', 'test-pipeline-complex_pipelines', ...
+%             'TempDir', @() tempdir, 'Save', true, 'OGE', true, ...
+%             'Queue', 'short.q@nin174.herseninstituut.knaw.nl');
+%         fName{1} = 'svui_0002_eeg_wm-second-ns_04_seldata.mat';
+%         dataFiles = run(myPipe, fName{:});
+%         
+%         pause(5); % give time for OGE to do its magic
+%         MAX_TRIES = 100;
+%         tries = 0;
+%         while tries < MAX_TRIES && ~exist(dataFiles{1}, 'file'),
+%             pause(10);
+%             tries = tries + 1;
+%         end
+%         
+%         [~, ~] = system(sprintf('qdel -u %s', get_username));
+%         
+%         ok(exist(dataFiles{1}, 'file') > 0, name);
+%         
+%     else
+%         ok(NaN, name, 'OGE is not available');
+%     end
+%     
+%     
+% catch ME
+%     
+%     ok(ME, name);
+%     MEh = [MEh ME];
+%     
+% end
 
 %% copy+eog+chan_interp
 try

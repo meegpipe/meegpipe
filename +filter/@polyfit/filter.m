@@ -21,6 +21,7 @@ warning('off', 'MATLAB:oldPfileVersion');
 for i = 1:size(data, 1)
     if ~all(abs(data(i,:)-mean(data(i,:))) < eps),
         
+        
         x = 1:size(data,2);
         if obj.Decimation > 1,
             dx = x(1:obj.Decimation:end); %#ok<*NASGU>
@@ -30,16 +31,17 @@ for i = 1:size(data, 1)
             dataDi = data(i,:);
         end
         
-        % Fit the polynomial to the decimated data
+        %Fit the polynomial to the decimated data
         
-        % Need to pre-declare mu or the code below breaks in some MATLAB
-        % versions (e.g. R2011a)
+        %Need to pre-declare mu or the code below breaks in some MATLAB
+        %versions (e.g. R2011a)
         thisOrder = obj.Order;
         mu = [];
-       
-        T = evalc('[p, ~, mu] = polyfit(dx(:), dataDi(:), thisOrder);');
         
-        % If ill conditioning warning, redo for lower orders
+        T = evalc('[p, ~, mu] = polyfit(dx(:), dataDi(:), thisOrder);');
+        [p, ~, mu] = polyfit(dx(:), dataDi(:), thisOrder);
+        
+        %If ill conditioning warning, redo for lower orders
         while ~isempty(T) && ~isempty(strfind(T, 'badly conditioned')) && ...
                 thisOrder > 5,
             
@@ -47,16 +49,16 @@ for i = 1:size(data, 1)
             T = evalc('[p, ~, mu] = polyfit(dx(:), dataDi(:), thisOrder);');
             
         end
-    
         
-        if ~isempty(T), disp(T); end       
+        
+        if ~isempty(T), disp(T); end
         
         if obj.GetNoise,
             data(i, :) = data(i, :) - polyval(p, (x-mu(1))/mu(2));
         else
             data(i, :) = polyval(p, (x-mu(1))/mu(2));
         end
-
+        
     end
     
     if verbose,
