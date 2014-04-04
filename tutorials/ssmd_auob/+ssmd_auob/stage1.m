@@ -1,4 +1,40 @@
 function stage1(varargin)
+% STAGE1 - Runs the first stage of the ssmd ERP analysis
+%
+% stage1('option1', key1, 'option2', key2, ...)
+%
+% Where 'optionX', keyX, are optional parameters. See below for a list of
+% the options that are recognized by this function. Any non-recognized
+% option will be passed directly to the pipeline associated to stage1. See
+% the help of ssmd_auob.basic_preprocessing_pipeline for more details on
+% the arguments that are accepted by the basic preprocessing pipeline.
+%
+% Accepted arguments (as key/value pairs):
+%
+% Subject   :   (numeric array) Default: 1:1000
+%               The IDs of the subjects to be processed
+%
+% OutputDir :   (string) Default: ['/data1/projects/ssmd-erp/analysis/stage1/' datestr(now, 'yymmdd-HHMMSS')]
+%               The full path to the directory where the processing results
+%               (the .meegpipe directories) should be produced.
+%
+%
+% Usage examples:
+%
+% % Run analysis for subjects 135, 147, and 153, and use 'stage1' as the
+% % name of the pipeline (instead of the default 'stg1'), and send the jobs
+% % to queue short.q@nin174.herseninstituut.knaw.nl
+%
+% % Adding EEGLAB and meegipe to the path, and initializing meegpipe is
+% % needed only once per MATLAB session
+% addpath('meegpipe'); % assumes meegpipe' dir is under the current dir
+% addpath('/data1/toolbox/eeglab');
+% meegpipe.initialize;
+% ssmd_auob.stage1('Subject', [135 147 153], 'Name', 'stage1', ...
+%   'Queue', 'short.q@nin174.herseninstituut.knaw.nl');
+%
+%
+% See also: ssmd_auob.basic_preprocessing_pipeline
 
 meegpipe.initialize;
 
@@ -10,7 +46,6 @@ import misc.process_arguments;
 import misc.split_arguments;
 
 opt.Subject                 = 1:1000;
-opt.Queue                   = 'short.q';
 opt.OutputDir               = ['/data1/projects/ssmd-erp/analysis/stage1/' datestr(now, 'yymmdd-HHMMSS')];
 
 [thisArgs, varargin] = split_arguments(opt, varargin);
