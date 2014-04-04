@@ -73,7 +73,8 @@ switch lower(policy)
     
     case 'reject',
         
-        % Mark boundaries with a "boundary" event
+        % No need of marking discontinuities because they are already
+        % marked by method set_bad_sample
         select(obj, ~is_bad_channel(obj), ~is_bad_sample(obj));
         didSelection = true;
         evIdx = [];

@@ -14,7 +14,7 @@ import physioset.check_ftrip_consistency;
 count = 0;
 while count < numel(varargin) && ...
         isa(varargin{count+1}, 'physioset.physioset'),
-   count = count + 1; 
+    count = count + 1;
 end
 
 obj = varargin(1:count);
@@ -25,12 +25,12 @@ opt.BadDataPolicy = 'reject';
 [~, opt] = process_arguments(opt, varargin);
 
 if numel(obj) > 1,
-   % Merging multiple physiosets into a single ftrip structure
-   ftripStruct = cell(size(obj));
-   for i = 1:numel(obj)
-      ftripStruct{i} = fieldtrip(obj{i}, varargin{:});      
-   end
-   return;
+    % Merging multiple physiosets into a single ftrip structure
+    ftripStruct = cell(size(obj));
+    for i = 1:numel(obj)
+        ftripStruct{i} = fieldtrip(obj{i}, varargin{:});
+    end
+    return;
 end
 
 obj = obj{1};
@@ -62,8 +62,8 @@ if ~isempty(sensorArray),
             ftripStruct = ftripStruct{1};
         end
         return;
-    end   
-    if isa(sensorArray, 'sensors.eeg'),        
+    end
+    if isa(sensorArray, 'sensors.eeg'),
         ftripStruct.elec  = fieldtrip(sensorArray);
         ftripStruct.label = orig_labels(sensorArray);
     elseif isa(sensorArray, 'sensors.meg'),
@@ -97,9 +97,9 @@ else
     nTrials = numel(eventArray);
     
     if ~isempty(evIdx) && strcmpi(opt.BadDataPolicy, 'reject'),
-       error(['Cannot use bad data policy ''reject'' in the presence ' ...
-           'of bad data samples']); 
-    end    
+        error(['Cannot use bad data policy ''reject'' in the presence ' ...
+            'of bad data samples']);
+    end
     
     ftripStruct.sampleinfo = nan(nTrials,2);
     tInfo = get_meta(eventArray(1), 'trialinfo');
@@ -136,7 +136,6 @@ else
     end
 end
 
-
 ftripStruct.fsample = obj.SamplingRate;
 
 % Other stuff that may be stored as physioset meta-properties
@@ -149,14 +148,16 @@ if ~isempty(evArray),
     evArray = select(~evSelector, evArray);
 end
 
-if ~isempty(evArray)    
-    ftripStruct.cfg.event = fieldtrip(evArray);        
+if ~isempty(evArray)
+    ftripStruct.cfg.event = fieldtrip(evArray);
 end
 
 % Undo temporary selections
 if didSelection,
     restore_selection(obj);
-    delete_event(obj, evIdx);
+    if ~isempty(evIdx),
+        delete_event(obj, evIdx);
+    end
 end
 
 end
