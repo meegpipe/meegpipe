@@ -80,13 +80,11 @@ switch lower(policy)
         
     case 'flatten',
         
-        evIdx = add_bad_data_events(obj);
+        [~, evIdx] = add_boundary_events(obj, 'bad_data');
         obj(is_bad_channel(obj), :) = 0;
         obj(:, is_bad_sample(obj))  = 0; %#ok<*NASGU>
         
-    case 'donothing',
-        % do nothing
-        %[~, evIdx] = add_boundary_events(obj, 'bad_data');
+    case 'donothing',    
        evIdx = [];
        
     otherwise,

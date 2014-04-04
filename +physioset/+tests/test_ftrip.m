@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(4);
+initialize(7);
 
 %% Create a new session
 try
@@ -47,6 +47,87 @@ try
         numel(ftripData.trial) == 1 & ...
         all(size(ftripData.trial{1}) == size(data{1})), ...
         ...
+        name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% bad data policy: donothing
+try
+    
+    name = 'bad data policy: donothing';
+   
+    [~, data] = sample_data_with_bad_data;
+    
+    ftripData = fieldtrip(data, 'BadDataPolicy', 'donothing');
+    
+    ok( ...
+        isstruct(ftripData) & ...
+        isfield(ftripData, 'trial') & ...
+        iscell(ftripData.trial) & ...
+        numel(ftripData.trial) == 1 & ...
+        all(size(ftripData.trial{1}) == size(data)), ...
+        ...
+        name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% bad data policy: reject
+try
+    
+    name = 'bad data policy: reject';
+   
+    [~, data, badSamplIdx, badChanIdx] = sample_data_with_bad_data;
+    
+    ftripData = fieldtrip(data, 'BadDataPolicy', 'reject');
+    
+    nChan = size(data,1) - numel(badChanIdx);
+    nSampl = size(data, 2) - numel(badSamplIdx);
+    goodChanIdx = setdiff(1:size(data, 1), badChanIdx);
+    goodSamplIdx = setdiff(1:size(data,2), badSamplIdx);
+    
+    ok( ...
+        isstruct(ftripData) && ...
+        isfield(ftripData, 'trial') && ...
+        iscell(ftripData.trial) && ...
+        numel(ftripData.trial) == 1 && ...
+        all(size(ftripData.trial{1}) ~= size(data)) && ...
+        all(size(ftripData.trial{1}) == [nChan, nSampl]) && ...
+        all(abs(data(goodChanIdx(1),goodSamplIdx) - ftripData.trial{1}(1,:)) < 1e-7), ...
+        name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% bad data policy: flatten
+try
+    
+    name = 'bad data policy: flatten';
+   
+    [~, data, badSamplIdx, badChanIdx] = sample_data_with_bad_data;
+    
+    ftripData = fieldtrip(data, 'BadDataPolicy', 'flatten');
+
+    ok( ...
+        isstruct(ftripData) && ...
+        isfield(ftripData, 'trial') && ...
+        iscell(ftripData.trial) && ...
+        numel(ftripData.trial) == 1 && ...
+        all(size(ftripData.trial{1}) == size(data)) && ...
+        all(abs(ftripData.trial{1}(badChanIdx(1), badSamplIdx)) < eps), ...
         name);
     
 catch ME
@@ -127,3 +208,27 @@ end
 
 
 end
+
+
+function [file, data, badSampleIdx, badChannelIdx] = sample_data_with_bad_data()
+
+mySens = sensors.eeg.dummy(5);
+myImporter = physioset.import.matrix('Sensors', mySens);
+
+data = import(myImporter, rand(5, 1000));
+
+evArray = physioset.event.event(1:100:1000, 'Type', 'myev');
+add_event(data, evArray);
+
+badSampleIdx = 1:100;
+badChannelIdx = 2:3;
+
+set_bad_sample(data, badSampleIdx);
+set_bad_channel(data, badChannelIdx);
+
+save(data);
+file = get_datafile(data);
+
+
+end
+

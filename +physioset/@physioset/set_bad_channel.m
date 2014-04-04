@@ -13,11 +13,9 @@ function obj = set_bad_channel(obj, index)
 %
 % See also: clear_bad_channel, set_bad_sample, physioset
 
-% Description: Marks bad channels
-% Documentations: class_physioset.txt
-
 import misc.isnatural;
 import physioset.physioset;
+import exceptions.BadSubscript;
 
 if nargin < 2 || isempty(index), index = []; end
 
@@ -35,12 +33,11 @@ if ischar(index),
 end
 
 if ~isempty(index) && ~isnatural(index),
-    throw(physioset.InvalidChannelIndex(...
-        'Channel index must be a natural number'));
+    throw(BadSubscript('Channel index must be a natural number'));
 end
 
 if any(index > obj.NbDims),
-    throw(physioset.InvalidChannelIndex(...
+    throw(BadSubscript(...
         sprintf('Channel index (%d) exceeds number of channels (%d)', ...
         find(index>obj.NbDims, 1), obj.NbDims)));
 end
