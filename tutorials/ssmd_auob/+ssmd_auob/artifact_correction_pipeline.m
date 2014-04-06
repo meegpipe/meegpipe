@@ -1,16 +1,20 @@
 function myPipe = artifact_correction_pipeline(varargin)
 
-import meegpipe.node.*;
+import meegpipe.*;
+
+import pset.selector.sensor_class;
+import pset.selector.cascade;
+import pset.selector.good_data;
 
 nodeList = {};
 
 %% Node: Import pre-processed data (from stage1 )
 myImporter = physioset.import.physioset;
-thisNode = physioset_import.new('Importer', myImporter);
+thisNode = node.physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {thisNode}];
 
 % Node: copy
-thisNode = copy.new('TempDir', @() tempdir);
+thisNode = node.copy.new('TempDir', @() tempdir);
 nodeList = [nodeList {thisNode}];
 
 %% HP filter
