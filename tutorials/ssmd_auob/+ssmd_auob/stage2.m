@@ -1,4 +1,49 @@
 function data = stage2(varargin)
+% STAGE2 - Artifact correction
+%
+% stage2('option1', val1, 'option2', val2, ...)
+%
+% Where 'optionX', valX, are optional parameters. See below for a list of
+% the options that are recognized by this function. Any non-recognized
+% option will be passed directly to the pipeline associated to stage1
+% (ssmd_auob.artifact_correction_pipeline). 
+%
+% ## Accepted arguments (as key/value pairs):
+%
+% IncludeMissingResp   :   (numeric array) Default: [151 152]
+%                          An array of subjects IDs for which events with
+%                          missing responses should be included in the
+%                          analysis. 
+%
+% DiscardMissingResp   :   (numeric array) Default: setdiff(1:1000, IncludeMissingResp)
+%                          An array of subject IDs for which events with
+%                          missing responses should be discarded (the
+%                          normal case).
+%
+% Condition            :   (cell array) Default: {'arsq', 'baseline', 'pvt', 'rs'}
+%                          List of experimental conditions to consider for
+%                          processing/analysis.
+%
+% InputDir             :   (string) Default: misc.find_latest_dir('/data1/projects/ssmd-erp/analysis/stage1')
+%                          The full path to the directory containing the
+%                          results of stage1.
+%
+% OutputDir            :   (string) Default:  ['/data1/projects/ssmd-erp/analysis/stage2/' datestr(now, 'yymmdd-HHMMSS')]
+%                          The full path to the directory where the results
+%                          of this stage should be stored.
+%
+%
+% ## Usage examples:
+%
+% % Run the analysis for all subjects but do not discard missing responses
+% % subjects 151 and 152. Also, run the processing jobs at 'long.q' instead
+% % of at the default OGE queue ('short.q'):
+%
+% stage2('IncludeMissingResp', [151 152], 'Queue', 'long.q');
+%
+%
+% See also: ssmd_auob.artifact_correction_pipeline, ssmd_auob.stage1
+
 
 meegpipe.initialize;
 
@@ -12,10 +57,9 @@ import misc.find_latest_dir;
 
 % Subjects 151 and 152 are special because for those subjects we should not
 % discard events that have missing responses
-opt.SubjectDiscardMissingResp = setdiff(1:200, [151 152]);
-opt.SubjectIncludeMissingResp = [151 152];
+opt.DiscardMissingResp = [];
+opt.IncludeMissingResp = [151 152];
 opt.Condition               = {'arsq', 'baseline', 'pvt', 'rs'};
-opt.Queue                   = 'short.q';    
 opt.InputDir                = '';
 opt.OutputDir               = ...
     ['/data1/projects/ssmd-erp/analysis/stage2/' datestr(now, 'yymmdd-HHMMSS')];
@@ -23,8 +67,11 @@ opt.OutputDir               = ...
 [thisArgs, varargin] = split_arguments(opt, varargin);
 [~, opt] = process_arguments(opt, thisArgs);
 
+if isempty(opt.DiscardMissingResp),
+    opt.DiscardMissingResp = setdiff(1:1000, opt.IncludeMissingResp);
+end
+
 if isempty(opt.InputDir),
-    % use the latest dir under /data1/projects/ssmd-erp/analysis/stage1
     opt.InputDir = find_latest_dir(...
         '/data1/projects/ssmd-erp/analysis/stage1');
 end
@@ -34,11 +81,11 @@ if isempty(opt.InputDir) || ~exist(opt.InputDir, 'dir')
 end
 
 % First we create links to all relevant files in the OUTPUT_DIR
-if ~isempty(opt.SubjectDiscardMissingResp),
-    if numel(opt.SubjectDiscardMissingResp) > 1,
-        subjRegex = join('|', opt.SubjectDiscardMissingResp);
+if ~isempty(opt.DiscardMissingResp),
+    if numel(opt.DiscardMissingResp) > 1,
+        subjRegex = join('|', opt.DiscardMissingResp);
     else
-        subjRegex = num2str(opt.SubjectDiscardMissingResp);
+        subjRegex = num2str(opt.DiscardMissingResp);
     end
     
     regex = ['_0+(' subjRegex ')_.+_stg1\.pseth?$'];
@@ -48,9 +95,9 @@ else
     myFilesDiscardMR = {};
 end
 
-if ~isempty(opt.SubjectIncludeMissingResp),
-    if numel(opt.SubjectIncludeMissingResp) > 1,
-        subjRegex = join('|', opt.SubjectIncludeMissingResp);
+if ~isempty(opt.IncludeMissingResp),
+    if numel(opt.IncludeMissingResp) > 1,
+        subjRegex = join('|', opt.IncludeMissingResp);
     else
         subjRegex = num2str(opt.Subject);
     end
