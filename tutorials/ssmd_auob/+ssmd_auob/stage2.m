@@ -10,15 +10,8 @@ function data = stage2(varargin)
 %
 % ## Accepted arguments (as key/value pairs):
 %
-% IncludeMissingResp   :   (numeric array) Default: [151 152]
-%                          An array of subjects IDs for which events with
-%                          missing responses should be included in the
-%                          analysis. 
-%
-% DiscardMissingResp   :   (numeric array) Default: setdiff(1:1000, IncludeMissingResp)
-%                          An array of subject IDs for which events with
-%                          missing responses should be discarded (the
-%                          normal case).
+% Subject              :   (numeric array) Defualt: 1:1000
+%                          The IDs of the subjects to be processed
 %
 % Condition            :   (cell array) Default: {'arsq', 'baseline', 'pvt', 'rs'}
 %                          List of experimental conditions to consider for
@@ -35,11 +28,10 @@ function data = stage2(varargin)
 %
 % ## Usage examples:
 %
-% % Run the analysis for all subjects but do not discard missing responses
-% % subjects 151 and 152. Also, run the processing jobs at 'long.q' instead
-% % of at the default OGE queue ('short.q'):
+% % Run the analysis for all files but run the processing jobs at 
+% %'long.q' instead of at the default OGE queue ('short.q'):
 %
-% stage2('IncludeMissingResp', [151 152], 'Queue', 'long.q');
+% stage2('Queue', 'long.q');
 %
 %
 % See also: ssmd_auob.artifact_correction_pipeline, ssmd_auob.stage1
@@ -57,8 +49,7 @@ import misc.find_latest_dir;
 
 % Subjects 151 and 152 are special because for those subjects we should not
 % discard events that have missing responses
-opt.DiscardMissingResp = [];
-opt.IncludeMissingResp = [151 152];
+opt.Subject                 = 1:1000;
 opt.Condition               = {'arsq', 'baseline', 'pvt', 'rs'};
 opt.InputDir                = '';
 opt.OutputDir               = ...
@@ -66,10 +57,6 @@ opt.OutputDir               = ...
 
 [thisArgs, varargin] = split_arguments(opt, varargin);
 [~, opt] = process_arguments(opt, thisArgs);
-
-if isempty(opt.DiscardMissingResp),
-    opt.DiscardMissingResp = setdiff(1:1000, opt.IncludeMissingResp);
-end
 
 if isempty(opt.InputDir),
     opt.InputDir = find_latest_dir(...
@@ -81,35 +68,17 @@ if isempty(opt.InputDir) || ~exist(opt.InputDir, 'dir')
 end
 
 % First we create links to all relevant files in the OUTPUT_DIR
-if ~isempty(opt.DiscardMissingResp),
-    if numel(opt.DiscardMissingResp) > 1,
-        subjRegex = join('|', opt.DiscardMissingResp);
-    else
-        subjRegex = num2str(opt.DiscardMissingResp);
-    end
-    
-    regex = ['_0+(' subjRegex ')_.+_stg1\.pseth?$'];
-    myFilesDiscardMR = finddepth_regex_match(opt.InputDir, regex);
-    myFilesDiscardMR = link2files(myFilesDiscardMR, opt.OutputDir);
+if numel(opt.Subject) > 1,
+    subjRegex = join('|', opt.Subject);
 else
-    myFilesDiscardMR = {};
+    subjRegex = num2str(opt.Subject);
 end
 
-if ~isempty(opt.IncludeMissingResp),
-    if numel(opt.IncludeMissingResp) > 1,
-        subjRegex = join('|', opt.IncludeMissingResp);
-    else
-        subjRegex = num2str(opt.Subject);
-    end
-    
-    regex = ['_0+(' subjRegex ')_.+_stg1\.pseth?$'];
-    myFilesIncludeMR = finddepth_regex_match(opt.InputDir, regex);
-    myFilesIncludeMR = link2files(myFilesIncludeMR, opt.OutputDir);
-else
-    myFilesIncludeMR = {};
-end
+regex = ['_0+(' subjRegex ')_.+_stg1\.pseth?$'];
+myFiles = finddepth_regex_match(opt.InputDir, regex);
+myFiles = link2files(myFiles, opt.OutputDir);
 
-if isempty(myFilesIncludeMR) && isempty(myFilesDiscardMR),
+if isempty(myFiles),
     fprintf('No input files were found: nothing done\n\n');
     return;
 end
@@ -123,44 +92,24 @@ end
 fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
 pause;
 
-if numel(myFilesDiscardMR) > 1,
-    fprintf('\n\nGoing to process %d file(s) discarding missing responses:\n', ...
-        numel(myFilesDiscardMR));
-    fprintf('%s\n', myFilesDiscardMR{1});
+if numel(myFiles) > 1,
+    fprintf('\n\nGoing to process %d file(s):\n', ...
+        numel(myFiles));
+    fprintf('%s\n', myFiles{1});
     
     fprintf('...\n');
-    fprintf('%s\n\n', myFilesDiscardMR{end});
-end
-
-if numel(myFilesIncludeMR) > 1,
-    fprintf('\n\nGoing to process %d file(s) including missing responses:\n', ...
-        numel(myFilesIncludeMR));
-    fprintf('%s\n', myFilesIncludeMR{1});
-    
-    fprintf('...\n');
-    fprintf('%s\n\n', myFilesIncludeMR{end});
+    fprintf('%s\n\n', myFiles{end});
 end
 
 fprintf('\nPress CTRL+C to cancel or any other key to proceed ...\n');
 pause;
 
-%% Run the pipeline(s)
-if numel(myFilesDiscardMR) > 1,
-    myPipe1 = ssmd_auob.artifact_correction_pipeline(...
-        'Name',                 'stg2', ...
-        'DiscardMissingResp',   true, ...
-        varargin{:});
-    
-    data = run(myPipe1, myFilesDiscardMR{:});
-end
+%% Run the pipeline
+myPipe = ssmd_auob.artifact_correction_pipeline(...
+    'Name',                 'stg2', ...
+    varargin{:});
 
-if numel(myFilesIncludeMR) > 1,
-    myPipe1 = ssmd_auob.artifact_correction_pipeline(...
-        'Name',                 'stg2', ...
-        'DiscardMissingResp',   false, ...
-        varargin{:});
-    
-    data = run(myPipe1, myFilesIncludeMR{:});
-end
+data = run(myPipe, myFiles{:});
+
 
 end
