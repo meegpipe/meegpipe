@@ -5,6 +5,13 @@ This tutorial illustrates how _meegpipe_ can be used to correct ocular
 artifacts using a classical technique: regressing out one or more reference
 EOG signals from your EEG data.
 
+## Prerequisites
+
+This tutorial assumes that you have already installed and ininitialized
+_meegpipe_. If you haven't done so, then please follow the [installation
+instructions](http://germangh.com/meegpipe). For this tutorial you do not need
+to install any of the recommended dependencies.
+
 ## The sample dataset
 
 For this tutorial we will use the sample (epoched) dataset that comes with
