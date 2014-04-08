@@ -1,5 +1,5 @@
 function myPipe = erp_pipeline(varargin)
-% ERP_PIPELINE - ERP analysis pipeline
+% ERP_PIPELINE - ERP computation pipeline
 
 import meegpipe.node.*;
 import misc.process_arguments;

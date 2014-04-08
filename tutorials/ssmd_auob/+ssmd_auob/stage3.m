@@ -1,7 +1,7 @@
 function data = stage3(varargin)
-% STAGE2 - Artifact correction
+% STAGE3 - ERP computation
 %
-% stage2('option1', val1, 'option2', val2, ...)
+% stage3('option1', val1, 'option2', val2, ...)
 %
 % Where 'optionX', valX, are optional parameters. See below for a list of
 % the options that are recognized by this function. Any non-recognized
@@ -10,15 +10,13 @@ function data = stage3(varargin)
 %
 % ## Accepted arguments (as key/value pairs):
 %
-% IncludeMissingResp   :   (numeric array) Default: [151 152]
-%                          An array of subjects IDs for which events with
-%                          missing responses should be included in the
-%                          analysis. 
+% Subject              :   (numeric array) Default: setdiff(1:500, [151 152])
+%                          An array of subjects IDs for which the ERPs
+%                          should be computed.
 %
-% DiscardMissingResp   :   (numeric array) Default: setdiff(1:1000, IncludeMissingResp)
-%                          An array of subject IDs for which events with
-%                          missing responses should be discarded (the
-%                          normal case).
+% DiscardMissingResp   :  (logical) Default: true
+%                          Should events with missing responses be
+%                          discarded and not used for ERP computation?
 %
 % Condition            :   (cell array) Default: {'arsq', 'baseline', 'pvt', 'rs'}
 %                          List of experimental conditions to consider for
@@ -35,14 +33,14 @@ function data = stage3(varargin)
 %
 % ## Usage examples:
 %
-% % Run the analysis for all subjects but do not discard missing responses
+% % Compute the ERP for all subjects but do not discard missing responses
 % % subjects 151 and 152. Also, run the processing jobs at 'long.q' instead
 % % of at the default OGE queue ('short.q'):
 %
-% stage2('IncludeMissingResp', [151 152], 'Queue', 'long.q');
+% stage3('Subject', [151 152], 'DiscardMissingResp', false, 'Queue', 'long.q');
 %
 %
-% See also: ssmd_auob.artifact_correction_pipeline, ssmd_auob.stage1
+% See also: ssmd_auob.erp_pipeline, ssmd_auob.stage2
 
 meegpipe.initialize;
 
@@ -56,15 +54,18 @@ import misc.find_latest_dir;
 
 % Subjects 151 and 152 are special because for those subjects we should not
 % discard events that have missing responses
-opt.Subject                 = setdiff(1:200, [151 152]);
 opt.DiscardMissingResp      = true;
-opt.Queue                   = 'short.q';    
+opt.Subject                 = setdiff(1:500,[151 152]); 
 opt.InputDir                = '';
 opt.OutputDir               = ...
     ['/data1/projects/ssmd-erp/analysis/stage3/' datestr(now, 'yymmdd-HHMMSS')];
 
 [thisArgs, varargin] = split_arguments(opt, varargin);
 [~, opt] = process_arguments(opt, thisArgs);
+
+if isempty(opt.DiscardMissingResp),
+    opt.DiscardMissingResp =  setdiff(1:500, opt.IncludeMissingResp);
+end
 
 if isempty(opt.InputDir),
    % use the latest dir under /data1/projects/ssmd-erp/analysis/stage2
@@ -83,7 +84,7 @@ else
     subjRegex = num2str(opt.Subject);
 end
 
-regex = ['_0+(' subjRegex ')_.+_stage2\.pseth?$'];
+regex = ['_0+(' subjRegex ')_.+_stg2\.pseth?$'];
 files = finddepth_regex_match(opt.InputDir, regex);
 link2files(files, opt.OutputDir);
 
@@ -94,7 +95,7 @@ allFiles = {};
 for i = 1:numel(opt.Subject)   
     % A regular expression that matches the names of all the files
     % that we want to merge for this subject
-    regex = ['_0+' num2str(opt.Subject(i)) '_.+_stage2\.pseth$'];
+    regex = ['_0+' num2str(opt.Subject(i)) '_.+_stg2\.pseth$'];
    
     % We now find the links that we just generated above
     files = finddepth_regex_match(opt.OutputDir, regex);
@@ -112,8 +113,6 @@ end
 myPipe = ssmd_auob.erp_pipeline(...
     'Name',                 'stg3', ...
     'Queue',                'short.q', ...
-    'OGE',                  true, ...
-    'GenerateReport',       true, ...
     'DiscardMissingResp',   opt.DiscardMissingResp, ...
     varargin{:});
 
