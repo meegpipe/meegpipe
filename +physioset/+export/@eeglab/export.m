@@ -70,7 +70,7 @@ end
 [path, name, ~] = fileparts(fName);
 
 if verbose,
-    fprintf([verboseLabel sprintf('Exporting to %s.set...', [path name])]);
+    fprintf([verboseLabel 'Exporting to %s.set...'], [path name]);
 end
 cmd = sprintf(['pop_saveset(EEG, ''filepath'', ''%s'', ''filename'', ' ...
     '''%s'')'], path, name);

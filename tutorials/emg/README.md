@@ -51,7 +51,7 @@ nodeList = {};
 % The first node: imports .set files into MATLAB
 myImporter = physioset.import.eeglab;
 myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
-nodeList = [nodeList {myNode}]
+nodeList = [nodeList {myNode}];
 
 % The second node: uses a BSS-CCA filter to try to minimize EMG artifacts
 % CCA is performed in sliding windows of 5 seconds (with 50% overlap) and the
@@ -60,21 +60,44 @@ myNode = aar.emg.cca_sliding_window(...
     'WindowLength',     5, ...
     'WindowOverlap',    50, ...
     'CorrectionTh',       50);
-nodeList = [nodeList {myNode}]
+nodeList = [nodeList {myNode}];
 
 % The third node: store the results as an EEGLAB's .set file
 myExporter = physioset.export.eeglab;
-myNode = meegpipe.node.physioset_export.new('Exporter', myExporter)
-nodeList = [nodeList {myNode}]
+myNode = meegpipe.node.physioset_export.new('Exporter', myExporter, 'Save', true);
+nodeList = [nodeList {myNode}];
 
-% We are now ready to build the pipeline
-myPipe = meegpipe.node.pipeline.new('NodeList', nodeList);
+% We are now ready to build the pipeline (which I decide to name 'emg-corr')
+myPipe = meegpipe.node.pipeline.new(...
+    'NodeList', nodeList, ...
+    'Name',     'emg-corr');
 ````
 
-We can now clean the sample data file using:
+
+## Cleaning the sample dataset
+
+Once the pipeline has been defined, we can simply run the following command to
+process the sample data file:
 
 ````matlab
-run(myPipe, 'f1_750to810.set');
+cleanedData = run(myPipe, 'f1_750to810.set');
+cleanedDataFile = [ get_full_dir(cleanedData, 'f1_750to810.set') filesep ...
+    f1_750to810_emg-corr.set' ];
 ````
+
+We could now start EEGLAB, load the original and the cleaned data file
+('cleanedDataFile') and compare them in EEGLAB. Alternatively, we can import
+the original `.set` file into _meegpipe_'s data format using:
+
+````matlab
+origData = import(physioset.import.eeglab, 'f1_750to810.set')
+````
+
+And compare how it with the cleaned data:
+
+````matlab
+plot(origData, cleanedData);
+````
+
 
 
