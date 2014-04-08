@@ -91,7 +91,7 @@ import the original `.set` file into _meegpipe_'s data format using:
 origData = import(physioset.import.eeglab, 'f1_750to810.set')
 ````
 
-And compare how it with the cleaned data:
+And compare it with the cleaned data:
 
 ````matlab
 plot(origData, cleanedData);
