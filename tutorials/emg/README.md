@@ -64,7 +64,7 @@ myNode = aar.emg.cca_sliding_window(...
 nodeList = [nodeList {myNode}];
 
 % The third node: store the results as an EEGLAB's .set file
-myExporter = physioset.export.eeglab('FileName', 'cleaned-data.set');
+myExporter = physioset.export.eeglab('FileName', 'cleaned-data');
 myNode = meegpipe.node.physioset_export.new('Exporter', myExporter);
 nodeList = [nodeList {myNode}];
 
@@ -82,13 +82,10 @@ process the sample data file:
 
 ````matlab
 cleanedData = run(myPipe, 'f1_750to810.set');
-cleanedDataFile = [ get_full_dir(myPipe, 'f1_750to810.set') filesep ...
-    'node-03-physioset_export/f1_750to810_emg-corr.set' ];
 ````
-
-We could now start EEGLAB, load the original and the cleaned data file
-('cleanedDataFile') and compare them in EEGLAB. Alternatively, we can import
-the original `.set` file into _meegpipe_'s data format using:
+We could now start EEGLAB, load the original (`f1_750to810.set`) and the cleaned
+data file (`cleaned-data.set`) and compare them in EEGLAB. Alternatively, we can
+import the original `.set` file into _meegpipe_'s data format using:
 
 ````matlab
 origData = import(physioset.import.eeglab, 'f1_750to810.set')
@@ -102,4 +99,4 @@ plot(origData, cleanedData);
 
 The result should look something like the figure below:
 
-![Directory structure of the pipeline output](./dirtree.png "Ouput produced by the pipeline")
+![EMG-cleaned data](./emg-cleaned.png "EMG-cleaned data")
