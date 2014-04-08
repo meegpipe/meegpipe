@@ -9,22 +9,20 @@ function myNode = cca_sliding_window(varargin)
 %
 % WindowLength      :  The length of the sliding window in seconds    
 %                      Default: 5
+%
+% WindowOverlap     :  The overlap (in percentage) between correlative
+%                      CCA windows. Increasing this value generally leads
+%                      to better correction but considerably increases
+%                      computation time. 
+%                      Default: 50
 % 
-% Correction        :  A correction threshold in percentage. Increasing
-%                      Correction will lead to harsher correction.
-%                      Defaul: 10
+% CorrectionTh      :  A correction threshold in percentage. Increasing
+%                      Correction will lead to a harsher correction.
+%                      Default: 25
 %
-%
-% Default configuration:
-%
-% The default values for the configuration key/values listed above can be
-% obtained as follows:
-%
-% aar.emg.cca_sliding_window.default_[key]
-%
-% For instance, the default WindowLength:
-%
-% aar.emg.cca_sliding_window.default_WindowLength
+% VarTh             :  Variance threshold in percentage. This parameter is
+%                      used to control the number of CCA components. 
+%                      Default: 99.99
 %
 %
 % See also: filter.cca, bss.node.filter, filter.sliding_window
