@@ -41,4 +41,8 @@ in the tutorials may not be publicly available.
   this tutorial is so simple that is should be trivial to follow all the steps
   using your own dataset.
 
+* The [EMG correction tutorial][emg-tut] is a very simple illustration of how
+  _meegpipe_ can be used to minimize muscle artifacts in the EEG.
+
 [eog-tut]: ./eog/README.md
+[emg-tut]: ./emg/README.md
