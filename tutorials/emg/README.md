@@ -97,6 +97,9 @@ And compare how it with the cleaned data:
 plot(origData, cleanedData);
 ````
 
-The result should look something like the figure below:
+The result should look something like the figure below, where you can see that
+the EMG artifacts have been somehow minimized. Removing muscle activity without
+distorting your data too much is very difficult so you should not expect
+EMG correction to perform too well in most cases.
 
 ![EMG-cleaned data](./emg-cleaned.png "EMG-cleaned data")
