@@ -61,7 +61,6 @@ myNode = aar.emg.cca_sliding_window(...
     'WindowOverlap',    50, ...
     'Correction',       50);
 nodeList = [nodeList {myNode}]
-````
 
 % The third node: store the results as an EEGLAB's .set file
 myExporter = physioset.export.eeglab;
