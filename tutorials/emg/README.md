@@ -41,7 +41,7 @@ unzip('https://dl.dropboxusercontent.com/u/4479286/meegpipe/f1_750to810.zip');
 
 The EMG cleaning pipeline is going to consist of three nodes: One for importing
 the data (in EEGLAB's `.set` format), one for performing the cleaning/filtering
-operation, and one to export the result back into EEGLAB's '.set' format. The
+operation, and one to export the result back into EEGLAB's `.set` format. The
 code snippet below defines and builds such a pipeline:
 
 ````matlab
@@ -69,6 +69,12 @@ nodeList = [nodeList {myNode}]
 
 % We are now ready to build the pipeline
 myPipe = meegpipe.node.pipeline.new('NodeList', nodeList);
+````
+
+We can now clean the sample data file using:
+
+````matlab
+run(myPipe, 'f1_750to810.set');
 ````
 
 
