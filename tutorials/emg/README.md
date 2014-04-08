@@ -56,22 +56,22 @@ nodeList = [nodeList {myNode}];
 % The second node: uses a BSS-CCA filter to try to minimize EMG artifacts
 % CCA is performed in sliding windows of 5 seconds (with 50% overlap) and the
 % correction threshold is set to 75% (0%=no correction, 100%=output is flat).
+% We use a very harsh correction to see the effects better
 myNode = aar.emg.cca_sliding_window(...
     'WindowLength',     5, ...
     'WindowOverlap',    50, ...
-    'CorrectionTh',     75);
+    'CorrectionTh',     90);
 nodeList = [nodeList {myNode}];
 
 % The third node: store the results as an EEGLAB's .set file
-myExporter = physioset.export.eeglab;
+myExporter = physioset.export.eeglab('FileName', 'cleaned-data.set');
 myNode = meegpipe.node.physioset_export.new('Exporter', myExporter);
 nodeList = [nodeList {myNode}];
 
 % We are now ready to build the pipeline (which I decide to name 'emg-corr')
 myPipe = meegpipe.node.pipeline.new(...
     'NodeList', nodeList, ...
-    'Name',     'emg-corr', ...
-    'Save',     true);
+    'Name',     'emg-corr');
 ````
 
 
@@ -83,7 +83,7 @@ process the sample data file:
 ````matlab
 cleanedData = run(myPipe, 'f1_750to810.set');
 cleanedDataFile = [ get_full_dir(myPipe, 'f1_750to810.set') filesep ...
-    'f1_750to810_emg-corr.set' ];
+    'node-03-physioset_export/f1_750to810_emg-corr.set' ];
 ````
 
 We could now start EEGLAB, load the original and the cleaned data file
