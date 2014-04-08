@@ -82,7 +82,7 @@ process the sample data file:
 ````matlab
 cleanedData = run(myPipe, 'f1_750to810.set');
 cleanedDataFile = [ get_full_dir(cleanedData, 'f1_750to810.set') filesep ...
-    f1_750to810_emg-corr.set' ];
+    'f1_750to810_emg-corr.set' ];
 ````
 
 We could now start EEGLAB, load the original and the cleaned data file
