@@ -4,7 +4,6 @@ function fName = export(obj, data, fName)
 % See also: export
 
 import physioset.physioset;
-import misc.decompress;
 import pset.file_naming_policy;
 import pset.globals;
 import mperl.file.spec.catfile;
@@ -55,9 +54,9 @@ origVerboseLabel = goo.globals.get.VerboseLabel;
 goo.globals.set('VerboseLabel', verboseLabel);
 
 % Convert to EEGLAB structure
-EEG = eeglab(data, ...
+ftripData = fieldtrip(data, ...
     'BadDataPolicy',    obj.BadDataPolicy, ...
-    'MemoryMapped',     obj.MemoryMapped); %#ok<NASGU>
+    'MemoryMapped',     obj.MemoryMapped); 
 
 if isempty(fName),
    fName = obj.FileName;
@@ -68,16 +67,13 @@ if isempty(fName),
 end
 
 [path, name, ~] = fileparts(fName);
+fName = catfile(path, [name '.mat']);
 
 if verbose,
-    fprintf([verboseLabel 'Exporting to %s.set...'], [path name]);
+    fprintf([verboseLabel 'Exporting to %s.mat...'], [path name]);
 end
-cmd = sprintf(['pop_saveset(EEG, ''filepath'', ''%s'', ''filename'', ' ...
-    '''%s'')'], path, name);
-% To prevent EEGLAB to produce any output to the command window
-evalc(cmd);
+save(fName, ftripData);
 
-fName = catfile(path, [name '.set']);
 if verbose
     fprintf('[done]');
 end

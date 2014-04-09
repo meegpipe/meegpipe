@@ -74,6 +74,35 @@ myPipe = meegpipe.node.pipeline.new(...
     'Name',     'emg-corr');
 ````
 
+### What if the original data is not in EEGLAB format?
+
+The pipeline definition above assumes that the input data file is in EEGLAB's
+`.set` format. Modifying the pipeline to accept other data formats as input is
+typically very easy. You just need to specify a different value for the
+`Importer` property of the `physioset_import` node. If your input data is in
+[Fieldtrip][ftrip] format you would just need to replace the definition of the
+first pipeline node with this one:
+
+````matlab
+% Use this alternative definition for the first node if your input data is a
+% '.mat' file that stores a Fieldtrip data structure
+myImporter = physioset.import.fieldtrip;
+myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
+nodeList = [nodeList {myNode}];
+````
+
+### What if I want the output in a different format?
+
+At this point _meegpipe_ only allows you to export to either _meegpipe_'s own
+`.pset/.pseth` format, to Fieldtrip's `.mat` format, or to EEGLAB's `.set`
+format. If you wanted the output to be in Fieldtrip's format you could specify
+so by defining the third pipeline node as follows:
+
+````matlab
+myExporter = physioset.export.fieldtrip('FileName', 'cleaned-data');
+myNode = meegpipe.node.physioset_export.new('Exporter', myExporter);
+````
+
 
 ## Cleaning the sample dataset
 

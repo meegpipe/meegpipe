@@ -69,9 +69,21 @@ if ~isempty(sensorArray),
     elseif isa(sensorArray, 'sensors.meg'),
         ftripStruct.grad  = fieldtrip(sensorArray);
         ftripStruct.label = orig_labels(sensorArray);
+    elseif isa(sensorArray, 'sensors.dummy'),
+        % Use dummy EEG sensors
+        warning('fieldtrip:UnsupportedSensorClass', ...
+            ['Converting %s sensors into dummy EEG sensors. ' ...
+            'Only MEG or EEG sensors are supported by Fieldtrip.'], ...
+            class(obj.Sensors));
+        sensorArray = sensors.eeg.dummy(nb_sensors(sensorArray));
+        ftripStruct.elec  = fieldtrip(sensorArray);
+        ftripStruct.label = orig_labels(sensorArray);
+        
     else
-        warning(['Cannot convert %s data to Fieldtrip format. ' ...
-            'Only MEG or EEG sensors.are supported.'], class(obj.Sensors));
+        warning('fieldtrip:UnsupportedSensorClass', ...
+            ['Cannot convert %s data to Fieldtrip format. ' ...
+            'Only MEG or EEG sensors are supported by Fieldtrip.'], ...
+            class(obj.Sensors));
         ftripStruct = [];
         restore_selection(obj);
         return;

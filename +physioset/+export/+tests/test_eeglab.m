@@ -1,5 +1,5 @@
 function [status, MEh] = test_eeglab()
-% test_eeglab - Test eeglab exporter
+% TEST_EEGLAB - Test eeglab exporter
 
 import mperl.file.spec.*;
 import physioset.export.eeglab;
