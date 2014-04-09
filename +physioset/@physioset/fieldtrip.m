@@ -127,11 +127,8 @@ else
         ftripStruct.trial{trialItr} = obj.PointSet(:, begSample:endSample);
         
         % Samples corresponding to this trial
-        trialBeg   = get(ev, 'Sample');
-        trialDur   = get(ev, 'Duration');
-        trialSampl = trialBeg:trialBeg+trialDur-1;
         trialTime  = sampling_time(obj);
-        trialTime  = trialTime(trialSampl);
+        trialTime  = trialTime(begSample:endSample);     
         
         ftripStruct.time{trialItr}  = trialTime;
         

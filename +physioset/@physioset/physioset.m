@@ -260,10 +260,8 @@ classdef physioset < ...
             import exceptions.*;
             import goo.from_constructor;
             
-            if ~isempty(v) && ~all(v > -eps),
-                throw(InvalidPropValue('SamplingTime', ...
-                    'Must be an array of positive scalars'));
-            end
+            % Let's allow negative sampling times (e.g. Fieldtrip uses
+            % them when defining epochs/trials). 
             obj.SamplingTime = v;
             
             if ~from_constructor(obj),

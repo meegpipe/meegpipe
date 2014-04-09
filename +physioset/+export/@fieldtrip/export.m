@@ -73,13 +73,12 @@ end
 save(fName, 'ftripData');
 
 if verbose
-    fprintf('[done]');
+    fprintf('[done]\n\n');
 end
 
 %% Undoing stuff 
 
 % Unset the global verbose
 goo.globals.set('VerboseLabel', origVerboseLabel);
-
 
 end
