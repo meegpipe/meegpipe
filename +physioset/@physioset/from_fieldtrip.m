@@ -73,7 +73,7 @@ else
     warning('physioset:MissingSensorInformation', ...
         ['Fieldtrip structure does not contain sensor information:' ...
         'Assuming vanilla EEG sensors.']);
-    sensorsObj = sensors.eeg.empty();
+    sensorsObj = sensors.eeg('Label', str.label);  
 end
 
 % Create an event per trial
