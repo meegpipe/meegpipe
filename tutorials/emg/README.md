@@ -83,12 +83,21 @@ typically very easy. You just need to specify a different value for the
 [Fieldtrip][ftrip] format you would just need to replace the definition of the
 first pipeline node with this one:
 
+[ftrip]: http://fieldtrip.fcdonders.nl/
+
 ````matlab
 % Use this alternative definition for the first node if your input data is a
 % '.mat' file that stores a Fieldtrip data structure
 myImporter = physioset.import.fieldtrip;
 myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
-nodeList = [nodeList {myNode}];
+````
+
+If the original data was in [EGI][egi]'s proprietary `.mff` format then you
+would have done instead:
+
+````matlab
+myImporter = physioset.import.mff;
+myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
 ````
 
 ### What if I want the output in a different format?
