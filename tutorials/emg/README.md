@@ -95,6 +95,8 @@ myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
 If the original data was in [EGI][egi]'s proprietary `.mff` format then you
 would have done instead:
 
+[egi]: http://www.egi.com/
+
 ````matlab
 myImporter = physioset.import.mff;
 myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
