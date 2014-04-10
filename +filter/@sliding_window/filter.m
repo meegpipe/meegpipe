@@ -41,6 +41,13 @@ if verbose,
 end
 tinit = tic;
 myFilt = set_verbose(obj.Filter, false);
+
+if isa(x, 'physioset.physioset'),
+    sr = x.SamplingRate;
+else
+    sr = [];
+end
+
 for i = 1:numel(winOnset)
     
     winTimeRange = winOnset(i):winOnset(i)+winLength-1;
@@ -48,10 +55,9 @@ for i = 1:numel(winOnset)
     if nargin > 2, 
         % To make it work with regression filters as well
         thisY = filter(myFilt, x(:, winTimeRange), ...
-            varargin{1}(:, winTimeRange), 'SamplingRate', x.SamplingRate);
+            varargin{1}(:, winTimeRange), 'SamplingRate', sr);
     else
-        thisY = filter(myFilt, x(:, winTimeRange), 'SamplingRate', ...
-            x.SamplingRate);
+        thisY = filter(myFilt, x(:, winTimeRange), 'SamplingRate', sr);
     end
     
     y(:, winTimeRange(winTimeRange > lastSample)) = 0;
