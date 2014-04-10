@@ -54,7 +54,7 @@ origVerboseLabel = goo.globals.get.VerboseLabel;
 goo.globals.set('VerboseLabel', verboseLabel);
 
 % Convert to EEGLAB structure
-ftripData = fieldtrip(data, 'BadDataPolicy',    obj.BadDataPolicy); 
+ftripData = fieldtrip(data, 'BadDataPolicy', obj.BadDataPolicy); 
 
 if isempty(fName),
    fName = obj.FileName;

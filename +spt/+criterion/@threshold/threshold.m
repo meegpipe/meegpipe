@@ -133,7 +133,6 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
                     'Must be a cell array of function_handle or scalars'));
             end
             obj.Min = value;
-            
         end
          
         function obj = set.Max(obj, value)

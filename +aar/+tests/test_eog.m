@@ -100,8 +100,7 @@ try
     snrOrig = signal_to_noise(data, S);
     
     lasipFilt = get_config(bss.eog, 'Filter');
-    lasipFilt = set_verbose_level(lasipFilt, 0);
-    
+
     myNode = bss.eog(...
         'Criterion',        myCrit, ...
         'RetainedVar',      100, ...
@@ -145,7 +144,6 @@ try
         'MaxCard',  Inf);
     
     lasipFilt = get_config(meegpipe.node.bss.eog, 'Filter');
-    lasipFilt = set_verbose_level(lasipFilt, 0);
     
     myNode = meegpipe.node.bss.eog(...
         'Criterion',        myCrit, ...
@@ -172,7 +170,7 @@ try
     data = get_real_data;
     
     myCrit = get_config(meegpipe.node.bss.eog, 'Criterion');
-    myCrit.Max = {20 15};
+    myCrit.Max = {20 15 2};
     myCrit.MaxCard = Inf;
     
     lasipFilt = filter.lasip.eog('Decimation', 40);
