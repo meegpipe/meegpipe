@@ -204,17 +204,17 @@ try
     data = my_sample_data();
     
     myCrit = meegpipe.node.bad_epochs.criterion.stat.new(...
-        'ChannelStat',  @(x) var(x), ...
-        'EpochStat',    @(chanVars) mean(chanVars), ...
-        'Max',          0.6 ...
+        'ChannelStat',  @(x) max(x), ...
+        'EpochStat',    @(chanMax) max(chanMax), ...
+        'Max',          15 ...
         );
     
-    myNode = sliding_window([], [], 'Criterion', myCrit);
+    myNode = sliding_window(1, 1, 'Criterion', myCrit);
     
     run(myNode, data);
     
-    % The sliding_window creates epochs of duration 1s (125 samples)
-    ok(numel(find(is_bad_sample(data))) == 125, name);
+    % The sliding_window creates epochs of duration 1s
+    ok(numel(find(is_bad_sample(data))) == data.SamplingRate, name);
     
 catch ME
     
