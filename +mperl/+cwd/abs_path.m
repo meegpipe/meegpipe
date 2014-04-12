@@ -21,9 +21,13 @@ if iscell(path),
         
     end
 else
-   
-    plFile = catfile(root_path, 'abs_path.pl');
-    y = perl(plFile, path);
+    if ~exist(path, 'dir') & ~exist(path, 'file'),
+        y = path;
+    else
+        plFile = catfile(root_path, 'abs_path.pl');
+        y = perl(plFile, path);
+    end
+    
     y = strrep(y, '/', filesep);
 end
 
