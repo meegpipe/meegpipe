@@ -1,5 +1,5 @@
 function [innermost, inside] = find_innermost_boundary(bnd)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FIND_INNERMOST_BOUNDARY locates innermost compartment of a BEM model
 % by looking at the containment of the triangular meshes describing 
 % the surface boundaries

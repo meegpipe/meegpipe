@@ -1,5 +1,5 @@
 function [C,R] = fitsphere(pnt)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FITSPHERE fits the centre and radius of a sphere to a set of points
 % using Taubin's method.
 %

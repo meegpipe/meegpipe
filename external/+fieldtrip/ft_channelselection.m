@@ -1,5 +1,5 @@
 function [channel] = ft_channelselection(desired, datachannel)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FT_CHANNELSELECTION for EEG and MEG labels
 %
 % This function translates the user-specified list of channels into channel

@@ -1,5 +1,5 @@
 function ft_defaults
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FT_DEFAULTS is called at the begin of all FieldTrip functions and
 % contains some defaults and path settings
 % (formerly known as fieldtripdefs.m)

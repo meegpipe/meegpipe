@@ -1,5 +1,5 @@
 function [outermost, inside] = find_outermost_boundary(bnd)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FIND_OUTERMOST_BOUNDARY locates outermost compartment of a BEM model
 % by looking at the containment of the triangular meshes describing 
 % the surface boundaries

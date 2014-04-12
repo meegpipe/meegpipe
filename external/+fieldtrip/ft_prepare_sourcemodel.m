@@ -1,5 +1,5 @@
 function [grid, cfg] = ft_prepare_sourcemodel(cfg, vol, sens)
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 % FT_PREPARE_SOURCEMODEL helps to make a source model that can be
 % used for source reconstruction, beamformer scanning, linear

@@ -1,5 +1,5 @@
 function [type] = ft_voltype(vol, desired)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FT_VOLTYPE determines the type of volume conduction model
 %
 % Use as

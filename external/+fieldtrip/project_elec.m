@@ -1,5 +1,5 @@
 function [el, prj] = project_elec(elc, pnt, tri)
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 % PROJECT_ELEC projects electrodes on a triangulated surface
 % and returns triangle index, la/mu parameters and distance

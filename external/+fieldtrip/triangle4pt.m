@@ -1,5 +1,5 @@
 function vol = triangle4pt(vol)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FORMAT vol = triangle4pt(vol)
 %
 % Takes the volume model and estimates the 4th point of each triangle of

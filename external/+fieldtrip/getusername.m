@@ -1,5 +1,5 @@
 function user = getusername()
-import external.fieldtrip.*;
+import fieldtrip.*;
 % USERNAME
 %
 % Use as

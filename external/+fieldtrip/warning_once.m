@@ -1,5 +1,5 @@
 function [ws warned] = warning_once(varargin)
-import external.fieltrip.*;
+import fieltrip.*;
 %
 % Use as
 %  warning_once(string)

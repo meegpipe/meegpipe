@@ -1,6 +1,6 @@
 function [status] = ft_hastoolbox(toolbox, autoadd, silent)
-import external.fieldtrip.*;
-import external.bemcp.*;
+import fieldtrip.*;
+import bemcp.*;
 % FT_HASTOOLBOX tests whether an external toolbox is installed. Optionally
 % it will try to determine the path to the toolbox and install it
 % automatically.

@@ -1,5 +1,5 @@
-function [inside] = bounding_mesh(pos, pnt, tri);
-import external.fieldtrip.*;
+function [inside] = bounding_mesh(pos, pnt, tri)
+import fieldtrip.*;
 % BOUNDING_MESH determines if a point is inside/outside a triangle mesh 
 % whereby the bounding triangle mesh should be closed.
 %

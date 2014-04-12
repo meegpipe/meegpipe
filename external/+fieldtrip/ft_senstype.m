@@ -1,5 +1,5 @@
 function [type] = ft_senstype(input, desired)
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 % FT_SENSTYPE determines the type of sensors by looking at the channel names
 % and comparing them with predefined lists.

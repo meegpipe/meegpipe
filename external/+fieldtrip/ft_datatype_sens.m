@@ -1,5 +1,5 @@
 function [sens] = ft_datatype_sens(sens, varargin)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FT_DATATYPE_SENS describes the FieldTrip structure that represents
 % an EEG, ECoG, or MEG sensor array. This structure is commonly called
 % "elec" for EEG and "grad" for MEG, or more general "sens" for either

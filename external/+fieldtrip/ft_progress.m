@@ -1,5 +1,5 @@
 function ft_progress(varargin)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FT_PROGRESS shows a graphical or non-graphical progress indication similar
 % to the standard Matlab WAITBAR function, but with the extra option of
 % printing it in the command window as a plain text string or as a rotating

@@ -1,5 +1,5 @@
 function sens = undobalancing(sens)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % UNDOBALANCING removes all balancing coefficients from the gradiometer sensor array
 %
 % This is used in CHANNELPOSITION, FT_PREPARE_LAYOUT

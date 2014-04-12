@@ -1,5 +1,5 @@
 function [tra] = transfer_elec(pnt, tri, el); 
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 % TRANSFER_ELEC is the transfermatrix from vertex to electrode potentials
 % using bi-linear interpolation over the triangles

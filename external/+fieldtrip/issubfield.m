@@ -1,5 +1,5 @@
 function [r] = issubfield(s, f)
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 % ISSUBFIELD tests for the presence of a field in a structure just like the standard
 % Matlab ISFIELD function, except that you can also specify nested fields

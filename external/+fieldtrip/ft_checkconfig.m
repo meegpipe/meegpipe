@@ -1,5 +1,5 @@
 function [cfg] = ft_checkconfig(cfg, varargin)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % FT_CHECKCONFIG checks the input cfg of the main FieldTrip functions.
 %
 % 1: It checks whether the cfg contains all the required options, it gives

@@ -1,5 +1,5 @@
 function label = ft_senslabel(type)
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 % FT_SENSLABEL returns a list of predefined sensor labels given the
 % EEG or MEG system type which can be used to detect the type of data.

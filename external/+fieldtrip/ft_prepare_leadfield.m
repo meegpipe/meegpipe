@@ -1,5 +1,5 @@
 function [grid, cfg] = ft_prepare_leadfield(cfg, data)
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 % FT_PREPARE_LEADFIELD computes the forward model for many dipole locations
 % on a regular 2D or 3D grid and stores it for efficient inverse modelling

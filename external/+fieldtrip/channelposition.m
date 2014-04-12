@@ -1,5 +1,5 @@
 function [pnt, ori, lab] = channelposition(sens, varargin)
-import external.fieldtrip.*;
+import fieldtrip.*;
 % CHANNELPOSITION
 %
 % Use as

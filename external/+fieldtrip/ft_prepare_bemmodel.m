@@ -1,4 +1,3 @@
-
 function [vol, cfg] = ft_prepare_bemmodel(cfg, mri)
 % FT_PREPARE_BEMMODEL constructs triangulations of the boundaries between
 % multiple segmented tissue types in an anatomical MRI and subsequently

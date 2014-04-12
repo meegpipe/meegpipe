@@ -1,5 +1,5 @@
 function [vol, sens, cfg] = prepare_headmodel(cfg, data)
-import external.fieldtrip.*;
+import fieldtrip.*;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SUBFUNCTION that helps to prepare the electrodes/gradiometers and the volume
