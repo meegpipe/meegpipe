@@ -87,8 +87,12 @@ classdef eeglab_fir < filter.abstract_dfilt
                 tinit = tic;
             end
             for i = 1:size(data,1)
-                data(i,:) = filter.eeglab_fir.firfilt(data(i,:), b, ...
-                    obj.NbFrames, evBndry); 
+                % Weird, but if we don't first get data(i,:) into x, the
+                % following command generates a subasgn warning that is not
+                % displayed but that screws up some of the tests. This
+                % seems to be system specific.
+                x = data(i,:);
+                data(i,:) = filter.eeglab_fir.firfilt(x, b, obj.NbFrames, evBndry); 
                 if v,
                     misc.eta(tinit, size(data,1), i);
                 end
