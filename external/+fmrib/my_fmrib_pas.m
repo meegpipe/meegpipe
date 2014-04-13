@@ -6,6 +6,8 @@
 
 function eegout=my_fmrib_pas(eegin,fs,Peaks,method, npc)
 
+import fmrib.*;
+
 QRSevents=Peaks;
 
 if nargin < 5 || isempty(npc),
