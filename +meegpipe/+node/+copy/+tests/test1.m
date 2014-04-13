@@ -160,7 +160,7 @@ end
 try
     
     name = 'process sample data';
-    myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix');
+    myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', 'Save', true);
     data = import(physioset.import.matrix, randn(10, 1000));
     dataCopy = run(myNode, data);
     
