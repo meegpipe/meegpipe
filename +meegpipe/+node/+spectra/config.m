@@ -13,7 +13,7 @@ classdef config < meegpipe.node.abstract_config
         Estimator      = ...
             @(fs)spectrum2.percentile('Estimator', ...
             spectrum.welch('Hamming', fs*3));
-        Channels       = 1:300;
+        Channels       = @(data) labels(sensors(data));
         Channels2Plot  = [];  % The channel sets to plot
         ROI            = meegpipe.node.spectra.eeg_bands;
         Normalized     = true;
@@ -128,7 +128,7 @@ classdef config < meegpipe.node.abstract_config
             import meegpipe.node.spectra.config;
             
             if isempty(value),
-                obj.Channels = 1:300;
+                obj.Channels = @(data) labels(sensors(data));;
                 return;
             end
             

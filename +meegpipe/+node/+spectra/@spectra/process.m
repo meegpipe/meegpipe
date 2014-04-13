@@ -70,7 +70,7 @@ if verbose,
         numel(ev), dur);
 end
 
-if ischar(channels),
+if ~iscell(channels),
     channels = {channels};
 end
 

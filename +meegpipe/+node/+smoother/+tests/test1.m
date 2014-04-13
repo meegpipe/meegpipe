@@ -15,7 +15,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(9);
+initialize(10);
 
 %% Create a new session
 try
