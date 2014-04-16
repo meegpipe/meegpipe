@@ -82,6 +82,9 @@ try
     dataCopy = copy(data);
     
     myCrit = get_config(meegpipe.node.bss.pwl, 'Criterion');
+    
+    myCrit.MinCard = 2;
+    myCrit.MaxCard = 2;
    
     myNode = meegpipe.node.bss.pwl(...
         'Criterion',        myCrit, ...
@@ -99,8 +102,8 @@ try
     icSelection = val(cfg, 'bss', 'selection', true);
     icSelection = cellfun(@(x) str2double(x), icSelection);
      
-    ok(max(abs(data(:)-newData(:))) > 100 & ...
-        numel(icSelection) == 2 & all(icSelection(:) == [1 2]'), name);
+    ok(max(abs(data(:)-newData(:))) > 100 && ...
+        numel(icSelection) == 2 && all(icSelection(:) == [1 2]'), name);
     
 catch ME
     
