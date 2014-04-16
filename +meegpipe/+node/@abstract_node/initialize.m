@@ -92,6 +92,9 @@ end
 %% Store node configuration hash
 set_static(obj, 'hash', 'config', get_hash_code(get_config(obj)));
 
+fid = get_log(obj, 'timing.csv');
+fprintf(fid, 'start_time, end_time\n');
+fprintf(fid, '%s,', datestr(now));
 
 %% Initialize node report
 
