@@ -5,13 +5,18 @@ function myPipe = extract_pvt_features_pipeline(varargin)
 import meegpipe.node.*;
 import physioset.event.class_selector;
 import pset.selector.sensor_label;
+import misc.process_arguments;
+import misc.split_arguments;
+
+opt.Importer = physioset.import.physioset;
+[thisArgs, varargin] = split_arguments(opt, varargin);
+[~, opt] = process_arguments(opt, thisArgs);
 
 % Initialize the list of nodes that the pipeline will contain
 nodeList = {};
 
 %% Node 1: data import
-myImporter = physioset.import.physioset;
-myNode = physioset_import.new('Importer', myImporter);
+myNode = physioset_import.new('Importer', opt.Importer);
 nodeList = [nodeList {myNode}];
 
 %% Node 2: Extract event features

@@ -6,17 +6,23 @@ import physioset.event.class_selector;
 import pset.selector.event_selector;
 import physioset.event.value_selector;
 
+import misc.process_arguments;
+import misc.split_arguments;
+
+
+% Use AutoDestroyMemMap because the data files can be quite huge 
+opt.Importer = physioset.import.physioset('AutoDestroyMemMap', true);
+opt.NbEpochs = 9;
+[thisArgs, varargin] = split_arguments(opt, varargin);
+[~, opt] = process_arguments(opt, thisArgs);
+
 nodeList = {};
 
 %% NODE: Data importer
 
 % The raw data files (in .mff format) have been previously splitted into
 % single sub-block files in .pseth format.
-
-% Use AutoDestroyMemMap because the data files can be quite huge 
-myImporter = physioset.import.physioset('AutoDestroyMemMap', true);
-
-myNode = physioset_import.new('Importer', myImporter);
+myNode = physioset_import.new('Importer', opt.Importer);
 nodeList = [nodeList {myNode}];
 
 %% NODE: Create a subset of the data that contains only the temp channels
@@ -47,24 +53,6 @@ nodeList = [nodeList {myNode}];
 
 % * Average temp value in every data epoch at all sensor locations
 
-% At most there are 9 epochs within a subblock (in the baseline block). We
-% thus use 9 selectors, each of which will select events with a given
-% Value. The trick here is that the periodic_generator event generator that
-% we used above set the value property of each generated event to their
-% index in the array of all generated events. So if the ev_gen node above
-% processes a baseline sub-block (which lasts 9 mins) then it generates 9
-% events of type __TempEpoch, with their Value property set to 1, 2, ...,9.
-%
-% For more information on events, event generators and event selectors, see:
-%
-% https://github.com/meegpipe/meegpipe/tree/master/%2Bphysioset/%2Bevent
-%
-% Each selector below will produce a row of the features table
-selector = cell(9, 1);
-for i = 1:9
-    selector{i} = event_selector(value_selector(i));
-end
-
 % List of extracted features for each epoch
 % epoch_idx, epoch_onset_abs_time, ..., chan_1, chan_2, ..., chan_12
 featList  = cell(16, 1);
@@ -88,6 +76,25 @@ featList(1:4) = {...
 for i = 1:12
     featNames{i+4} = sprintf('chan%d', i);
     featList{i+4} = @(x, ev, sel) mean(x(i,:));
+end
+
+
+% At most there are 9 epochs within a subblock (in the baseline block). We
+% thus use 9 selectors, each of which will select events with a given
+% Value. The trick here is that the periodic_generator event generator that
+% we used above set the value property of each generated event to their
+% index in the array of all generated events. So if the ev_gen node above
+% processes a baseline sub-block (which lasts 9 mins) then it generates 9
+% events of type __TempEpoch, with their Value property set to 1, 2, ...,9.
+%
+% For more information on events, event generators and event selectors, see:
+%
+% https://github.com/meegpipe/meegpipe/tree/master/%2Bphysioset/%2Bevent
+%
+% Each selector below will produce a row of the features table
+selector = cell(opt.NbEpochs, 1);
+for i = 1:opt.NbEpochs
+    selector{i} = event_selector(value_selector(i));
 end
 
 myNode = generic_features.new(...
