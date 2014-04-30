@@ -18,7 +18,7 @@ verboseLabel = '(meegpipe) ';
 fprintf(['\n\n' verboseLabel 'Initializing...\n\n']);
 
 if nargin < 1 || isempty(cfg),
-    cfg = get_config(); 
+    cfg = get_config();
     fprintf([verboseLabel 'Read meegpipe configuration from %s\n\n'], ...
         cfg.File);
 end
@@ -27,9 +27,9 @@ end
 depList = group_members(cfg, 'matlab');
 
 if isempty(depList),
-   warning('meegpipe:initialize:MissingDependencyList', ...
-       ['No matlab-dependencies section found in %s\n' ...
-       'The configuration file may be invalid'], cfg.File); 
+    warning('meegpipe:initialize:MissingDependencyList', ...
+        ['No matlab-dependencies section found in %s\n' ...
+        'The configuration file may be invalid'], cfg.File);
 end
 
 if ischar(depList) && ~isempty(depList), depList = {depList}; end
@@ -51,10 +51,10 @@ for i = 1:numel(depList)
         probPaths = val(cfg, depList{i}, 'problematic_paths', true);
         probPaths = cellfun(@(x, y) [depRoot(x) y], ...
             repmat(depList(i), numel(probPaths), 1), probPaths, ...
-            'UniformOutput', false);  
+            'UniformOutput', false);
         remove_from_path(probPaths);
     end
-
+    
 end
 
 fprintf([verboseLabel 'Done with initialization\n\n']);
@@ -67,6 +67,7 @@ function remove_from_path(dirList)
 
 import mperl.join;
 import mperl.split;
+import misc.dir;
 
 verboseLabel = '(meegpipe) ';
 
@@ -75,16 +76,32 @@ pathList = split(sep, path);
 pathList2 = cellfun(@(x) strrep(x, '\', '/'), pathList, ...
     'UniformOutput', false);
 
-fprintf([verboseLabel 'Removing problematic dirs from path:\n\n']);
+% Remove also sub-directories
+subdirList = cell(size(dirList));
+for i = 1:numel(subdirList)
+    if ~exist(dirList{i}, 'dir'), continue; end
+    thisSubdirs = dir(dirList{i}, '.+', true, true);
+    if ~isempty(thisSubdirs),
+        subdirList(i) = thisSubdirs;
+    end
+end
+dirList = [dirList(:); cell2mat(subdirList)];
+
+fprintf([verboseLabel 'Attempting to remove problematic dirs from path:\n\n']);
 fprintf(join('\n', dirList));
 fprintf('\n\n');
 
+fprintf([verboseLabel 'Removed the following paths:\n\n']);
+fprintf(join('\n', dirList));
 for i = 1:numel(dirList)
     
     isProblematic = cellfun(@(x) ~isempty(strfind(x, dirList{i})), pathList2);
-    
-    cellfun(@(x) rmpath(x), pathList(isProblematic));
+    if ~any(isProblematic), continue; end
+    tobeRemoved = pathList(isProblematic);
+    fprintf(join('\n', tobeRemoved));
+    cellfun(@(x) rmpath(x), tobeRemoved);
     
 end
+fprintf('\n\n');
 
 end

@@ -1,6 +1,7 @@
 function varargin = varargin2str(varargin)
 
 import mperl.join;
+import misc.any2str;
 
 if nargin == 1 && iscell(varargin{1}),
     varargin = varargin{1};
