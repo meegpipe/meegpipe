@@ -49,7 +49,8 @@ for i = 1:numel(depList)
         addpath(genpath(depPath));
         % Remove problematic paths
         probPaths = val(cfg, depList{i}, 'problematic_paths', true);
-        probPaths = cellfun(@(x, y) [depRoot(x) y], depList, probPaths, ...
+        probPaths = cellfun(@(x, y) [depRoot(x) y], ...
+            repmat(depList(i), numel(probPaths), 1), probPaths, ...
             'UniformOutput', false);  
         remove_from_path(probPaths);
     end
