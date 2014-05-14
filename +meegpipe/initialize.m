@@ -98,6 +98,7 @@ for i = 1:numel(dirList)
     isProblematic = cellfun(@(x) ~isempty(strfind(x, dirList{i})), pathList2);
     if ~any(isProblematic), continue; end
     tobeRemoved = pathList(isProblematic);
+    tobeRemoved = cellfun(@(x) strrep(x, '\', '/'), tobeRemoved, 'UniformOutput', false);
     fprintf(join('\n', tobeRemoved));
     cellfun(@(x) rmpath(x), tobeRemoved);
     
