@@ -133,6 +133,17 @@ classdef config < meegpipe.node.abstract_config
         
         function obj = config(varargin)
             
+            % Translate FeatureDescriptors -> FirstLevel, for backwards
+            % compatibility
+            if nargin > 1,
+                for i = 1:2:nargin
+                   if ismember(lower(varargin{i}), ...
+                           {'featuredescriptors', 'featuredescriptor'}), 
+                       varargin{i} = 'FirstLevel';
+                   end
+                end
+            end
+            
             obj = obj@meegpipe.node.abstract_config(varargin{:});
             
             global_check(obj);

@@ -7,12 +7,12 @@ import mperl.file.spec.catfile;
 FILE_NAME = '.git/refs/heads/master';
 
 dirName = rel2abs([meegpipe.root_path filesep '..']);
-
+fileName = catfile(dirName, FILE_NAME);
 %currDir = pwd;
 try
     %cd(dirName);
-    if exist(FILE_NAME, 'file')
-        fid = safefid.fopen(catfile(dirName, FILE_NAME), 'r');
+    if exist(fileName, 'file')
+        fid = safefid.fopen(fileName, 'r');
         id = fid.fgetl;
     else
         % If the user followed the installation instructions on the web,
