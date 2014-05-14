@@ -259,6 +259,7 @@ if fid < 1,
 end
 
 nbSamples = 0;
+nbSensors = [];
 try
     if verbose,
         fprintf('%sWriting data to %s...', verboseLabel, newFileName);
@@ -316,6 +317,12 @@ try
         
         % Write data to disk
         data = cell2mat(data);
+        if isempty(nbSensors),
+            nbSensors = size(data,1);
+        elseif size(data,1) ~= nbSensors,
+            error('mff:DimMismatch', ...
+                'Inconsistent data dimensionality');
+        end
         nbSamples = nbSamples + size(data,2);
         fwrite(fid, data(:), obj.Precision);
         [data, ~, fidBins] = read_data(fileName, ...
@@ -401,6 +408,24 @@ if numel(hdr.epochs) > 1,
         
     end
     
+end
+
+% hack to deal with broken .mff files in which the sensor info does not
+% match the number of data channels actually available in the .bin files.
+% If Netstation crashes it may fail to save the data from PIB into a .bin
+% file and therefore the sensor information should be updated to take into
+% account that the PIB box channels are missing
+
+if nbSensors ~= nb_sensors(sensorsMixed),
+   if nbSensors < nb_sensors(sensorsMixed),
+   warning('mff:MismatchDimVsSensors', ...
+       ['Number of sensors (%d) does not match number of channels (%d):', ...
+       'Picking first %d sensors'], ...
+       nb_sensors(sensorsMixed), nbSensors, nbSensors);
+   sensorsMixed = subset(sensorsMixed, 1:nbSensors);
+   else
+      error('Number of sensors does not match number of data channels'); 
+   end
 end
 
 psetArgs = construction_args_pset(obj);

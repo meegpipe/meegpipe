@@ -2,22 +2,23 @@ function id = version()
 
 import mperl.file.spec.rel2abs;
 import safefid.safefid;
+import mperl.file.spec.catfile;
 
 FILE_NAME = '.git/refs/heads/master';
 
 dirName = rel2abs([meegpipe.root_path filesep '..']);
 
-currDir = pwd;
+%currDir = pwd;
 try
-    cd(dirName);
+    %cd(dirName);
     if exist(FILE_NAME, 'file')
-        fid = safefid.fopen(FILE_NAME, 'r');
+        fid = safefid.fopen(catfile(dirName, FILE_NAME), 'r');
         id = fid.fgetl;
     else
         % If the user followed the installation instructions on the web,
         % then his meegpipe installation dir is named
         % meegpipe/meegpipe-meegpipe-[version]
-        dirName = rel2abs('.');
+       
         match = regexp(dirName, 'meegpipe-meegpipe-(?<id>\w+)$', 'names');
         if isempty(match)
             warning('meegpipe:version:Unknown', ...
@@ -31,10 +32,9 @@ try
         end        
     end
 catch ME
-    cd(currDir);
     rethrow(ME);
 end
-cd(currDir);
+%cd(currDir);
 
 id = id(1:7);
 

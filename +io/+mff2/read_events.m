@@ -6,6 +6,14 @@ import io.mff2.read_header;
 import io.mff2.read_data;
 import io.mff2.parse_begin_time;
 
+if nargin < 4 || isempty(epochs),
+    warning('mff2:MissingEpochInfo', ...
+        ['Epoch information was not provided: event info cannot be ' ...
+        'accurately retrieved so events will be ignored']);
+    evArray = [];
+    return;
+end
+
 if nargin < 3 || isempty(beginTime),
     hdr = read_header(filename);
     beginTime = hdr.beginTime;
