@@ -10,11 +10,9 @@ function obj = finalize(obj)
 
 import misc.is_valid_fid;
 
-fid = get_fid(obj);
-
-if obj.CloseFID && ~isempty(fid) && is_valid_fid(fid),
+if obj.CloseFID && ~isempty(obj.FID) && is_valid_fid(obj.FID),
     try
-        fclose(fid);
+        fclose(obj.FID);
     catch ME
         warning('abstract_generator:finalize:UnableToCloseFID', ...
             'I could not close file ''%s''', get_filename(obj));
