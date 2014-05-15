@@ -6,17 +6,13 @@ classdef abstract_setget < ...
     %
     % See also: goo.setget
     
-    
-    % IMPLEMENTATION ......................................................
-    
+  
     properties (GetAccess = private, SetAccess = private)
         
         Info = struct;
         
     end
-    
-    % PUBLIC INTERFACE ....................................................
-    
+  
     % Must be sealed in order to allow for object arrays
     methods (Sealed)
         

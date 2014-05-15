@@ -91,6 +91,11 @@ classdef abstract_setget_handle < ...
                     val = get(varargin{1}, fNames{i});
                     if isa(val, 'goo.clonable'),
                         val = clone(val);
+                    elseif iscell(val),
+                        valOut = cell(size(val));
+                        for j = 1:numel(val),
+                            valOut{j} = clone(val{j});
+                        end
                     elseif isa(val, 'matlab.mixin.Copyable'),
                         % Shallow copy better than nothing
                         % This is convenient but unsafe...

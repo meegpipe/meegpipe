@@ -18,11 +18,6 @@ classdef parallel_node_array < meegpipe.node.abstract_node
       
             obj = obj@meegpipe.node.abstract_node(varargin{:});
             
-            if nargin > 0 && ~ischar(varargin{1}),
-                % copy construction: keep everything like it is
-                return;
-            end
-            
             nodeList = get_config(obj, 'NodeList');
             for i = 1:numel(nodeList),
                 if isempty(nodeList{i}), continue; end
@@ -36,6 +31,11 @@ classdef parallel_node_array < meegpipe.node.abstract_node
                 childof(nodeList{i}, obj, i);
             end
             set_config(obj, 'NodeList', nodeList);
+            
+            if nargin > 0 && ~ischar(varargin{1}),
+                % copy construction: keep everything else like it is
+                return;
+            end
             
             if isempty(get_name(obj)),
                 set_name(obj, 'parallel_node_array');

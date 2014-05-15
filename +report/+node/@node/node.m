@@ -79,7 +79,7 @@ classdef node < report.generic.generic
             
             % Set parent to report of parent node
             parentNode = get_parent(nodeObj);
-            if ~isempty(parentNode)                
+            if ~isempty(parentNode)              
                 childof(obj, get_report(get_parent(nodeObj)));                
             end           
             

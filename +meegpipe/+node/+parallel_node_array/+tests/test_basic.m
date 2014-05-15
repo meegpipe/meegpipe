@@ -13,7 +13,7 @@ import physioset.event.value_selector;
 
 MEh     = [];
 
-initialize(6);
+initialize(7);
 
 %% Create a new session
 try
@@ -71,6 +71,36 @@ try
         isa(myAggr, 'function_handle') & ...
         myAggr(5,4) == 20, ...
         name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% pipeline GenerateReport = false
+try
+    
+    name = 'GenerateReport = false';
+    
+    
+    importerNode = physioset_import.new('Importer', physioset.import.matrix);
+    
+    myNode1 = operator.new('Operator', @(x) x.^2);
+    myNode2 = operator.new('Operator', @(x) x.^3);
+    
+    myNode = parallel_node_array.new(...
+        'NodeList',         {myNode1, myNode2}, ...
+        'Aggregator',       @(args) args{1}-args{2});
+    
+    myPipe = pipeline.new('NodeList', ...
+        {importerNode, myNode}, 'GenerateReport', true);
+    
+    data = rand(5,1000);
+    dataOut = run(myPipe, data);
+    
+    ok(max(abs(data(:).^2-data(:).^3-dataOut(:))) < 0.01, name);
     
 catch ME
     

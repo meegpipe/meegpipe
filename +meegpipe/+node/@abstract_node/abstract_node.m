@@ -75,7 +75,7 @@ classdef abstract_node < ...
         
         % Properties with a _ postfix will not be considered when
         % converting object to struct. Therefore, they will not be
-        % consdered when obtaining the object's hash code.
+        % considered when obtaining the object's hash code.
         
         Report_;     % must be initialized in constructor (is handle)
         ProcReport_;  % for future use
@@ -93,7 +93,7 @@ classdef abstract_node < ...
         SavedInput_   = '';
         Diagnostics_  = struct;
         LogMap_       = mjava.hash; % LogFID_{LogMap_('file.log')} returns a FID to that log
-        LogFID_       = {};     % Cell array of safefid.safefid objects
+        LogFID_       = {};         % Cell array of safefid.safefid objects
         
     end
     
