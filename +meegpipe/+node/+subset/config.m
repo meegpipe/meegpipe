@@ -3,9 +3,7 @@ classdef config < meegpipe.node.abstract_config
     %
     % See: <a href="matlab:misc.md_help('meegpipe.node.resample.config')">misc.md_help(''meegpipe.node.resample.config'')</a>
     
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+  
     properties
         
         AutoDestroyMemMap = false;

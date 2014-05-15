@@ -4,10 +4,10 @@ classdef sleep_scores_generator < physioset.event.generator & ...
     
     methods (Static, Access = private)
         function fh = default_template()
-            fh = @(sampl, idx, score, scorer, frameL, data) ...
+            fh = @(sampl, idx, score, scoreLabel, scorer, frameL, data) ...
                 physioset.event.std.sleep_score(sampl, ...
-                'Value', idx, 'Scorer', scorer, 'Score', score, ...
-                'Duration', round(frameL*data.SamplingRate));
+                'Value', idx, 'Type', scoreLabel, 'Scorer', scorer, ...
+                'Score', score, 'Duration', round(frameL*data.SamplingRate));
         end
         
         function sleepScoresFile = find_sleep_scores_file(data)
@@ -58,15 +58,16 @@ classdef sleep_scores_generator < physioset.event.generator & ...
             end
             
             try
-                toy = value(10, 1, 1, 'German', 30, physioset.physioset);
+                toy = value(10, 1, 1, 'Wakefulness', 'German', 30, physioset.physioset);
                 if ~isa(toy, 'physioset.event.event'),
                     throw(InvalidPropValue('Template', ...
                         'Template must evaluate to an event object'));
                 end
             catch ME
-                if strcmp(ME.identifier, 'MATLAB:TooManyInputs'),
+                if ismember(ME.identifier, ...
+                        {'MATLAB:TooManyInputs', 'MATLAB:minrhs'})                       
                     throw(InvalidPropValue('Template', ...
-                        'Template must take three arguments'));
+                        'Template must take seven arguments'));
                 else
                     rethrow(ME);
                 end
@@ -99,14 +100,34 @@ classdef sleep_scores_generator < physioset.event.generator & ...
             scoreFile = load(sleepScoresFile);
             info      = scoreFile.info;
             
-            scorer = info.score{2};
-            frameLength = info.score{3};
-            scores = info.score{1};           
-            
+            if iscell(info.score),
+                % New version of Gio's scoring toolbox
+                scorer = info.score{2};
+                frameLength = info.score{3};
+                scores = info.score{1};
+                scoreLabels = cell(1, numel(scores));
+                scoreLabels(scores == 0) = {'Wakefulness'};
+                scoreLabels(scores == 1) = {'NREM 1'};
+                scoreLabels(scores == 2) = {'NREM 2'};
+                scoreLabels(scores == 3) = {'NREM 3'};
+                scoreLabels(scores == 5) = {'REM'};
+            else
+                scorer = info.score.rater;
+                frameLength = info.score.wndw;
+                scoreLabels = info.score.stage;
+                % Hard-coded mapping from labels to numbers
+                scores = nan(1, numel(scoreLabels));
+                scores(ismember(scoreLabels, 'Wakefulness')) = 0;
+                scores(ismember(scoreLabels, 'NREM 1')) = 1;
+                scores(ismember(scoreLabels, 'NREM 2')) = 2;
+                scores(ismember(scoreLabels, 'NREM 3')) = 3;
+                scores(ismember(scoreLabels, 'REM')) = 5;
+            end
             sampl = 1;
             evArray = repmat(sleep_score, 1, numel(scores));
             for i = 1:numel(scores)                
-                evArray(i) = obj.Template(sampl, i, scores(i), scorer, frameLength, data);
+                evArray(i) = obj.Template(sampl, i, scores(i), ...
+                    scoreLabels{i}, scorer, frameLength, data);
                 sampl = sampl + round(frameLength*sr);
             end
             
