@@ -79,10 +79,40 @@ catch ME
     
 end
 
-%% pipeline GenerateReport = false
+%% extract stage1 and stage2 sleep from scored sleep file
 try
     
-    name = 'GenerateReport = false';
+    name = 'pipeline + GenerateReport = false';
+    
+    
+    importerNode = physioset_import.new('Importer', physioset.import.physioset);
+    
+    myNode1 = operator.new('Operator', @(x) x.^2);
+    myNode2 = operator.new('Operator', @(x) x.^3);
+    
+    myNode = parallel_node_array.new(...
+        'NodeList',         {myNode1, myNode2}, ...
+        'Aggregator',       @(args) args{1}-args{2});
+    
+    myPipe = pipeline.new('NodeList', ...
+        {importerNode, myNode}, 'GenerateReport', false);
+    
+    data = rand(5,1000);
+    dataOut = run(myPipe, data);
+    
+    ok(max(abs(data(:).^2-data(:).^3-dataOut(:))) < 0.01, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% pipeline + GenerateReport = false
+try
+    
+    name = 'pipeline + GenerateReport = false';
     
     
     importerNode = physioset_import.new('Importer', physioset.import.matrix);
@@ -95,7 +125,7 @@ try
         'Aggregator',       @(args) args{1}-args{2});
     
     myPipe = pipeline.new('NodeList', ...
-        {importerNode, myNode}, 'GenerateReport', true);
+        {importerNode, myNode}, 'GenerateReport', false);
     
     data = rand(5,1000);
     dataOut = run(myPipe, data);

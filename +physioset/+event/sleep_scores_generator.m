@@ -20,8 +20,8 @@ classdef sleep_scores_generator < physioset.event.generator & ...
                     [path, name] = fileparts(procHist{i});
                     sleepScoresFile = catfile(path, [name '.mat']);
                     if ~exist(sleepScoresFile, 'file'),
-                        sleepScoresFile = catfile(path, ...
-                            [strrep(name, '_eeg_', '_eeg_scores_') '.mat']);
+                        sleepScoresFile = ...
+                            strrep(sleepScoresFile, '_eeg', '_eeg_scores');
                     end
                     if exist(sleepScoresFile, 'file'),
                         % Found the associated sleep scores
