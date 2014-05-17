@@ -1,4 +1,4 @@
-Importing large sleep files into meegpipe's format
+Importing a batch of `.mff` files into meegpipe's format
 ===
 
 This tutorials illustrates how _meegpipe_ can be used to convert a large 
@@ -21,6 +21,14 @@ seconds to complete.
 [edf]: http://www.edfplus.info/
 [physioset]: https://github.com/meegpipe/meegpipe/blob/master/%2Bphysioset/%40physioset/README.md
 
+Before anything else you need to ensure that EEGLAB is in your MATLAB 
+search path and initialize meegpipe:
+
+````
+addpath(genpath('/data1/toolbox/eeglab'));
+meegpipe.initialize;
+````
+
 
 ## Building the pipeline
 
@@ -36,11 +44,13 @@ myImporter = physioset.import.mff('Precision', 'single');
 myNode = meegpipe.node.physioset_import.new(...
     'Importer', myImporter, ... % Read data from an .mff file
     'Save',     true, ...       % Save the node output (as a .pset/pseth)
+    'OGE',      true, ...       % Use Open Grid Engine, if available
+    'Queue',    'short.q@somerenserver.herseninstituut.knaw.nl', ...
     'Name',     'mff2pset' ...  % Optional, just to have nice dir names
 );
 ```` 
 
-Note that we could actually build a pipeline with a single node like this:
+We could now build a pipeline with a single node like this:
 
 ````matlab
 myPipe = meegpipe.node.pipeline.new('NodeList', {myNode});
