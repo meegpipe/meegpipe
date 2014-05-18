@@ -1,3 +1,6 @@
+addpath(genpath('/data1/toolbox/eeglab'));
+meegpipe.initialize;
+
 % We want to generate a physioset that uses single precision
 myImporter = physioset.import.mff('Precision', 'single');
 

@@ -186,22 +186,28 @@ classdef event_selector < pset.selector.abstract_selector & goo.hashable
     % Constructor
     methods
         
-        function obj = event_selector(evSel, varargin)
+        function obj = event_selector(varargin)
             
             import misc.process_arguments;
             
+            if nargin == 1,
+                varargin = [{'EventSelector'}, varargin];
+            elseif nargin > 0 && isa(varargin{1}, 'physioset.event.selector'),
+                varargin = [{'EventSelector'}, varargin];
+            end
+
             obj = obj@pset.selector.abstract_selector(varargin{:});
             
             if nargin < 1, return; end
             
+            opt.EventSelector = [];
             opt.Offset      = [];
             opt.Duration    = [];
             [~, opt] = process_arguments(opt, varargin);
             
             obj.Offset      = opt.Offset;
             obj.Duration    = opt.Duration;
-            
-            obj.EventSelector = evSel;
+            obj.EventSelector = opt.EventSelector;
             
         end
         
