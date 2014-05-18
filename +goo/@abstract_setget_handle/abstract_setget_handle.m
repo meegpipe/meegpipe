@@ -89,21 +89,8 @@ classdef abstract_setget_handle < ...
                 fNames = fieldnames(varargin{1});
                 for i = 1:numel(fNames)
                     val = get(varargin{1}, fNames{i});
-                    if isa(val, 'goo.clonable'),
-                        val = clone(val);
-                    elseif iscell(val),
-                        valOut = cell(size(val));
-                        for j = 1:numel(val),
-                            valOut{j} = clone(val{j});
-                        end
-                    elseif isa(val, 'matlab.mixin.Copyable'),
-                        % Shallow copy better than nothing
-                        % This is convenient but unsafe...
-                        val = copy(val);
-                    elseif isa(val, 'handle'),
-                        error('Cannot perform deep copy!');
-                    end
-                    obj.(fNames{i}) = val;
+                    
+                    obj.(fNames{i}) = goo.clone(val);
                 end
                 
                 return;
