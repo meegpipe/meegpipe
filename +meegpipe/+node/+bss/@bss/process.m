@@ -63,7 +63,7 @@ add_event(ics, get_event(data));
 
 [~, myBSS] = cascade(myPCA, myBSS);
 
-[selected, ~, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
+[selected, featVal, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
 
 if verbose,
     if isempty(reject)
@@ -82,6 +82,8 @@ end
 % ranked component and so on.
 % rankVal can have multiple columns (multiple features!)
 [~, sortedIdx] = sort(rankVal(:,1), 'descend');
+
+featVal = featVal(sortedIdx, :);
 
 myBSS  = reorder_component(myBSS, sortedIdx);
 myCrit = reorder(myCrit, sortedIdx);
@@ -116,6 +118,8 @@ else
     icSel = autoSel;
     isAutoSel = true;
 end
+
+write_training_data_to_disk(obj, featVal, icSel);
 
 myBSS = select(myBSS, icSel);
 

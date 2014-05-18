@@ -10,6 +10,7 @@ classdef criterion < goo.abstract_named_object & goo.printable & goo.hashable
         
         bool = negated(obj);
  
+        featArray = get_feature_extractor(obj, idx);
     end
     
     methods

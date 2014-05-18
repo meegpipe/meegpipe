@@ -45,6 +45,13 @@ classdef dummy < spt.criterion.criterion & goo.verbose & goo.abstract_named_obje
            
         end
         
+        function featArray = get_feature_extractor(~, idx)
+            if nargin > 1 && ~isempty(idx),
+                error('dummy criterion does not involve any feature');
+            end
+            featArray = {};
+        end
+        
         % Constructor
         function obj = dummy(varargin)
             import misc.set_properties;

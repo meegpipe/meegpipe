@@ -18,6 +18,8 @@ classdef bss < meegpipe.node.abstract_node
         
         extract_bss_features(obj, bssObj, ics, data, icSel);
         
+        write_training_data_to_disk(obj, featVal, selected);
+        
         % These are called by make_bss_report()
         make_bss_object_report(obj, bss, ics, rep, verb, verbL);
         

@@ -186,6 +186,20 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
             bool = obj.Negated;
         end
         
+        function featArray = get_feature_extractor(obj, idx)
+            
+            if nargin < 2,
+                idx = 1:numel(obj.Feature);
+            end
+            if isempty(idx), 
+                featArray = {};
+                return;
+            end
+       
+            featArray = obj.Feature(idx);
+            
+        end
+        
         % Constructor
         function obj = threshold(varargin)
             import misc.set_properties;
