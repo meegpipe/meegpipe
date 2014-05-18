@@ -7,15 +7,15 @@ number of hdEEG files in [EGI Netstation][egi]'s `.mff` into meegpipe's
 
 Typically, the first stage of any processing pipeline involves building a 
 [physioset][physioset] based on the contents of a disk file in
- certain standard (e.g. [edf][edf]) or proprietary (e.g. `.mff`) data
-format. However, this data conversion step can be a very costly operation. 
+a given standard (e.g. [edf][edf]) or proprietary (e.g. `.mff`) data
+format. This data conversion step can be a very costly operation. 
 For an 8-hours long hdEEG recording in `.mff` format it may easily take 
-30 minutes or longer to build the corresponding physioset. Thus, if the raw
-data files that you are dealing with are very large and you have enough
-disk space, it is a good idea to build a separate pipeline for converting 
-all files into meegpipe's `.pset/.pseth` format. Building a physioset from 
-a `.pset/.pseth` is a cheap operation that will typically take just a few
-seconds to complete.
+30 minutes or longer to build the corresponding physioset. Thus, it is 
+often a good idea to build a separate pipeline to convert all raw data
+files into _meegpipe_'s `.pset/.pseth` format, especially if you plan to run 
+multiple pipelines (or multiple pipeline configurations) on the same set 
+of files.  Building a physioset from a `.pset/.pseth` is a cheap operation
+that will take only a few seconds to complete in most cases.
 
 [egi]: http://www.egi.com/research-division/geodesic-eeg-system-components/eeg-software
 [edf]: http://www.edfplus.info/
@@ -55,9 +55,11 @@ We could now build a pipeline with a single node like this:
 ````matlab
 myPipe = meegpipe.node.pipeline.new('NodeList', {myNode});
 ````
-But in this case this is not really necessary as our pipeline would only 
-have one node. It is just simpler to process all `.mff` files using the 
-`physioset_import` node directly as we do below.
+But in this case this is not really necessary. It is easier to simply
+process all `.mff` files using the `physioset_import` node directly as we
+do below.
+
+
 
 ## Converting a batch of files
 
@@ -65,13 +67,15 @@ First we need to get the full paths to all the relevant `.mff` files in a
 cell array of strings. If you are working at `somerengrid` (the private 
 computing grid of the Sleep&Cognition team) then the code below will 
 generate a list of paths to all sleep files within the `ssmd` recording (
-the code name for the Sleep Stage Misperception project):
+the code name for the _Sleep Stage Misperception_ project):
 
 ````matlab
 files = somsds.link2rec('ssmd', ...
     'modality',     'eeg', ...
     'condition',    'sleep', ...
-    'file_ext',     '.mff');
+    'file_ext',     '.mff', ...
+    'folder',       'mff2pset', ... % Directory where the links will be created
+    );
 
 % files should now be a cell array of strings containing something like:
 % files = { ...
@@ -91,7 +95,9 @@ run(mNode, files{:});
 
 ## Where are the converted files?
 
-Under Linux or Mac OS X you can easily find the converted files using this 
+As usual, _meegpipe_ stores the processing results for file `fileX.mff` 
+under a directory called `fileX.meegpipe`. In my particular case, the 
+following directory structureUnder Linux or Mac OS X you can easily find the converted files using this 
 command in a shell window:
 
 ````
