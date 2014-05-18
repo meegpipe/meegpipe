@@ -71,6 +71,8 @@ classdef abstract_node < ...
     
     properties (SetAccess = private, GetAccess = private)
         
+        TrainingModel  = []; % May be used to store the output of train()
+        TrainingHash   = [];
         IOReport       = []; % Will be ignored when converting to struct
         
         % Properties with a _ postfix will not be considered when
@@ -247,7 +249,8 @@ classdef abstract_node < ...
         
         function props = construction_keys
             props = {'Name', 'Save', 'Queue', 'Parallelize', ...
-                'DataSelector', 'GenerateReport', 'TempDir', 'FakeID'};
+                'DataSelector', 'GenerateReport', 'TempDir', 'FakeID', ...
+                'TrainingHash', 'TrainingModel'};
         end
         
         
@@ -401,6 +404,27 @@ classdef abstract_node < ...
         
         disp_body(obj);
         
+        % Default implementation of train() does nothing
+        function myNode = train(myNode, varargin)
+           % do nothing 
+        end
+        
+        function myNode = set_training_hash(myNode, trainHash)
+            myNode.TrainingHash = trainHash;
+        end
+        
+        function myNode = set_training_model(myNode, trainModel)
+            myNode.TrainingModel = trainModel;
+        end
+        
+        function model = get_training_model(obj)
+            model = obj.TrainingModel;
+        end
+        
+        function hash = get_training_hash(obj)
+            hash = obj.TrainingHash;
+        end
+        
     end
     
     %% meegpipe.types.hashable_handle interface
@@ -469,6 +493,11 @@ classdef abstract_node < ...
                 if ~isempty(varargin{1}.IOReport),
                     obj.IOReport = clone(varargin{1}.IOReport);
                 end
+                
+                % Leave the reference to the parent, if any
+                
+                obj.Parent_ = objO.Parent_;
+                
                 
                 return;
                 

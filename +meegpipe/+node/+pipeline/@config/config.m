@@ -51,9 +51,11 @@ classdef config < meegpipe.node.abstract_config
     
     
  
-    % Constructor
+   
     methods
         
+        
+         % Constructor
         function obj = config(varargin)
             
             i = 0;

@@ -24,6 +24,14 @@ classdef pipeline < meegpipe.node.abstract_node
     %%% from abstract_node
     methods
         
+        function myPipe = train(myPipe, varargin)
+           nodeList = get_config(myPipe, 'NodeList');
+           for i = 1:numel(nodeList)
+              nodeList{i} = train(nodeList{i}, varargin{:}); 
+           end
+           set_config(myPipe, 'NodeList', nodeList);
+        end
+        
         % required by parent meegpipe.node.abstract_node
         [data, dataNew] = process(obj, data, varargin);
         

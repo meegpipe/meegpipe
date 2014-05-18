@@ -18,7 +18,7 @@ classdef bss < meegpipe.node.abstract_node
         
         extract_bss_features(obj, bssObj, ics, data, icSel);
         
-        write_training_data_to_disk(obj, featVal, selected);
+        write_training_data_to_disk(obj, featVal);
         
         % These are called by make_bss_report()
         make_bss_object_report(obj, bss, ics, rep, verb, verbL);
@@ -45,8 +45,12 @@ classdef bss < meegpipe.node.abstract_node
     methods
         
         % node interface
+        obj = train(obj, trainInput, varargin);
+        
         [data, dataNew] = process(obj, data, varargin);
         
+        % own methods
+        y = predict_selection(obj, featVal);
       
         % Constructor
         function obj = bss(varargin)

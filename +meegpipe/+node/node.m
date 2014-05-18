@@ -3,14 +3,13 @@ classdef node < handle
     %
     %
     % See also: abstract_node, meegpipe.node
-    
-    % Documentation: ifc_pset_node_node.txt
-    % Description: Interface definition
-    
-    
+
     % To be implemented by abstract_node
     
     methods (Abstract)
+        
+        % Nodes may be trained using training input
+        myNode = train(myNode, varargin);
         
         % Accessors
         

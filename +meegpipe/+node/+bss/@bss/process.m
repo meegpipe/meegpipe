@@ -1,6 +1,5 @@
 function [data, dataNew] = process(obj, data, varargin)
 
-
 import misc.eta;
 import goo.globals;
 import meegpipe.node.bss.bss;
@@ -84,6 +83,7 @@ end
 [~, sortedIdx] = sort(rankVal(:,1), 'descend');
 
 featVal = featVal(sortedIdx, :);
+write_training_data_to_disk(obj, featVal);
 
 myBSS  = reorder_component(myBSS, sortedIdx);
 myCrit = reorder(myCrit, sortedIdx);
@@ -92,6 +92,7 @@ ics   = select(ics, sortedIdx);
 ics   = set_sensors(ics, sensors.dummy(size(ics,1)));
 
 selected = selected(sortedIdx);
+
 % Has the user made a manual selection?
 % If the user wants the manual selection of components to be
 % ignored she can do either of three things:
@@ -104,6 +105,17 @@ if iscell(userSel),
     userSel = cellfun(@(x) eval(x), userSel);
 end
 autoSel = find(selected);
+
+% If there is training data available, use it!
+selectedTrain = predict_selection(obj, featVal);
+icSelTrain = find(selectedTrain);
+if ~isempty(icSelTrain),
+    if verbose
+        fprintf([verboseLabel 'Using training-based selection (%s) ...\n\n'], ...
+            misc.any2str(icSelTrain)); %#ok<*FNDSB>
+    end
+    autoSel = icSelTrain;
+end
 
 if isempty(userSel) || ~all(isnan(userSel)) && ~isempty(setxor(userSel, autoSel))
     userSel = intersect(userSel, 1:size(ics,1));
@@ -118,8 +130,6 @@ else
     icSel = autoSel;
     isAutoSel = true;
 end
-
-write_training_data_to_disk(obj, featVal, icSel);
 
 myBSS = select(myBSS, icSel);
 
