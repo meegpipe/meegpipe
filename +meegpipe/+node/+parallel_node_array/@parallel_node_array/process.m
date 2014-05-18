@@ -60,7 +60,9 @@ for nodeItr = 1:numel(nodeList),
     
 end
 
-data = aggrFunc(nodesOutput);
+if ~isempty(aggrFunc),
+    data = aggrFunc(nodesOutput);
+end
 
 
 end

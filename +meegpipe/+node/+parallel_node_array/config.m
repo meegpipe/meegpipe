@@ -4,8 +4,8 @@ classdef config < meegpipe.node.abstract_config
     properties
         
         NodeList   = {};
-        Aggregator = @(varargin) sum(varargin{:});
-        CopyInput  = true; % Should the inpu to the node be copied?
+        Aggregator = []; %@(varargin) sum(varargin{:});
+        CopyInput  = true; % Should the input to the node be copied?
         
     end
     
@@ -54,7 +54,7 @@ classdef config < meegpipe.node.abstract_config
             import exceptions.InvalidPropValue;
             
             if isempty(value),
-                obj.Aggregator = @(varargin) sum(varargin{:});
+                obj.Aggregator = [];
                 return;
             end
             

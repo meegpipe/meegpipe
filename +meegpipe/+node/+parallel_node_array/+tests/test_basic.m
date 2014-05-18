@@ -2,6 +2,7 @@ function [status, MEh] = test_basic()
 % TEST_BASIC - Tests basic node functionality
 
 import mperl.file.spec.*;
+import mperl.file.find.finddepth_regex_match;
 import meegpipe.node.*;
 import test.simple.*;
 import pset.session;
@@ -13,7 +14,7 @@ import physioset.event.value_selector;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Create a new session
 try
@@ -79,28 +80,50 @@ catch ME
     
 end
 
-%% extract stage1 and stage2 sleep from scored sleep file
+%% extract three subsets
 try
     
-    name = 'pipeline + GenerateReport = false';
+    name = 'extract three subsets';
     
+    data = import(physioset.import.matrix, rand(2,1000));
+    myEv1 = physioset.event.event(1, 'Duration', 100, 'Type', 'first');
+    myEv2 = physioset.event.event(101, 'Duration', 100, 'Type', 'second');
+    myEv3 = physioset.event.event(201, 'Duration', 100, 'Type', 'third');
+    add_event(data, [myEv1, myEv2, myEv3]);
+    save(data);
     
     importerNode = physioset_import.new('Importer', physioset.import.physioset);
     
-    myNode1 = operator.new('Operator', @(x) x.^2);
-    myNode2 = operator.new('Operator', @(x) x.^3);
-    
+    evTypes = {'first', 'second', 'third'};
+    parallelNodes = cell(1, numel(evTypes));
+    for i = 1:numel(evTypes)
+        myEvSel = physioset.event.class_selector('Type', evTypes{i});
+        mySel = pset.selector.event_selector(myEvSel);
+        parallelNodes{i} = subset.new(...
+            'DataSelector', mySel, ...
+            'Save',         true, ...
+            'Name',         evTypes{i});
+    end
+
     myNode = parallel_node_array.new(...
-        'NodeList',         {myNode1, myNode2}, ...
-        'Aggregator',       @(args) args{1}-args{2});
+        'NodeList',         parallelNodes, ...
+        'Aggregator',       []);
     
-    myPipe = pipeline.new('NodeList', ...
-        {importerNode, myNode}, 'GenerateReport', false);
+    myPipe = pipeline.new(...
+        'NodeList',         {importerNode, myNode}, ...
+        'GenerateReport',   false, ...
+        'Save',             false);
     
-    data = rand(5,1000);
-    dataOut = run(myPipe, data);
+    dataOut = run(myPipe, get_hdrfile(data));
+    data = [];
+    for i = 1:numel(evTypes)
+        file = finddepth_regex_match(session.instance.Folder, ...
+            [evTypes{i} '.pseth']);
+        thisData = pset.load(file{1});
+        data = [data thisData(:,:)]; %#ok<AGROW>
+    end
     
-    ok(max(abs(data(:).^2-data(:).^3-dataOut(:))) < 0.01, name);
+    ok(max(max(abs(dataOut(:,1:size(data,2)) - data(:,:)))) < 1e-3, name);
     
 catch ME
     
