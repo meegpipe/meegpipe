@@ -67,7 +67,7 @@ ssmd_0105_eeg_sleep_1.pseth
 ````
 
 You will need to manually place the `.mat` files with the sleep scores (as
-produced by Giovanni Piantoni' [sleep scoring toolbox][sctoolbox]) within
+produced by Giovanni Piantoni's [sleep scoring toolbox][sctoolbox]) within
  the same directory where the links above are located. Also the names of 
 sleep scores `.mat` files must follow the naming convention illustrated 
 below:
@@ -87,8 +87,52 @@ ssmd_0105_eeg_scores_sleep_1.mat
 
 ## Building the pipeline
 
+The following code snippet will build the relevant pipeline:
 
-## Splitting the sleep recordings into sleep stages
+````matlab
+
+nodeList = {};
+
+% Node 1: Load the physioset
+myNode = meegpipe.node.physioset_import.new('Importer', physioset.import.physioset);
+nodeList = [nodeList {myNode}];
+
+% Node 2: Embed sleep scores in physioset as events
+myNode = meegpipe.node.ev_gen.new(...
+    'EventGenerator', physioset.event.sleep_scores_generator);
+nodeList = [nodeList {myNode}];
+
+% Node 3: A parallel array of subset nodes
+% We build a parallel array of 4 subset nodes, each of them responsible for
+% getting out the data corresponding to a given sleep stage
+stages = {'Wakefulness', 'NREM 1', 'NREM 2', 'NREM 3', 'REM'};
+parallelNodes = cell(1, 4);
+for i = 1:numel(stages)
+    evSel = physioset.event.class_selector('Type', stages{i});
+    dataSel = pset.selector.event_selector(evSel);
+    parallelNodes{i} = meegpipe.node.subset.new('DataSelector', dataSel);
+end
+myNode = meegpipe.node.parallel_node_array.new('NodeList', parallelNodes);
+nodeList = [nodeList {myNode}];
+
+% Build the pipeline
+myPipe = meegpipe.node.pipeline.new('NodeList', nodeList, ...
+    'Name',     'data_splitting', ...
+    'OGE',      true, ...
+    'Queue',    'short.q@somerenserver.herseninstituut.knaw.nl' ...
+);
+
+````
+
+
+## Running the pipeline
+
+
+````matlab
+% Assuming that all files are located under the current directory
+files = misc.dir(pwd, 'pseth$');
+run(myPipe, files{:});
+````
 
 
 ## Where are the converted files?
