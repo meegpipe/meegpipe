@@ -16,7 +16,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(10);
+initialize(11);
 
 %% Create a new session
 try
@@ -127,6 +127,34 @@ try
     newData = run(myPipe, data);
     
     ok(newData.PointSet.AutoDestroyMemMap & size(newData,1) == 2, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% pipeline with GenerateReport = false
+try
+    
+    name = 'process sample data with GenerateReport = false';
+    
+    data = import(physioset.import.matrix, randn(10, 1000));
+    save(data);
+    file = get_hdrfile(data);
+    clear data;
+    
+    myNode1 = meegpipe.node.physioset_import.new('Importer', physioset.import.physioset);
+    sel = pset.selector.sensor_idx(2:3);
+    myNode2 = subset('DataSelector', sel, ...
+        'Save', true);
+    myPipe  = pipeline('NodeList', {myNode1, myNode2}, ...
+        'GenerateReport', false, 'Save', false);
+    
+    newData = run(myPipe, file);
+    
+    ok(size(newData,1) == 2, name);
     
 catch ME
     
