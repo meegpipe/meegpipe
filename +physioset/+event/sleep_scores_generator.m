@@ -40,7 +40,7 @@ classdef sleep_scores_generator < physioset.event.generator & ...
         Template = physioset.event.sleep_scores_generator.default_template;
     end
     
-    methods       
+    methods
         
         function obj = set.Template(obj, value)
             
@@ -65,7 +65,7 @@ classdef sleep_scores_generator < physioset.event.generator & ...
                 end
             catch ME
                 if ismember(ME.identifier, ...
-                        {'MATLAB:TooManyInputs', 'MATLAB:minrhs'})                       
+                        {'MATLAB:TooManyInputs', 'MATLAB:minrhs'})
                     throw(InvalidPropValue('Template', ...
                         'Template must take seven arguments'));
                 else
@@ -93,43 +93,81 @@ classdef sleep_scores_generator < physioset.event.generator & ...
                     get_name(data));
                 evArray = [];
                 return;
-            end           
+            end
             
             sr = data.SamplingRate;
             
             scoreFile = load(sleepScoresFile);
             info      = scoreFile.info;
-            
+
             if iscell(info.score),
-                % New version of Gio's scoring toolbox
+                % Old version of Gio's scoring toolbox
                 scorer = info.score{2};
                 frameLength = info.score{3};
                 scores = info.score{1};
+                if all(isnan(scores)),
+                     warning('sleep_scores_generator:MissingScores', ...
+                    'Sleep scores file for %s does not contain scores!', ...
+                    get_name(data));
+                    evArray = [];
+                    return;
+                end
                 scoreLabels = cell(1, numel(scores));
                 scoreLabels(scores == 0) = {'Wakefulness'};
                 scoreLabels(scores == 1) = {'NREM 1'};
                 scoreLabels(scores == 2) = {'NREM 2'};
                 scoreLabels(scores == 3) = {'NREM 3'};
                 scoreLabels(scores == 5) = {'REM'};
+                sampl = 1;
+                evArray = repmat(sleep_score, 1, numel(scores));
+                evCount = 0;
+                for i = 1:numel(scores)
+                    if ~isnan(scores(i)),
+                        evCount = evCount + 1;
+                        evArray(evCount) = obj.Template(sampl, i, scores(i), ...
+                            scoreLabels{i}, scorer, frameLength, data);
+                    end
+                    sampl = sampl + round(frameLength*sr);
+                end
+                evArray = evArray(1:evCount);
             else
-                scorer = info.score.rater;
-                frameLength = info.score.wndw;
-                scoreLabels = info.score.stage;
-                % Hard-coded mapping from labels to numbers
-                scores = nan(1, numel(scoreLabels));
-                scores(ismember(scoreLabels, 'Wakefulness')) = 0;
-                scores(ismember(scoreLabels, 'NREM 1')) = 1;
-                scores(ismember(scoreLabels, 'NREM 2')) = 2;
-                scores(ismember(scoreLabels, 'NREM 3')) = 3;
-                scores(ismember(scoreLabels, 'REM')) = 5;
+                allEvents = [];
+                for scorerIter = 1:numel(info.score)
+                    scorer = info.score(scorerIter).rater;
+                    frameLength = info.score(scorerIter).wndw;
+                    scoreLabels = info.score(scorerIter).stage;
+                    
+                    % Replace empty scores with the empty string
+                    for i = 1:numel(scoreLabels)
+                        if isempty(scoreLabels{i}),
+                            scoreLabels{i} = '';
+                        end
+                    end
+
+                    % Hard-coded mapping from labels to numbers
+                    scores = nan(1, numel(scoreLabels));
+                    scores(ismember(scoreLabels, 'Wakefulness')) = 0;
+                    scores(ismember(scoreLabels, 'NREM 1')) = 1;
+                    scores(ismember(scoreLabels, 'NREM 2')) = 2;
+                    scores(ismember(scoreLabels, 'NREM 3')) = 3;
+                    scores(ismember(scoreLabels, 'REM')) = 5;
+                    
+                    sampl = 1;
+                    evArray = repmat(sleep_score, 1, numel(scores));
+                    evCount = 0;
+                    for i = 1:numel(scores)
+                        if ~isnan(scores(i)),
+                            evCount = evCount + 1;
+                            evArray(evCount) = obj.Template(sampl, i, scores(i), ...
+                                scoreLabels{i}, scorer, frameLength, data);
+                        end
+                        sampl = sampl + round(frameLength*sr);
+                    end
+                    allEvents = [allEvents evArray(1:evCount)];  %#ok<AGROW>
+                end
+                evArray = allEvents;
             end
-            sampl = 1;
-            evArray = repmat(sleep_score, 1, numel(scores));
-            for i = 1:numel(scores)                
-                evArray(i) = obj.Template(sampl, i, scores(i), ...
-                    scoreLabels{i}, scorer, frameLength, data);
-                sampl = sampl + round(frameLength*sr);
-            end
+            
             
         end
         
@@ -138,14 +176,14 @@ classdef sleep_scores_generator < physioset.event.generator & ...
         function obj = sleep_scores_generator(varargin)
             
             import misc.process_arguments;
-            import physioset.event.sleep_scores_generator;            
+            import physioset.event.sleep_scores_generator;
             
             opt.Template  = sleep_scores_generator.default_template;
-           
-            [~, opt] = process_arguments(opt, varargin);            
-           
+            
+            [~, opt] = process_arguments(opt, varargin);
+            
             obj.Template  = opt.Template;
-           
+            
         end
         
     end
