@@ -9,7 +9,7 @@ import pset.session;
 
 MEh     = [];
 
-initialize(23);
+initialize(24);
 
 %% Create a new session
 try
@@ -468,6 +468,31 @@ try
     selEvs = select(mySel, ev);    
     
     ok(numel(selEvs) == 2 & strcmp(selEvs(2).Type, 'myType2'), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% property_match_selector
+try
+    
+    name = 'property_match_selector';
+    
+    ev = event(1:100:1000, 'Type', 'myType');
+     
+    ev(5) = set(ev(5), 'Value', 5);
+    ev(5) = set_meta(ev(5), 'Scorer', 'German');
+    
+    ev(10) = set(ev(10), 'Value', 5);
+    ev(10) = set_meta(ev(10), 'Scorer', 'German');
+    
+    mySel = property_match_selector('Value', 5, 'Scorer', 'German');
+    [selEvs, selIdx] = select(mySel, ev);    
+    
+    ok(numel(selEvs) == 2 && selEvs(1).Value == 5 &&  all(selIdx == [5 10]), name);
     
 catch ME
     
