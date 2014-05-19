@@ -18,7 +18,7 @@ end
 % Get all the training samples in one table
 X = [];
 y = [];
-trainDataHash = mjava.hash;
+
 for i = 1:numel(trainInput)
     if verbose,
         fprintf([verboseLabel 'Reading training data for %s ...'], ...
@@ -45,14 +45,7 @@ for i = 1:numel(trainInput)
         if verbose, fprintf('[skipped]\n\n'); end
         continue;
     end
-    y = [y; selected]; %#ok<AGROW>
-
-    for j = 1:size(featVal, 1)        
-        featHashValue = datahash.DataHash(num2str(featVal(j,:)));
-        if selected(j),
-            trainDataHash(featHashValue) = true;
-        end
-    end
+    y = [y; selected]; %#ok<AGROW>    
     
     X = [X; featVal]; %#ok<AGROW>
     
@@ -64,7 +57,7 @@ if verbose,
     fprintf([verboseLabel 'Training linear discriminant ...']);
 end
 ldModel = ClassificationDiscriminant.fit(X, y);
-set_training_hash(obj, trainDataHash);
+
 set_training_model(obj, ldModel);
 
 if verbose,

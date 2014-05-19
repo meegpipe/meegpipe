@@ -71,8 +71,7 @@ classdef abstract_node < ...
     
     properties (SetAccess = private, GetAccess = private)
         
-        TrainingModel  = []; % May be used to store the output of train()
-        TrainingHash   = [];
+        TrainingModel  = []; % May be used to store the output of train()        
         IOReport       = []; % Will be ignored when converting to struct
         
         % Properties with a _ postfix will not be considered when
@@ -250,7 +249,7 @@ classdef abstract_node < ...
         function props = construction_keys
             props = {'Name', 'Save', 'Queue', 'Parallelize', ...
                 'DataSelector', 'GenerateReport', 'TempDir', 'FakeID', ...
-                'TrainingHash', 'TrainingModel'};
+                'TrainingModel'};
         end
         
         
@@ -407,10 +406,6 @@ classdef abstract_node < ...
         % Default implementation of train() does nothing
         function myNode = train(myNode, varargin)
            % do nothing 
-        end
-        
-        function myNode = set_training_hash(myNode, trainHash)
-            myNode.TrainingHash = trainHash;
         end
         
         function myNode = set_training_model(myNode, trainModel)

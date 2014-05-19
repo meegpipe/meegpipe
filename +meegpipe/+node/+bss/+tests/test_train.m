@@ -49,12 +49,13 @@ try
         fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
         data = pset.load(fileName);
     end
-    data1Orig = copy(data);
-    data1Orig = data1Orig + 5*randn(size(data1Orig));
-    data1 = copy(data1Orig);
+    data1 = copy(data);
+    X = data1(:,:) + 25*randn(size(data1));
+    data1(:,:) = X;
     save(data1);
+   
     data2 = copy(data);
-    data2 = data2 + 5*randn(size(data2));
+    data2 = data2 + 25*randn(size(data2));
     save(data2);
     
     nodeList = {};
@@ -62,19 +63,25 @@ try
         'Importer', physioset.import.physioset);
     nodeList = [nodeList {myNode}];
     
-    myNode = meegpipe.node.bss.ecg('GenerateReport', false);
+    myNode = meegpipe.node.bss.ecg(...
+        'GenerateReport', false);
     nodeList = [nodeList {myNode}];
     
-    myPipe = meegpipe.node.pipeline.new('NodeList', nodeList);
+    myPipe = meegpipe.node.pipeline.new(...
+        'NodeList',         nodeList, ...
+        'GenerateReport',   false);
     
-    run(myPipe, get_hdrfile(data1), get_hdrfile(data2));
+    file1 = get_hdrfile(data1);
+    file2 = get_hdrfile(data2);
+    clear data1 data2;
+    run(myPipe, file1, file2);
     
     % Generate two new datasets
     data3 = copy(data);
-    data3 = data3 + 5*randn(size(data3));
+    data3 = data3 + 25*randn(size(data3));
     save(data3);
     data4 = copy(data);
-    data4 = data4 + 5*randn(size(data4));
+    data4 = data4 + 25*randn(size(data4));
     save(data4);
     
     % Let's train the pipeline using the sample datasets above
@@ -83,13 +90,20 @@ try
         'Importer', physioset.import.physioset);
     nodeList = [nodeList {myNode}];
     
-    myNode = meegpipe.node.bss.ecg('GenerateReport', false);
+     myNode = meegpipe.node.bss.ecg(...
+        'GenerateReport', false);
     nodeList = [nodeList {myNode}];
     
-    myPipe = meegpipe.node.pipeline.new('NodeList', nodeList);
-    myPipe = train(myPipe, {get_hdrfile(data1), get_hdrfile(data2)});
-    
-    run(myPipe, get_hdrfile(data1Orig), get_hdrfile(data3), get_hdrfile(data4));
+    myPipe = meegpipe.node.pipeline.new(...
+        'NodeList', nodeList, ...
+        'GenerateReport', false);
+    myPipe = train(myPipe, {file1, file2});    
+   
+    files = {...      
+        get_hdrfile(data3), ...
+        get_hdrfile(data4)};
+    clear data2 data3;
+    run(myPipe, files{:});
     
     ok(true, name);
     
