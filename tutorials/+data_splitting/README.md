@@ -88,7 +88,9 @@ ssmd_0105_eeg_scores_sleep_1.mat
 
 ## Building the pipeline
 
-The following code snippet will build the relevant pipeline:
+The following code snippet will build the pipeline that you need to 
+extract the subset of your data that has been scored as _NREM 1_. 
+Similar pipelines could be built to extract other sleep stages.
 
 ````matlab
 
@@ -103,29 +105,23 @@ myNode = meegpipe.node.ev_gen.new(...
     'EventGenerator', physioset.event.sleep_scores_generator);
 nodeList = [nodeList {myNode}];
 
-% Node 3: A parallel array of subset nodes
-% We build a parallel array of 4 subset nodes, each of them responsible for
-% getting out the data corresponding to a given sleep stage
-stages = {'Wakefulness', 'NREM 1', 'NREM 2', 'NREM 3', 'REM'};
-parallelNodes = cell(1, 4);
-for i = 1:numel(stages)
-    evSel1 = physioset.event.class_selector('Type', stages{i});
-    evSel2 = physioset.event.property_match_selector('Scorer', 'Jennifer');
-    evSel = physioset.event.cascade_selector(evSel1, evSel2);
-    dataSel = pset.selector.event_selector(evSel);
-    parallelNodes{i} = meegpipe.node.subset.new(...
-        'DataSelector', dataSel, ...
-        'Save',         true);
-end
-myNode = meegpipe.node.parallel_node_array.new('NodeList', parallelNodes);
+% Node 3: Extract all NREM 1 data
+
+evSel1 = physioset.event.class_selector('Type', 'NREM 1');
+evSel2 = physioset.event.property_match_selector('Scorer', 'Jennifer');
+evSel = physioset.event.cascade_selector(evSel1, evSel2);
+dataSel = pset.selector.event_selector(evSel);
+myNode = meegpipe.node.subset.new('DataSelector', dataSel);
+
 nodeList = [nodeList {myNode}];
 
 % Build the pipeline
 myPipe = meegpipe.node.pipeline.new('NodeList', nodeList, ...
-    'Name',     'data_splitting', ...
-    'OGE',      false, ...
-    'Queue',    'short.q@somerenserver.herseninstituut.knaw.nl', ...
-    'Save',     false ...
+    'Name',           'nrem1', ...
+    'GenerateReport', false, ...
+    'OGE',            false, ...
+    'Queue',          'short.q@somerenserver.herseninstituut.knaw.nl', ...
+    'Save',           true ...
 );
 
 ````

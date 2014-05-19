@@ -54,13 +54,15 @@ classdef property_match_selector < physioset.event.abstract_selector
                     if ~selected(i), break; end
                     propValue = get(evArray(i), propNames{j});
                     selected(i) = selected(i) && ~isempty(propValue) && ...
-                        all(propValue == propVals{j});
+                        is_equal(propValue, propVals{j});
                 end
                 for j = 1:numel(metaPropNames)
                     if ~selected(i), break; end
                     metaPropValue = get_meta(evArray(i), metaPropNames{j});
+                   
                     selected(i) = selected(i) && ~isempty(metaPropValue) && ...
-                        all(metaPropValue == metaPropVals{j});
+                        is_equal(metaPropValue, metaPropVals{j});
+                   
                 end
             end
             
@@ -71,6 +73,16 @@ classdef property_match_selector < physioset.event.abstract_selector
             evArray = evArray(selected);
             
             idx = find(selected);
+            
+            function bool = is_equal(x,y)
+               if isnumeric(x) && isnumeric(y),
+                   bool = all(x == y);
+               elseif ischar(x) && ischar(y),
+                   bool = strcmp(x, y);
+               else
+                   bool = false;
+               end
+            end
             
         end
         
