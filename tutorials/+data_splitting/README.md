@@ -41,14 +41,15 @@ meegpipe.initialize;
 I assume that you are working at `somerengrid` (our lab's private computing
 grid) and that the relevant sleep data files are managed by the
  [somsds][somsds] data management system. Thus we can retrieve the 
-relevant data files for recording `ssmd` and subject `104` as follows:
+relevant data files for recording `ssmd` and subjects `1` to `500` as
+ follows:
 
 [somsds]: http://www.germangh.com/somsds/
 
 ````matlab
 % Create symbolic links to the relevant sleep recordings
 files = somsds.link2rec('ssmd', ...
-    'subject',      104, ...
+    'subject',      1:500, ...
     'modality',     'eeg', ...
     'condition',    'sleep', ...
     'file_regex',   'pset.?$' ...  % Only files in pset/pseth format
@@ -70,6 +71,8 @@ produced by Giovanni Piantoni' [sleep scoring toolbox][sctoolbox]) within
  the same directory where the links above are located. Also the names of 
 sleep scores `.mat` files must follow the naming convention illustrated 
 below:
+
+[sctoolbox]: https://github.com/gpiantoni/sleepscoring
 
 ````
 ssmd_0104_eeg_sleep_1.pset
