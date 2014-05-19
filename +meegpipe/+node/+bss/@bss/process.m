@@ -62,6 +62,10 @@ add_event(ics, get_event(data));
 
 [~, myBSS] = cascade(myPCA, myBSS);
 
+warning('off', 'MATLAB:RandStream:ActivatingLegacyGenerators');
+rand('state',  seed); %#ok<RAND>
+randn('state', seed); %#ok<RAND>
+warning('on', 'MATLAB:RandStream:ActivatingLegacyGenerators');
 [selected, featVal, rankVal, myCrit]  = select(myCrit, myBSS, ics, data);
 
 if verbose,

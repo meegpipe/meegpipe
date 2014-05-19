@@ -49,8 +49,9 @@ try
         fileName = catfile(unzipDir, '20131121T171325_647f7.pseth');
         data = pset.load(fileName);
     end
-    data1 = copy(data);
-    data1 = data1 + 5*randn(size(data1));
+    data1Orig = copy(data);
+    data1Orig = data1Orig + 5*randn(size(data1Orig));
+    data1 = copy(data1Orig);
     save(data1);
     data2 = copy(data);
     data2 = data2 + 5*randn(size(data2));
@@ -88,7 +89,7 @@ try
     myPipe = meegpipe.node.pipeline.new('NodeList', nodeList);
     myPipe = train(myPipe, {get_hdrfile(data1), get_hdrfile(data2)});
     
-    run(myPipe, get_hdrfile(data1), get_hdrfile(data3), get_hdrfile(data4));
+    run(myPipe, get_hdrfile(data1Orig), get_hdrfile(data3), get_hdrfile(data4));
     
     ok(true, name);
     
