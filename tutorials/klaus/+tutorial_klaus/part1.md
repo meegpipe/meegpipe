@@ -383,7 +383,7 @@ delete('NBT.S0021.090205.EOR1.pset');
 ````
 
 
-## Visualizing physiosets
+## A simple visualization: `plot()`
 
 Let's import once again the sample EEG dataset:
 
@@ -423,14 +423,14 @@ level of detail for each time-series. A more subtle problem is that, in
 _physioset_ data values in MATLAB's workspace before calling EEGLAB's
 `eegplot()`. This means that if you try to plot a very large dataset (e.g. 
 an 8 hours long hdEEG sleep recording) you will just get an out-of-memory
-error. 
+error. The solution is to use _data selections_.
 
-Fortunately, the _physioset_ class defines a very useful method that 
+## Data selections
+
+The _physioset_ class defines a very useful method, called `select()` that 
 allows you to define the subset of your data that should be visible 
-to anybody using a _physioset_ object. The name of this method is `select()` 
-and below we illustrate how it works. 
-
-Let's start by plotting a bit of data from channels 1 and 5. Notice that
+to anybody using a _physioset_ object. To illustrate how this works, let's
+start by plotting a bit of data from channels 1 and 5. Notice that
 `data(5, 1:50)` reads 50 samples from the _physioset_ and produces a MATLAB
 vector. Thus MATLAB's builtin plot() function is called in the snippet 
 below:
@@ -451,7 +451,7 @@ Before calling method `select()` let's recall the dimensions of our
 size(data)
 ````
 
-As expected, MATALB tells us that we have 129 channels and 60000 samples:
+As expected, MATLAB tells us that we have 129 channels and 60000 samples:
 
 ````matlab
 >> size(data)
@@ -492,6 +492,50 @@ plot(data(1,1:50), 'ro-');
 ````
 
 ![Data selection, 6 channels, 1000 samples](../img/selections.png "Data selection, 6 channels, 1000 samples")
+
+Data outside the selection is not anymore accessible. If you try to access
+`data(1, 1001)` or `data(7, 1)` you will just get an error indicating that
+you are exceeding the dimensions of your _physioset_. 
+
+It is very important to realize that data selections __never__ lead to 
+data loss. Data selections do not modify at all the data values 
+stored in a _physioset_ object. Instead, selections simply re-define how
+indices `i,j` are interpreted when calling `data(i,j)`. Obviously, this 
+means that data selections can be cascaded, and undone:
+
+````matlab
+% Lets create a toy physioset for illustration purposes
+toy = import(physioset.import.matrix, zeros(3, 1000));
+toy(1,:) = 1;
+toy(2,:) = 2;
+toy(3,:) = 3;
+
+% Let's select channels 2 to 3, resulting in a 2x1000 physioset
+select(toy, 2:3);
+assert(all(toy(1,:) == 2));
+
+% Now let's select channel 2, resulting in a 1x1000 physioset
+select(toy, 3);
+assert(all(toy(1,:) == 3));
+
+% Let's undo (only) the last selection
+restore_selection(toy);
+assert(all(size(toy) == [2, 1000]));
+assert(all(toy(1,:) == 2));
+
+% Let's re-select
+select(toy, 2);
+assert(all(size(toy) == [1, 1000]));
+assert(all(toy(1,:) == 3));
+
+% Let's clear all selections at once
+clear_selection(data);
+assert(all(size(toy) == [3, 1000]));
+assert(all(toy(1,:) == 1));
+
+````
+
+
 
 
 
