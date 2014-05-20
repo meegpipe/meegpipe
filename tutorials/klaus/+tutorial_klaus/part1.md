@@ -399,13 +399,13 @@ _physioset_. As you already know, the `.pset` file stores the EEG
 measurements. After saving our _physioset_ using `save()` we can safely
 clear our MATLAB workspace:
 
-````
+````matlab
 clear all;
 ````
 
 Then we can retrieve again our _physioset_ using the `pset.load` function:
 
-````
+````matlab
 % We need to load only the .pseth file. Not the .pset!
 retrievedData = pset.load('NBT.S0021.090205.EOR1.pseth');
 
