@@ -437,9 +437,9 @@ below:
 
 ````matlab
 close all;
-plot(data(5, 1:50));
+plot(data(5, 1:50), 'k', 'LineWidth', 2);
 hold on;
-plot(data(1, 1:50), 'r');
+plot(data(1, 1:50));
 ````
 
 Clearly, channel 1 and 5 are not identical. Though they are very similar 
@@ -488,11 +488,10 @@ Indeed the following code demonstrates that, after the selection,
 % Hopefully you did not close the figure that plotted
 % data(1,1:50) and data(5,1:50)
 hold on;
-plot(data(1,1:50), 'k:');
+plot(data(1,1:50), 'ro-');
 ````
 
-
-
+![Data selection, 6 channels, 1000 samples](../img/selections.png "Data selection, 6 channels, 1000 samples")
 
 
 
