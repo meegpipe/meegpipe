@@ -514,8 +514,9 @@ toy(3,:) = 3;
 select(toy, 2:3);
 assert(all(toy(1,:) == 2));
 
-% Now let's select channel 2, resulting in a 1x1000 physioset
-select(toy, 3);
+% Let's cascade another selection
+select(toy, 2);
+assert(all(size(toy) == [1 1000]));
 assert(all(toy(1,:) == 3));
 
 % Let's undo (only) the last selection
@@ -529,10 +530,9 @@ assert(all(size(toy) == [1, 1000]));
 assert(all(toy(1,:) == 3));
 
 % Let's clear all selections at once
-clear_selection(data);
+clear_selection(toy);
 assert(all(size(toy) == [3, 1000]));
 assert(all(toy(1,:) == 1));
-
 ````
 
 
