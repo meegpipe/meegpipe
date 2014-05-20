@@ -146,9 +146,9 @@ run(myPipe, files{:});
 As usual, _meegpipe_ stores the processing results for file `fileX.pseth` 
 under a directory called `fileX.meegpipe`. Under Linux or Mac OS X you can
  use the shell utility `find` to locate the files you want. For instance, 
-you could move all _wakefulness_ and _rem_ data splits to directory 
+you could move all _nrem1_ and _rem_ data splits to directory 
 `/data/splits` using the following shell commands:
 
 ````
-find ./ -regex '.*_(wakefulness|rem)\.pset.*' | xargs -I{} cp "{}" /data/splits
+find ./ -regex '.*_(nrem1|rem)\.pset.*' | xargs -I{} cp "{}" /data/splits
 ```` 
