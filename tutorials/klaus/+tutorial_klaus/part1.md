@@ -549,41 +549,94 @@ plot(data);
 ![Raw EEG, 1 every 10 channels](../img/raw-eeg-every10chans.png "Raw EEG, 1 every 10 channels")
 
 
+
+## Mathematical operators
+
+The _physioset_ class implements custom versions of many mathematical 
+operators that allow you to apply such these operators on datasets of
+ virtually any size. For instance, the two commands below produce the 
+same result but only the second command could be used with very large 
+datasets:
+
 ````matlab
-data = 
+% Let's select only the first two channels to make the covariance matrices
+% smaller and easier to visualize
+select(data, 1:2);
 
-handle
-Package: physioset
+% Compute the data covariance using MATLAB's built-in cov
+% This is fast, but impossible to do with very large datasets
+tic;cov(data(:,:)');toc
 
+% Let's now compute the covariance using method cov() from class physioset
+% This is slower, but will work no matter how big data is
+tic;cov(data);toc
+````
 
-                Name : NBT.S0021.090205.EOR1
-               Event : []
-             Sensors : 6 sensors.eeg; 
-        SamplingRate : 200 Hz
-             Samples : 60000 (300.0 seconds), 0 bad samples (0.0%)
-    SamplesSelection : 1000 (  5.0 seconds), 0 bad samples (0.0%)
-            Channels : 129, 0 bad channels (0.0%)
-   ChannelsSelection : 6, 0 bad channels (0.0%)
-           StartTime : 20-05-2014 20:39:27:924
-        Equalization : no
-           Reference : raw
+What is the difference? the custom-made `cov()` defined on objects of 
+class _physioset_ computes the covariance matrix incrementally in 
+sliding windows, without ever attempting to load too much data at once 
+into MATLAB's workspace.
 
-Meta properties:
+Another typical example is re-referencing, which can be always implemented
+as matrix multiplication. For instance, for our 2-dimensional dataset 
+(considering the data selection performed above), you could re-reference 
+to the average signal as follows:
 
-    eeglab: [1x1 struct]
+````matlab
+% The re-referencing matrix
+R = [0.5 -0.5;-0.5 0.5];
 
-`````
+% Let's load all our data into MATLAB's workspace
+X = data(:,:);
 
-% Indeed we have 129 channels and 60000 samples
+% Let's re-reference
+Xr = R*X;
 
-% Now let's "select" channels 5 to 10 and samples 1 to 1000
-select(data, 5:10, 1:1000)
+% We could now store the result back in the physioset using:
+% data(:,:) = X;
+% But don't do this yet!
+````
 
+The problem with the approach above is that if `data` is very large, we 
+will not be able to load all data into the workspace at once using
+`X = data(:,:)`. On the other hand, the following approach will
+work no matter how big `data` is:
 
+````matlab
+% The re-referencing matrix
+R = [0.5 -0.5;-0.5 0.5];
 
+% Notice that I don't write data = R*data (but I could have, with exactly
+% the same effect). I explain this later...
+R*data;
 
-[eeglab]: http://sccn.ucsd.edu/eeglab/
-[eegplot]: http://sccn.ucsd.edu/eeglab/allfunctions/eegplot.html
+% Let's check whether it worked by comparing with the result of the first 
+% approach:
+assert(all(all(data(:,:) == Xr)));
+````
 
- problem with this figure is that
+The example above illustrates another very important characteristic of 
+_physiosets_. If possible (and if it makes sense) all operators are 
+applied in-place, i.e. command `R*data` means: left-multiply all the data
+values stored in `get_datafile(data)` with matrix `R`. This is usually the
+desired behavior because, if you want to re-reference a 20 GB _physioset_ 
+you want to make a copy of the underlying disk file __only if it is 
+really necessary__. Of course, in many cases you want to prevent your 
+original _physioset_ being modified by an operator. In that case you should
+explicitly create a copy:
 
+````  
+data = import(physioset.import.eeglab, 'NBT.S0021.090205.EOR1.set');
+select(data, 1:2);
+
+% Create a explicit copy
+dataReref = R*copy(data);
+
+% This is equivalent to the command above:
+% dataReref = copy(data); R*dataReref;
+````
+
+The code above will result in two physiosets: One with the original 
+data reference (`data`, attached to disk file `get_datafile(data)`), and
+another one average-referenced (`dataReref`, attached to disk file 
+`get_datafile(dataReref)`). 
