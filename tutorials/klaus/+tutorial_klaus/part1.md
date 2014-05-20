@@ -1,7 +1,15 @@
 Part 1: working with physiosets
 =====
 
+If you are not familiar with Object Oriented (OO) programming concepts like
+_class_, _object_ or _interface_, you may want to read some
+[background material][oo-concepts] before going any further. You may also
+ want to read some documentation on the specifics of 
+[MATLAB's OO programming][matlab-oo].
 
+[oo-concepts]: http://docs.oracle.com/javase/tutorial/java/concepts/
+[oo-programming]: http://en.wikipedia.org/wiki/Object-oriented_programming
+[matlab-oo]: http://www.mathworks.nl/help/matlab/object-oriented-programming.html
 
 
 ## Creating a physioset
@@ -86,20 +94,29 @@ the `physioset` class:
 edit physioset.physioset.disp
 ````
 
-If you are not familiar with Object Oriented (OO) programming concepts like
-_class_, _object_ or _interface_, you may want to read some
-[background material][oo-concepts] before going any further. You may also
- want to read some documentation on the specifics of 
-[MATLAB's OO programming][matlab-oo].
-
-[oo-concepts]: http://docs.oracle.com/javase/tutorial/java/concepts/
-[oo-programming]: http://en.wikipedia.org/wiki/Object-oriented_programming
-[matlab-oo]: http://www.mathworks.nl/help/matlab/object-oriented-programming.html
-
-
 
 ### A physioset that contains real data
 
 An empty _physioset_ like the one that we built above is useless. For a 
 _physioset_ to make any sense it should be based on the contents of a 
-experimental recording. The code below will create a physioset
+experimental recording. The code below will create a physioset based on 
+the contents of an EEG recording in EEGLAB's format:
+
+````matlab
+% Download and unzip the sample recording (you have done this already!)
+unzip('https://dl.dropboxusercontent.com/u/4479286/meegpipe/NBT.S0021.090205.EOR1.zip')
+
+% Create an importer object that knows how to read EEGLAB files
+myImporter = physioset.import.eeglab;
+
+% Use method import() of the importer object to create a physioset object 
+% based on the contents of the file
+myPhysObj = import(myImporter, 'NBT.S0021.090205.EOR1.set')
+````
+
+Since we did not terminate with a `;` the last command above, MATLAB will
+display the contents of the newly created _physioset_:
+
+````matlab
+
+````

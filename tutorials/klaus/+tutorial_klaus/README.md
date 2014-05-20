@@ -20,7 +20,7 @@ and extract its contents into your current working directory. In the
 rest of this tutorial I will assume that all commands are run within the 
 same working directory. 
 
-
+[eeglab]: http://sccn.ucsd.edu/eeglab/
 
 ## Preliminaries
 
