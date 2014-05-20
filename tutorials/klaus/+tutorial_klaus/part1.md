@@ -273,49 +273,7 @@ semi-random name and place it under a directory called `session_1`. In this
 you may want to remove when you are done with your exploratory analysis. 
 
 
-### Sessions are persistent
-
-A minor detail is that sessions are persistent so that if you now create 
-a new _physioset_ based on a MATLAB matrix:
-
-````matlab
-myNewPhysObj = import(physioset.import.matrix, rand(3,1000));
-````
-
-Then a new file will be created under directory `session_1`. In my case 
-my current directory now looks like this:
-
-````
-NBT.S0021.090205.EOR1.pset
-session_1\20140520T152506_a26da.pset
-session_1\20140520T153908_bdff0.pset
-````
-
-You can explicity clear a session like this:
-
-````matlab
-clear session
-````
-
-so that now the following command will lead to the creation of a new 
-session (since it cannot reuse the one we just erased):
-
-
-````matlab
-myNewPhysObj2 = import(physioset.import.matrix, rand(3,1000));
-````
-
-Now my current directory looks like this:
-
-````
-NBT.S0021.090205.EOR1.pset
-session_1\20140520T152506_a26da.pset
-session_1\20140520T153908_bdff0.pset
-session_2\20140520T154214_6782f.pset
-````
-
-
-### physiosets are temporary by default
+### physioset files are temporary (by default)
 
 By default the disk file associated with a _physioset_ object will exist 
 only for as long as there is at least one alias of that _physioset_ in 
