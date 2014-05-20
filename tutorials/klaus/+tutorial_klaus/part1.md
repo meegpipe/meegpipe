@@ -659,7 +659,7 @@ figure;plot(data(1, 1:1000));
 filter(myFilter, data);
 
 % Before/after filtering
-hold on;plot(data(1, 1:1000), 'r');
+hold on;plot(data(1, 1:1000), 'r', 'LineWidth', 2);
 ````
 
 ![Before/after filtering](../img/filtering.png "Before/after filtering")
