@@ -662,6 +662,6 @@ filter(myFilter, data);
 hold on;plot(data(1, 1:1000), 'r');
 ````
 
-![Before/after filtering](../img/raw-eeg-every10chans.png "Before/after filtering")
+![Before/after filtering](../img/filtering.png "Before/after filtering")
 
 
