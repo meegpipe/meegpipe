@@ -11,6 +11,31 @@ the basic functionality of _meegpipe_.
 [cncr]: http://www.cncr.nl/
 [vu]: http://vu.nl/en/
 
+
+## Tutorial data
+
+We will use a sample Eyes Open EEG recording (in [EEGLAB][eeglab]'s format).
+Download the .zip file [NBT.S0021.090205.EOR1.zip](https://dl.dropboxusercontent.com/u/4479286/meegpipe/NBT.S0021.090205.EOR1.zip)
+and extract its contents into your current working directory. In the 
+rest of this tutorial I will assume that all commands are run within the 
+same working directory. 
+
+
+
+## Preliminaries
+
+You will need to [install meegpipe][meegpipe] and run this initialization
+code:
+
+````
+% Replace with the relevant path for your system
+addpath(genpath('/data1/toolbox/eeglab'));
+meegpipe.initialize;
+````
+
+
+## Tutorial organization
+
 The tutorial consists of two parts:
 
 * The [first part][part1] illustrates the major characteristics of the data
