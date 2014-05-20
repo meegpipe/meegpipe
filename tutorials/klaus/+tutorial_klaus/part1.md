@@ -118,5 +118,77 @@ Since we did not terminate with a `;` the last command above, MATLAB will
 display the contents of the newly created _physioset_:
 
 ````matlab
+>> myPhysObj
+
+myPhysObj = 
+
+handle
+Package: physioset
+
+
+                Name : NBT.S0021.090205.EOR1
+               Event : []
+             Sensors : 129 sensors.eeg; 
+        SamplingRate : 200 Hz
+             Samples : 60000 (300.0 seconds), 0 bad samples (0.0%)
+            Channels : 129, 0 bad channels (0.0%)
+           StartTime : 20-05-2014 14:05:44:571
+        Equalization : no
+           Reference : raw
+
+Meta properties:
+
+    eeglab: [1x1 struct]
 
 ````
+
+You may have noticed that when the _physioset_ object `myPhysObj` was 
+created, a file called `NBT.S0021.090205.EOR1.pset` was created in your 
+current working directory. It is in that file where the EEG data values 
+are actually stored and not in the `myPhysObj` variable that you have 
+in your MATLAB workspace and that is intended to hold only meta-data such 
+as sensor information and events. Indeed, `myPhysObj` occuppies only 
+112 bytes in MATLAB's working memory, which is far too little to contain
+60000 samples of 128 EEG channels:
+
+````matlab
+>> whos
+  Name              Size               Bytes  Class                      Attributes
+                              
+  myImporter        1x1                  311  physioset.import.eeglab              
+  myPhysObj       129x60000              112  physioset.physioset                  
+
+````
+
+Whenever you create a _physioset_ object, a corresponding `pset` file will 
+be created to hold the values of the time-series contained in the 
+_physioset_. In this way, _meegpipe_ can handle very large data files 
+without running into memory problems, provided of course that you have 
+enough disk space. 
+
+## Accessing physioset data
+
+Our _physioset_ object `myPhysObj` gives as access to the EEG time-series 
+and all related meta-data (events, sensors information, etc). You can 
+access the EEG data values in the same way as you would access elements in 
+a MATLAB matrix. For instance, you can get the 5 first values of channel 
+number 15 as follows:
+
+````matlab
+eegValues = myPhysObj(15, 1:5)
+````
+
+The code above will create a MATLAB vector with 5 elements called 
+`eegValues` and will display its contents:
+
+````matlab
+eegValues =
+
+ -162.4577 -184.7542  120.4011   77.2734 -213.7123
+````matlab
+
+
+## Understanding physiosets
+
+Since a _physioset_ object can contain a huge amount of data any operation 
+that you perform on a physioset is run in-
