@@ -95,18 +95,18 @@ run(mNode, files{:});
 
 ## Where are the converted files?
 
-As usual, _meegpipe_ stores the processing results for file `fileX.mff` 
-under a directory called `fileX.meegpipe`. In my particular case, the 
-following directory structureUnder Linux or Mac OS X you can easily find the converted files using this 
-command in a shell window:
+Recall that _meegpipe_ always stores the processing results for file 
+`fileX.mff`  under a directory called `fileX.meegpipe`. Under Linux or
+ Mac OS X you can easily find the converted files using the shell command 
+line utility `find`:
 
 ````
 find ./ -regex '.*_mff2pset.pset.*'
 ````
 
-The following shell command will copy move converted files to directory 
+The following shell command would move converted files to directory 
 `/data1/import/ssmd/140517`:
 
 ````
-find ./ -regex '.*_mff2pset.pset.*' | xargs -I{} cp "{}" /data1/import/ssmd/140517
+find ./ -regex '.*_mff2pset.pset.*' | xargs -I{} mv "{}" /data1/import/ssmd/140517
 ```` 
