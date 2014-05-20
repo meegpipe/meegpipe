@@ -1,6 +1,5 @@
 classdef generic < report.report
     
-    %% IMPLEMENTATION .....................................................
     properties (SetAccess = private, GetAccess = private)
         
         RootPath    = '';
@@ -164,13 +163,11 @@ classdef generic < report.report
         end
         
     end
-    
-    %% PROTECTED INTERFACE ................................................
-    
+ 
     % Own methods
     methods (Access = protected)
         
-        %% Const methods       
+        % Const methods       
 
         % parent remark report file
         parent      = get_parent(obj);
@@ -186,7 +183,7 @@ classdef generic < report.report
         % default rootpath
         rPath       = def_rootpath(obj);
         
-        %% Modifiers
+        % Modifiers
         
         % associate generator to remark file
         set_filename(obj, fname);
@@ -210,12 +207,8 @@ classdef generic < report.report
         
     end
     
-    %% PUBLIC INTERFACE ...................................................
-    
     methods
         
-        %% INTERFACE: report.report
-     
         % make generator obj a child of generator parent
         obj = childof(obj, parent);
         
@@ -287,7 +280,7 @@ classdef generic < report.report
         % compile the report using Remark
         obj = compile(obj);
         
-        %% Other methods
+        % Other methods
         disp(obj);
       
     end
@@ -305,7 +298,7 @@ classdef generic < report.report
             if nargin < 1, return; end
             
             if nargin == 1 && pkgisa(varargin{1}, 'report.report'),
-              %% Copy constructor
+             % Copy constructor
                 % Note: FileName and FID are not copied. 
                 fNames = {'RootPath', 'Parent', ...
                     'CloseFID', 'Level', 'Title'};

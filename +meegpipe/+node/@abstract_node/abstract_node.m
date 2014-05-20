@@ -92,10 +92,7 @@ classdef abstract_node < ...
         NodeIdx_      = [];      % the index of this node within a pipeline
         SavedNode_    = '';
         SavedInput_   = '';
-        Diagnostics_  = struct;
-        LogMap_       = mjava.hash; % LogFID_{LogMap_('file.log')} returns a FID to that log
-        LogFID_       = {};         % Cell array of safefid.safefid objects
-        
+        Diagnostics_  = struct;      
     end
     
     %% Consistency checks

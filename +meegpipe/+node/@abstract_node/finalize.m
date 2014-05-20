@@ -93,8 +93,6 @@ end
 %% Reset node "uninitialized" again
 obj.RootDir_ = '';
 obj.Static_  = '';
-obj.LogFID_  = {};
-obj.LogMap_  = mjava.hash;
 
 
 end
