@@ -535,8 +535,18 @@ assert(all(size(toy) == [3, 1000]));
 assert(all(toy(1,:) == 1));
 ````
 
+Now that we can understand how data selections work, we can use them 
+in combination with `plot()` to plot (and load into MATLAB's memory) only 
+the subset of the data we want to take a look at:
+
+````matlab
+% Let's plot only 1 every 10 channels
+select(data, 1:10:129);
+plot(data);
+````
 
 
+![Raw EEG, 1 every 10 channels](../img/raw-eeg-every10chans.png "Raw EEG, 1 every 10 channels")
 
 
 ````matlab
