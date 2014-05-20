@@ -190,7 +190,17 @@ if numel(hdr.signal) > 1,
         
         muxTemplate = regexprep(label{muxIdx(i)}, '[^\s]+\s+([^\s]+$)', ...
             '$1');
-        muxSensors{i} = eval(['sensors.mux.' muxTemplate]);
+        
+        % Candidate MUX definition
+        muxSensorsDef = ['sensors.mux.' muxTemplate];
+        if ~isempty(strcmp(which(muxSensorsDef), 'not found')),
+            warning('MUX:UnknownMUX', ...
+                'Could not find MUX definition for %s, using %s instead', ...
+                muxTemplate, 'braintronics_tempmux_1012');
+            muxSensorsDef = 'sensors.mux.braintronics_tempmux_1012';
+        end
+        
+        muxSensors{i} = eval(muxSensorsDef);
         
     end
     
