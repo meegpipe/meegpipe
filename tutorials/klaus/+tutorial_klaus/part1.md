@@ -652,14 +652,14 @@ of a low pass filter to the sample _physioset_:
 myFilter = filter.lpfilt('fc', 40/(data.SamplingRate/2));
 
 % Plot the data before filtering
-figure;plot(data(1, 1:1000));
+figure;plot(data(1, 1000:1200));
 
 % Apply the filter to the physioset. Note that filter() is a method of 
 % class filter.lpfilt, and not of class physioset!
 filter(myFilter, data);
 
 % Before/after filtering
-hold on;plot(data(1, 1:1000), 'r', 'LineWidth', 2);
+hold on;plot(data(1, 1000:1200), 'r', 'LineWidth', 2);
 ````
 
 ![Before/after filtering](../img/filtering.png "Before/after filtering")
