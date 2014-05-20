@@ -164,7 +164,16 @@ Whenever you create a _physioset_ object, a corresponding `pset` file will
 be created to hold the values of the time-series contained in the 
 _physioset_. In this way, _meegpipe_ can handle very large data files 
 without running into memory problems, provided of course that you have 
-enough disk space. 
+enough disk space. You can find out what disk file corresponds to a given
+dataset using method `get_datafile()`:
+
+````matlab
+get_datafile(myPhysObj)
+
+ans =
+
+C:\workdir\NBT.S0021.090205.EOR1.pset
+````
 
 ## Accessing physioset data
 
@@ -187,8 +196,169 @@ eegValues =
  -162.4577 -184.7542  120.4011   77.2734 -213.7123
 ````matlab
 
+Meta-data on sensors, events, etc. can also be accessed and modified using 
+appropriate methods. For more information, see the 
+[documentation][physioset-api].
+
+[physioset-api]: ../../../+physioset/README.md
+
 
 ## Understanding physiosets
 
-Since a _physioset_ object can contain a huge amount of data any operation 
-that you perform on a physioset is run in-
+
+### Aliases
+
+The following code snippet illustrates a crucial characteristic of 
+_physioset_ objects that can be quite counterintuitive at first:
+
+````matlab
+% myPhysObj contains our EEG data
+% Let's make sure that the first data channel is not filled with zeros
+assert(~all(myPhysObj(1,:) == 0));
+
+% Now let's make a copy of our physioset:
+myPhysObjCopy = myPhysObj;
+
+% Lets's set to zeros the first channel of the copied physioset
+myPhysObjCopy(1,:) = 0;
+assert(all(myPhysObjCopy(1,:) == 0));
+
+% This may be surprising ...
+assert(all(myPhysObj(1,:) == 0));
+````
+
+Conclusion: `myPhysObj` and `myPhysObj2` are just _aliases_ of the 
+same underlying physioset. This is contrary to the behavior of 
+the `=` operator for MATLAB's built-in types, which indeed creates two 
+independent copies (not aliases) of the same underlying data. 
+
+If you want to create two independent copies of a _physioset_ then you 
+need to be explicit about it:
+
+````matlab
+% myPhysObj contains our EEG data
+% Let's make sure that the first data channel is not filled with zeros
+assert(~all(myPhysObj(1,:) == 0));
+
+% Now let's make a REAL copy of our physioset:
+myPhysObjCopy = copy(myPhysObj);
+
+% Lets's set to zeros the first channel of the copied physioset
+myPhysObjCopy(1,:) = 0;
+assert(all(myPhysObjCopy(1,:) == 0));
+
+% This assertion will now fail
+assert(all(myPhysObj(1,:) == 0));
+````
+
+If you run the code snippet above line by line you will notice that 
+command `myPhysObjCopy = copy(myPhysObj)` informs you that the disk file 
+that holds the _physioset_ data values is being copied. Indeed, your
+ current directory should now contain two `.pset` files like (the 
+second file name will differ in your case):
+
+````
+NBT.S0021.090205.EOR1.pset
+session_1\20140520T152506_a26da.pset
+````
+
+You may have also noticed a message saying that a new session (_session1_) 
+has been created. Command `myPhysObjCopy = copy(myPhysObj)` requires the
+ creation of a new _physioset_ object and thus _meegpipe_ needs 
+to produce a suitable name for the corresponding disk file.  
+In the absence of more information, _meegpipe_ decides to use a 
+semi-random name and place it under a directory called `session_1`. In this
+ way you can easily identify files that are produced by meegpipe and that
+you may want to remove when you are done with your exploratory analysis. 
+
+
+### Sessions are persistent
+
+A minor detail is that sessions are persistent so that if you now create 
+a new _physioset_ based on a MATLAB matrix:
+
+````matlab
+myNewPhysObj = import(physioset.import.matrix, rand(3,1000));
+````
+
+Then a new file will be created under directory `session_1`. In my case 
+my current directory now looks like this:
+
+````
+NBT.S0021.090205.EOR1.pset
+session_1\20140520T152506_a26da.pset
+session_1\20140520T153908_bdff0.pset
+````
+
+You can explicity clear a session like this:
+
+````matlab
+clear session
+````
+
+so that now the following command will lead to the creation of a new 
+session (since it cannot reuse the one we just erased):
+
+
+````matlab
+myNewPhysObj2 = import(physioset.import.matrix, rand(3,1000));
+````
+
+Now my current directory looks like this:
+
+````
+NBT.S0021.090205.EOR1.pset
+session_1\20140520T152506_a26da.pset
+session_1\20140520T153908_bdff0.pset
+session_2\20140520T154214_6782f.pset
+````
+
+
+### physiosets are temporary by default
+
+By default the disk file associated with a _physioset_ object will exist 
+only for as long as there is at least one alias of that _physioset_ in 
+the MATLAB workspace. See: 
+
+````matlab
+clear all;
+````
+
+The command above will not only clear your MATLAB workspace but will also
+delete all the `.pset` files that were created as a result of our 
+experiments above. That is, both your current directory and the `session_1`
+and `session_2` directories should now be empty. 
+
+Let's see how this work in more detail:
+
+````matlab
+% Let's create a random physioset
+obj = import(physioset.import.matrix, rand(2,1000));
+
+% Let's create an alias
+obj2 = obj;
+
+% Realize that both obj2 and obj are aliases of the same physioset
+assert(strcmp(get_datafile(obj), get_datafile(obj2)));
+
+% Let's delete one of the aliases 
+clear obj;
+
+% Notice that the .pset file has not been deleted
+dataFile = get_datafile(obj2);
+assert(exist(dataFile, 'file') > 0);
+
+% Let's delete the second alias
+clear obj2;
+
+% Now the associated .pset file is automatically deleted because there 
+% are no references to it in the MATLAB workspace
+assert(~exist(dataFile, 'file'));
+````
+
+
+### Storing and retrieving physiosets
+
+
+
+
