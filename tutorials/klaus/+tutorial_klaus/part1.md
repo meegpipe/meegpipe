@@ -383,7 +383,7 @@ delete('NBT.S0021.090205.EOR1.pset');
 ````
 
 
-## Processing physiosets
+## Visualizing physiosets
 
 Let's import once again the sample EEG dataset:
 
@@ -402,13 +402,135 @@ plot(data)
 ````
 
 Don't be deceived, the command above does not call MATLAB's builtin `plot()`
-function, which doesn't know how to plot _physioset_ objects. Instead it 
-calls a method named `plot()` which has been custom-made for objects
-of class _physioset_. You could inspect the code of such method with the
-command `edit physioset.physioset.plot`. 
+function, which doesn't know how to plot _physioset_ objects. Instead MATLAB
+realizes that `data` is a _physioset_ object and thus it first looks for a 
+a method named `plot()` defined for objects of class _physioset_. Indeed  
+the _physioset_ class implementation includes such a method and therefore
+MATLAB finds it, and calls it.  You can inspect the code of method `plot()`
+by typing `edit physioset.physioset.plot` in your MATLAB command window. 
 
-The call to method `plot()` produces the following figure:
+The call to method `plot()` produces a figure that allows you scroll 
+through your dataset:
 
 ![Raw EEG, 129 channels](../img/raw-eeg-129chans.png "Raw EEG, 129 channels")
 
+If you are a user of [EEGLAB][eeglab] you may have realized that method 
+`plot()` for _physioset_ objects is just a wrapper around EEGLAB's 
+[eegplot][eegplot] function. An obvious problem with this visualization is
+that we are plotting too many channels and this results in a very poor 
+level of detail for each time-series. A more subtle problem is that, in
+ order to make the visualization faster, method `plot()` loads all 
+_physioset_ data values in MATLAB's workspace before calling EEGLAB's
+`eegplot()`. This means that if you try to plot a very large dataset (e.g. 
+an 8 hours long hdEEG sleep recording) you will just get an out-of-memory
+error. 
+
+Fortunately, the _physioset_ class defines a very useful method that 
+allows you to define the subset of your data that should be visible 
+to anybody using a _physioset_ object. The name of this method is `select()` 
+and below we illustrate how it works. 
+
+Let's start by plotting a bit of data from channels 1 and 5. Notice that
+`data(5, 1:50)` reads 50 samples from the _physioset_ and produces a MATLAB
+vector. Thus MATLAB's builtin plot() function is called in the snippet 
+below:
+
+````matlab
+close all;
+plot(data(5, 1:50));
+hold on;
+plot(data(1, 1:50), 'r');
+````
+
+Clearly, channel 1 and 5 are not identical. Though they are very similar 
+for both are heavily contaminated with the same source of powerline noise. 
+Before calling method `select()` let's recall the dimensions of our 
+`physioset` using method `size()`:
+
+````matlab
+size(data)
+````
+
+As expected, MATALB tells us that we have 129 channels and 60000 samples:
+
+````matlab
+>> size(data)
+
+ans =
+
+         129       60000
+````
+
+Let's now _select_ channels 5 to 10 and samples 1 to 1000:
+
+`````matlab
+select(data, 5:10, 1:1000);
+````
+
+And now let's inspect again the dimensions of our _physioset_ using 
+`size(data)`:
+
+````
+>> size(data)
+
+data
+
+ans =
+
+           6        1000
+````
+
+The new dimensions are consistent with the selection that we just made. 
+Indeed the following code demonstrates that, after the selection, 
+`data(1, 1:50)` is equivalent to `data(5, 1:50)` before the selection:
+
+````matlab
+% Hopefully you did not close the figure that plotted
+% data(1,1:50) and data(5,1:50)
+hold on;
+plot(data(1,1:50), 'k:');
+````
+
+
+
+
+
+
+````matlab
+data = 
+
+handle
+Package: physioset
+
+
+                Name : NBT.S0021.090205.EOR1
+               Event : []
+             Sensors : 6 sensors.eeg; 
+        SamplingRate : 200 Hz
+             Samples : 60000 (300.0 seconds), 0 bad samples (0.0%)
+    SamplesSelection : 1000 (  5.0 seconds), 0 bad samples (0.0%)
+            Channels : 129, 0 bad channels (0.0%)
+   ChannelsSelection : 6, 0 bad channels (0.0%)
+           StartTime : 20-05-2014 20:39:27:924
+        Equalization : no
+           Reference : raw
+
+Meta properties:
+
+    eeglab: [1x1 struct]
+
+`````
+
+% Indeed we have 129 channels and 60000 samples
+
+% Now let's "select" channels 5 to 10 and samples 1 to 1000
+select(data, 5:10, 1:1000)
+
+
+
+
+[eeglab]: http://sccn.ucsd.edu/eeglab/
+[eegplot]: http://sccn.ucsd.edu/eeglab/allfunctions/eegplot.html
+
+ problem with this figure is that
 
