@@ -621,18 +621,18 @@ applied in-place, i.e. command `R*data` means: left-multiply all the data
 values stored in `get_datafile(data)` with matrix `R`. This is usually the
 desired behavior because, if you want to re-reference a 20 GB _physioset_ 
 you want to make a copy of the underlying disk file __only if it is 
-really necessary__. Of course, in many cases you want to prevent your 
-original _physioset_ being modified by an operator. In that case you should
-explicitly create a copy:
+really necessary__. In some cases you may want to avoid this default 
+behavior and prevent any modification of your original _physioset_. In that
+case you should explicitly create a copy:
 
 ````matlab
 data = import(physioset.import.eeglab, 'NBT.S0021.090205.EOR1.set');
 select(data, 1:2);
 
-% Create a explicit copy
+% Create an explicit copy
 dataReref = R*copy(data);
 
-% This is equivalent to the command above:
+% Equivalently we could have done instead:
 % dataReref = copy(data); R*dataReref;
 ````
 
