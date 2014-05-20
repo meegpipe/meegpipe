@@ -1,4 +1,4 @@
-A brief overview of meegpipe
+meegpipe in a nutshell
 =======
 
 This tutorial has been prepared for a one-day workshop at the research 

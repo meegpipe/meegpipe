@@ -1,6 +1,8 @@
 Part 1: working with physiosets
 =====
 
+[Go back to the main page of the tutorial](./README.md)
+
 If you are not familiar with Object Oriented (OO) programming concepts like
 _class_, _object_ or _interface_, you may want to read some
 [background material][oo-concepts] before going any further. You may also
@@ -413,3 +415,7 @@ retrievedData = pset.load('NBT.S0021.090205.EOR1.pseth');
 
 assert(all(retrievedData(1,:)==0));
 ````
+
+
+## Processing physiosets
+
