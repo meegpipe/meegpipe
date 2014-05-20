@@ -19,11 +19,11 @@ corresponding [class constructor][constructor]:
 myPhysObj = physioset.physioset
 ````
 
-The `physioset.` is necessary because the _physioset_ class definition as 
-well as other related classes and functions are contained within the 
-[physioset package][physiosetpkg]. If you don't know what a MATLAB package
-is, please take a look at the [documentation][matlabpkg]. An equivalent 
-way to create an empty _physioset_ is:
+The `physioset.` is necessary because the _physioset_ class definition is 
+contained within the [physioset package][physiosetpkg]. If you don't know
+ what a MATLAB package is, please take a look at the 
+[documentation][matlabpkg]. An equivalent way to create an empty
+ _physioset_ is:
 
 ````matlab
 % Tell MATLAB that when we write physioset, we mean: physioset.physioset
@@ -60,11 +60,11 @@ Meta properties:
 What you see above is just the result of calling function `disp()` on our 
 physioset:
 
-````
+````matlab
 % Display (produce a text representation of) a MATLAB vector
 myVec = [1 2 3]
 disp(myVec)
-% Display (produce a text representation of) a physioset
+% Display (produce a text representation of) a physioset object
 disp(myPhysObj)
 ````
 
@@ -73,7 +73,7 @@ function to display the contents of a vector and to display (a summary of)
 the contents of a physioset. However, this is not correct. When running
 `disp(myVec)`, MATLAB's built-in `disp()` function is called:
 
-````
+````matlab
 % Show me the contents of MATLAB's built-in disp() function
 edit disp
 ````
@@ -81,10 +81,21 @@ edit disp
 On the other hand, running `disp(myPhyObj)` will call method `disp()` for 
 the `physioset` class:
 
-````
+````matlab
 % Show me the contents of method disp() for class physioset
 edit physioset.physioset.disp
 ````
+
+If you are not familiar with Object Oriented (OO) programming concepts like
+_class_, _object_ or _interface_, you may want to read some
+[background material][oo-concepts] before going any further. You may also
+ want to read some documentation on the specifics of 
+[MATLAB's OO programming][matlab-oo].
+
+[oo-concepts]: http://docs.oracle.com/javase/tutorial/java/concepts/
+[oo-programming]: http://en.wikipedia.org/wiki/Object-oriented_programming
+[matlab-oo]: http://www.mathworks.nl/help/matlab/object-oriented-programming.html
+
 
 
 ### A physioset that contains real data
