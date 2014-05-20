@@ -415,6 +415,42 @@ retrievedData = pset.load('NBT.S0021.090205.EOR1.pseth');
 assert(all(retrievedData(1,:)==0));
 ````
 
+Before continuing to the next section, let's remove the `.pset/.pseth` 
+files that we have just created for illustration purposes:
+
+````matlab
+clear all;
+delete('NBT.S0021.090205.EOR1.pseth');
+delete('NBT.S0021.090205.EOR1.pset');
+````
+
 
 ## Processing physiosets
+
+Let's import once again the sample EEG dataset:
+
+````matlab
+data = import(physioset.import.eeglab, 'NBT.S0021.090205.EOR1.set')
+````
+
+The summary information produced by the command above shows that we are
+dealing with a physiological dataset consisting of 129 EEG channels, 
+sampled at 200 Hz. In total, there are 300 seconds of data (60000 samples).
+The first thing you will typically want to do with any dataset is to take a
+look at the EEG time-series:
+
+````
+plot(data)
+````
+
+Don't be deceived, the command above does not call MATLAB's builtin `plot()`
+function, which doesn't know how to plot _physioset_ objects. Instead it 
+calls a method named `plot()` which has been custom-made for objects
+of class _physioset_. You could inspect the code of such method with the
+command `edit physioset.physioset.plot`. 
+
+The call to method `plot()` produces the following figure:
+
+![Raw EEG, 129 channels](../img/raw-eeg-129chans.png "Raw EEG, 129 channels")
+
 
