@@ -1,4 +1,4 @@
-Importing a batch of `.mff` files into meegpipe's format
+Converting `.mff` files into meegpipe's `.pset/.pseth` format
 ===
 
 This tutorials illustrates how _meegpipe_ can be used to convert a large 
