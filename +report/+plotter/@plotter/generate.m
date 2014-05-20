@@ -60,8 +60,10 @@ fprintf(fid, '[%s]: [[Ref: %s]]\n\n', repName, [repName '.txt']);
 origVerbose = globals.get.Verbose;
 globals.set('Verbose', false);
 
+pset.session.subsession(get_rootpath(repObj));
 [h, captions,  groups, extra, extraCap] = plot(plotterObj, obj, ...
     varargin{:});
+pset.session.clear_subsession;
 
 globals.set('Verbose', origVerbose);
 
