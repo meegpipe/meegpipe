@@ -625,7 +625,7 @@ really necessary__. Of course, in many cases you want to prevent your
 original _physioset_ being modified by an operator. In that case you should
 explicitly create a copy:
 
-````  
+````matlab
 data = import(physioset.import.eeglab, 'NBT.S0021.090205.EOR1.set');
 select(data, 1:2);
 
