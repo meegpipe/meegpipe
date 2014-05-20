@@ -545,9 +545,7 @@ select(data, 1:10:129);
 plot(data);
 ````
 
-
 ![Raw EEG, 1 every 10 channels](../img/raw-eeg-every10chans.png "Raw EEG, 1 every 10 channels")
-
 
 
 ## Mathematical operators
@@ -640,3 +638,30 @@ The code above will result in two physiosets: One with the original
 data reference (`data`, attached to disk file `get_datafile(data)`), and
 another one average-referenced (`dataReref`, attached to disk file 
 `get_datafile(dataReref)`). 
+
+
+## Data processing: filtering
+
+Processing procedures beyond simple mathematical operators are typically
+implemented as separate _data processing classes_, and not as methods of
+the _physioset_ class. The code snippet below demonstrates the application
+of a low pass filter to the sample _physioset_:
+
+````matlab
+% Create a low-pass filter object with a cutoff of 40 Hz
+myFilter = filter.lpfilt('fc', 40/(data.SamplingRate/2));
+
+% Plot the data before filtering
+figure;plot(data(1, 1:1000));
+
+% Apply the filter to the physioset. Note that filter() is a method of 
+% class filter.lpfilt, and not of class physioset!
+filter(myFilter, data);
+
+% Before/after filtering
+hold on;plot(data(1, 1:1000), 'r');
+````
+
+![Before/after filtering](../img/raw-eeg-every10chans.png "Before/after filtering")
+
+
