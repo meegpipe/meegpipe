@@ -377,8 +377,9 @@ data(1,:) = 0;
 
 If we would now clear the MATLAB workspace (or if we would quit MATLAB), 
 the disk file associated with `data` (file `NBT.S0021.090205.EOR1.pset`)
- would be automatically deleted and therefore our modified physioset object 
-would be lost forever. We can prevent that using the `save()` method:
+ would be automatically deleted and therefore our modified _physioset_
+object would be lost forever. We can prevent that by _saving_ the 
+_physioset_ using the `save()` method:
 
 ````matlab
 save(data);
