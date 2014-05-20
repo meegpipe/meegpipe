@@ -194,7 +194,7 @@ The code above will create a MATLAB vector with 5 elements called
 eegValues =
 
  -162.4577 -184.7542  120.4011   77.2734 -213.7123
-````matlab
+````
 
 Meta-data on sensors, events, etc. can also be accessed and modified using 
 appropriate methods. For more information, see the 
@@ -404,7 +404,8 @@ clear our MATLAB workspace:
 clear all;
 ````
 
-Then we can retrieve again our _physioset_ using the `pset.load` function:
+Then we can retrieve at any time our modified _physioset_ using the 
+`pset.load` function:
 
 ````matlab
 % We need to load only the .pseth file. Not the .pset!
