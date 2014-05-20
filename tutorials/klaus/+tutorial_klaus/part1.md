@@ -327,9 +327,8 @@ clear all;
 The command above will not only clear your MATLAB workspace but will also
 delete all the `.pset` files that were created as a result of our 
 experiments above. That is, both your current directory and the `session_1`
-and `session_2` directories should now be empty. 
-
-Let's see how this work in more detail:
+and `session_2` directories should now be empty. Let's see how this works
+in more detail:
 
 ````matlab
 % Let's create a random physioset
@@ -352,13 +351,63 @@ assert(exist(dataFile, 'file') > 0);
 clear obj2;
 
 % Now the associated .pset file is automatically deleted because there 
-% are no references to it in the MATLAB workspace
+% are no remaining references to it in MATLAB's workspace
 assert(~exist(dataFile, 'file'));
 ````
 
 
 ### Storing and retrieving physiosets
 
+Let's import again the sample EEG dataset:
 
+````matlab
+% Start with a clean workspace
+clear all;
 
+% Import the sample EEG dataset
+data = import(physioset.import.eeglab, 'NBT.S0021.090205.EOR1.set');
+````
 
+Let's perform a simple modification, such as zeroing out the first data 
+channel:
+
+````matlab
+data(1,:) = 0;
+````
+
+If we would now clear the MATLAB workspace (or if we would quit MATLAB), 
+the disk file associated with `data` ('NBT.S0021.090205.EOR1.pset') would
+be automatically deleted and therefore our modified physioset object 
+would be lost forever. We can prevent that using the `save()` method:
+
+````matlab
+save(data);
+````
+
+A side effect of the command above is the creation of a `.pseth` file so 
+that your current working directory now looks like this:
+
+````
+NBT.S0021.090205.EOR1.set
+NBT.S0021.090205.EOR1.fdt
+NBT.S0021.090205.EOR1.pset
+NBT.S0021.090205.EOR1.pseth
+````
+
+That `.pseth` file is used to stored the meta-data associated with your 
+_physioset_. As you already know, the `.pset` file stores the EEG 
+measurements. After saving our _physioset_ using `save()` we can safely
+clear our MATLAB workspace:
+
+````
+clear all;
+````
+
+Then we can retrieve again our _physioset_ using the `pset.load` function:
+
+````
+% We need to load only the .pseth file. Not the .pset!
+retrievedData = pset.load('NBT.S0021.090205.EOR1.pseth');
+
+assert(all(retrievedData(1,:)==0));
+````
