@@ -126,6 +126,13 @@ myPipe = meegpipe.node.pipeline.new('NodeList', nodeList, ...
 
 ````
 
+Note that we used only the scores produced by `Jennifer` to mark the
+ locations of NREM 1 epochs. Typically, a sleep recording will be scored 
+by multiple scorers that will agree only partially. At this point, 
+_meegpipe_ does not implement any smart way of fusing scores from multipe 
+scorers. That is why we need to specify the scorer that should be used
+to extract the various sleep stages.
+
 
 ## Running the pipeline
 
