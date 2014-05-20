@@ -231,9 +231,8 @@ assert(all(myPhysObj(1,:) == 0));
 
 Conclusion: `myPhysObj` and `myPhysObj2` are just _aliases_ of the 
 same underlying physioset. This is contrary to the behavior of 
-the `=` operator for MATLAB's built-in types, which indeed creates two 
-independent copies (not aliases) of the same underlying data. 
-
+the `=` asignment operator for MATLAB's built-in types, which indeed
+ creates two independent copies (not aliases) of the same underlying data.
 If you want to create two independent copies of a _physioset_ then you 
 need to be explicit about it:
 
