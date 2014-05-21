@@ -412,7 +412,7 @@ by typing `edit physioset.physioset.plot` in your MATLAB command window.
 The call to method `plot()` produces a figure that allows you scroll 
 through your dataset:
 
-![Raw EEG, 129 channels](../img/raw-eeg-129chans.png "Raw EEG, 129 channels")
+![Raw EEG, 129 channels](./img/raw-eeg-129chans.png "Raw EEG, 129 channels")
 
 If you are a user of [EEGLAB][eeglab] you may have realized that method 
 `plot()` for _physioset_ objects is just a wrapper around EEGLAB's 
@@ -491,7 +491,7 @@ hold on;
 plot(data(1,1:50), 'ro-');
 ````
 
-![Data selection, 6 channels, 1000 samples](../img/selections.png "Data selection, 6 channels, 1000 samples")
+![Data selection, 6 channels, 1000 samples](./img/selections.png "Data selection, 6 channels, 1000 samples")
 
 Data outside the selection is not anymore accessible. If you try to access
 `data(1, 1001)` or `data(7, 1)` you will just get an error indicating that
@@ -545,7 +545,7 @@ select(data, 1:10:129);
 plot(data);
 ````
 
-![Raw EEG, 1 every 10 channels](../img/raw-eeg-every10chans.png "Raw EEG, 1 every 10 channels")
+![Raw EEG, 1 every 10 channels](./img/raw-eeg-every10chans.png "Raw EEG, 1 every 10 channels")
 
 
 ## Mathematical operators
@@ -662,6 +662,6 @@ filter(myFilter, data);
 hold on;plot(data(1, 1000:1200), 'r', 'LineWidth', 2);
 ````
 
-![Before/after filtering](../img/filtering.png "Before/after filtering")
+![Before/after filtering](./img/filtering.png "Before/after filtering")
 
 
