@@ -22,7 +22,7 @@ _class_, _object_ or _interface_, you may want to read some
 You can create an empty [physioset][physioset] object using the 
 corresponding [class constructor][constructor]:
 
-[physioset]: ../../../+physioset/@physioset/README.md
+[physioset]: ../../+physioset/@physioset/README.md
 [constructor]: http://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)
 
 ````matlab
@@ -42,7 +42,7 @@ myPhysObj = physioset
 ````
 
 [matlabpkg]: http://www.mathworks.nl/help/matlab/matlab_oop/scoping-classes-with-packages.html
-[physiosetpkg]: ../../../+physioset
+[physiosetpkg]: ../../+physioset
 
 MATLAB will produce the following output after running any of the two code
  snippets above:
@@ -202,7 +202,7 @@ Meta-data on sensors, events, etc. can also be accessed and modified using
 appropriate methods. For more information, see the 
 [documentation][physioset-api].
 
-[physioset-api]: ../../../+physioset/README.md
+[physioset-api]: ../../+physioset/README.md
 
 
 ## Understanding physiosets
