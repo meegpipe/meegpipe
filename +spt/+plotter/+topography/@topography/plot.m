@@ -21,6 +21,9 @@ end
 
 % For convenience
 config = get_config(obj);
+if isempty(config.Folder),
+    config.Folder = pset.session.instance.Folder;
+end
 
 if (nargin < 4 || isempty(dataName))
     if isnumeric(data),

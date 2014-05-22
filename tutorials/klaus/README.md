@@ -1,4 +1,4 @@
-A brief overview of meegpipe
+meegpipe in a nutshell
 =======
 
 This tutorial has been prepared for a one-day workshop at the research 
@@ -49,7 +49,7 @@ The tutorial consists of two parts:
   very large datasets, and (2) are suitable for parallel non-interactive 
   processing on a computing grid or in the cloud. 
 
-[physioset]: ../../../+physioset/@physioset/README.md
+[physioset]: ../../+physioset/@physioset/README.md
 [part1]: ./part1.md
 [part2]: ./part2.md
 
