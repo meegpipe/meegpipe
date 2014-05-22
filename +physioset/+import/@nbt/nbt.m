@@ -1,11 +1,11 @@
-classdef eeglab < physioset.import.abstract_physioset_import
-    % EEGLAB - Imports EEGLAB's .set files
+classdef nbt < physioset.import.abstract_physioset_import
+    % NBT - Imports files in NBT format
     %
     % ## Usage synopsis:
     %
-    % import physioset.import.eeglab;
-    % importer = eeglab('FileName', 'myOutputFile');
-    % data = import(importer, 'myMFFfile.set');
+    % import physioset.import.nbt;
+    % importer = nbt('FileName', 'myOutputFile');
+    % data = import(importer, 'My_NBT_file.mat');
     %
     % ## Accepted (optional) construction arguments (as key/values):
     %
@@ -14,13 +14,10 @@ classdef eeglab < physioset.import.abstract_physioset_import
     % See also: abstract_physioset_import
     
     properties
-        
         SensorClass;
-        
     end
     
-    methods
-        
+    methods 
         function obj = set.SensorClass(obj, value)
             import exceptions.*;
             
@@ -65,7 +62,7 @@ classdef eeglab < physioset.import.abstract_physioset_import
     % Constructor
     methods
         
-        function obj = eeglab(varargin)
+        function obj = nbt(varargin)
             obj = obj@physioset.import.abstract_physioset_import(varargin{:});
         end
         

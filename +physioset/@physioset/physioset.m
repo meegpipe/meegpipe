@@ -804,6 +804,8 @@ classdef physioset < ...
         
         str      = eeglab(obj, varargin);
         
+        [Signal, str, SignalPath]      = NBT(obj, varargin);
+        
         str      = fieldtrip(obj, varargin);
         
         
@@ -815,6 +817,8 @@ classdef physioset < ...
         obj = from_fieldtrip(str, varargin);
         
         obj = from_eeglab(str, varargin);
+        
+        obj = from_nbt(str, SignalInfo, varargin);
         
         obj = from_pset(obj, varargin);
         

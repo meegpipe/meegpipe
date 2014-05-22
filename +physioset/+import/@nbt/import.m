@@ -1,17 +1,16 @@
 function pObj = import(obj, varargin)
-% IMPORT - Imports EEGLAB .set files
+% IMPORT - Imports files in NBT format
 %
 % pObj = import(obj, fileName)
 % pObjArray = import(obj, fileName1, fileName2, ...);
 %
 % ## Notes:
 %
-%   * Compressed .gz files are supported.
+%   
 %
 % See also: mff
 
 import physioset.physioset;
-import misc.decompress;
 import pset.file_naming_policy;
 import pset.globals;
 
@@ -40,29 +39,19 @@ verboseLabel = get_verbose_label(obj);
 origVerboseLabel = goo.globals.get.VerboseLabel;
 goo.globals.set('VerboseLabel', verboseLabel);
 
-% The input file might be zipped
-[status, fileName] = decompress(fileName, 'Verbose', verbose);
-isZipped = ~status;
-
 % Determine the names of the generated (imported) files
-if isempty(obj.FileName),
-    
+if isempty(obj.FileName),   
     newFileName = file_naming_policy(obj.FileNaming, fileName);
     dataFileExt = globals.get.DataFileExt;
-    newFileName = [newFileName dataFileExt];
-    
-else
-    
+    newFileName = [newFileName dataFileExt];  
+else  
     newFileName = obj.FileName;
-    
 end
 
-[path, name ext] = fileparts(fileName);
 
-cmd = sprintf('EEG = pop_loadset(''filename'', ''%s'', ''filepath'', ''%s'')', ...
-    [name ext], path);
+cmd = sprintf('EEG = nbt_NBTsignal2EEGlab(''%s'');',fileName);
 evalc(cmd);
-pObj = physioset.from_eeglab(EEG, ...
+pObj = physioset.from_nbt(EEG, EEG.NBTinfo, ...
     'FileName', newFileName, 'SensorClass', obj.SensorClass);
 
 
@@ -70,14 +59,5 @@ pObj = physioset.from_eeglab(EEG, ...
 
 % Unset the global verbose
 goo.globals.set('VerboseLabel', origVerboseLabel);
-
-% Delete unzipped data file
-if isZipped,
-    delete(fileNameIn);
-end
-
-
-
-
 
 end
