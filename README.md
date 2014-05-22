@@ -88,7 +88,7 @@ Notice that the code above will install _meegpipe_ in directory `meegpipe`
 under your current working directory. Notice also that EEGLAB needs to be
 part of your MATLAB search path for the `meegpipe.initialize` command to
  succeed. This means that you either add EEGLAB permanently to your MATLAB
-search path, or you add the following command to your `startup.m` file, 
+search path, or you add the following command to your `startup.m` file,
 before the `meegpipe.initialize` command:
 
 ````matlab
@@ -153,7 +153,7 @@ n3   = node.filter.new('Filter', myFilter);
 run(n3, data);
 ````
 
-Remove powerline noise using [Blind Source Separation (BSS)][bss], i.e. 
+Remove powerline noise using [Blind Source Separation (BSS)][bss], i.e.
 using a [bss][bss-node] node:
 
 [bss-node]: https://github.com/meegpipe/meegpipe/tree/master/%2Bmeegpipe/%2Bnode/%2Bbss/README.md
@@ -171,7 +171,7 @@ n5   = node.bss.eog;
 run(n5, data);
 ````
 
-Export to EEGLAB format using a [physioset_export][physioset_export-node] 
+Export to EEGLAB format using a [physioset_export][physioset_export-node]
 node:
 
 [physioset_export-node]: https://github.com/meegpipe/meegpipe/tree/master/%2Bmeegpipe/%2Bnode/%2Bphysioset_export/README.md
@@ -218,7 +218,7 @@ run(myPipe, randn(15, 10000));
 ### Processing reports
 
 Every processing node (or pipeline) generates a comprehensive HTML report
- for every data file that is processed. Namely, if you ran the pipeline 
+ for every data file that is processed. Namely, if you ran the pipeline
 example above, you will find the corresponding HTML report under:
 
 
@@ -260,4 +260,5 @@ You can find a comprehensive list [here][attribution].
 
 Any code that is not part of any of the bundled third-party dependencies
 (see [the list][attribution]), is released under the
-[Creative Commons Attribution-NonCommercial-ShareAlike licence](http://creativecommons.org/licenses/by-nc-sa/3.0/).
+[GNU General Public License version 3 or
+later.](http://www.gnu.org/licenses/gpl.txt)
