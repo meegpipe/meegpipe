@@ -62,17 +62,13 @@ try
     
     [fPath, fName, fExt] = fileparts(DATA_FILE);
     evFile = [fPath fName '.events.csv'];
-    evFileCopy = catfile(folder, [fName '.events.csv']);
-    dataFileCopy = catfile(folder, [fName fExt]);
-    if exist(DATA_FILE, 'file'),
-        copyfile(DATA_FILE, dataFileCopy);
-        copyfile(evFile, evFileCopy);
-    else
-        urlwrite([DATA_URL fName fExt], dataFileCopy);
-        urlwrite([DATA_URL fName '.events.csv'], evFileCopy);
+    if ~exist(DATA_FILE, 'file'),
+        urlwrite([DATA_URL fName fExt], DATA_FILE);
+        urlwrite([DATA_URL fName '.events.csv'], evFile);
     end
+    files = somsds.link2files({DATA_FILE, evFile}, folder); 
     stat = set_warning_status(WARN_IDS, 'off');
-    data = import(poly5, dataFileCopy);
+    data = import(poly5, files{1});
     set_warning_status(WARN_IDS, stat);
     
     ok(all(size(data) == [3 6000]) & numel(get_event(data)) == 6, name);
@@ -99,20 +95,16 @@ try
     
     [fPath, fName, fExt] = fileparts(DATA_FILE_2);
     evFile = [fPath fName '.events.csv'];
-    evFileCopy = catfile(folder, [fName '.events.csv']);
-    dataFileCopy = catfile(folder, [fName fExt]);
-    if exist(DATA_FILE_2, 'file'),
-        copyfile(DATA_FILE_2, dataFileCopy);
-        copyfile(evFile, evFileCopy);
-    else
-        urlwrite([DATA_URL fName fExt], dataFileCopy);
-        urlwrite([DATA_URL fName '.events.csv'], evFileCopy);
+    if ~exist(DATA_FILE_2, 'file'),
+        urlwrite([DATA_URL fName fExt], DATA_FILE_2);
+        urlwrite([DATA_URL fName '.events.csv'], evFile);
     end
+    files = somsds.link2files({DATA_FILE_2, evFile}, folder);
     stat = set_warning_status(WARN_IDS, 'off');
-    data = import(poly5, dataFileCopy);
+    data = import(poly5, files{1});
     set_warning_status(WARN_IDS, stat);
     
-    ok(all(size(data) == [37 2759240]) & numel(get_event(data)) == 0, name);
+    ok(all(size(data) == [37 1743921]) & numel(get_event(data)) == 0, name);
     
     clear data;
     
@@ -135,21 +127,16 @@ try
     
     [fPath, fName, fExt] = fileparts(DATA_FILE);
     evFile = [fPath fName '.events.csv'];
-    evFileCopy = catfile(folder, [fName '.events.csv']);
-    dataFileCopy = catfile(folder, [fName fExt]);
-    if exist(DATA_FILE, 'file'),
-        copyfile(DATA_FILE, dataFileCopy);
-        copyfile(evFile, evFileCopy);
-    else
-        urlwrite([DATA_URL fName fExt], dataFileCopy);
-        urlwrite([DATA_URL fName '.events.csv'], evFileCopy);
+    if ~exist(DATA_FILE, 'file'),
+        urlwrite([DATA_URL fName fExt], DATA_FILE);
+        urlwrite([DATA_URL fName '.events.csv'], evFile);
     end
-    
+    files = somsds.link2files({DATA_FILE, evFile}, folder);
     myImporter = poly5(...
         'FileName',     catfile(folder, 'myfile'), ...
         'Temporary',    false);
     stat = set_warning_status(WARN_IDS, 'off');
-    import(myImporter, dataFileCopy);
+    import(myImporter, files{1});
     set_warning_status(WARN_IDS, stat);
     
     psetExt = pset.globals.get.DataFileExt;
