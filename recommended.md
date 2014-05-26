@@ -102,7 +102,7 @@ For Windows and Mac OS X you can use the installation packages available at
 [pil]: http://www.pythonware.com/products/pil/
 
 __IMPORTANT NOTE:__ If you use [Arch Linux][archlinux], you will also need
-to ensure that MATLAB uses the up-to-date version of the the GNU C++ library
+to ensure that MATLAB uses the up-to-date version of the GNU C++ library
 that ships with your Arch Linux system. Open a terminal and type:
 
 ````
