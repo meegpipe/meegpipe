@@ -37,10 +37,11 @@ end
 try
     
     name = 'constructor(s)';
-    spt.feature.psd_peak; 
+    
     spt.feature.psd_peak.alpha;    
     spt.feature.psd_peak.pwl;    
-    ok(true, name);
+    myFeat = spt.feature.psd_peak('TargetBand', [8 10]); 
+    ok(all(myFeat.TargetBand == [8 10]), name);
     
 catch ME
     
