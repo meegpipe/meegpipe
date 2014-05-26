@@ -1,10 +1,10 @@
-function status = make_test(userSelection)
-% MAKE_TEST - Tests EEGPIPE
+function status = make_test(userSelection, startFrom)
+% MAKE_TEST - Tests MEEGPIPE
 %
 % meegpipe.make_test
 %
 %
-% See also: eegpipe
+% See also: meegpipe
 
 
 import meegpipe.tests.*;
@@ -17,9 +17,10 @@ clc;
 
 meegpipe.initialize;
 
+if nargin < 2, startFrom = '^aar$'; end
 if nargin < 1, userSelection = {}; end
 
-verboseLabel = '(eegpipe) ';
+verboseLabel = '(meegpipe)';
 
 %% List of modules that will be tested
 moduleList = {...
@@ -77,6 +78,12 @@ moduleList = {...
     'surrogates' ...
     };
 
+isMatch = cellfun(@(x) ~isempty(regexp(x, startFrom, 'once')), moduleList);
+if any(isMatch),
+    idx = find(isMatch);
+    moduleList = moduleList(idx(1):end);
+end
+
 if ischar(userSelection), userSelection = {userSelection}; end
 
 if ~isempty(userSelection),
@@ -86,8 +93,10 @@ if ~isempty(userSelection),
 end
 
 if isempty(moduleList),
-    error('Module ''%s'' does not feature automated testing', ...
-        userSelection{1});
+    warning('meegpipe:NothingDone', ...
+        'No modules selected for testing: nothing done');
+    status = true;
+    return;
 end
 
 % just in case
