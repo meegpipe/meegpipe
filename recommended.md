@@ -80,7 +80,7 @@ In Windows, open a terminal and run:
 ### Inkscape
 
 [Inkscape][inkscape] is required for generating the thumbnail images that
-are embedded in the data processing reports. To install on Linux on Red-Hat
+are embedded in the data processing reports. To install on Red Hat
 based Linux distros:
 
     sudo yum install inkscape
