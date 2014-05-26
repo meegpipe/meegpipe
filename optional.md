@@ -8,8 +8,8 @@ can considerably enhance _meegpipe_'s functionality.
 
 If [Open Grid Engine][oge] (OGE) is installed on your system,
 then _meegpipe_ should be able to use it to push your processing jobs to the
-grid.  A good overview on the administration of OGE can be found on 
-[this presentation][oge-slides] by Daniel Templeton. 
+grid.  A good overview on the administration of OGE can be found on
+[this presentation][oge-slides] by Daniel Templeton.
 
 
 [oge]: http://gridscheduler.sourceforge.net/
@@ -20,8 +20,8 @@ grid.  A good overview on the administration of OGE can be found on
 ### Condor high-throughput computing
 
 If [Condor][condor] is installed on your system then _meegpipe_ will use it to
-process multiple data files in parallel. Condor can 
-be used to submit jobs to specialized clusters, to idle computers, to 
+process multiple data files in parallel. Condor can
+be used to submit jobs to specialized clusters, to idle computers, to
 the grid, or even to the cloud.
 
 [condor]: http://research.cs.wisc.edu/htcondor/
