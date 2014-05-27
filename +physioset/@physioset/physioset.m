@@ -369,10 +369,7 @@ classdef physioset < ...
             if isa(W, 'function_handle'),
                 W = W(obj);
             end
-            tmpPset = W*obj.PointSet;
-            for i = 1:size(tmpPset)
-                obj.PointSet(i,:) = tmpPset(i,:);
-            end
+            obj.PointSet = W*obj.PointSet;          
             obj.RerefMatrix = W;
         end
         
