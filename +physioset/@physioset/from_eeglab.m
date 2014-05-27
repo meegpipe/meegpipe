@@ -121,12 +121,12 @@ end
 
 
 %% Use the matrix importer to generate a physioset object
-data = reshape(str.data, str.nbchan, str.pnts*str.trials);
+str.data = reshape(str.data, str.nbchan, str.pnts*str.trials);
 
 importer = matrix(str.srate, ...
     'FileName',     opt.FileName, ...
     'Sensors',      sensorObj);
-physObj  = import(importer, data(ordering,:));
+physObj  = import(importer, str.data(ordering,:));
 
 set_name(physObj, str.setname);
 add_event(physObj, eventsObj);
