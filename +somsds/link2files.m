@@ -5,12 +5,15 @@ function linkNames = link2files(files, newDir)
 
 import mperl.file.spec.catfile;
 import safefid.safefid;
+import mperl.file.spec.rel2abs;
 
 if nargin < 2 || isempty(newDir), newDir = pwd; end
 
 if ischar(files),
     files = {files};
 end
+
+files = cellfun(@(x) rel2abs(x), files, 'UniformOutput', false);
 
 if ~exist(newDir, 'dir'),
     mkdir(newDir);

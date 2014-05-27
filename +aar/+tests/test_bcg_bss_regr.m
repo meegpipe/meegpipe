@@ -118,16 +118,11 @@ import pset.session;
 import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 
-if exist('bcg_sample.pseth', 'file') > 0,
-    data = pset.load('bcg_sample2.pseth');
-else
-    % Try downloading the file
+if ~exist('bcg_sample.pseth', 'file') > 0,
     url = 'http://kasku.org/data/meegpipe/bcg_sample.zip';
-    unzipDir = catdir(session.instance.Folder, 'bcg_sample');
-    unzip(url, unzipDir);
-    fileName = catfile(unzipDir, 'bcg_sample.pseth');
-    data = pset.load(fileName);
+    unzip(url, pwd);
 end
+data = pset.load(fileName);
 dataCopy = copy(data);
 
 end
