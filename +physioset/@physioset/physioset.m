@@ -914,10 +914,9 @@ classdef physioset < ...
             apply_event_mapper(obj);
             
             if obj.NbDims > 0,
-                if isempty(opt.badchannel),
-                    obj.BadChan = false(1, obj.NbDims);
-                else
-                    obj.BadChan = opt.badchannel;
+                obj.BadChan = false(1, obj.NbDims);
+                if ~isempty(opt.badchannel)
+                    obj.BadChan(opt.badchannel) = true;
                 end
             end
             
