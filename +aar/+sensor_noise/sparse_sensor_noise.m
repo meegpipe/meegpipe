@@ -10,6 +10,8 @@ import pset.selector.cascade;
 %% Process input arguments
 opt.MinCard         = 1;
 opt.MaxCard         = @(d) min(10, ceil(0.25*numel(d)));
+opt.MinPCs          = @(lambda) min(20, 0.5*numel(lambda));
+opt.MaxPCs          = 40;
 opt.RetainedVar     = 99.85; 
 opt.BSS             = spt.bss.efica;
 opt.Max             = {@(fVal) ceil(0.7*numel(fVal))};
@@ -20,7 +22,8 @@ opt.Max             = {@(fVal) ceil(0.7*numel(fVal))};
 %% PCA
 myPCA = spt.pca(...
     'RetainedVar',      opt.RetainedVar, ...
-    'MaxCard',          40);
+    'MinCard',          opt.MinPCs, ...
+    'MaxCard',          opt.MaxPCs);
 
 %% Component selection criterion
 myFeat1 = spt.feature.skurtosis;

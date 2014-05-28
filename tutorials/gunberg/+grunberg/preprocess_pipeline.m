@@ -12,9 +12,16 @@ myImporter = physioset.import.poly5;
 myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
+%% Node 5: Low pass filtering
+mySelector = pset.selector.sensor_idx(5:32);
+myFilter = @(sr) filter.hpfilt('Fp', 0.5/(sr/2));
+myNode = meegpipe.node.filter.new(...
+    'Filter',       myFilter, ...
+    'DataSelector', mySelector);
+nodeList = [nodeList {myNode}];
+
 %% Node 2: reject bad channels using variance
 % We are only interested in channels 5 to 32
-mySelector = pset.selector.sensor_idx(5:32);
 myCrit = meegpipe.node.bad_channels.criterion.var.new(...
     'Max', @(x) median(x) + 2*mad(x), 'MaxCard', 4);
 myNode = meegpipe.node.bad_channels.new('Criterion', myCrit, ...
@@ -38,8 +45,8 @@ myNode = meegpipe.node.smoother.new(...
     'DataSelector', cascade(mySelector, good_data));
 nodeList = [nodeList {myNode}];
 
-%% Node 5: Band pass filtering
-myFilter = @(sr) filter.bpfilt('Fp', [0.5 43]/(sr/2));
+%% Node 5: Low pass filtering
+myFilter = @(sr) filter.lpfilt('Fp', 43/(sr/2));
 myNode = meegpipe.node.filter.new(...
     'Filter',       myFilter, ...
     'DataSelector', mySelector);
