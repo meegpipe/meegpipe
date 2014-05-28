@@ -12,8 +12,6 @@ function obj = from_struct(strArray)
 %
 % See also: from_fieldtrip, from_eeglab
 
-% Documentation: class_event.txt
-% Description: Construction from MATLAB struct
 
 import physioset.event.event;
 

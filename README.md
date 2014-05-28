@@ -64,7 +64,9 @@ can enhance _meegpipe_'s functionality in terms of
 
 ## Installation
 
-Copy and paste the following code in the MATLAB command window:
+Before attempting to install _meegpipe_, please make sure that all the 
+relevant dependencies have been already installed on your system. Then, 
+copy and paste the following code in the MATLAB command window:
 
 ````matlab
 % installDir is your installation directory

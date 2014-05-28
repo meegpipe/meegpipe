@@ -1,5 +1,5 @@
 function [status, MEh] = test_eeglab()
-% TEST_EEGLAB - Test conversion to EEGLAB format
+% TEST_EEGLAB - Test conversion to/from EEGLAB format
 
 import test.simple.*;
 import mperl.file.spec.*;
@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(4);
+initialize(5);
 
 %% Create a new session
 try
@@ -67,6 +67,39 @@ catch ME
     MEh = [MEh ME];
     
 end
+
+%% build physioset from EEGLAB structure
+try
+    
+    name = 'build physioset from EEGLAB structure';
+    
+    [~, data] = sample_data(1);
+    
+    data = data{1};
+    
+    set_bad_sample(data, [100:200 500:600]);
+    
+    eeglabStr = eeglab(data);
+    
+    data2 = physioset.physioset.from_eeglab(eeglabStr);
+    
+    ok( ...
+        ~strcmp(get_datafile(data), get_datafile(data2)) && ...
+        size(data, 1) == size(data2, 1) &&  ...
+        size(data2, 2) == size(eeglabStr.data, 2) && ...
+        numel(get_event(data2)) == numel(eeglabStr.event) && ...
+        all(ismember({eeglabStr.event.type}, 'boundary') == ...
+        ismember(get(get_event(data2), 'Type'), '__Discontinuity')), ...
+        ...
+        name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 
 
 %% convert multiple datasets to eeglab

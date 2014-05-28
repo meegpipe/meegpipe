@@ -7,15 +7,12 @@ classdef abstract_physioset_import < ...
     % See: <a href="matlab:misc.md_help('physioset.import.abstract_physioset_import')">physioset.import.abstract_physioset_import(''physioset.import.abstract_physioset_import'')</a>
     
     
-    properties (SetAccess = private, GetAccess = private)
-        
-        StartTime_;
-        
+    properties (SetAccess = private, GetAccess = private)        
+        StartTime_;        
     end
     
-  
-    methods (Access = protected)
-        
+    
+    methods (Access = protected)        
         function args = construction_args_pset(obj)
             
             args = {...
@@ -25,21 +22,19 @@ classdef abstract_physioset_import < ...
                 'FileName',  obj.FileName, ...
                 'AutoDestroyMemMap', obj.AutoDestroyMemMap, ...
                 'StartTime', obj.StartTime_ ...
-                };
-            
+                };            
         end
         
         % Might be overloaded by children classes
-        function args = construction_args_physioset(obj)
-            
+        function args = construction_args_physioset(obj)            
             args = {...
                 'MetaMapper', obj.MetaMapper, ...
                 'EventMapper', obj.EventMapper};
             
-        end        
-      
+        end
+        
     end
-
+    
     properties
         
         Precision    = meegpipe.get_config('pset', 'precision');
@@ -64,6 +59,7 @@ classdef abstract_physioset_import < ...
     
     methods
         
+        %% Dependent properties
         function val = get.StartTime(obj)
             
             dateFmt = meegpipe.get_config('pset', 'date_format');
@@ -72,11 +68,7 @@ classdef abstract_physioset_import < ...
             
         end
         
-    end
-    
-    % Set methods / consistency checks
-    methods
-        
+        %% Set methods / consistency checks
         function obj = set.Precision(obj, value)
             
             import exceptions.*;
@@ -140,7 +132,6 @@ classdef abstract_physioset_import < ...
             obj.ReadEvents = value;
             
         end
-        
         
         function obj = set.Sensors(obj, value)
             
@@ -211,48 +202,13 @@ classdef abstract_physioset_import < ...
             
         end
         
-        
-    end
-    
-    % Other methods
-    methods
-        
+        %% Generic import() and helper methods
         pObj = import(obj, varargin);
         
-        function [fileName, obj] = resolve_link(obj, fileName)
-            % We keep obj as output for backwards compatibility
-            
-            import safefid.safefid;
-            
-            if nargin < 2 || ~ischar(fileName),
-                ME = MException(...
-                    'abstract_physioset_import:StringExpected', ...
-                    'A string (a file name) was expected as second argument');
-                throw(ME);
-            end
-            
-            if ~exist(fileName, 'file'),
-                ME = MException(...
-                    'abstract_physioset_import:FileDoesNotExist', ...
-                    'File %s does not exist', fileName);
-                throw(ME);
-            end
-            
-            fid = safefid.fopen(fileName, 'r');
-            if ~fid.Valid, return; end
-            tline = fid.fgetl;
-            
-            if ~isempty(tline) && fid.feof && exist(tline, 'file'),
-                fileName = tline;                
-            end            
-            
-        end
+        % We keep obj as output for backwards compatibility
+        [fileName, obj] = resolve_link(obj, fileName)       
         
-    end
-    
-    % Constructor
-    methods
-        
+        %% Constructor       
         function obj = abstract_physioset_import(varargin)
             import misc.split_arguments;
             import misc.process_arguments;
@@ -268,8 +224,7 @@ classdef abstract_physioset_import < ...
             % Set public properties
             obj = set(obj, args2{:});
             
-        end
-        
+        end      
     end
     
 end

@@ -7,17 +7,14 @@ classdef nbt < physioset.import.abstract_physioset_import
     % importer = nbt('FileName', 'myOutputFile');
     % data = import(importer, 'My_NBT_file.mat');
     %
-    % ## Accepted (optional) construction arguments (as key/values):
     %
-    % * All key/values accepted by abstract_physioset_import constructor
-    %
-    % See also: abstract_physioset_import
+    % See also: physioset.import
     
     properties
         SensorClass;
     end
     
-    methods 
+    methods        
         function obj = set.SensorClass(obj, value)
             import exceptions.*;
             
@@ -51,22 +48,20 @@ classdef nbt < physioset.import.abstract_physioset_import
             
         end
         
-    end
-    
-    
-    % physioset.import.import interface
-    methods
-        physObj = import(obj, ifilename, varargin);
-    end
-    
-    % Constructor
-    methods
+        % needed by parent import()
+        [sens, sr, hdr, ev, startDate, startTime] = ...
+            read_file(obj, fileName, psetFileName, verb, verbLabl);
+        function ev = read_events(~, varargin)
+           % NBT files do not encode events. Or do they?
+            ev = [];
+        end
         
+        
+        % Constructor
         function obj = nbt(varargin)
             obj = obj@physioset.import.abstract_physioset_import(varargin{:});
         end
-        
     end
-    
+   
     
 end
