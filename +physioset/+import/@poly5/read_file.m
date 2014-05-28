@@ -79,10 +79,10 @@ NB = hdr.NumberSampleBlocks;
 SD = hdr.SizeSignalDataBlock;
 NS = hdr.NumberOfSignals;
 
-if verb, 
+if verb,
     clear +misc/eta;
     NBBy100 = floor(NB/100);
-    tinit = tic; 
+    tinit = tic;
 end
 for g=1:NB;
     if hdr.VersionNumber == 203
@@ -122,15 +122,40 @@ hdr.measurementduration = [num2str(th,'%02.0f') ':' ...
 startTime = datenum(hdr.measurementtime);
 startDate = datenum(hdr.measurementdate);
 
-if verb, 
-    fprintf('[done]\n\n'); 
+if verb,
+    fprintf('[done]\n\n');
     clear +misc/eta;
 end
 
 % Events are read with read_events()
 ev = [];
 sr = hdr.FS;
-sens = poly5.descriptions2sensors(hdr.description);
 
+% Maybe the sensors are provided as a .sensors mat file
+sens = [];
+[path, name] = fileparts(fileName);
+sensorsFName = [path, name, '.sensors'];
+if exist(sensorsFName, 'file'),
+    if verb,
+        fprintf([verbLabl, 'Found sensors information file: %s ...'], sensorsFName);
+    end
+    tmp = load(sensorsFName, '-mat');
+    if ~isempty(tmp) && isstruct(tmp),
+        fNames = fieldnames(tmp);
+        if numel(fNames) > 1,
+            error('File %s does not contain the expected sensors structure', ...
+                sensorsFName);
+        end
+        sens = tmp.(fNames{1});
+        if ~isa(sens, 'sensors.physiology'),
+            error('File %s should contain a sensors.physiology object', ...
+                sensorsFName);
+        end
+    end
+end
+
+if isempty(sens),
+    sens = poly5.descriptions2sensors(hdr.description);
+end
 
 end

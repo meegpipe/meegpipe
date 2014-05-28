@@ -1,108 +1,82 @@
 function myPipe = preprocess_pipeline(varargin)
 % PREPROCESS_PIPELINE - A very basic preprocessing pipeline
 
-import meegpipe.node.*;
 import mperl.file.spec.catfile;
-import pset.selector.*;
+import pset.selector.good_data;
+import pset.selector.cascade;
 
 nodeList = {};
 
 %% Node 1: data import
-load(catfile(grunberg.root_path, 'sensors_grunberg'));
-
-myImporter = physioset.import.poly5('Sensors', mySensors);
-myNode = physioset_import.new('Importer', myImporter);
+myImporter = physioset.import.poly5;
+myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
 nodeList = [nodeList {myNode}];
 
-%% Node 2: Select the relevant subset of data
+%% Node 2: reject bad channels using variance
+% We are only interested in channels 5 to 32
 mySelector = pset.selector.sensor_idx(5:32);
-
-%% Node 3: Add events to mark the relevant data epochs
-myEvGen = grunberg.grunberg_generator.default;
-myNode = meegpipe.node.ev_gen.new(...
-    'EventGenerator', myEvGen, ...
-    'DataSelector',   mySelector);
-nodeList = [nodeList {myNode}];
-
-% %% Node 4: Preliminary bad epoch rejection
-% % To minimize filtering artifacts in the following filter nodes
-% myCrit = bad_epochs.criterion.stat.new(...
-%     'Max',              @(stats) median(stats)+2*mad(stats), ...
-%     'EpochStat',        @(x) max(x));
-% myNode = bad_epochs.sliding_window(5, 5, 'Criterion', myCrit, ...
-%     'DataSelector', mySelector);
-% nodeList = [nodeList {myNode}];
-
-%% Node 5: reject bad channels using variance
-myCrit = bad_channels.criterion.var.new(...
+myCrit = meegpipe.node.bad_channels.criterion.var.new(...
     'Max', @(x) median(x) + 2*mad(x), 'MaxCard', 4);
-myNode = bad_channels.new('Criterion', myCrit, ...
+myNode = meegpipe.node.bad_channels.new('Criterion', myCrit, ...
     'DataSelector', cascade(mySelector, good_data));
 nodeList = [nodeList {myNode}];
 
-%% Node: remove large signal fluctuations using a LASIP filter
+%% Node 3: reject bad epochs using variance 
+% We compute variance in sliding windows of duration 2 seconds and 50%
+% overlap (i.e. the period of the windows is 1 second). We then reject
+% those epochs with abnormally large variance
+myNode = meegpipe.node.bad_epochs.sliding_window(1, 2, ...
+    'DataSelector', mySelector);
+nodeList = [nodeList, {myNode}];
 
-% Setting the "right" parameters of the filter involves quite a bit of
-% trial and error. These values seemed OK to me but we should check
-% carefully the reports to be sure that nothing went terribly wrong. In
-% particular you should ensure that the LASIP filter is not removing
-% valuable signal. It is OK if some residual noise is left after the LASIP
-% filter so better to be conservative here.
-myScales =  [20, 29, 42, 60, 87, 100, 126, 140, 182, 215, 264, 310, 382];
-
-myFilter = filter.lasip(...
-    'Decimation',       12, ...
-    'GetNoise',         true, ... % Retrieve the filtering residuals
-    'Gamma',            15, ...
-    'Scales',           myScales, ...
-    'WindowType',       {'Gaussian'}, ...
-    'VarTh',            0.1);
-
-% This object especifies which subset of data should be processed by the
-% node. In this case we want to process only the EEG data, and ignore any
-% other modalities.
-mySel = pset.selector.sensor_class('Class', 'EEG');
-
-myNode = filter.new(...
-    'Filter',           myFilter, ...
-    'Name',             'lasip', ...
-    'DataSelector',     mySel, ...
-    'ShowDiffReport',   true ...
-    );
-
+%% Node 4: Smooth transitions between bad epochs
+% The fact that we are ignoring bad epochs means that we may be introducing
+% discontinuities in the signal. This node tries to minimize such
+% discontinuities. The effect of this node is minimal so you could probably
+% take it a away. But keeping it is unlikely to do any harm in any case.
+myNode = meegpipe.node.smoother.new(...
+    'DataSelector', cascade(mySelector, good_data));
 nodeList = [nodeList {myNode}];
 
-
-%% Smooth transitions between bad epochs
-myNode = smoother.new('DataSelector', cascade(mySelector, good_data));
-nodeList = [nodeList {myNode}];
-
-%% Node 8: Band pass filtering
+%% Node 5: Band pass filtering
 myFilter = @(sr) filter.bpfilt('Fp', [0.5 43]/(sr/2));
-myNode = filter.new('Filter', myFilter, ...
+myNode = meegpipe.node.filter.new(...
+    'Filter',       myFilter, ...
     'DataSelector', mySelector);
 nodeList = [nodeList {myNode}];
 
-
-%% Node 9: Low pass filtering
-myFilter = @(sr) filter.lpfilt('fc', 42/(sr/2));
-myNode = filter.new('Filter', myFilter);
+%% Node 6: downsampling
+% We have already downpass filtered our data so there is no point in using
+% such a high sampling rate
+myNode = meegpipe.node.resample.new('OutputRate', 250);
 nodeList = [nodeList {myNode}];
 
-%% Node 10: downsampling
-myNode = resample.new('OutputRate', 250);
-nodeList = [nodeList {myNode}];
+%% Node 7: reject sparse sensor noise
+% Does ICA on the data and tries to identify independent components that, 
+% for being too spatially sparse, are likely to be due to sensor-specific
+% noise sources. Such "sensor noise" components are rejected. 
+myNode = aar.sensor_noise.new(...
+    'RetainedVar',  99.9999, ...
+    'MinCard',      21, ...
+    'DataSelector', cascade(mySelector, good_data));
+nodeList = [nodeList, {myNode}];
 
-myNode = aar.bss_supervised_single_node('BSS', spt.bss.efica, ...
-    'RetainedVar', 99.9999, 'MinCard', 21, 'DataSelector', cascade(mySelector, good_data));
-nodeList = [nodeList {myNode}];
+%% Node 8: reject cardiac components
+myNode = aar.ecg.new;
+nodeList = [nodeList, {myNode}];
+
+%% Node 9: reject ocular components
+myNode = aar.eog.new('IOReport', report.plotter.io);
+nodeList = [nodeList, {myNode}];
 
 %% Bad channel interpolation
-myNode = chan_interp.new('NN', 2, 'DataSelector', pset.selector.good_samples);
+myNode = meegpipe.node.chan_interp.new(...
+    'NN',           2, ...
+    'DataSelector', pset.selector.good_samples);
 nodeList = [nodeList {myNode}];
 
 %% Create the pipeline
-myPipe = pipeline.new(...
+myPipe = meegpipe.node.pipeline.new(...
     'Name',             'preprocess-pipeline', ...
     'NodeList',         nodeList, ...
     'Save',             true, ...

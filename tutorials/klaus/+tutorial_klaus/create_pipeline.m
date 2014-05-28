@@ -1,6 +1,5 @@
 function myPipe = create_pipeline(varargin)
 
-
 nodeList = {};
 
 myNode = meegpipe.node.physioset_import.new(...
