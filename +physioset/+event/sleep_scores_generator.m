@@ -23,7 +23,7 @@ classdef sleep_scores_generator < physioset.event.generator & ...
                     if numel(candidates) > 1,
                         sleepScoresFile = '';
                     else
-                        sleepScoresFile = candidates{1};
+                        sleepScoresFile = catfile(path, candidates{1});
                     end
                 end
             end
