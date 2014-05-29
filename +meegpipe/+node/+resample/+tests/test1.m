@@ -16,7 +16,7 @@ import misc.get_username;
 
 MEh     = [];
 
-initialize(12);
+initialize(13);
 
 %% Create a new session
 try
@@ -83,6 +83,29 @@ try
         get_config(myNode, 'UpsampleBy') == 10 && ...
         get_config(myNode, 'DownsampleBy') == 20, ...
         name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% Antialiasing=false
+try
+    
+    name = 'Antialiasing=false';
+    
+    myNode1 = resample('UpsampleBy', 2, 'Antialiasing', false);
+    myNode2 = resample('DownsampleBy', 2, 'Antialiasing', false);
+    myPipe  = pipeline(myNode1, myNode2);
+    
+    data = import(physioset.import.matrix, randn(10, 1000));
+    data = filter(lpfilt('fc', 0.1), data);
+    
+    newData = run(myPipe, data);
+    
+    ok(max(abs(newData(:)-data(:))) < .001, name);
     
 catch ME
     
