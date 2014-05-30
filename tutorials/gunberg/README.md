@@ -28,10 +28,10 @@ meegpipe.initialize;
 ````
 
 If you also want to get the processing reports in HTML format then you will also
-need to install all of _meegpipe_'s [optional dependencies][optdep].
+need to install all of _meegpipe_'s [highly recommended dependencies][deps].
 
 [meegpipe]: http://meegpipe.github.io/meegpipe/
-[optdep]: ../../../optional.md
+[deps]: https://github.com/meegpipe/meegpipe/blob/master/recommended.md
 
 
 ## Dataset 
