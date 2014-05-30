@@ -62,7 +62,7 @@ three consecutive stages:
 
 1. Pipeline [grunberg.preprocess_pipeline][preproc-pipe] involves basic 
 preprocessing steps such as bad channels and bad epochs rejection, as well as a
-filter to remove high-amplitude high-frequency signal fluctuations (a 
+removing high-amplitude high-frequency signal fluctuations (using a 
 [LASIP][lasip] filter).
 
 2. Pipeline [grunberg.artifact_rejection_pipeline][artifact-pipe] is a fully
@@ -102,11 +102,11 @@ choose to leave the bad data epochs (as they were in the original data) but to
 mark them using `boundary` events: 
 
 ````matlab
-[rawFiles, processedFile = grunberg.main('BadDataPolicy', 'donothing');
+[rawFiles, processedFile] = grunberg.main('BadDataPolicy', 'donothing');
 ````
 
 You could also decide to zero out all bad data epochs:
 
 ````matlab
-[rawFiles, processedFile = grunberg.main('BadDataPolicy', 'flatten');
+[rawFiles, processedFile] = grunberg.main('BadDataPolicy', 'flatten');
 ````
