@@ -28,6 +28,11 @@ else
     
     savePath = get_full_dir(obj);
     
+    if isempty(get_parent(obj))
+        % This is a top-level pipeline
+        set_name(data, name);
+    end
+    
     move(data, ...
         'Path',     savePath, ...
         'DataFile', [name ext], ...

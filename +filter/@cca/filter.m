@@ -3,7 +3,6 @@ function [d, obj] = filter(obj, x, varargin)
 import misc.signal2hankel;
 import misc.eta;
 
-
 verbose = is_verbose(obj) && size(x,1) > 5;
 verboseLabel = get_verbose_label(obj);
 
