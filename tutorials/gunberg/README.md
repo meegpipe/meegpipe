@@ -96,18 +96,17 @@ load(processedFiles{1}, '-mat');
 eeglab redraw;
 ````
 
-Note that the processed dataset still contains the bad data epochs, which are 
-completely unprocessed. The onset and durations of such epochs are marked with 
-events of type `__BadEpoch`. If you prefer the bad epochs to be zeroed out 
-before exporting to EEGLAB's data format, you should run:
+Note that the processed dataset is shorter than the original dataset, since 
+the bad data epochs have been removed from the data. Alternatively, you may 
+choose to leave the bad data epochs (as they were in the original data) but to 
+mark them using `boundary` events: 
+
+````matlab
+[rawFiles, processedFile = grunberg.main('BadDataPolicy', 'donothing');
+````
+
+You could also decide to zero out all bad data epochs:
 
 ````matlab
 [rawFiles, processedFile = grunberg.main('BadDataPolicy', 'flatten');
-````
-
-Alternative, you may choose the bad data epochs to be removed from the data 
-(i.e. good data before and after a bad data epoch will be concatenated):
-
-````matlab
-[rawFiles, processedFile = grunberg.main('BadDataPolicy', 'reject');
 ````

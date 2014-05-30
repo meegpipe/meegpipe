@@ -29,7 +29,8 @@ nodeList = [nodeList {myNode}];
 
 myPipe = meegpipe.node.pipeline.new(...
     'NodeList', nodeList, ...
-    'Name',     'supervised-bss');
+    'Name',     'supervised-bss', ...
+    'Save',     true);
 
 
 end
