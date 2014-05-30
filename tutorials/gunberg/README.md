@@ -36,8 +36,8 @@ need to install all of _meegpipe_'s [highly recommended dependencies][deps].
 
 ## Dataset 
 
-Raw data: [export_25-11_calibratie.Poly5][dataurl]
-Sensor coordinates: [export_25-11_calibratie.sensors][sensorsurl]
+* Raw data: [export_25-11_calibratie.Poly5][dataurl]
+* Sensor coordinates: [export_25-11_calibratie.sensors][sensorsurl]
 
 [dataurl]: https://dl.dropboxusercontent.com/u/4479286/export_25-11_calibratie.Poly5
 [sensorsurl]: https://dl.dropboxusercontent.com/u/4479286/export_25-11_calibratie.sensors
