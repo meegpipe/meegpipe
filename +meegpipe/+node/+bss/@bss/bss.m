@@ -14,7 +14,7 @@ classdef bss < meegpipe.node.abstract_node
         
         count = make_criterion_report(obj, critObj, labels, icSel, isAutoSel);
         
-        bssRep = make_bss_report(obj, bssObj, ics, data);
+        bssRep = make_bss_report(obj, bssObj, ics, data, icSel);
         
         extract_bss_features(obj, bssObj, ics, data, icSel);
         

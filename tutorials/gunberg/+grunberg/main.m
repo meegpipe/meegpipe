@@ -2,6 +2,13 @@ function [rawFiles, processedFile, processedData] = main(varargin)
 % MAIN - Performs all pre-preprocessing steps from the raw data
 
 import mperl.file.find.finddepth_regex_match;
+import misc.process_arguments;
+import misc.split_arguments;
+
+% What stage, if any, should be re-done?
+opt.Redo = {'supervised_bss_pipeline'};
+[thisArgs, varargin] = split_arguments(opt, varargin);
+[~, opt] = process_arguments(opt, thisArgs);
 
 fileList = {...
     'export_26-11_calibratie.Poly5' ...
@@ -41,7 +48,8 @@ for fileItr = 1:numel(fileList)
     % Get a symbolic link to the output of the artifact rejection pipeline
     dataFile = link2previous(artifactFile);
     finalOutput = get_output_filename(supervisedBssPipe, dataFile);
-    if ~exist(finalOutput, 'file'),
+    if ismember('supervised_bss_pipeline', opt.Redo) || ...
+            ~exist(finalOutput, 'file'),
         run(supervisedBssPipe, dataFile);
     end
     

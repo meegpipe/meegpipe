@@ -5,9 +5,9 @@ import misc.process_arguments;
 import misc.split_arguments;
 
 opt.MinCard     = @(lambda) min(20, max(2, 0.25*numel(lambda)));
-opt.RetainedVar = 99.99;
+opt.RetainedVar = 99.9999;
 opt.MaxCard     = 35;
-opt.BSS         = {spt.bss.multicombi, spt.bss.efica, spt.bss.jade};
+opt.BSS         = {spt.bss.multicombi};
 % What should we do with the bad data epochs when exporting to EEGLAB?
 % reject=concatenate all good epochs
 % flatten=set bad epochs to zero
@@ -35,8 +35,7 @@ if ~iscell(opt.BSS),
     opt.BSS = {opt.BSS};
 end
 
-% One node per BSS algorithm, plus one for exporting to EEGLAB
-nodeList = cell(1, numel(opt.BSS)+1);
+nodeList = cell(1, numel(opt.BSS));
 for i = 1:numel(opt.BSS)
     
     % A multicombi node
@@ -50,12 +49,6 @@ for i = 1:numel(opt.BSS)
     
     nodeList{i} = myNode;
 end
-
-%% Export to eeglab format
-myExporter = physioset.export.eeglab('BadDataPolicy', opt.BadDataPolicy);
-myNode = meegpipe.node.physioset_export.new(...
-    'Exporter', myExporter);
-nodeList = [nodeList {myNode}];
 
 myPipe = meegpipe.node.pipeline.new(...
     'NodeList', nodeList, ...
