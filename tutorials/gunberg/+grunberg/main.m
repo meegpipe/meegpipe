@@ -30,9 +30,10 @@ for fileItr = 1:numel(fileList)
         run(preprocPipe, fileList{fileItr});
     end
     
-    % Find the EEGLAB dataset produced by the processing pipeline
+    % Find the Fieldtrip dataset produced by the processing pipeline
     outputDir = get_full_dir(preprocPipe, fileList{fileItr});
-    rawFiles(fileItr) = finddepth_regex_match(outputDir, '\.set$');
+    regex = [fileList{fileItr} '[^/\.]+mat$'];
+    rawFiles(fileItr) = finddepth_regex_match(outputDir, regex);
     
     % Get a symbolic link to the pre-processed data so that meegpipe
     % produces the processing output in the directory that we want
@@ -53,9 +54,9 @@ for fileItr = 1:numel(fileList)
         run(supervisedBssPipe, dataFile);
     end
     
-    % Find the EEGLAB dataset produced by the artifact rejection pipeline
+    % Find the Fieldtrip dataset produced by the artifact rejection pipeline
     outputDir = get_full_dir(supervisedBssPipe, dataFile);
-    processedFile{fileItr} = finddepth_regex_match(outputDir, '\.set$');
+    processedFile{fileItr} = finddepth_regex_match(outputDir, regex);
 end
 
 

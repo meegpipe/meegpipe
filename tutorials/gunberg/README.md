@@ -80,24 +80,22 @@ select spatio-temporal components that should be removed from the data.
 
 ## Inspect the processed and raw data files
 
-Once the processing is completed, you can load the first raw data file and the
- corresponding processing result into [EEGLAB][eeglab]:
+Once the processing is completed, you can load into MATLAB the raw data file and
+ the corresponding processing result as [Fieldtrip][fieldtrip] structures:
 
-[eeglab]: http://sccn.ucsd.edu/eeglab/
+[fieldtrip]: http://fieldtrip.fcdonders.nl/
 
 ````
-eeglab; % Start EEGLAB
-load(rawFiles{1}, '-mat');
-[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
-load(processedFiles{1}, '-mat');
-[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
-eeglab redraw;
+tmp = load(rawFiles{1});
+rawData = tmp.ftripData;
+tmp = load(processedFiles{1});
+processedData = tmp.ftripData;
 ````
 
 Note that the processed dataset is shorter than the original dataset, since 
 the bad data epochs have been removed from the data. Alternatively, you may 
 choose to leave the bad data epochs (as they were in the original data) but to 
-mark them using `boundary` events: 
+mark them using `discontinuity` events: 
 
 ````matlab
 [rawFiles, processedFile] = grunberg.main('BadDataPolicy', 'donothing');

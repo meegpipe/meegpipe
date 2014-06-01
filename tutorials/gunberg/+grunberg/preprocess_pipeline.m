@@ -22,9 +22,9 @@ myNode = meegpipe.node.ev_gen.new(...
     'EventGenerator', grunberg.grunberg_generator.default);
 nodeList = [nodeList {myNode}];
 
-%% Node 3: Export to eeglab format
+%% Node 3: Export to fieldtrip format
 myNode = meegpipe.node.physioset_export.new(...
-    'Exporter', physioset.export.eeglab);
+    'Exporter', physioset.export.fieldtrip);
 nodeList = [nodeList {myNode}];
 
 %% Node 4: reject bad channels using variance
