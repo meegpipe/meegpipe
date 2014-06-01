@@ -90,7 +90,6 @@ switch lower(policy)
         obj(:, is_bad_sample(obj))  = 0; %#ok<*NASGU>
         
     case 'donothing',
-        % Will add boundary events with duration=1
         [~, evIdx] = add_boundary_events(obj);
         evIdx = [];
         
