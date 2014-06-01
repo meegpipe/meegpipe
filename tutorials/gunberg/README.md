@@ -81,12 +81,13 @@ select spatio-temporal components that should be removed from the data.
 ## Manual selection of noisy independent components
 
 The last sub-pipeline above requires the user to manually identify noisy independent 
-components. After running `grunberg.main`, the generated HTML reports should allow to 
-take decide which of the estimated components should be rejected from the data. Once the 
-set of noisy components has been identified, you can instruct __meegpipe__ to reject that
-set of components by editing the relevant `.ini` file, as described in the HTML 
-report of the corresponding processing node. Then you just need to re-run `grunberg.main`
-for the manual selection of components to take effect. 
+components. The HTML reports produced by `grunberg.main` contain (in most cases) enough
+ information for a human expert to decide which components should be attributed to noise
+sources. Once the set of noisy components has been identified, you can instruct 
+__meegpipe__ to reject that set of components by editing the relevant `.ini` file, as
+ described in the HTML report of the corresponding processing node. After editing the 
+ `.ini` file you need to re-run `grunberg.main` for the manual selection of components to
+ take effect. 
 
 
 ## Inspect the processed and raw data files
