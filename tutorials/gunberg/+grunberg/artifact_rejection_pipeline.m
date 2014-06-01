@@ -34,9 +34,9 @@ myNode = aar.ecg.new(...
 nodeList = [nodeList, {myNode}];
 
 %% Node 7: reject sparse sensor noise
-% This node does ICA on the data and identifies independent components that, 
+% This node does ICA on the data and identifies independent components that,
 % for being too spatially sparse, are likely to be due to sensor-specific
-% noise sources. Such "sensor noise" components are rejected. 
+% noise sources. Such "sensor noise" components are rejected.
 myNode = aar.sensor_noise.new(...
     'RetainedVar',  99.999, ...
     'MinPCs',       20, ...
@@ -50,7 +50,7 @@ myNode = aar.eog.new(...
     'MinCard',      1, ...      % Minimum number of rejected components
     'RetainedVar',  99.99, ...  % Retained variance by the PCA block
     'DataSelector', cascade(mySelector, good_data), ...
-    'IOReport',     report.plotter.io);    
+    'IOReport',     report.plotter.io);
 nodeList = [nodeList, {myNode}];
 
 %% Node 10: Bad channel interpolation
