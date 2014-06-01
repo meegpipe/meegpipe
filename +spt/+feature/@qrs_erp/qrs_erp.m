@@ -6,13 +6,17 @@ classdef qrs_erp < spt.feature.feature & goo.verbose
         % For building the ERP
         Duration            = 0.4;  % in seconds
         Offset              = 0.08; % in seconds
+        NbEpochs            = 10;   % Number of epochs for QRS ERP compuation
+        EpochDuration       = 40;   % In seconds
         Filter              = [];   % A pre-processind digital filter
         CorrAggregationStat = @(x) prctile(x, 75);
+        EpochAggregationStat = @(x) median(x);
         
     end
     
     methods
         
+        % Consistency checks
         function obj = set.Filter(obj, value)
             import exceptions.InvalidPropValue;
             
@@ -38,11 +42,6 @@ classdef qrs_erp < spt.feature.feature & goo.verbose
             obj.Filter = value;
         end
         
-    end
-    
-    
-    methods
-        
         % spt.feature.feature interface
         [featVal, featName] = extract_feature(obj, ~, tSeries, varargin);
         
@@ -53,9 +52,11 @@ classdef qrs_erp < spt.feature.feature & goo.verbose
             if nargin < 1, return; end
             
             % For building the ERP
-            opt.Duration   = 0.4;  % in seconds
-            opt.Offset     = 0.08; % in seconds
-            opt.Filter     = [];
+            opt.Duration      = 0.4;  % in seconds
+            opt.Offset        = 0.08; % in seconds
+            opt.Filter        = [];
+            opt.EpochDuration = 40;
+            opt.NbEpochs      = 10;
             opt.CorrAggregationStat = @(x) prctile(x, 75);
             obj = set_properties(obj, opt, varargin);
         end

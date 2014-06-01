@@ -43,6 +43,12 @@ end
 sens  = sensors(data); 
 xyz   = sens.Cartesian;
 
+if isempty(sens.Cartesian),
+    warning('chan_inter:MissingSensorCoordinates', ...
+        'Sensor coordinates are missing: skipping interpolation');
+    return;
+end
+
 
 W = zeros(size(data,1));
 chanGroups = cell(1, numel(badIdx));

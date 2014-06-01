@@ -22,21 +22,22 @@ classdef config < meegpipe.node.abstract_config
     %       DownsampleBy : Natural scalar. Default: 1
     %           Downsampling factor
     %
+    %       Antialiasing : Logical scalar. Default: true
+    %           Use antialiasing filter
+    %
     % See also: resample
-    
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+   
     properties
         
         UpsampleBy   = 1;
         DownsampleBy = 1;
         OutputRate   = NaN;
         AutoDestroyMemMap = false;
+        Antialiasing = true;
         
     end
     
-    % Consistency checks (to be done...)
+    
     methods
 
         function obj = set.UpsampleBy(obj, value)

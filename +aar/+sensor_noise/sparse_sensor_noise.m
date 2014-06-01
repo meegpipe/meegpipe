@@ -12,7 +12,7 @@ opt.MinCard         = 1;
 opt.MaxCard         = @(d) min(10, ceil(0.25*numel(d)));
 opt.MinPCs          = @(lambda) min(20, 0.5*numel(lambda));
 opt.MaxPCs          = 40;
-opt.RetainedVar     = 99.85; 
+opt.RetainedVar     = 99.9; 
 opt.BSS             = spt.bss.efica;
 opt.Max             = {@(fVal) ceil(0.7*numel(fVal))};
 

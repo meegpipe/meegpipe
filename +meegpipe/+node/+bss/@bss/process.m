@@ -149,7 +149,7 @@ make_pca_report(obj, myPCA);
 if do_reporting(obj)
    % Wee need to copy the ics or otherwise some of the reports may modify
    % them (e.g. by back-projecting them to the sensors).
-   bssRep = make_bss_report(obj, myBSS, copy(ics), data);    
+   bssRep = make_bss_report(obj, myBSS, copy(ics), data, icSel);    
 end
 make_criterion_report(obj, myCrit, [], icSel, isAutoSel);
 
@@ -218,6 +218,7 @@ else
         noise = bproj(myBSS, ics);
         data = data - noise;
     else
+        myBSS = select(myBSS, icSel);
         signal = bproj(myBSS, ics);
         data = assign_values(data, signal);
     end

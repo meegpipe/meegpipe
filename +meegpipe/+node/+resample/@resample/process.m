@@ -15,6 +15,7 @@ verboseLabel = get_verbose_label(obj);
 
 P = get_config(obj, 'UpsampleBy');
 Q = get_config(obj, 'DownsampleBy');
+antialiasing = get_config(obj, 'Antialiasing');
 outRate = get_config(obj, 'OutputRate');
 autoDestroyMemMap = get_config(obj, 'AutoDestroyMemMap');
 
@@ -55,15 +56,26 @@ expandDuration = floor(3*size(dataIn,2)/100);
 tinit   = tic;
 for i = 1:size(dataIn, 1),
     
-    dExpanded = [...
-        fliplr(dataIn(i, 1:expandDuration)), ...
-        dataIn(i,:), ...
-        fliplr(dataIn(i, end-expandDuration+1:end)) ...
-        ];
-    
-    di = resample(dExpanded, P, Q);
-    init = 1+floor(expandDuration*P/Q);
-    dataOut(i,:) = di(1, init:init+size(dataOut,2)-1);
+    if antialiasing,
+        dExpanded = [...
+            fliplr(dataIn(i, 1:expandDuration)), ...
+            dataIn(i,:), ...
+            fliplr(dataIn(i, end-expandDuration+1:end)) ...
+            ];
+        
+        di = resample(dExpanded, P, Q);
+        init = 1+floor(expandDuration*P/Q);
+        dataOut(i,:) = di(1, init:init+size(dataOut,2)-1);
+    else
+        if P > 1,
+            time = ceil(linspace(1, size(dataIn,2)*P, size(dataIn, 2)));
+            di = interp1(time, dataIn(i,:), 1:size(dataIn,2)*P, 'nearest');
+        else
+            di = dataIn(i,:);
+        end
+        di = di(1:Q:end);
+        dataOut(i,:) = di;
+    end
     
     if verbose,
         eta(tinit, size(dataIn,1), i);
@@ -129,7 +141,8 @@ dataOut = physioset.from_pset(dataOut, ...
     'SamplingRate',     newSamplingRate, ...
     'Event',            event, ...
     'SamplingTime',     newSamplingTime, ...
-    'BadSample',        newBadSample);
+    'BadSample',        newBadSample, ...
+    'BadChannel',       is_bad_channel(dataIn));
 
 set_meta(dataOut, get_meta(dataIn));
 
