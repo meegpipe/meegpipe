@@ -24,8 +24,10 @@ nodeList = [nodeList {myNode}];
 % flatten=set bad epochs to zero
 % donothing=mark bad epochs with boundary events only
 myExporter = physioset.export.eeglab('BadDataPolicy', 'reject');
+mySelector = pset.selector.sensor_idx(5:32);
 myNode = meegpipe.node.physioset_export.new(...
-    'Exporter', myExporter);
+    'Exporter',     myExporter, ...
+    'DataSelector', mySelector);
 nodeList = [nodeList {myNode}];
 
 myPipe = meegpipe.node.pipeline.new(...

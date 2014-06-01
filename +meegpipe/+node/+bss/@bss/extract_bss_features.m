@@ -26,7 +26,8 @@ end
 if strcmpi(featTarget, 'selected'),
     if isempty(icSel), return; end
     select(ics, icSel);
-    select(bssObj, icSel);
+else
+    clear_selection(bssObj);
 end
 
 for i = 1:numel(featExtractor)

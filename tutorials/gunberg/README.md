@@ -1,8 +1,6 @@
 `tmsi_eeg` tutorial
 ===
 
-__This tutorial is still under construction__
-
 A sample use case of meegpipe for importing and pre-processing EEG data 
 acquired by a portable [TMSi EEG amplifier][tmsi-eeg].
 
