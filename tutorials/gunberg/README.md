@@ -56,7 +56,7 @@ current working directory. Then run:
 
 The data cleaning procedure implemented by `grunberg.main` is very complex
  due to the fact that the sample dataset is __very noisy__. It is composed of
-three consecutive stages:
+three consecutive stages (or sub-pipelines):
 
 1. Pipeline [grunberg.preprocess_pipeline][preproc-pipe] involves basic 
 preprocessing steps such as bad channels and bad epochs rejection, as well as a
@@ -70,13 +70,24 @@ cardiac noise, ocular activity, and electrode-specific noise sources.
 
 3. Pipeline [grunberg.supervised_bss_pipeline][supervised-pipe] is a fully 
 supervised pipeline that, after performing BSS, requires the user to manually
-select spatio-temporal components that should be removed from the data.
+select spatio-temporal components that should be removed from the data. 
 
 [lasip]: http://www.cs.tut.fi/~lasip/
 [preproc-pipe]: ./+grunberg/preprocess_pipeline.m
 [bss]: http://en.wikipedia.org/wiki/Blind_signal_separation
 [artifact-pipe]: ./+grunberg/artifact_rejection_pipeline.m
 [supervised-pipe]: ./+grunberg/supervised_bss_pipeline.m
+
+## Manual selection of noisy independent components
+
+The last sub-pipeline above requires the user to manually identify noisy independent 
+components. After running `grunberg.main`, the generated HTML reports should allow to 
+take decide which of the estimated components should be rejected from the data. Once the 
+set of noisy components has been identified, you can instruct __meegpipe__ to reject that
+set of components by editing the relevant `.ini` file, as described in the HTML 
+report of the corresponding processing node. Then you just need to re-run `grunberg.main`
+for the manual selection of components to take effect. 
+
 
 ## Inspect the processed and raw data files
 

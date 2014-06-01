@@ -32,7 +32,8 @@ for fileItr = 1:numel(fileList)
     
     % Find the Fieldtrip dataset produced by the processing pipeline
     outputDir = get_full_dir(preprocPipe, fileList{fileItr});
-    regex = [fileList{fileItr} '[^/\.]+mat$'];
+    [~, name] = fileparts(fileList{fileItr});
+    regex = [name '[^\/]+mat$'];
     rawFiles(fileItr) = finddepth_regex_match(outputDir, regex);
     
     % Get a symbolic link to the pre-processed data so that meegpipe
