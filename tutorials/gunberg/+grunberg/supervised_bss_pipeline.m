@@ -1,5 +1,8 @@
 function myPipe = supervised_bss_pipeline(varargin)
 
+import pset.selector.good_data;
+import pset.selector.cascade;
+
 nodeList = {};
 
 %% Importer node
@@ -21,8 +24,8 @@ myNode = aar.bss_supervised(...
     'IOReport',     report.plotter.io);
 nodeList = [nodeList {myNode}];
 
-%% Export to eeglab format
-myExporter = physioset.export.fieldtrip('BadDataPolicy', 'reject');
+%% Export to fieldtrip format
+myExporter = physioset.export.fieldtrip;
 mySelector = pset.selector.sensor_idx(5:32);
 myNode = meegpipe.node.physioset_export.new(...
     'Exporter',     myExporter, ...

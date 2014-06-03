@@ -17,7 +17,7 @@ classdef fieldtrip < physioset.export.abstract_physioset_export
             import misc.join;
             
             if isempty(value),
-                obj.BadDataPolicy = 'reject';
+                obj.BadDataPolicy = 'donothing';
                 return;
             end
             

@@ -73,7 +73,7 @@ end
 set_static(obj, 'hash', 'runtime', get_hash_code(obj.RunTime_));
 
 fid = get_log(obj, 'timing.csv');
-fprintf(fid, '%s', datestr(now));
+fprintf(fid, '%s\n', datestr(now));
 
 if isempty(get_parent(obj))
     %% Clear session and temporary dir
