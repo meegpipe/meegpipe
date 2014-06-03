@@ -57,7 +57,7 @@ for fileItr = 1:numel(fileList)
     
     % Find the Fieldtrip dataset produced by the artifact rejection pipeline
     outputDir = get_full_dir(supervisedBssPipe, dataFile);
-    processedFile{fileItr} = finddepth_regex_match(outputDir, regex);
+    processedFile(fileItr) = finddepth_regex_match(outputDir, regex);
 end
 
 
