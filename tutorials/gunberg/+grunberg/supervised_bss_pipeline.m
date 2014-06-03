@@ -8,6 +8,9 @@ myNode = meegpipe.node.physioset_import.new(...
 nodeList = [nodeList {myNode}];
 
 %% Supervised BSS
+% This node is actually a pipeline that may consist of multiple BSS nodes
+% with different settings (e.g. BSS algorithm). By default, it consists
+% only of one node that uses multicombi as BSS algorithm.
 mySelector = pset.selector.sensor_idx(5:32);
 mySelector = pset.selector.cascade( ...
     mySelector, ...
@@ -19,15 +22,11 @@ myNode = aar.bss_supervised(...
 nodeList = [nodeList {myNode}];
 
 %% Export to eeglab format
-% What should we do with the bad data epochs when exporting to EEGLAB?
-% reject=concatenate all good epochs
-% flatten=set bad epochs to zero
-% donothing=mark bad epochs with boundary events only
 myExporter = physioset.export.fieldtrip('BadDataPolicy', 'reject');
 mySelector = pset.selector.sensor_idx(5:32);
 myNode = meegpipe.node.physioset_export.new(...
     'Exporter',     myExporter, ...
-    'DataSelector', mySelector);
+    'DataSelector', cascade(mySelector, good_data));
 nodeList = [nodeList {myNode}];
 
 myPipe = meegpipe.node.pipeline.new(...

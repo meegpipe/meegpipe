@@ -74,7 +74,11 @@ switch lower(policy)
     case 'reject',
         
         % No need of marking discontinuities because they are already
-        % marked by method set_bad_sample
+        % marked by method set_bad_sample. The 'reject' policy is kept here
+        % for backwards compatibility only!
+        warning('deal_with_bad_data:Obsolete', ...
+            ['The ''reject'' data policy has been deprecated and will be ' ...
+            'removed in future versions']);
         select(obj, ~is_bad_channel(obj), ~is_bad_sample(obj));
         didSelection = true;
         evIdx = [];
@@ -90,7 +94,8 @@ switch lower(policy)
         obj(:, is_bad_sample(obj))  = 0; %#ok<*NASGU>
         
     case 'donothing',
-        [~, evIdx] = add_boundary_events(obj);
+        % No need of adding dis events, as they are already added by
+        % method set_bad_sample()
         evIdx = [];
         
     otherwise,

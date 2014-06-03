@@ -26,14 +26,14 @@ myNode = meegpipe.node.resample.new(...
     'Antialiasing',     false);
 nodeList = [nodeList {myNode}];
 
-%% Node 8: reject cardiac components
+%% Node 3: reject cardiac components
 mySelector = pset.selector.sensor_idx(5:32);
 myNode = aar.ecg.new(...
     'DataSelector', cascade(mySelector, good_data), ...
     'IOReport',     report.plotter.io);
 nodeList = [nodeList, {myNode}];
 
-%% Node 7: reject sparse sensor noise
+%% Node 4: reject sparse sensor noise
 % This node does ICA on the data and identifies independent components that,
 % for being too spatially sparse, are likely to be due to sensor-specific
 % noise sources. Such "sensor noise" components are rejected.
@@ -45,7 +45,7 @@ myNode = aar.sensor_noise.new(...
     );
 nodeList = [nodeList, {myNode}];
 
-%% Node 9: reject ocular components
+%% Node 5: reject ocular components
 myNode = aar.eog.new(...
     'MinCard',      1, ...      % Minimum number of rejected components
     'RetainedVar',  99.99, ...  % Retained variance by the PCA block
@@ -53,19 +53,12 @@ myNode = aar.eog.new(...
     'IOReport',     report.plotter.io);
 nodeList = [nodeList, {myNode}];
 
-%% Node 10: Bad channel interpolation
-myNode = meegpipe.node.chan_interp.new(...
-    'NN',           2, ...
-    'DataSelector', good_samples);
-nodeList = [nodeList {myNode}];
-
-%% Node 11: Export to eeglab format
-% What should we do with the bad data epochs when exporting to EEGLAB?
-% reject=concatenate all good epochs
-% flatten=set bad epochs to zero
-% donothing=mark bad epochs with boundary events only
-myExporter = physioset.export.eeglab('BadDataPolicy', 'reject');
+%% Node 6: Export to eeglab format
+% Since we do not want bad data channels and bad samples to be included in
+% the exported dataset we use an appropriate data selector
+myExporter = physioset.export.eeglab;
 myNode = meegpipe.node.physioset_export.new(...
+    'DataSelector', cascade(mySelector, good_data), ...
     'Exporter', myExporter);
 nodeList = [nodeList {myNode}];
 

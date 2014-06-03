@@ -36,7 +36,15 @@ myNode = meegpipe.node.bad_channels.new('Criterion', myCrit, ...
     'DataSelector', cascade(mySelector, good_data));
 nodeList = [nodeList {myNode}];
 
-%% Node 5: remove large signal fluctuations using a LASIP filter
+%% Node 5: Bad channel interpolation
+% Note that the interpolated channels will remained marked as bad.
+myNode = meegpipe.node.chan_interp.new(...
+    'NN',           2, ...
+    'DataSelector', good_samples);
+nodeList = [nodeList {myNode}];
+
+
+%% Node 6: remove large signal fluctuations using a LASIP filter
 
 % Setting the "right" parameters of the filter involves quite a bit of
 % trial and error. These values seemed OK to me but we should check
@@ -65,7 +73,7 @@ myNode = meegpipe.node.filter.new(...
     );
 nodeList = [nodeList {myNode}];
 
-%% Node 6: reject bad epochs using variance 
+%% Node 7: reject bad epochs using variance 
 % We compute the log(max(abs(x)) in sliding windows of duration of 5 seconds
 % and a temporal shift between correleative windows of 2 second. We then
 % reject those epochs with abnormally large variance
@@ -77,7 +85,7 @@ myNode = meegpipe.node.bad_epochs.sliding_window(2, 6, ...
     'Criterion',    myCrit);
 nodeList = [nodeList, {myNode}];
 
-%% Node 7: Smooth transitions between bad epochs
+%% Node 8: Smooth transitions between bad epochs
 % The fact that from the previous node onwards we are ignoring bad epochs
 % means that we may be introducing discontinuities in the signal. This node
 % tries to minimize such discontinuities. 
@@ -85,7 +93,7 @@ myNode = meegpipe.node.smoother.new(...
     'DataSelector', cascade(mySelector, good_data));
 nodeList = [nodeList {myNode}];
 
-%% Node 8: Band pass filtering 
+%% Node 9: Band pass filtering 
 % We do the low-pass filtering after removing bad epochs because otherwise
 % the sharp noise transients in the data will produce huge filtering
 % artifacts.
