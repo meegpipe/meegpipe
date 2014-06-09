@@ -72,13 +72,15 @@ if pkgisa(data, 'physioset.physioset') && ~isempty(obj.DataSelector),
     end
     
     if is_verbose(obj),
-        fprintf([verboseLabel 'DataSelector selected %d/%d channels...\n\n'], ...
-            size(data,1), oRows);
+        fprintf([verboseLabel 'DataSelector selected %d/%d channels: %s...\n\n'], ...
+            size(data,1), oRows, misc.any2str(dim_selection(data), 50));
     end
     if is_verbose(obj),
         dataL = size(data,2)/data.SamplingRate;
-        fprintf([verboseLabel 'DataSelector selected %d (%d%%) seconds...\n\n'], ...
-            ceil(dataL), round(100*size(data,2)/oCols));
+        fprintf([verboseLabel 'DataSelector selected %d (%d%%) seconds, '  ...
+            'with sample indices: %s ...\n\n'], ...
+            ceil(dataL), round(100*size(data,2)/oCols), ...
+            misc.any2str(pnt_selection(data), 50));
     end
     
 end

@@ -15,7 +15,11 @@ import safefid.safefid;
 import misc.any2str;
 
 %% Set the global Verbose mode to match that of this node
-verboseLabel                    = get_verbose_label(obj);
+if isempty(get_parent(obj)),
+    verboseLabel = ['(' get_name(obj) ') '];
+else
+    verboseLabel = ['(' get_name(get_parent(obj)) ' / ' get_name(obj) ') '];
+end
 obj.SuperGlobals_.VerboseLabel  = goo.globals.get.VerboseLabel;
 goo.globals.set('VerboseLabel', verboseLabel);
 
