@@ -60,17 +60,13 @@ if pkgisa(data, 'physioset.physioset') && ~isempty(obj.DataSelector),
     
     [oRows, oCols] = size(data);
     
-    try
-        select(obj.DataSelector, data);
-    catch ME
-        if strcmp(ME.identifier, 'selector:EmptySelection'),
-            warning('abstract_node:EmptySelection', ...
-                'The node selects and empty set of data: skipping node');
-        else
-            rethrow(ME);
-        end
-    end
     
+    [~, emptySel] = select(obj.DataSelector, data);
+    if emptySel,        
+        warning('abstract_node:EmptySelection', ...
+            'The node selects and empty set of data: skipping node');
+    end
+
     if is_verbose(obj),
         fprintf([verboseLabel 'DataSelector selected %d/%d channels: %s...\n\n'], ...
             size(data,1), oRows, misc.any2str(dim_selection(data), 50));
