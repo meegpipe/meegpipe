@@ -23,9 +23,7 @@ classdef hpfilt < filter.abstract_dfilt
     %
     %
     % See also: lpfilt, bpfilt, sbfilt
-    
-    % Documentation: filter_hpfilt_class.txt
-    % Description: Class definition
+
     
     % Public interface ....................................................
     properties (SetAccess = private)
