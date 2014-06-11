@@ -1,4 +1,4 @@
-function x = filter(obj, x, varargin)
+function [x, obj] = filter(obj, x, varargin)
 
 import misc.eta;
 

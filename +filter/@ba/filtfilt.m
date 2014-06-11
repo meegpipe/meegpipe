@@ -14,8 +14,6 @@ function x = filtfilt(obj, x, varargin)
 %
 % See also: filter.lpfilt, filter.lpfilt.filter
 
-% Documentation: class_filter_lpfilt.txt
-% Description: Zero-phase forward and reverse digital filtering
 
 import misc.eta;
 
@@ -41,10 +39,7 @@ for i = 1:size(x, 1)
     end
     
     xi = x(i, :);
-    
-    xi = filter(obj, xi);
-    xi = filter(obj, fliplr(xi));
-    x(i, :) = fliplr(xi);
+    x(i, :) = filtfilt(obj.B, obj.A, xi);
    
     if verbose &&  ~mod(i, by100),
         eta(tinit, size(x,1), i, 'remaintime', false);

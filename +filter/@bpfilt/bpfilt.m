@@ -42,31 +42,22 @@ classdef bpfilt < filter.abstract_dfilt
     properties (SetAccess = private, GetAccess = private)
         MDFilt;     % Equivalent MATLAB dfilt object
     end
-  
+    
     properties (SetAccess = private)
         LpFilter;
         HpFilter;
         Fp;
-        PersistentMemory;
     end
     
     % filter.dfilt interface
     methods
-        [y, obj] = filter(obj, x, varargin);
-    end
-    
-    % report.self_reportable interface
-    methods
-        [pName, pValue, pDescr]   = report_info(obj);
-        % The method below is implemented at abstract_dfilt
-        % filename = generate_remark_report(obj, varargin);
-    end
-    
-    % Reimplement the set_verbose method from class goo.verbose
-    methods
-       
+        function [y, obj] = filter(obj, varargin)
+            y = filtfilt(obj, varargin{:});
+        end
+        
+        % Reimplement the set_verbose method from class goo.verbose
         function obj = set_verbose(obj, value)
-           
+            
             obj = set_verbose@goo.verbose(obj, value);
             
             if value, return; end
@@ -84,29 +75,13 @@ classdef bpfilt < filter.abstract_dfilt
             end
             
         end
-        
-    end
-    
-    % Other public methods
-    methods
+     
         y = filtfilt(obj, x, varargin);
+        
         % Required by parent class
         H = mdfilt(obj);
-        function obj = set_persistent(obj, value)
-            obj.PersistentMemory = value;
-            for i = 1:numel(obj.LpFilter),
-                if isempty(obj.LpFilter{i}), continue; end
-                set_persistent(obj.LpFilter{i}, value);
-            end
-            for i = 1:numel(obj.HpFilter),
-                if isempty(obj.HpFilter{i}), continue; end
-                set_persistent(obj.HpFilter{i}, value);
-            end
-        end
-    end
-    
-    % Constructor
-    methods
+        
+        % Constructor 
         function obj = bpfilt(varargin)
             import misc.process_arguments;
             
@@ -127,7 +102,6 @@ classdef bpfilt < filter.abstract_dfilt
                         obj.LpFilter{filtItr} = ...
                             filter.lpfilt(...
                             'fc',               opt.fp(filtItr, 2), ...
-                            'PersistentMemory', opt.persistentmemory, ...
                             'Verbose',          opt.verbose, ...
                             'VerboseLabel',     opt.verboselabel);
                     end
@@ -135,14 +109,12 @@ classdef bpfilt < filter.abstract_dfilt
                         obj.HpFilter{filtItr} = ...
                             filter.hpfilt(...
                             'fc',               opt.fp(filtItr, 1), ...
-                            'PersistentMemory', opt.persistentmemory, ...
                             'Verbose',          opt.verbose, ...
                             'VerboseLabel',     opt.verboselabel);
                     end
                 end
             end
             obj.Fp = opt.fp;
-            obj = set_persistent(obj, opt.persistentmemory);
             
             % Now set the verbose property, but not for nested filters
             obj = set_verbose(obj, opt.verbose);

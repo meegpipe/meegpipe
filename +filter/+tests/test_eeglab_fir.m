@@ -144,7 +144,7 @@ try
     for i = 1:size(X, 1)
         snr1 = snr1 + var(X(i,:))/var(data(i,:) - X(i,:));
     end
-    ok(snr1 > 5*snr0, name);
+    ok(snr1 > 3*snr0, name);
     
 catch ME
     
@@ -177,7 +177,7 @@ try
     for i = 1:size(X, 1)
         snr1 = snr1 + var(N(i,:))/var(data(i,:) - N(i,:));
     end
-    ok(snr1 > 5*snr0, name);
+    ok(snr1 > 3*snr0, name);
     
 catch ME
     

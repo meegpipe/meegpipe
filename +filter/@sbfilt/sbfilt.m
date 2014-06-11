@@ -112,18 +112,16 @@ classdef sbfilt < filter.abstract_dfilt
                 for filtItr = 1:size(opt.fstop),
                     if opt.fstop(filtItr, 2) < 1,
                         obj.HpFilter{filtItr} = ...
-                            filter.hpfilt('fc', opt.fstop(filtItr, 2), ...
-                            'PersistentMemory', opt.persistentmemory);
+                            filter.hpfilt('fc', opt.fstop(filtItr, 2));
                     end
                     if opt.fstop(filtItr, 1) > 0,
                         obj.LpFilter{filtItr} = ...
-                            filter.lpfilt('fc', opt.fstop(filtItr, 1), ...
-                            'PersistentMemory', opt.persistentmemory);
+                            filter.lpfilt('fc', opt.fstop(filtItr, 1));
                     end
                 end
             end
             obj.FStop = opt.fstop;
-            obj = set_persistent(obj, opt.persistentmemory);
+            
             obj = set_verbose(obj, opt.verbose);
             obj = set_verbose_label(obj, opt.verboselabel);
             

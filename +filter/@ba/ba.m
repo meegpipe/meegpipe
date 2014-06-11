@@ -1,7 +1,7 @@
 classdef ba < ...
-        filter.dfilt             & ... 
-        goo.verbose              & ... 
-        goo.abstract_setget      & ... 
+        filter.dfilt             & ...
+        goo.verbose              & ...
+        goo.abstract_setget      & ...
         goo.abstract_named_object
     % ADAPTFILT - A wrapper for MATLAB's adaptfilt classes
     %
@@ -21,22 +21,22 @@ classdef ba < ...
     % See also: filter
     
     properties (SetAccess = private, GetAccess = public)
-        
         B;
         A;
-        
-    end    
-   
-    % filter.dfilt interface
-    methods
-        [y, obj] = filter(obj, x, d, varargin);
-        y = filtfilt(obj, x, varargin);
     end
     
-    
-    % Constructor
     methods
+        % filter.dfilt interface
+        [y, obj] = filter(obj, x, d, varargin);
+        y = filtfilt(obj, x, varargin);
         
+        % In order to be used in combination with filter.cascade
+        function H = mdfilt(obj)
+            H = dfilt.df1(obj.B, obj.A);
+        end
+        
+        
+        % Constructor    
         function obj = ba(b, a, varargin)
             
             import misc.process_arguments;
@@ -44,9 +44,9 @@ classdef ba < ...
             if nargin < 1, return; end
             
             opt.Name = 'ba';
-            opt.Verbose = true;           
+            opt.Verbose = true;
             [~, opt] = process_arguments(opt, varargin);
-         
+            
             obj.A = a;
             obj.B = b;
             obj = set_name(obj, opt.Name);

@@ -3,7 +3,7 @@ function y = filtfilt(obj, x, varargin)
 %
 % Zero-phase forward and reverse band-pass digital filtering
 %
-% 
+%
 % data = filtfilt(obj, data)
 %
 % data = filtfilt(obj, data, 'key', value, ...)
@@ -29,9 +29,20 @@ function y = filtfilt(obj, x, varargin)
 % See also: filter.bpfilt, filter.bpfilt.filter
 
 
+verboseLabel = get_verbose_label(obj);
+verbose      = is_verbose(obj);
+
 if isempty(obj.LpFilter) && isempty(obj.HpFilter),
     y = x;
-   return; 
+    return;
+end
+
+if verbose,
+    if isa(x, 'physioset.physioset'),
+        fprintf([verboseLabel 'BP-filtering %s...'], get_name(x));
+    else
+        fprintf([verboseLabel 'BP-filtering...']);
+    end
 end
 
 y = [];
@@ -40,7 +51,7 @@ for bandItr = 1:numel(obj.LpFilter),
         xCopy = copy(x, 'Temporary', true);
     else
         xCopy = x;
-    end    
+    end
     tmp = xCopy;
     if ~isempty(obj.LpFilter{bandItr}),
         tmp =  filtfilt(obj.LpFilter{bandItr}, tmp, varargin{:});
@@ -49,12 +60,14 @@ for bandItr = 1:numel(obj.LpFilter),
         tmp =  filtfilt(obj.HpFilter{bandItr}, tmp, varargin{:});
     end
     
-    if ~isempty(y),        
+    if ~isempty(y),
         y = y + tmp;
     else
         y  = tmp;
     end
 end
-
+if verbose,
+    fprintf('\n\n');
+end
 
 end
