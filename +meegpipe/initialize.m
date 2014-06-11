@@ -100,7 +100,7 @@ for i = 1:numel(dirList)
     if ~any(isProblematic), continue; end
     tobeRemoved = pathList(isProblematic);
     tobeRemoved = cellfun(@(x) strrep(x, '\', '/'), tobeRemoved, 'UniformOutput', false);
-    if numel(tobeRemoved) > 1,
+    if numel(tobeRemoved) == 1,
         fprintf([tobeRemoved{1} '\n']);
     else
         fprintf(join('\n', tobeRemoved));
