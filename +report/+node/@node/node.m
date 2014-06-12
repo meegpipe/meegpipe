@@ -69,13 +69,13 @@ classdef node < report.generic.generic
             end
             
             nodeFullDir = get_full_dir(nodeObj);
-            set_rootpath(obj, catdir(nodeFullDir, 'remark'));
+            set_rootpath(obj, [nodeFullDir filesep 'remark']);
             
             % Copy index.htm and pyserver.bat
-            indexFile = catfile(report.root_path, 'index.htm');
-            pyservFile = catfile(report.root_path, 'pyserver.bat');
-            copyfile(indexFile, catfile(nodeFullDir, 'index.htm'));
-            copyfile(pyservFile, catfile(nodeFullDir, 'pyserver.bat'));
+            indexFile = [report.root_path, filesep 'index.htm'];
+            pyservFile = [report.root_path, filesep 'pyserver.bat'];
+            copyfile(indexFile, [nodeFullDir filesep 'index.htm']);
+            copyfile(pyservFile, [nodeFullDir filesep 'pyserver.bat']);
             
             % Set parent to report of parent node
             parentNode = get_parent(nodeObj);

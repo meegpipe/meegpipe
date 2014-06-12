@@ -37,11 +37,17 @@ for i = 1:nargin,
     toRemove(i) = isempty(varargin{i});
     if ~toRemove(i),
         varargin{i} = strrep(varargin{i}, '\', '/');
+        if i < nargin && ~strcmp(varargin{i}(end), '/'),
+            varargin{i} = [varargin{i} '/'];
+        end
     end
 end
 varargin(toRemove) = [];
 
-pathStr = perl('+mperl/+file/+spec/catfile.pl', varargin{:});
-pathStr = strrep(pathStr, '/', filesep);
+pathStr = [varargin{:}];
+
+% Old way, very slow, at least under Windows
+%pathStr = perl('+mperl/+file/+spec/catfile.pl', varargin{:});
+%pathStr = strrep(pathStr, '/', filesep);
 
 end

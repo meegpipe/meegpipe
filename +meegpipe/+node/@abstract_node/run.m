@@ -33,7 +33,8 @@ if numel(varargin) > 1,
             ((has_condor && strcmpi(obj.Queue, 'condor')) || ...
             (has_oge && ~strcmpi(obj.Queue, 'condor')))
         for i = 1:numel(varargin)
-            thisObj = clone(obj);
+            %thisObj = clone(obj);
+            thisObj = obj; % Will it work?
             data{i} = run_oge(thisObj, varargin{i});
         end
         
@@ -41,7 +42,8 @@ if numel(varargin) > 1,
         
         dataNew = cell(1, numel(varargin));
         for i = 1:numel(varargin)
-            thisObj = clone(obj);
+             %thisObj = clone(obj);
+            thisObj = obj; % Will it work?          
             [data{i}, dataNew{i}] = run(thisObj, varargin{i});
         end
         

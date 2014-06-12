@@ -44,6 +44,7 @@ classdef config < meegpipe.node.abstract_config
             
             if isempty(value),
                 value = [];
+                return;
             end
             
             if ~isa(value, 'pset.selector.selector'),
@@ -61,6 +62,7 @@ classdef config < meegpipe.node.abstract_config
             
             if isempty(value),
                 value = [];
+                return;
             end
             
             if ~isa(value, 'pset.selector.selector'),
