@@ -68,6 +68,7 @@ if pkgisa(data, 'physioset.physioset') && ~isempty(obj.DataSelector),
         warning('abstract_node:EmptySelection', ...
             ['The DataSelector of node ''%s'' selects an empty set of data: ' ...
              'skipping node'], get_name(obj));
+         return;
     end
 
     if is_verbose(obj),
