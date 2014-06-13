@@ -1,11 +1,11 @@
-%NEAREST
+function [A,M]=nearest2(Wnew,Wold)
+% NEAREST - Find nearest matrix in terms of Frobenius norm with same rows
 %
 %Nearest(Wnew, Wold) finds the nearest matrix (in sense of the Frobenius norm)
 %from Wold, which has the same rows (up to the signs, scales (depends on 
 %criterion), and order) like the matrix Wnew. The function utilizes the 
 %function "maxmatching". Returns the permutation matrix, also.
 
-function [A,M]=nearest2(Wnew,Wold);
 %
 Wnew=Wnew'; Wold=Wold'; %% performs transposition to make calling easier
 %

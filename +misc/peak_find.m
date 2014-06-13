@@ -1,5 +1,5 @@
 function maxtab = peak_find(x, varargin)
-% peak_find() - A simple (but fast) function to find local maxima
+% PEAK_FIND - A simple (but fast) function to find local maxima
 
 import misc.process_varargin;
 import misc.peakdet;

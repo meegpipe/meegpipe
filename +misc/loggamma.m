@@ -1,5 +1,5 @@
 function y = loggamma(n)
-% loggamma(n) = log(gamma(n))
+% LOGGAMMA - An alias such that loggamma(n) = log(gamma(n))
 
 import misc.isnatural;
 import misc.loggamma; 

@@ -1,5 +1,7 @@
 function theStruct = parse_xml(xmlfile)
-% PARSEXML Convert XML file to a MATLAB structure.
+% PARSEXML - Convert XML file to a MATLAB structure
+%
+% See also: misc
 
 tmp_xmlfile = tempname;
 perl('+misc/strip_spaces.pl', xmlfile, tmp_xmlfile);

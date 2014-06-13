@@ -1,10 +1,10 @@
 function fileList = dir(path, regex, noDirs, negated, fullPath)
 % DIR - List directory
 %
-% fileList = dir(path)
-% fileList = dir(path, regex)
-% fileList = dir(path, regex, noDirs);
-% fileList = dir(path, regex, noDirs, negated, fullPath)
+%   fileList = dir(path)
+%   fileList = dir(path, regex)
+%   fileList = dir(path, regex, noDirs);
+%   fileList = dir(path, regex, noDirs, negated, fullPath)
 %
 % Where 
 %

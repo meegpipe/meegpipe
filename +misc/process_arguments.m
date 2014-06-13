@@ -1,12 +1,11 @@
 function [cmd, arg] = process_arguments(keySet, argArray, needsValue, dowarn)
-% PROCESS_ARGUMENTS
-% Parses the varargin cell array by extracting options names and
-% corresponding values
+% PROCESS_ARGUMENTS - Parses varargin by extracting options names and values
 %
-% cmd = process_arguments(keySet, argArray, needsValue)
-% [cmd, str] = process_arguments(keySet, argArray, needsValue)
+%   cmd = process_arguments(keySet, argArray, needsValue)
+%   [cmd, str] = process_arguments(keySet, argArray, needsValue)
 %
-% where
+%
+% Where
 %
 % KEYSET is a cell array with N option names, e.g. {'-threads', '-nn'}.
 % Leading hyphens will be not considered to be part of the option name.

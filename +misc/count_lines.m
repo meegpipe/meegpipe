@@ -1,6 +1,5 @@
 function val = count_lines(file)
-% COUNT_LINES
-% Counts the number of lines in text file using PERL
+% COUNT_LINES - Counts the number of lines in text file using PERL
 %
 % val = count_lines(file)
 %
