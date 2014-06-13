@@ -196,13 +196,9 @@ classdef physioset < ...
             end
             
             % Do not sort the events here. Method add_event takes care of
-            % that already
+            % that already and events are sorted also in the constructor
             obj.Event = v;
-%             if ~isempty(v),
-%                 obj.Event = sort(v);
-%             else
-%                 obj.Event = v;
-%             end
+
         end
         
         function set.Sensors(obj, v)
@@ -893,6 +889,10 @@ classdef physioset < ...
             obj.Sensors         = opt.sensors;
             obj.SamplingTime    = opt.samplingtime;
             obj.TimeOrig        = opt.starttime;
+            
+            if ~isempty(opt.event),
+                opt.event = sort(opt.event);
+            end
             obj.Event           = opt.event;
             obj.EqWeights       = opt.eqweights;
             obj.EqWeightsOrig   = opt.eqweightsorig;

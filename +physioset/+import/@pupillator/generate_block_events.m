@@ -13,8 +13,6 @@ isBlue   = cellfun(@(x) ~isempty(regexp(x, 'blue', 'once')), protHdr);
 isPVT    = cellfun(@(x) ~isempty(regexp(x, 'pvt', 'once')), protHdr);
 [~, transitionSampl] = unique(status, 'first');
 
-transitionSampl = [transitionSampl(:); numel(time)];
-transitionTime = time(transitionSampl);
 isPVTBlock = prot(:,isPVT) > 0; 
 
 if any(isGreen)
@@ -25,19 +23,25 @@ if any(isGreen)
     green  = find(cellfun(@(x) ~isempty(regexp(x, 'green', 'once')), dataHdr));
     blue   = find(cellfun(@(x) ~isempty(regexp(x, 'blue', 'once')), dataHdr));
     myProtEvs = physioset.event.new(transitionSampl);
+
+    blockDur = diff([transitionSampl;size(data,1)])-1;
     for i = 1:numel(myProtEvs)
         myProtEvs(i).Type = sprintf('R%.3dG%.3dB%.3d', ...
             data(transitionSampl(i), [red green blue]));
         myProtEvs(i).Value = i;
+        myProtEvs(i).Duration = blockDur(i);
     end
 
 else
     % Old pupillator did not have a green channel
+    transitionSampl = [transitionSampl(:); numel(time)];
+    transitionTime = time(transitionSampl);
+    
     prot2 = prot(1:3:end,:);
     seq = repmat('D', size(prot2,1), 1);
     seq(prot2(:,isRed)>0)  = 'R';
     seq(prot2(:,isBlue)>0) = 'B';
-
+    
     myProtEvs = pupillator.block_events(transitionSampl, transitionTime, ...
         seq, isPVTBlock);
 end
