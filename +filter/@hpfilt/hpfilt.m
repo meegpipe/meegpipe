@@ -1,19 +1,69 @@
 classdef hpfilt < filter.abstract_dfilt
-    % HPFILT - High-pass digital filter
+    % HPFILT - High-pass digital filter (windowed sinc type I FIR)
     %
-    % obj = hpfilt(fc)
+    % This class implements the recommended approach for high-pass
+    % filtering electrophysiological time-series [1]. It is implemented in terms
+    % of a windowed sinc type I linear phase FIR filter. The implementation
+    % has been borrowed from Andreas Widmann's firfilt plug-in for EEGLAB
+    % [2].
+    %
+    % ## USAGE SYNOPSIS
+    %
+    %   myFilter = filter.hpfilt(fc);
+    %   myFilter = filter.hpfilt(fc, 'key', value, ...);
+    %   myFilter = filter.hpfilt('key', value, ...);
+    %
+    % Where
+    %
+    %   MYFILTER is a filter.hpfilt object.
+    %
+    %   FC is the normalized cutoff frequency of the filter. This construction
+    %   argument can also be provided as a key/value pair (see below).
+    %
+    % 
+    % ## KEY/VALUE PAIRS ACCEPTED BY CONSTRUCTOR
+    %
+    %   Fc : A numeric scalar. Default: []
+    %        The normalized cutoff frequency of the filter.
+    %
+    %   TransitionBandWidth : A numeric scalar. Default: 0.25*Fc
+    %        The (normalized) bandwidth of the transition band. This
+    %        parameter is inversely proportional to the filter order. So
+    %        you should try to use as wide transition band as is acceptable
+    %        for your application.
+    %
+    %   MaxFilterOrder : A numeric scalar. Default: 30000
+    %       The maximum allowed order for the filter. Note that this
+    %       parameter imposes a lower limit on the width of the transition
+    %       band. 
     %
     %
-    % where
+    % ## EXAMPLES
     %
-    % OBJ is a filter.hpfilt object
+    % ### Example 1
     %
-    % FC is the normalized cutoff of the high-pass filter
+    % Apply a high pass filter with a cuttof at 2 Hz to data matrix X, assuming
+    % a data sampling rate of 500 Hz.
     %
-    % See also: hpfilt_ellip
+    %   % Generate a dummy dataset containing 4 channels and 20 seconds of data
+    %   X = randn(4, 10000);
+    %   myFilter = filter.hpfilt(2/(500/2));
+    %   Y = filter(myFilter, X);
+    %
+    % ## REFERENCES
+    %
+    % [1] A. Widmann and E. Schroger, Filter Effects and Filter Artifacts
+    % in the Analysis of Electrophysiological Data, Front. Psychol. 2012,
+    % 3:233. DOI: http://dx.doi.org/10.3389%2Ffpsyg.2012.00233
+    %
+    % [2] http://www.uni-leipzig.de/~biocog/content/widmann/eeglab-plugins/
+    %
+    %
+    % See also: filter.lpfilt, filter.bpfilt, filter.sbfilt
     
     properties (SetAccess=private)
         Order;
+        TransitionBandWidth;   % Normalized!
     end
     
     properties (SetAccess = private)
@@ -48,23 +98,25 @@ classdef hpfilt < filter.abstract_dfilt
             end
         
             opt.fc = [];
+            opt.transitionbandwidth = [];
+            opt.maxorder = 30*1000;
             [~, opt] = process_arguments(opt, varargin);
             
-            filterOrder = 6;
-            [B, A] = butter(filterOrder, opt.fc, 'high');
-            
-            while any(abs(roots(A)) >= 1) && filterOrder > 2,
-                filterOrder = filterOrder - 1;
-                [B, A] = butter(filterOrder, opt.fc, 'high');
+            if isempty(opt.fc),
+                error('The (normalized) cutoff frequency fc needs to be provided');
             end
-            if any(abs(roots(A)) >= 1)
-                error(['Filter coefficients have poles on or outside ' ...
-                    'the unit circle and will not be stable. Try a higher cutoff ' ...
-                    'frequency or a different type/order of filter.']);
-            end
-            obj.Order = filterOrder;
             
-            obj.BAFilter = filter.ba(B, A);
+            if isempty(opt.transitionbandwidth),
+                opt.transitionbandwidth = 0.25*opt.fc; 
+            end
+
+            order = firfilt.firwsord('hamming', 1, opt.transitionbandwidth);
+            
+            obj.Order = min(order, opt.maxorder);
+            
+            B = firfilt.firws(obj.Order, opt.fc, 'high', ...
+                firfilt.windows('hamming', obj.Order + 1));
+            obj.BAFilter = filter.ba(B, 1);
             
             obj.BAFilter = set_name(obj.BAFilter, get_name(obj));
             obj.BAFilter = set_verbose(obj.BAFilter, is_verbose(obj));

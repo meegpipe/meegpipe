@@ -17,7 +17,14 @@ end
 
 for i = 1:size(x,1),
     
-    x(i,:) = filter(obj.B, obj.A, x(i, :));
+    y = filter(obj.B, obj.A, x(i, :));
+    if numel(obj.A) > 1,
+        x(i,:) = y;
+    else
+        delay = ceil((numel(obj.B) - 1)/2);
+        x(i, 1:end-delay) = y((delay+1):end); 
+    end
+   
     if verbose,
         eta(tinit, size(x,1), i, 'remaintime', false);
     end

@@ -14,6 +14,7 @@ classdef lpfilt < filter.abstract_dfilt
     
     properties (SetAccess=private)
         Order;
+        TransitionBandWidth;   % Normalized!
     end
     
     properties (SetAccess = private)
@@ -48,23 +49,25 @@ classdef lpfilt < filter.abstract_dfilt
             end
         
             opt.fc = [];
+            opt.transitionbandwidth = [];
+            opt.maxorder = 30*1000;
             [~, opt] = process_arguments(opt, varargin);
             
-            filterOrder = 6;
-            [B, A] = butter(filterOrder, opt.fc, 'low');
-            
-            while any(abs(roots(A)) >= 1) && filterOrder > 2,
-                filterOrder = filterOrder - 1;
-                [B, A] = butter(filterOrder, opt.fc, 'high');
+            if isempty(opt.fc),
+                error('The (normalized) cutoff frequency fc needs to be provided');
             end
-            if any(abs(roots(A)) >= 1)
-                error(['Filter coefficients have poles on or outside ' ...
-                    'the unit circle and will not be stable. Try a higher cutoff ' ...
-                    'frequency or a different type/order of filter.']);
-            end
-            obj.Order = filterOrder;
             
-            obj.BAFilter = filter.ba(B, A);
+            if isempty(opt.transitionbandwidth),
+                opt.transitionbandwidth = max(1e-4, 0.01*(1-opt.fc)); 
+            end
+
+            order = firfilt.firwsord('hamming', 1, opt.transitionbandwidth);
+            
+            obj.Order = min(order, opt.maxorder);
+            
+            B = firfilt.firws(obj.Order, opt.fc, 'low', ...
+                firfilt.windows('blackman', obj.Order + 1));
+            obj.BAFilter = filter.ba(B, 1);
             
             obj.BAFilter = set_name(obj.BAFilter, get_name(obj));
             obj.BAFilter = set_verbose(obj.BAFilter, is_verbose(obj));
