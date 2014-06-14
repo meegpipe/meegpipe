@@ -96,8 +96,8 @@ try
     icSelection = val(cfg, 'bss', 'selection', true);
     icSelection = cellfun(@(x) str2double(x), icSelection);
     
-    ok(max(abs(data(:)-newData(:))) > 100 & ...
-        numel(icSelection) == 1 & icSelection == 1, name);
+    ok(max(abs(data(:)-newData(:))) > 100 && ...
+        numel(icSelection) == 1 && icSelection == 1, name);
     
 catch ME
     

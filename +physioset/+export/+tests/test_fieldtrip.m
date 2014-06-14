@@ -167,11 +167,14 @@ try
     
     set_bad_channel(data, 2:3);
     
+    warning('off', 'fieldtrip:Obsolete');
     myExporter = physioset.export.fieldtrip('BadDataPolicy', 'reject');
+    warning('on', 'fieldtrip:Obsolete');
     warning('off', 'fieldtrip:UnsupportedSensorClass');
+    warning('off', 'deal_with_bad_data:Obsolete');
     fName = export(myExporter, data);
     warning('on', 'fieldtrip:UnsupportedSensorClass');
-    
+    warning('on', 'deal_with_bad_data:Obsolete');
     % Now reimport and see what was actually exporter
     warning('off', 'sensors:InvalidLabel');
     warning('off', 'sensors:MissingPhysDim');

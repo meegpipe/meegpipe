@@ -153,6 +153,7 @@ end
 
 function data = get_old_version_scores()
 import mperl.file.spec.catfile;
+import pset.session;
 
 fName = 'ssmd_0108_eeg_scores_sleep_2_1.mat';
 
