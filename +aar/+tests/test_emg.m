@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(4);
+initialize(3);
 
 %% Create a new session
 try
@@ -47,7 +47,7 @@ try
     filtObj = get_config(myNode, 'Filter');
     
     ok(filtObj.WindowLength(1) == 2 & ...
-        filtObj.Filter.CCA.MinCorr == 0.5, name);
+        filtObj.Filter.PCFilter.CCA.MinCorr == 0.5, name);
     
 catch ME
     
