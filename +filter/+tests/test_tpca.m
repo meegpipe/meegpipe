@@ -75,7 +75,7 @@ try
         snrAfter = snrAfter + var(S(i,:))/var(data(i,:)-S(i,:));
     end
     snrAfter = snrAfter/size(data,1);
-    ok(snrAfter > 100*snr, name);
+    ok(snrAfter > 25*snr, name);
     
 catch ME
     
