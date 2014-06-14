@@ -33,9 +33,11 @@ end
 try
     
     name = 'constructor';
+    warning('off', 'eeglab_fir:SubOptimal');
     filter.eeglab_fir;
     obj  = filter.eeglab_fir([0 20], 'Verbose', false);
     obj2 = filter.eeglab_fir('Fp', [0 20]);
+    warning('on', 'eeglab_fir:SubOptimal');
     ok(...
         isa(obj, 'filter.eeglab_fir') & ~is_verbose(obj) & ...
         all(obj2.Fp == [0 20]) & all(obj.Fp == [0 20]), ...
@@ -68,7 +70,9 @@ try
     end
     
     warning('off', 'eeglab_fir:TooShortBlock');
+    warning('off', 'eeglab_fir:SubOptimal');
     myFilt = filter.eeglab_fir('Fp', [5 15], 'Notch', false);
+    warning('on', 'eeglab_fir:SubOptimal');
     filter(myFilt, data);
     warning('on', 'eeglab_fir:TooShortBlock');
     
@@ -104,7 +108,9 @@ try
         snr0 = snr0 + var(X(i,:))/var(N(i,:));
     end
     
+    warning('off', 'eeglab_fir:SubOptimal');
     myFilt = filter.eeglab_fir('Fp', [5 15], 'Notch', false);
+    warning('on', 'eeglab_fir:SubOptimal');
     filter(myFilt, data);
     
     snr1 = 0;
@@ -137,7 +143,9 @@ try
         snr0 = snr0 + var(X(i,:))/var(N(i,:));
     end
     
+    warning('off', 'eeglab_fir:SubOptimal');
     myFilt = filter.eeglab_fir('Fp', [0 10]);
+    warning('on', 'eeglab_fir:SubOptimal');
     filter(myFilt, data);
     
     snr1 = 0;
@@ -170,7 +178,9 @@ try
         snr0 = snr0 + var(N(i,:))/var(X(i,:));
     end
     
+    warning('off', 'eeglab_fir:SubOptimal');
     myFilt = filter.eeglab_fir('Fp', [0 10], 'Notch', true);
+    warning('on', 'eeglab_fir:SubOptimal');
     filter(myFilt, data);
     
     snr1 = 0;

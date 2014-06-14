@@ -1,16 +1,32 @@
 classdef eeglab_fir < filter.abstract_dfilt
     % EEGLAB_FIR - Wrapper for EEGLAB's firws function
     %
-    % obj = eeglab_fir('key', value, ...)
+    % The eeglab_fir class is a shallow wrapper around EEGLAB's ([1]) default
+    % FIR filter implementation. Note that such a FIR implementation is (at the
+    % time of this writing) far from optimal and it has been shown (see [2]) to
+    % exhibit excessive filter ringing. Thus using this class to design filters
+    % is not generally recommended. It is almost always better to use classes
+    % filter.hpfilt, filter.lpfilt, and filter.bpfilt to build filters for
+    % electrophysiological signals. 
     %
-    % where
+    % ## CONSTRUCTION
     %
-    % OBJ is an eeglab_fir object
+    %   myFilter = filter.eeglab_fir(fp);
+    %   myFilter = filter.eeglab_fir(fp, 'key', value, ...);
+    %   myFilter = filter.eeglab_fir('key', value, ...);
     %
-    % ## Accepted key/value pairs:
+    % Where
+    %
+    % MYFILTER is an eeglab_fir object
+    % 
+    % FP is a 1x2 array with the edges of the pass band, in Hz. This
+    % argument may also be provided as a key/value pair (see below).
+    %
+    %
+    % ## KEY/VALUE PAIRS ACCEPTED BY CONSTRUCTOR
     %
     %   Fp:           A numeric 1x2 array
-    %                 Edges of the frequency pass band (Hz)
+    %                 Edges of the frequency pass band (Hz).
     %
     %   Order:        A natural scalar. Default: []
     %                 FIR filter order. If left empty the order of the filter
@@ -29,15 +45,31 @@ classdef eeglab_fir < filter.abstract_dfilt
     %   NbFrames:     Number of frames to filter per block. Default: 1000
     %                 See the documentation of EEGLAB's firfilt
     %
-    % ## Examples
     %
-    % 1) A low pass filter with a cuttof at 20 Hz. Data sampling rate is
-    % 500 Hz
+    % ## USAGE EXAMPLES
     %
-    %   obj = eeglab_fir('Fp', [0 20]/(500/2))
+    % __Example 1__ 
+    %
+    % Apply a low pass filter with a cuttof at 20 Hz to data matrix X, assuming 
+    % a data sampling rate of 500 Hz.
+    %
+    %   % Generate a dummy dataset containing 4 channels and 20 seconds of data
+    %   X = randn(4, 10000);
+    %   myFilter = eeglab_fir('Fp', [0 20]/(500/2));
+    %   Y = filter(myFilter, X);
     %
     %
-    % See also: filter
+    % ## REFERENCES
+    %
+    % [1] EEGLAB: http://sccn.ucsd.edu/eeglab/
+    %
+    % [2] A. Widmann and E. Schroger, Filter Effects and Filter Artifacts
+    % in the Analysis of Electrophysiological Data, Front. Psychol. 2012,
+    % 3:233. DOI: http://dx.doi.org/10.3389%2Ffpsyg.2012.00233
+    %
+    %
+    %
+    % See also: filter.lpfilt, filter.hpfilt, filter.bpfilt
     
     properties
         
@@ -119,6 +151,11 @@ classdef eeglab_fir < filter.abstract_dfilt
             end
             
             obj = obj@filter.abstract_dfilt(varargin{:});
+            
+            warning('eeglab_fir:SubOptimal', ...
+                ['eeglab_fir filters may be sub-optimal. Filters ' ...
+                'filter.hpfilt, filter.lpfilt, filter.bpfilt are generally ' ...
+                'better for electrophysiological signals']);
             
             if nargin < 1, return; end
             
