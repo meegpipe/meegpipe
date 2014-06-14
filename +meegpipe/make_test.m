@@ -17,7 +17,7 @@ clc;
 
 meegpipe.initialize;
 
-if nargin < 2, startFrom = '^aar$'; end
+if nargin < 2, startFrom = ''; end
 if nargin < 1, userSelection = {}; end
 
 verboseLabel = '(meegpipe)';
@@ -78,10 +78,20 @@ moduleList = {...
     'surrogates' ...
     };
 
-isMatch = cellfun(@(x) ~isempty(regexp(x, startFrom, 'once')), moduleList);
-if any(isMatch),
-    idx = find(isMatch);
-    moduleList = moduleList(idx(1):end);
+moduleList = unique(moduleList);
+
+
+if ~isempty(startFrom)
+    isMatch = cellfun(@(x) ~isempty(regexp(x, startFrom, 'once')), moduleList);
+    if any(isMatch),
+        idx = find(isMatch);
+        moduleList = moduleList(idx(1):end);
+    end
+else
+    % Run tests in a random order. Typically I am not patient enough to
+    % finish a whole test iteration so this prevents that a few modules
+    % will be tested much more often than others
+    moduleList = moduleList(randperm(numel(moduleList)));
 end
 
 if ischar(userSelection), userSelection = {userSelection}; end
@@ -98,9 +108,6 @@ if isempty(moduleList),
     status = true;
     return;
 end
-
-% just in case
-moduleList = unique(moduleList);
 
 nbTests = numel(moduleList);
 
