@@ -79,6 +79,9 @@ try
     end
     dataCopy = copy(data);
     
+    % Remove PWL noise that can confuse the ECG node
+    filter(filter.lpfilt('fc', 40/(dataCopy.SamplingRate/2)), dataCopy);
+    
     myCrit = get_config(meegpipe.node.bss.ecg, 'Criterion');
     
     myNode = meegpipe.node.bss.ecg(...
