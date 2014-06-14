@@ -1,16 +1,65 @@
 classdef lpfilt < filter.abstract_dfilt
-    % LPFILT - Low-pass digital filter
+    % LPFILT - Low-pass digital filter (windowed sinc type I FIR)
     %
-    % obj = hpfilt(fc)
+    % This class implements the recommended approach for low-pass
+    % filtering electrophysiological time-series [1]. It is implemented in terms
+    % of a windowed sinc type I linear phase FIR filter. The implementation
+    % has been borrowed from Andreas Widmann's firfilt plug-in for EEGLAB
+    % [2].
+    %
+    % ## CONSTRUCTION
+    %
+    %   myFilter = filter.lpfilt(fc);
+    %   myFilter = filter.lpfilt(fc, 'key', value, ...);
+    %   myFilter = filter.lpfilt('key', value, ...);
+    %
+    % Where
+    %
+    %   MYFILTER is a filter.lpfilt object.
+    %
+    %   FC is the normalized cutoff frequency of the filter. This construction
+    %   argument can also be provided as a key/value pair (see below).
+    %
+    % 
+    % ## KEY/VALUE PAIRS ACCEPTED BY CONSTRUCTOR
+    %
+    %   Fc : A numeric scalar. Default: []
+    %        The normalized cutoff frequency of the filter.
+    %
+    %   TransitionBandWidth : A numeric scalar. Default: max(1e-4, 0.01*(1-Fc))
+    %        The (normalized) bandwidth of the transition band. This
+    %        parameter is inversely proportional to the filter order. So
+    %        you should try to use as wide transition band as is acceptable
+    %        for your application.
+    %
+    %   MaxFilterOrder : A numeric scalar. Default: 10000
+    %       The maximum allowed order for the filter. Note that this
+    %       parameter imposes a lower limit on the width of the transition
+    %       band. 
     %
     %
-    % where
+    % ## USAGE EXAMPLES
     %
-    % OBJ is a filter.lpfilt object
+    % ### Example 1
     %
-    % FC is the normalized cutoff of the low-pass filter
+    % Apply a low pass filter with a cuttof at 2 Hz to data matrix X, assuming
+    % a data sampling rate of 500 Hz.
     %
-    % See also: lpfilt, bpfilt, sbfilt
+    %   % Generate a dummy dataset containing 4 channels and 20 seconds of data
+    %   X = randn(4, 10000);
+    %   myFilter = filter.lpfilt(2/(500/2));
+    %   Y = filter(myFilter, X);
+    %
+    % ## REFERENCES
+    %
+    % [1] A. Widmann and E. Schroger, Filter Effects and Filter Artifacts
+    % in the Analysis of Electrophysiological Data, Front. Psychol. 2012,
+    % 3:233. DOI: http://dx.doi.org/10.3389%2Ffpsyg.2012.00233
+    %
+    % [2] http://www.uni-leipzig.de/~biocog/content/widmann/eeglab-plugins/
+    %
+    %
+    % See also: filter.hpfilt, filter.bpfilt, filter.sbfilt
     
     properties (SetAccess=private)
         Order;
@@ -50,7 +99,7 @@ classdef lpfilt < filter.abstract_dfilt
         
             opt.fc = [];
             opt.transitionbandwidth = [];
-            opt.maxorder = 30*1000;
+            opt.maxorder = 10*1000;
             [~, opt] = process_arguments(opt, varargin);
             
             if isempty(opt.fc),
