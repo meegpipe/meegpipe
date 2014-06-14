@@ -1,5 +1,6 @@
 function [status, MEh] = test_hpfilt_ellip()
 % TEST_HPFILT_ELLIP - Tests hpfilt_ellip filter
+
 import mperl.file.spec.*;
 import filter.*;
 import test.simple.*;
@@ -80,6 +81,7 @@ catch ME
     MEh = [MEh ME];
     
 end
+
 
 %% Cleanup
 try
