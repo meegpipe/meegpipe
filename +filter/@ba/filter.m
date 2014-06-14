@@ -23,6 +23,7 @@ for i = 1:size(x,1),
     else
         delay = ceil((numel(obj.B) - 1)/2);
         x(i, 1:end-delay) = y((delay+1):end); 
+        x(i, end-delay+1:end) = fliplr(x(i, end-2*delay+1:end-delay));
     end
    
     if verbose,

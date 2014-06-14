@@ -54,11 +54,11 @@ end
 try
     
     name = 'filtering across boundaries';
-    X = randn(5, 1000);
+    X = randn(5, 10000);
     
     X = filter(filter.bpfilt('Fp', [5 15]/(250/2)), X);
     
-    N = 0.1*randn(5, 1000);   
+    N = 0.1*randn(5, size(X,2));   
     
     data = import(physioset.import.matrix('SamplingRate', 250), X+N);
     
