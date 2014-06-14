@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(3);
+initialize(4);
 
 %% Create a new session
 try
@@ -135,7 +135,7 @@ for i = 1:size(X,1)
 end
 snr = snr/numel(idx);
 
-data = import(physioset.import.matrix, X);
+data = import(physioset.import.matrix('Sensors', sensors.eeg.dummy(10)), X);
 
 end
 
