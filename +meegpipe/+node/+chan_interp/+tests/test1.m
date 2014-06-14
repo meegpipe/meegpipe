@@ -156,9 +156,10 @@ try
     
     myNode = chan_interp('NN', 2, 'Save', true);
 
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
     
-    ok(exist(get_output_filename(myNode, data), 'file')>0, name);
+    ok(exist(outputFileName, 'file')>0, name);
     
 catch ME
     

@@ -218,7 +218,6 @@ else
         noise = bproj(myBSS, ics);
         data = data - noise;
     else
-        myBSS = select(myBSS, icSel);
         signal = bproj(myBSS, ics);
         data = assign_values(data, signal);
     end

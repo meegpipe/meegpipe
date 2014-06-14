@@ -6,11 +6,11 @@ classdef hpfilt < filter.abstract_dfilt
     %
     % where
     %
-    % OBJ is a filter.lpfilt object
+    % OBJ is a filter.hpfilt object
     %
     % FC is the normalized cutoff of the high-pass filter
     %
-    % See also: lpfilt, bpfilt, sbfilt
+    % See also: hpfilt_ellip
     
     properties (SetAccess=private)
         Order;

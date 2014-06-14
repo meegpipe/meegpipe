@@ -79,6 +79,7 @@ try
             error('A boolean value or a MException object was expected');
         end
         
+        try
         if ~isa(bool, 'MException') && isnan(bool),
             % skipped test
             msg = 'skipped ';
@@ -90,6 +91,9 @@ try
                 throw(MException('test:simple:ok:FailedTest', ...
                     'Failed test in debug mode'));
             end
+        end
+        catch
+            caca=5;
         end
         
         if isempty(testName),
