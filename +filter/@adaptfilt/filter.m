@@ -1,7 +1,7 @@
 function x = filter(obj, x, d, varargin)
 
 import misc.eta;
-import spt.pca.pca;
+import spt.pca;
 
 
 verbose         = is_verbose(obj) && size(x,1) > 10;
@@ -22,7 +22,8 @@ end
 for i = 1:size(x,1),
     
     % I would think that regressing out every regressor one by one would be
-    % the best approach, but is not. This seems to work better:
+    % the best approach, but experience tell otherwise. The approach below
+    % seems to work better in practice.
     
     % Find the regressor(s) that correlate best with this variable
     
@@ -42,7 +43,7 @@ for i = 1:size(x,1),
     if ~any(isnan(filteredRegr)),      
         x(i,:)  = x(i,:) - filteredRegr;
     else
-        caca=5;
+        error('There are NaNs in the filter output');
     end
     if verbose,
         eta(tinit, size(x,1), i, 'remaintime', false);

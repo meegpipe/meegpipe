@@ -81,7 +81,8 @@ try
         snr1 = snr1 + var(X(i,:))/var(data(i,:) - X(i,:));
     end
     [~, warnId] = lastwarn;
-    ok( ~isempty(warnId) & strcmp(warnId, 'eeglab_fir:TooShortBlock') & ...
+    ok( ~isempty(warnId) && ...
+        strcmp(warnId, 'eeglab_fir:TooShortBlock') && ...
         snr1 > 2*snr0, name);
     
 catch ME
