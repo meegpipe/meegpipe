@@ -7,7 +7,7 @@ classdef hpfilt < filter.abstract_dfilt
     % has been borrowed from Andreas Widmann's firfilt plug-in for EEGLAB
     % [2].
     %
-    % ## USAGE SYNOPSIS
+    % ## CONSTRUCTION
     %
     %   myFilter = filter.hpfilt(fc);
     %   myFilter = filter.hpfilt(fc, 'key', value, ...);
@@ -38,7 +38,7 @@ classdef hpfilt < filter.abstract_dfilt
     %       band. 
     %
     %
-    % ## EXAMPLES
+    % ## USAGE EXAMPLES
     %
     % ### Example 1
     %

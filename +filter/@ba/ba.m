@@ -3,22 +3,38 @@ classdef ba < ...
         goo.verbose              & ...
         goo.abstract_setget      & ...
         goo.abstract_named_object
-    % ADAPTFILT - A wrapper for MATLAB's adaptfilt classes
+    % BA - A generic digital filter built from B and A coefficients
     %
-    % ## Usage synopsis:
+    % This class implements a generic digital filter as defined by a set of
+    % B and A coefficients. Typically, users will not want to use this
+    % class directly but they will prefer to use any of the other digital
+    % filter classes that are built on top of filter.ba: filter.lpfilt and
+    % filter hpfilt.
     %
-    % % Build a moving average filter of order 10
-    % obj = filter.ba(ones(1,10)/10, 1)
-    % y = filter(obj, x, d);
+    % ## CONSTRUCTION
+    %
+    %   myFilter = filter.ba(b, a)
     %
     % Where
     %
-    % OBJ is a filter.dfilt object
+    % MYFILTER is a filter.ba object
     %
-    % X is the input to the filter (a KxM numeric matrix).
+    % B and A are the filter coefficients
     %
     %
-    % See also: filter
+    % ## USAGE EXAMPLES
+    %
+    % ### Example 1
+    % 
+    % Apply a moving average filter of order 20 to data matrix X:
+    %
+    %   X = randn(4, 10000);
+    %   myFilter = filter.ba(ones(1, 20), 1);
+    %   Y = filter(myFilter, X);
+    %
+    %
+    %
+    % See also: filter.lpfilt, filter.hpfilt, filter.bpfilt, filter.sbfilt
     
     properties (SetAccess = private, GetAccess = public)
         B;
