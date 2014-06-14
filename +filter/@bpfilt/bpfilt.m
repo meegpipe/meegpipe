@@ -103,6 +103,8 @@ classdef bpfilt < filter.abstract_dfilt
             
             obj = obj@filter.abstract_dfilt(varargin{:});
             
+            if nargin < 1, return; end
+            
             if isnumeric(varargin{1}),
                 varargin = [{'fp'}, varargin];
             end
