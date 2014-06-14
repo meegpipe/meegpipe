@@ -42,20 +42,15 @@ classdef sbfilt < filter.abstract_dfilt
     %
     % See also: bpfilt, lpfilt, hpfilt
     
-    % Documentation: class_filter_sbfilt.txt
-    % Description: Class definition
-    
     properties (SetAccess = private, GetAccess = private)
        MDFilt; 
     end
     
-    % Public interface ....................................................
-    
+   
     properties (SetAccess = 'private')
         LpFilter;
         HpFilter;
         FStop;
-        PersistentMemory;
     end
     
     % misc.verbose interface reimplementation
@@ -82,15 +77,6 @@ classdef sbfilt < filter.abstract_dfilt
         y = filtfilt(obj, x, varargin);
         % required by abstract_dfilt
         H = mdfilt(obj);
-        function obj = set_persistent(obj, value)    
-            obj.PersistentMemory = value;
-            for i = 1:numel(obj.LpFilter),
-               set_persistent(obj.LpFilter{i}, value); 
-            end
-            for i = 1:numel(obj.HpFilter),
-               set_persistent(obj.HpFilter{i}, value); 
-            end
-        end
     end   
     
     methods
