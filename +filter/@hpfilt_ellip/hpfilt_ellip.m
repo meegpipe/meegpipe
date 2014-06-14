@@ -52,7 +52,7 @@ classdef hpfilt_ellip < filter.abstract_dfilt
             [~, opt] = process_arguments(opt, varargin);
             
             [obj.Order, fst, rp, rs] = filter.hpfilt_ellip.find_filter_order(...
-                1.05*opt.fc, 0.9*opt.fc, 0.5, 45);
+                opt.fc, 0.9*opt.fc, 0.5, 45);
             obj.Specs = fdesign.highpass('Fst,Fp,Ast,Ap', fst, opt.fc, rs, rp);
             obj.H = design(obj.Specs, 'ellip');
             obj.Fc = opt.fc;
