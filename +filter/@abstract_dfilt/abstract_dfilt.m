@@ -44,7 +44,7 @@ classdef abstract_dfilt < ...
             import misc.process_arguments;
             import misc.split_arguments;
             
-            opt.Verbose = [];
+            opt.Verbose = true;
             opt.VerboseLabel = @(x, meth) sprintf('(%s:%s) ', class(x), meth);
             [thisArgs, varargin] = split_arguments(opt, varargin);
             [~, opt] = process_arguments(opt, thisArgs);
