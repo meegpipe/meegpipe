@@ -33,7 +33,7 @@ end
 try
     
     name = 'filtering with lpfilt';
-    filter(filter.lpfilt('fc', 0.5), randn(5,1000));
+    filter(filter.lpfilt('fc', 0.5), randn(5, 10000));
     ok(true, name);
     
 catch ME
@@ -47,7 +47,7 @@ end
 try
     
     name = 'filtering with hpfilt';
-    filter(filter.hpfilt('fc', 0.5), randn(5,1000));
+    filter(filter.hpfilt('fc', 0.5), randn(5, 10000));
     ok(true, name);
     
 catch ME
@@ -61,7 +61,7 @@ end
 try
     
     name = 'filtering with bpfilt';
-    filter(filter.bpfilt('fp', [0.1 0.5]), randn(5,1000));
+    filter(filter.bpfilt('fp', [0.1 0.5]), randn(5, 10000));
     ok(true, name);
     
 catch ME
@@ -75,7 +75,7 @@ end
 try
     
     name = 'filtering with spfilt';
-    filter(filter.sbfilt('fstop', [0.1 0.5]), randn(5,1000));
+    filter(filter.sbfilt('fstop', [0.1 0.5]), randn(5, 10000));
     ok(true, name);
     
 catch ME
