@@ -26,22 +26,20 @@ classdef fieldtrip_butter < filter.abstract_dfilt
     %
     % OBJ is a filter.hpfilt object
     %
-    % FP is a 1x2 array with the edges of the pass band, in Hz. Note that
-    % FP can also be provided as a key/value pair (see below).
+    % FP is a 1x2 array with the edges of the pass band, in normalized 
+    % frequencies. Note that FP can also be provided as a key/value pair (see
+    % below).
     %
     %
     % ## KEY/VALUE PAIRS ACCEPTED BY CONSTRUCTOR
     %
     %   Fp:           A numeric 1x2 array
-    %                 Edges of the frequency pass band (Hz). Only relevant
-    %                 for stop-band filters. Note that you cannot especify
-    %                 both Fp and Fs. 
-    %
-    %
+    %                 Edges of the frequency pass band in normalized frequencies.
+    %               
     %   Fs:           A numeric 1x2 array
-    %                 Edges of the frequency stop band (Hz). Only relevant
-    %                 for stop-band filters. Note that you cannot especify
-    %                 both Fp and Fs. 
+    %                 Edges of the frequency stop band in normalized frequencies.
+    %                 Only relevant for stop-band filters. Note that you cannot
+    %                 especify both Fp and Fs. 
     %
     %
     %
