@@ -83,7 +83,11 @@ try
     select(pset.selector.good_data, data);
     eeglabStr = eeglab(data);
     
+    warning('off', 'sensors:InvalidLabel');
+    warning('off', 'sensors:MissingPhysDim');
     data2 = physioset.physioset.from_eeglab(eeglabStr);
+    warning('on', 'sensors:InvalidLabel');
+    warning('on', 'sensors:MissingPhysDim');
     
     ok( ...
         ~strcmp(get_datafile(data), get_datafile(data2)) && ...
