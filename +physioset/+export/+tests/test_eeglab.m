@@ -199,6 +199,7 @@ try
     
     fName2 = export(physioset.export.eeglab, data, fName);
    
+    fName = strrep(fName, '\', '/');
     ok(exist(fName2, 'file') && strcmp(fName2, [fName '.set'])> 0, name);
     
 catch ME
@@ -222,6 +223,7 @@ try
     
     fName2 = export(myExporter, data);
    
+    fName = strrep(fName, '\', '/');
     ok(exist(fName2, 'file') && strcmp(fName2, [fName '.set'])> 0, name);
     
 catch ME

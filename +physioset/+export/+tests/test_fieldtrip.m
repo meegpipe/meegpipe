@@ -205,6 +205,7 @@ try
     fName2 = export(physioset.export.fieldtrip, data, fName);
     warning('on', 'fieldtrip:UnsupportedSensorClass');
    
+    fName = strrep(fName, '\', '/');
     ok(exist(fName2, 'file') && strcmp(fName2, [fName '.mat'])> 0, name);
     
 catch ME
@@ -230,6 +231,7 @@ try
     fName2 = export(myExporter, data);
     warning('on', 'fieldtrip:UnsupportedSensorClass');
    
+    fName = strrep(fName, '\', '/');
     ok(exist(fName2, 'file') && strcmp(fName2, [fName '.mat'])> 0, name);
     
 catch ME
