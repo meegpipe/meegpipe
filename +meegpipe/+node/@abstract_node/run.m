@@ -33,7 +33,8 @@ if numel(varargin) > 1,
             ((has_condor && strcmpi(obj.Queue, 'condor')) || ...
             (has_oge && ~strcmpi(obj.Queue, 'condor')))
         for i = 1:numel(varargin)
-            thisObj = clone(obj);
+            %thisObj = clone(obj);
+            thisObj = obj; % Will it work?
             data{i} = run_oge(thisObj, varargin{i});
         end
         
@@ -41,7 +42,8 @@ if numel(varargin) > 1,
         
         dataNew = cell(1, numel(varargin));
         for i = 1:numel(varargin)
-            thisObj = clone(obj);
+             %thisObj = clone(obj);
+            thisObj = obj; % Will it work?          
             [data{i}, dataNew{i}] = run(thisObj, varargin{i});
         end
         
@@ -60,25 +62,25 @@ if pkgisa(data, 'physioset.physioset') && ~isempty(obj.DataSelector),
     
     [oRows, oCols] = size(data);
     
-    try
-        select(obj.DataSelector, data);
-    catch ME
-        if strcmp(ME.identifier, 'selector:EmptySelection'),
-            warning('abstract_node:EmptySelection', ...
-                'The node selects and empty set of data: skipping node');
-        else
-            rethrow(ME);
-        end
-    end
     
-    if is_verbose(obj) && size(data,1) ~= oRows,
-        fprintf([verboseLabel 'Selected %d/%d channels...\n\n'], ...
-            size(data,1), oRows);
+    [~, emptySel] = select(obj.DataSelector, data);
+    if emptySel,        
+        warning('abstract_node:EmptySelection', ...
+            ['The DataSelector of node ''%s'' selects an empty set of data: ' ...
+             'skipping node'], get_name(obj));
+         return;
     end
-    if is_verbose(obj) && size(data,2) ~= oCols,
+
+    if is_verbose(obj),
+        fprintf([verboseLabel 'DataSelector selected %d/%d channels: %s...\n\n'], ...
+            size(data,1), oRows, misc.any2str(dim_selection(data), 50));
+    end
+    if is_verbose(obj),
         dataL = size(data,2)/data.SamplingRate;
-        fprintf([verboseLabel 'Selected %d (%d%%) seconds...\n\n'], ...
-            ceil(dataL), round(100*size(data,2)/oCols));
+        fprintf([verboseLabel 'DataSelector selected %d (%d%%) seconds, '  ...
+        'spanning from second %.2f to second %.2f ...\n\n'], ...
+            ceil(dataL), round(100*size(data,2)/oCols), ...
+            get_sampling_time(data, 1), get_sampling_time(data, size(data,2)));
     end
     
 end

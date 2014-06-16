@@ -1,7 +1,7 @@
 function ok(bool, testName, reason)
 % OK - Tests whether a test was passed or not
 %
-% ok(bool, testName)
+%   ok(bool, testName)
 %
 % Where
 %
@@ -39,27 +39,27 @@ try
     if nargin < 2 || isempty(testName),
         testName = '';
     end
-    
+
     okCount     = globals.get.OK;
     failedCount = globals.get.Failed;
-    
+
     count = okCount + failedCount;
-    
+
     if islogical(bool) && all(bool),
-        
+
         globals.set('OK', okCount + 1);
         if isempty(testName),
             fprintf('ok %d\n', count + 1);
         else
             fprintf('ok %d - %s\n', count + 1, testName);
         end
-        
+
     else
-        
+
         errorMsg = '';
-        
+
         if isa(bool, 'MException'),
-            
+
             if globals.get.DebugMode,
                 rethrow(bool);
             else
@@ -71,14 +71,15 @@ try
                     [name{i}, file{i}, line(i)] = st2debug(bool.stack(i));
                 end
             end
-            
+
         elseif islogical(bool) || isnan(bool),
             [name, file, line] = st2debug(dbstack('-completenames'));
             name = {name}; file = {file};
         else
             error('A boolean value or a MException object was expected');
         end
-        
+
+        try
         if ~isa(bool, 'MException') && isnan(bool),
             % skipped test
             msg = 'skipped ';
@@ -91,7 +92,10 @@ try
                     'Failed test in debug mode'));
             end
         end
-        
+        catch
+            caca=5;
+        end
+
         if isempty(testName),
             fprintf('%s %d\n', msg, count + 1);
         else
@@ -102,18 +106,18 @@ try
                 fprintf('#\tFailed test ''%s''\n', testName);
             end
         end
-        
+
         if ~isempty(reason),
             fprintf('#\tFor reason ''%s''\n', reason);
         end
-        
+
         for i = 1:numel(name)
             [~, fName, fExt] = fileparts(file{i});
-            
+
             if ~isempty(testName),
                 fprintf('#\tin ''%s''\n', name{i});
             end
-            
+
             fprintf(['#\tin file ' ...
                 quote(link2mfile(which(file{i}), [fName fExt])), ...
                 ' at ' ...
@@ -125,15 +129,15 @@ try
             errorMsg = str2multiline(errorMsg, [], ['# ' char(9)]);
             fprintf('#\tWith error message:\n%s\n', quote(errorMsg));
         end
-        
+
     end
-    
+
 catch ME
-    
+
     if globals.get.DebugMode,
         rethrow(ME);
     end
-    
+
     globals.set('Died', globals.get.Died + 1);
     if isempty(testName),
         fprintf('died %d\n', count + 1);
@@ -141,20 +145,20 @@ catch ME
         fprintf('died %d - %s\n', count + 1, testName);
     end
     fprintf('#\t%s\n', ME.message);
-    
+
     st   = ME.stack;
     file = st(1).file;
     line = st(1).line;
-    
+
     [~, fName, fExt] = fileparts(file);
-    
+
     fprintf(['#\tin file ' ...
         quote(link2mfile(which(file), [fName fExt])), ...
         ' at ' ...
         quote(link2mfile(which(file), sprintf('line %d', line), line)) ...
         '\n']);
-    
-    
+
+
 end
 
 end

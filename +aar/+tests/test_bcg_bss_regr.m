@@ -84,7 +84,8 @@ try
     myNode = meegpipe.node.pipeline.new('NodeList', {myNode1, myNode2});
     run(myNode, data);    
     
-    ok(prctile(abs(dataO), 90) > 2*prctile(abs(data(1,:)), 90), name);
+    ok(prctile(abs(dataO(1,5*1000:1000*30)), 95) > ...
+        1.5*prctile(abs(data(1,5*1000:1000*30)), 95), name);
     
 catch ME
     
@@ -118,8 +119,9 @@ import pset.session;
 import mperl.file.spec.catfile;
 import mperl.file.spec.catdir;
 
-if ~exist('bcg_sample.pseth', 'file') > 0,
-    url = 'http://kasku.org/data/meegpipe/bcg_sample.zip';
+fileName = 'bcg_sample2.pseth';
+if ~exist(fileName, 'file') > 0,
+    url = 'http://kasku.org/data/meegpipe/bcg_sample2.zip';
     unzip(url, pwd);
 end
 data = pset.load(fileName);

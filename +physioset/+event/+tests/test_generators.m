@@ -153,15 +153,15 @@ end
 
 function data = get_old_version_scores()
 import mperl.file.spec.catfile;
+import pset.session;
 
 fName = 'ssmd_0108_eeg_scores_sleep_2_1.mat';
 
 if ~exist(fName, 'file') > 0,   
     % Try downloading the file
-    url = ['http://kasku.org/data/meegpipe/' fName];
-    unzipDir = catdir(session.instance.Folder, fName);
-    unzip(url, unzipDir);
-    fName = catfile(unzipDir, fName);    
+    url = [meegpipe.get_config('test', 'remote') fName];
+    fName = catfile(session.instance.Folder, fName);
+    urlwrite(url, fName);
 end
 
 % Create a dummy physioset of the right duration

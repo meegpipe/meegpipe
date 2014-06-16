@@ -26,8 +26,8 @@ if ~isempty(pntSel),
    
     origSample = get_sample(evArray);  
     
-    % A dirty fix. This happens sometimes and we don't want to produce an
-    % error for such a tiny inconsistency. 
+    % This happens sometimes and we don't want to produce an error for such
+    % a tiny inconsistency. 
     origSample(origSample == numel(pntSel) + 1) = numel(pntSel);
     
     if any(origSample > numel(pntSel)),      

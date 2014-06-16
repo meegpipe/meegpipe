@@ -1,7 +1,6 @@
 classdef abstract_dfilt < ...
         filter.dfilt             & ...
         goo.verbose              & ...
-        goo.reportable           & ...
         goo.abstract_setget      & ...
         goo.printable            & ...
         goo.abstract_named_object
@@ -38,14 +37,6 @@ classdef abstract_dfilt < ...
         count = fprintf(fid, obj, varargin);
     end
     
-    % report.reportable interface
-    methods
-        
-        function str = whatfor(~)
-            str = '';
-        end
-        
-    end
     
     % Virtual constructor
     methods
@@ -53,7 +44,7 @@ classdef abstract_dfilt < ...
             import misc.process_arguments;
             import misc.split_arguments;
             
-            opt.Verbose = [];
+            opt.Verbose = true;
             opt.VerboseLabel = @(x, meth) sprintf('(%s:%s) ', class(x), meth);
             [thisArgs, varargin] = split_arguments(opt, varargin);
             [~, opt] = process_arguments(opt, thisArgs);

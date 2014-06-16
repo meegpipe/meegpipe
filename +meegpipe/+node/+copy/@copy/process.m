@@ -6,13 +6,23 @@ dataNew = [];
 
 fileName = get_config(obj, 'Filename');
 
+filePath = get_config(obj, 'Path');
+
+if isempty(filePath),
+   if obj.Save,
+       % To be stored in the node directory
+       filePath = get_full_dir(obj, data);
+   else
+       filePath = get_tempdir(obj);
+   end
+end
+
 if isempty(fileName)
-    if obj.Save,
-        % Default filename should be stored in the node directory
-        fileName = catfile(get_full_dir(obj, data), get_name(data));
+    if obj.Save
+        fileName = catfile(filePath, get_name(data));
     else
         [~, name] = fileparts(tempname);
-        fileName = catfile(get_tempdir(obj), name);
+        fileName = catfile(filePath, name);
     end
 end
 

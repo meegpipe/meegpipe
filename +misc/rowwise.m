@@ -1,10 +1,10 @@
 function varargout = rowwise(varargin)
-% ROWWISE
-% Ensures rowwise data samples
+% ROWWISE - Ensure rowwise data samples in data matrix
 %
-% [x, y, z, ...] = rowwise(x, y, z, ...)
+%   [x, y, z, ...] = rowwise(x, y, z, ...)
 %
 %
+% See also: misc
 
 varargout = cell(1, nargin);
 for i = 1:nargin

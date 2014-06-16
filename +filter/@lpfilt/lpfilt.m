@@ -1,196 +1,128 @@
 classdef lpfilt < filter.abstract_dfilt
-    % LPFILT - Low-pass digital filter
+    % LPFILT - Low-pass digital filter (windowed sinc type I FIR)
+    %
+    % This class implements the recommended approach for low-pass
+    % filtering electrophysiological time-series [1]. It is implemented in terms
+    % of a windowed sinc type I linear phase FIR filter. The implementation
+    % has been borrowed from Andreas Widmann's firfilt plug-in for EEGLAB
+    % [2].
+    %
+    % ## CONSTRUCTION
+    %
+    %   myFilter = filter.lpfilt(fc);
+    %   myFilter = filter.lpfilt(fc, 'key', value, ...);
+    %   myFilter = filter.lpfilt('key', value, ...);
+    %
+    % Where
+    %
+    %   MYFILTER is a filter.lpfilt object.
+    %
+    %   FC is the normalized cutoff frequency of the filter. This construction
+    %   argument can also be provided as a key/value pair (see below).
+    %
+    % 
+    % ## KEY/VALUE PAIRS ACCEPTED BY CONSTRUCTOR
+    %
+    %   Fc : A numeric scalar. Default: []
+    %        The normalized cutoff frequency of the filter.
+    %
+    %   TransitionBandWidth : A numeric scalar. Default: max(1e-4, 0.005*(1-opt.fc))
+    %        The (normalized) bandwidth of the transition band. This
+    %        parameter is inversely proportional to the filter order. So
+    %        you should try to use as wide transition band as is acceptable
+    %        for your application.
+    %
+    %   MaxOrder : A numeric scalar. Default: 10000
+    %       The maximum allowed order for the filter. Note that this
+    %       parameter imposes a lower limit on the width of the transition
+    %       band. 
     %
     %
-    % obj = lpfilt('key', value, ...)
+    % ## USAGE EXAMPLES
+    %
+    % ### Example 1
+    %
+    % Apply a low pass filter with a cuttof at 2 Hz to data matrix X, assuming
+    % a data sampling rate of 500 Hz.
+    %
+    %   % Generate a dummy dataset containing 4 channels and 20 seconds of data
+    %   X = randn(4, 10000);
+    %   myFilter = filter.lpfilt(2/(500/2));
+    %   Y = filter(myFilter, X);
+    %
+    % ## REFERENCES
+    %
+    % [1] A. Widmann and E. Schroger, Filter Effects and Filter Artifacts
+    % in the Analysis of Electrophysiological Data, Front. Psychol. 2012,
+    % 3:233. DOI: http://dx.doi.org/10.3389%2Ffpsyg.2012.00233
+    %
+    % [2] http://www.uni-leipzig.de/~biocog/content/widmann/eeglab-plugins/
     %
     %
-    % where
-    %
-    % OBJ is a lpfilt object
-    %
-    %
-    % ## Most common key/value pairs:
-    %
-    %       Fp: A numeric scalar.
-    %           The normalized 6dB cutoff frequency
-    %
-    %       PersistentMemory:  A logical scalar. Default: false
-    %           Determines whether to save the filter state. If set to true
-    %           the filter state will be saved, which is useful when
-    %           processing large datasets in data chunks. Note however that
-    %           using persistent memory will slow-down considerably the
-    %           filtering operation.
-    %
-    %
-    % See also: hpfilt, bpfilt, sbfilt
+    % See also: filter.hpfilt, filter.bpfilt, filter.sbfilt
     
-    % Documentation: filter_lpfilt_class.txt
-    % Description: Class definition
-    
-
-    % Public interface ....................................................
-    properties (SetAccess = private)
-        Specs;
-        H;
+    properties (SetAccess=private)
         Order;
-        Delay;
-        DesignMethod;
-        PersistentMemory;
+        TransitionBandWidth;   % Normalized!
     end
     
-    % Consistency checks
-    methods
-        function obj = set.PersistentMemory(obj, value)
-            import filter.lpfilt;
-            import exceptions.*;
-            
-            if ~numel(value) == 1 || ~islogical(value),
-                throw(InvalidPropValue('PersistentMemory', ...
-                    'Must be a logical scalar'));
-            end
-            obj.PersistentMemory = value;
-        end
-    end    
+    properties (SetAccess = private)
+        BAFilter;
+    end
     
-    % filter.interface
     methods
-        [y, obj] = filter(obj, x, varargin);
-    end    
-    
-    % Public methods defined and implemented here
-    methods
-        y = filtfilt(obj, x, varargin);
         
-        % Required by parent class
+        function [y, obj] = filter(obj, varargin)
+            [y, obj] = filter(obj.BAFilter, varargin{:});
+        end
+        
+        function y = filtfilt(obj, varargin)
+            y = filtfilt(obj.BAFilter, varargin{:});
+        end
+        
         function H = mdfilt(obj)
-            H = obj.H;
+            H = mdfilt(obj.BAFilter);
         end
-        function obj = set_persistent(obj, value)
-            obj.PersistentMemory = value;
-        end
-    end
-    
-    % report.self_reportable interface
-    methods         
-        [pName, pValue, pDescr]   = report_info(obj);
-        % The method below is implemented at abstract_dfilt
-        % filename = generate_remark_report(obj, varargin);
-    end
-    
-    % Static constructors
-    methods (Static)
-        obj = from_struct(str);
-    end
-    
-    % Constructor
-    methods
+        
+        % Constructor
         function obj = lpfilt(varargin)
             import misc.process_arguments;
             import filter.abstract_dfilt;
-            import exceptions.*;
             
             obj = obj@filter.abstract_dfilt(varargin{:});
             
             if nargin < 1, return; end
             
-            % default options
-            opt.ap                  = filter.globals.evaluate.Ap;
-            opt.ast                 = filter.globals.evaluate.Ast;
-            opt.f3db                = [];
-            opt.fc                  = [];
-            opt.fp                  = [];
-            opt.fst                 = [];
-            opt.n                   = [];
-            opt.designmethod        = filter.globals.evaluate.DesignMethod;
-            opt.persistentmemory    = false;
-            
-            % process varargin
+            if isnumeric(varargin{1}),
+                varargin = [{'fc'}, varargin];
+            end
+        
+            opt.fc = [];
+            opt.transitionbandwidth = [];
+            opt.maxorder = 10*1000;
             [~, opt] = process_arguments(opt, varargin);
             
-            % Filter specification object
-            if isempty(opt.fp) || isempty(opt.fst),
-                % If the specification is not complete, try to guess
-                if ~isempty(opt.fc),
-                    if ~isempty(opt.f3db) || ~isempty(opt.fp) || ~isempty(opt.fst),
-                        throw(Inconsistent('Invalid filter specification'));
-                    end
-                    if isempty(opt.fp), opt.fp = 0.95*opt.fc; end
-                    if isempty(opt.fst), opt.fst = min(1, 1.1*opt.fc); end
-                    if isempty(opt.n),
-                        [opt.n, opt.fp, opt.fst, opt.ap, opt.ast] = ...
-                            abstract_dfilt.filt_ord(opt.designmethod, ...
-                            opt.fp, opt.fst, opt.ap, opt.ast, 'low');
-                    end
-                    
-                elseif ~isempty(opt.f3db),
-                    if ~isempty(opt.fc) || ~isempty(opt.fp) || ...
-                            ~isempty(opt.fst),
-                        throw(Inconsistent('Invalid filter specification'));
-                    end
-                    if isempty(opt.fp), opt.fp = 0.97*opt.f3db; end
-                    if isempty(opt.fst), opt.fst = 1.2*opt.f3db; end
-                    if isempty(opt.n),
-                        [opt.n, opt.fp, opt.fst, opt.ap, opt.ast] = ...
-                            abstract_dfilt.filt_ord(opt.designmethod, ...
-                            opt.fp, opt.fst, opt.ap, opt.ast, 'low');
-                    end
-                    
-                elseif ~isempty(opt.fp),
-                    if ~isempty(opt.fc) || ~isempty(opt.f3db) || ...
-                            ~isempty(opt.fst),
-                        throw(Inconsistent('Invalid filter specification'));
-                    end
-                    if isempty(opt.fst), opt.fst = 1.25*opt.fp; end
-                    if isempty(opt.n),
-                        [opt.n, opt.fp, opt.fst, opt.ap, opt.ast] = ...
-                            abstract_dfilt.filt_ord(opt.designmethod, ...
-                            opt.fp, opt.fst, opt.ap, opt.ast, 'low');
-                    end
-                    
-                elseif ~isempty(opt.fst),
-                    if ~isempty(opt.fc) || ~isempty(opt.fp) || ...
-                            ~isempty(opt.f3db),
-                        throw(Inconsistent('Invalid filter specification'));
-                    end
-                    if isempty(opt.fp), opt.fp = 0.75*opt.fst; end
-                    if isempty(opt.n),
-                        [opt.n, opt.fp, opt.fst, opt.ap, opt.ast] = ...
-                            abstract_dfilt.filt_ord(opt.designmethod, ...
-                            opt.fp, opt.fst, opt.ap, opt.ast, 'low');
-                    end
-                    
-                    
-                else
-                    throw(Inconsistent('Invalid filter specification'));
-                end
-            elseif isempty(opt.n),
-                [opt.n, opt.fp, opt.fst, opt.ap, opt.ast] = ...
-                    abstract_dfilt.filt_ord(opt.designmethod, ...
-                    opt.fp, opt.fst, opt.ap, opt.ast, 'low');
-            end
-            obj.Order = opt.n;
-            obj.Specs = fdesign.lowpass('Fp,Fst,Ap,Ast', ...
-                opt.fp, opt.fst, opt.ap, opt.ast);
-            
-            % Design filter
-            obj.DesignMethod = opt.designmethod;
-            if ismember(opt.designmethod, designmethods(obj.Specs)),
-                obj.H = design(obj.Specs, opt.designmethod);
-            else
-                obj.H = design(obj.Specs);
+            if isempty(opt.fc),
+                error('The (normalized) cutoff frequency fc needs to be provided');
             end
             
-            % Force the filter to store its state?
-            obj.H.PersistentMemory = opt.persistentmemory;
-            obj.PersistentMemory = opt.persistentmemory;
+            if isempty(opt.transitionbandwidth),
+                opt.transitionbandwidth = max(1e-4, 0.005*(1-opt.fc)); 
+            end
+
+            order = firfilt.firwsord('hamming', 1, opt.transitionbandwidth);
             
-            % Find out the average group delay for the passband
-            [Gd,W] = grpdelay(obj.H, 256);
-            obj.Delay = round(mean(Gd(W<opt.fp*pi)));
+            obj.Order = min(order, opt.maxorder);
+            
+            B = firfilt.firws(obj.Order, opt.fc, 'low', ...
+                firfilt.windows('blackman', obj.Order + 1));
+            obj.BAFilter = filter.ba(B, 1);
+            
+            obj.BAFilter = set_name(obj.BAFilter, get_name(obj));
+            obj.BAFilter = set_verbose(obj.BAFilter, is_verbose(obj));
+         
         end
+        
     end
     
 end
-
-

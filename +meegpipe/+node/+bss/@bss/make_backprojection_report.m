@@ -34,7 +34,6 @@ select(selICs, chanIdx);
 generate(embed(snapshotsRep, rep), selICs);
 restore_selection(selICs);
 
-
 %% PSDs of top-variance channels
 
 % This will ensure that one plot will be generated for each top-var chan

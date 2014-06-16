@@ -50,6 +50,28 @@ catch ME
     
 end
 
+%% save node output
+try
+    
+    name = 'save node output';    
+   
+    data = import(physioset.import.matrix, randn(2,500));
+    
+    myNode = meegpipe.node.filter.new(...
+        'Filter', filter.lasip('Gamma', 1, 'Scales', 1:10), 'Save', true);
+    
+    outputFileName = get_output_filename(myNode, data);
+    run(myNode, data);
+    
+    ok(exist(outputFileName, 'file')>0, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
 %% BP filter
 try
     
@@ -130,27 +152,6 @@ try
     run(myNode, data);
     
     ok(true, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-%% save node output
-try
-    
-    name = 'save node output';    
-   
-    data = import(physioset.import.matrix, randn(2,500));
-    
-    myNode = node.filter.new(...
-        'Filter', filter.lasip('Gamma', 1, 'Scales', 1:10), 'Save', true);
-    
-    run(myNode, data);
-    
-    ok(exist(get_output_filename(myNode, data), 'file')>0, name);
     
 catch ME
     

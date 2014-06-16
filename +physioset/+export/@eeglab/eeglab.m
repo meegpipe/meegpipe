@@ -5,7 +5,7 @@ classdef eeglab < physioset.export.abstract_physioset_export
     
     properties
         
-        BadDataPolicy = 'reject'; % or 'flatten' or 'donothing'
+        BadDataPolicy = 'donothing'; % or 'flatten' or 'donothing'
         MemoryMapped  =  false;
         
     end
@@ -18,7 +18,7 @@ classdef eeglab < physioset.export.abstract_physioset_export
             import misc.join;
             
             if isempty(value),
-                obj.BadDataPolicy = 'reject';
+                obj.BadDataPolicy = 'donothing';
                 return;
             end
             
@@ -29,6 +29,11 @@ classdef eeglab < physioset.export.abstract_physioset_export
                 throw(InvalidPropValue('BadDataPolicy', ...
                     sprintf('Must be one of the strings: %s', ...
                     join(',', validPolicies))));
+            end
+            
+            if strcmpi(value, 'reject'),
+                warning('fieldtrip:Obsolete', ...
+                    'The ''reject'' data policy has been deprecated');
             end
             
             obj.BadDataPolicy = value;

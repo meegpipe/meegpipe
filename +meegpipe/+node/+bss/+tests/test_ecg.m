@@ -79,6 +79,9 @@ try
     end
     dataCopy = copy(data);
     
+    % Remove PWL noise that can confuse the ECG node
+    filter(filter.lpfilt('fc', 40/(dataCopy.SamplingRate/2)), dataCopy);
+    
     myCrit = get_config(meegpipe.node.bss.ecg, 'Criterion');
     
     myNode = meegpipe.node.bss.ecg(...
@@ -96,8 +99,8 @@ try
     icSelection = val(cfg, 'bss', 'selection', true);
     icSelection = cellfun(@(x) str2double(x), icSelection);
     
-    ok(max(abs(data(:)-newData(:))) > 100 & ...
-        numel(icSelection) == 1 & icSelection == 1, name);
+    ok(max(abs(data(:)-newData(:))) > 100 && ...
+        numel(icSelection) == 1 && icSelection == 1, name);
     
 catch ME
     

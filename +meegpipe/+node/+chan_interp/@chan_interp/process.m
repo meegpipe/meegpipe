@@ -20,9 +20,10 @@ import misc.euclidean_dist;
 
 dataNew = [];
 
-verbose = is_verbose(obj);
-verboseLabel = get_verbose_label(obj);
-nn   = get_config(obj, 'NN');
+verbose         = is_verbose(obj);
+verboseLabel    = get_verbose_label(obj);
+nn              = get_config(obj, 'NN');
+clearBadChannel = get_config(obj, 'ClearBadChannels');
 
 % List of bad channels
 badIdx  = find(is_bad_channel(data));
@@ -42,6 +43,12 @@ end
 
 sens  = sensors(data); 
 xyz   = sens.Cartesian;
+
+if isempty(sens.Cartesian),
+    warning('chan_inter:MissingSensorCoordinates', ...
+        'Sensor coordinates are missing: skipping interpolation');
+    return;
+end
 
 
 W = zeros(size(data,1));
@@ -71,7 +78,13 @@ if verbose,
     
 end
 
+fid = get_log(obj, 'interpolated_bad_channels.txt');
+fprintf(fid, mperl.join('\n', badIdx));
+
 make_interpolation_report(obj, chanGroups, data, badIdx, W(badIdx,:)');
 
+if clearBadChannel,
+    clear_bad_channel(data, badIdx);
+end
 
 end

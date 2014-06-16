@@ -1,4 +1,4 @@
-function x = filter(obj, x, varargin)
+function [x, obj] = filter(obj, x, varargin)
 
 import misc.eta;
 
@@ -15,9 +15,23 @@ if verbose,
     clear +misc/eta;
 end
 
+delay = ceil((numel(obj.B) - 1)/2);
+
+if 5*delay > size(x, 2),
+    error(['Signal length (%d) must be at least 5 times as long as the ' ...
+        'filter (%d)'], size(x,2), delay);
+end
+
 for i = 1:size(x,1),
     
-    x(i,:) = filter(obj.B, obj.A, x(i, :));
+    y = filter(obj.B, obj.A, x(i, :));
+    if numel(obj.A) > 1,
+        x(i,:) = y;
+    else    
+        x(i, 1:end-delay) = y((delay+1):end);
+        x(i, end-delay+1:end) = fliplr(x(i, end-2*delay+1:end-delay));
+    end
+    
     if verbose,
         eta(tinit, size(x,1), i, 'remaintime', false);
     end

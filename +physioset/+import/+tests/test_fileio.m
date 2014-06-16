@@ -10,7 +10,7 @@ import datahash.DataHash;
 import misc.rmdir;
 
 
-DATA_URL = 'http://kasku.org/data/meegpipe/';    
+DATA_URL = meegpipe.get_config('test', 'remote');    
 DATA_FILE = 'test_mux.mff';
 
 MEh     = [];
@@ -111,8 +111,7 @@ try
     warning('on', 'equalize:ZeroVarianceData')
     warning('on', 'sensors:MissingPhysDim');
     warning('on', 'sensors:InvalidLabel');
-    
-    
+
     condition = iscell(data) && numel(data) == 2 && ...
         all(size(data{1})==size(data{2}));
     

@@ -82,7 +82,13 @@ if exist(new_name, 'file'),
     end
 end
 
-copyfile(obj.PointSet.DataFile, new_name);
+if isunix,
+    % Under unix it may be that the .pset/.pseth file is a symbolic link so
+    % we use the OS cp with link dereferencing
+    system(['cp -L ' obj.PointSet.DataFile ' ' new_name]);
+else
+    copyfile(obj.PointSet.DataFile, new_name);
+end
 
 if isunix,
     system(['chmod u+w ' new_name]);

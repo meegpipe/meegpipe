@@ -1,4 +1,17 @@
-meegpipe.initialize;
+function vici(subjIDs)
+% VICI - Run the conversion for VICI recording files
+%
+%  mff2pset.vici(subjIDs)
+%
+% Where
+%
+% SUBJIDS is a numeric array of subject IDs. By default, SUBJIDS=[1:200].
+%
+% See also: mff2pset
+
+if nargin < 1,
+    subjIDs = 1:200;
+end
 
 % We want to generate a physioset that uses single precision
 myImporter = physioset.import.mff('Precision', 'single');
@@ -13,12 +26,14 @@ myNode = meegpipe.node.physioset_import.new(...
 );
 
 % Create symbolic links to all sleep .mff files in the ssmd recording
-files = somsds.link2rec('ssmd', ...
+files = somsds.link2rec('vici', ...
     'modality',     'eeg', ...
     'condition',    'sleep', ...
-    'subject',      1:125,  ...     % only subject 1 to 125
+    'subject',      subjIDs,  ...     
     'file_ext',     '.mff', ...
-    'folder',       'mff2pset' ...  % generate the links under this directory
+    'folder',       '/data1/projects/vici-sleep/recordings/mff2pset' ...  % generate the links under this directory
     );
 
 run(myNode, files{:});
+
+end

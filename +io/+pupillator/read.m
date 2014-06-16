@@ -4,7 +4,9 @@ import safefid.safefid;
 import mperl.split;
 import misc.strtrim;
 
-prot = nan(100, 5);
+% Old pupillator has only 5 columns in the protocol description, but
+% pupillator 2.0 has 6 columns! 
+prot = nan(100, 6);
 
 fid = safefid(filename, 'r');
 
@@ -66,10 +68,12 @@ import misc.eta;
 % Read protocol until an empty line is found
 count = 0;
 tinit = tic;
+tmp = [];
 while ~isempty(ln),
     
     count = count + 1;
-    data(count,:) = cellfun(@(x) str2double(x), split(',', ln));
+    tmp = cellfun(@(x) str2double(x), split(',', ln));
+    data(count, 1:numel(tmp)) = tmp;
     ln = fgetl(fid);
     
     if ~isempty(maxCount),
@@ -78,6 +82,7 @@ while ~isempty(ln),
     
 end
 data(count+1:end,:) = [];
+data(:, numel(tmp)+1:end) = [];
 
 
 end

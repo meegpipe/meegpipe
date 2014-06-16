@@ -84,20 +84,24 @@ try
     
     myBSS = spt.bss.tdsep('Lag', 1:20);
   
-    filtBands = linspace(0.01, 0.5, size(data,1)+1);
+    filtBands = linspace(0.01, 1, size(data,1)+1);
     for i = 1:size(data,1)
-       filtObj = filter.bpfilt('fp', [filtBands(i) filtBands(i+1)]);
+       warning('off', 'design_filter:VariableGroupDelay');
+       filtObj = filter.ellip([filtBands(i) filtBands(i+1)]);
+       warning('on', 'design_filter:VariableGroupDelay');
        select(data, i);
-       filter(filtObj, data);
+       filtfilt(filtObj, data);
        restore_selection(data);
     end    
       
+    % Transient state of the filter
+    select(data, [], 100:size(data,2));
     myBSS = learn(myBSS, data);    
     
     error = bprojmat(myBSS)*projmat(myBSS)-eye(size(data,1));
     
     ok(...
-        cond(projmat(myBSS)*eye(size(data,1))) < 2 & ...
+        cond(projmat(myBSS)*eye(size(data,1))) < 5 & ...
         max(max(abs(error))) < 0.01, name);
     
 catch ME
@@ -488,8 +492,8 @@ end
 function data = sample_data()
 
 
-mySensors = subset(sensors.eeg.from_template('egi256'), 1:5);
+mySensors = subset(sensors.eeg.from_template('egi256'), 1:4);
 myImporter = physioset.import.matrix('Sensors', mySensors);
-data =  import(myImporter, rand(5, 10000));
+data =  import(myImporter, rand(4, 20000));
 
 end

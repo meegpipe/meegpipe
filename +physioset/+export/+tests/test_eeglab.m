@@ -164,8 +164,12 @@ try
     
     set_bad_channel(data, 2:3);
     
+    warning('off', 'fieldtrip:Obsolete');
     myExporter = physioset.export.eeglab('BadDataPolicy', 'reject');
+    warning('on', 'fieldtrip:Obsolete');
+    warning('off', 'deal_with_bad_data:Obsolete');
     fName = export(myExporter, data);
+    warning('on', 'deal_with_bad_data:Obsolete');
     
     % Now reimport and see what was actually exporter
     warning('off', 'sensors:InvalidLabel');
@@ -195,6 +199,7 @@ try
     
     fName2 = export(physioset.export.eeglab, data, fName);
    
+    fName = strrep(fName, '\', '/');
     ok(exist(fName2, 'file') && strcmp(fName2, [fName '.set'])> 0, name);
     
 catch ME
@@ -218,6 +223,7 @@ try
     
     fName2 = export(myExporter, data);
    
+    fName = strrep(fName, '\', '/');
     ok(exist(fName2, 'file') && strcmp(fName2, [fName '.set'])> 0, name);
     
 catch ME

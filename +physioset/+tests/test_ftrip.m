@@ -35,7 +35,7 @@ end
 try
     
     name = 'convert a single dataset to fieldtrip';
-   
+    
     [~, data] = sample_data(1);
     
     ftripData = fieldtrip(data{:});
@@ -60,7 +60,7 @@ end
 try
     
     name = 'bad data policy: donothing';
-   
+    
     [~, data] = sample_data_with_bad_data;
     
     ftripData = fieldtrip(data, 'BadDataPolicy', 'donothing');
@@ -85,10 +85,12 @@ end
 try
     
     name = 'bad data policy: reject';
-   
+    
     [~, data, badSamplIdx, badChanIdx] = sample_data_with_bad_data;
     
+    warning('off', 'deal_with_bad_data:Obsolete');
     ftripData = fieldtrip(data, 'BadDataPolicy', 'reject');
+    warning('on', 'deal_with_bad_data:Obsolete');
     
     nChan = size(data,1) - numel(badChanIdx);
     nSampl = size(data, 2) - numel(badSamplIdx);
@@ -118,11 +120,11 @@ end
 try
     
     name = 'bad data policy: flatten';
-   
+    
     [~, data, badSamplIdx, badChanIdx] = sample_data_with_bad_data;
     
     ftripData = fieldtrip(data, 'BadDataPolicy', 'flatten');
-
+    
     ok( ...
         isstruct(ftripData) && ...
         isfield(ftripData, 'trial') && ...
@@ -198,15 +200,15 @@ mySens = sensors.eeg.from_template('egi256');
 mySens = subset(mySens, 1:5);
 myImporter = physioset.import.matrix('Sensors', mySens);
 
-for i = 1:nbFiles 
-   
-   data{i} =  import(myImporter, rand(5, 1000));
-   evArray = physioset.event.event(1:100:1000, 'Type', num2str(i));
-   add_event(data{i}, evArray);
-   file{i} = get_datafile(data{i});
-   
-   save(data{i});
-   
+for i = 1:nbFiles
+    
+    data{i} =  import(myImporter, rand(5, 1000));
+    evArray = physioset.event.event(1:100:1000, 'Type', num2str(i));
+    add_event(data{i}, evArray);
+    file{i} = get_datafile(data{i});
+    
+    save(data{i});
+    
 end
 
 

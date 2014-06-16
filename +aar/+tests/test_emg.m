@@ -47,7 +47,7 @@ try
     filtObj = get_config(myNode, 'Filter');
     
     ok(filtObj.WindowLength(1) == 2 & ...
-        filtObj.Filter.CCA.MinCorr == 0.5, name);
+        filtObj.Filter.PCFilter.CCA.MinCorr == 0.5, name);
     
 catch ME
     
@@ -135,7 +135,7 @@ for i = 1:size(X,1)
 end
 snr = snr/numel(idx);
 
-data = import(physioset.import.matrix, X);
+data = import(physioset.import.matrix('Sensors', sensors.eeg.dummy(10)), X);
 
 end
 

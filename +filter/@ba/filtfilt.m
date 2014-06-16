@@ -14,16 +14,20 @@ function x = filtfilt(obj, x, varargin)
 %
 % See also: filter.lpfilt, filter.lpfilt.filter
 
-% Documentation: class_filter_lpfilt.txt
-% Description: Zero-phase forward and reverse digital filtering
 
 import misc.eta;
+
+if numel(obj.A) < 2,
+    % FIR filter -> just correct delay by shifting the output
+    x = filter(obj, x, varargin{:});
+    return;
+end
 
 verboseLabel = get_verbose_label(obj);
 verbose      = is_verbose(obj);
 
 if verbose,
-    if isa(x, 'pset.mmappset'),  
+    if isa(x, 'pset.mmappset'),
         name = get_name(x);
     else
         name = '';
@@ -41,11 +45,8 @@ for i = 1:size(x, 1)
     end
     
     xi = x(i, :);
+    x(i, :) = filtfilt(obj.B, obj.A, xi);
     
-    xi = filter(obj, xi);
-    xi = filter(obj, fliplr(xi));
-    x(i, :) = fliplr(xi);
-   
     if verbose &&  ~mod(i, by100),
         eta(tinit, size(x,1), i, 'remaintime', false);
     end

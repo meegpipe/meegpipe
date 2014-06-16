@@ -1,8 +1,23 @@
 Optional dependencies
 ===
 
-The dependencies listed here are not required for _meegpipe_ to work, but they
-can considerably enhance _meegpipe_'s functionality.
+The dependencies listed here are not required for _meegpipe_ to work, but
+they can enhance _meegpipe_'s functionality.
+
+### Fieldtrip
+
+If you [Fieldtrip](http://fieldtrip.fcdonders.nl/) is installed on your 
+system, meegpipe will be able to import data from any data format that 
+Fieldtrip can read.
+
+### NBT toolbox
+
+If the [Neurophysiological Biomarkers Toolbox][nbt], has been installed 
+on your system then _meegpipe_ will be able to import and export data 
+from/to NBT data structures.
+
+[nbt]: http://nbtwiki.net/
+
 
 ### Open grid engine
 

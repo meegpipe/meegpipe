@@ -175,7 +175,7 @@ try
     
     myImporter = physioset.import.matrix(...
         'Sensors', sensors.eeg.from_template('egi256'));
-    myData = import(myImporter, rand(257, 10000));
+    myData = import(myImporter, rand(257, 20000));
     save(myData);
     myData = get_hdrfile(myData);
     

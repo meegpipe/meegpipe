@@ -1,10 +1,11 @@
 #
 # filter globals 
 #
+DeltaTransition     3/1000      # Normalized freq
 Ap                  .5          # passband ripple in dB
-Ast                 50          # stopband attenuation in dB
+Ast                 45          # stopband attenuation in dB
 DesignMethod        'ellip'     # filter design method
-MaxOrder            40          # maximum filter order
+MaxOrder            30          # maximum filter order
 DelayCorr           100         # in percentage from least accurate/fastest to slowest/most accurate
 Verbose             true        # Verbose mode
 StdOut              1           # Standard output for status messages

@@ -25,8 +25,6 @@ function y = filtfilt(obj, x, varargin)
 %
 % See also: filter.sbfilt, filter.sbfilt.filter
 
-% Documentation: filter_sbfilt_class.txt
-% Description: Zero-phase forward and reverse digital filtering
 
 y = x;
 

@@ -12,7 +12,7 @@ import oge.has_oge;
 
 MEh     = [];
 
-initialize(9);
+initialize(10);
 
 %% Create a new session
 try
@@ -51,9 +51,34 @@ end
 %% constructor with config options
 try
     
-    name = 'construct node that uses 5 NNs';
-    obj = chan_interp('NN', 10);
-    ok(get_config(obj, 'NN') == 10, name);
+    name = 'construct node that uses 10 NNs';
+    obj = chan_interp('NN', 10, 'ClearBadChannels', true);
+    ok(...
+        get_config(obj, 'NN') == 10 && ...
+        get_config(obj, 'ClearBadChannels'), name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% ClearBadChannels = true
+try
+    
+    name = 'ClearBadChannels = true';
+
+    data = my_sample_data();
+     
+    myNode = chan_interp('NN', 2, 'ClearBadChannels', true);    
+    
+    badIdx = is_bad_channel(data);
+    run(myNode, data);    
+    
+    ok(...
+        min(std(data(badIdx, :), [], 2)) > 1e-3 && ...
+        ~any(is_bad_channel(data)), name);
     
 catch ME
     
@@ -131,9 +156,10 @@ try
     
     myNode = chan_interp('NN', 2, 'Save', true);
 
+    outputFileName = get_output_filename(myNode, data);
     run(myNode, data);
     
-    ok(exist(get_output_filename(myNode, data), 'file')>0, name);
+    ok(exist(outputFileName, 'file')>0, name);
     
 catch ME
     

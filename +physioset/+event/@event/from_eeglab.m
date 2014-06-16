@@ -12,12 +12,29 @@ function ev = from_eeglab(str)
 %
 % See also: from_fieldtrip, from_struct
 
-% Description: Construction from EEGLAB structure
-% Documentation: class_event.txt
 
 import physioset.event.event;
 
-ev = event.from_struct(str);
+if isempty(str), ev = []; return; end
+
+evPos = [str.latency];
+evType = {str.type};
+
+% IMPORTANT: EEGLAB's events property "latency" stores the position of an 
+% event in samples (pnts) relative to the beginning of the continuous data
+% matrix (EEG.data). However, such "latency" property may take non-integer
+% values. On the other hand meegpipe accepts only integer-value event
+% positions (in samples). 
+evPos = ceil(evPos);
+ev = physioset.event.event(evPos);
+
+for i = 1:numel(ev),
+    if strcmpi(evType{i}, 'boundary'),
+        ev(i) = physioset.event.std.discontinuity(evPos(i));
+    else
+        ev(i) = event.from_struct(str(i));
+    end
+end
 
 
 end

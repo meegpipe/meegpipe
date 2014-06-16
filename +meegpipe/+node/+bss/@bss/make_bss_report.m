@@ -1,4 +1,4 @@
-function rep = make_bss_report(obj, myBSS, ics, data)
+function rep = make_bss_report(obj, myBSS, ics, data, icSel)
 
 import goo.globals;
 import meegpipe.node.bss.bss;
@@ -25,7 +25,9 @@ make_spcs_topography_report(obj, myBSS, ics, data, rep, maxVar, maxAbsVar, verb,
 
 make_spcs_psd_report(obj, ics, rep, verb, verbLabel);
 
-make_backprojection_report(obj, myBSS, ics, rep, verb, verbLabel);
+if ~isempty(icSel)
+    make_backprojection_report(obj, myBSS, ics, rep, verb, verbLabel);
+end
 
 print_title(parentRep, 'Blind Source Separation', get_level(parentRep)+2);
 print_link2report(parentRep, rep);

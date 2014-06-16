@@ -66,12 +66,12 @@ classdef abstract_node < ...
         % an explicit ID on the pipe. The reason: re-run the analysis on a
         % pipeline result obtained with a version of meegpipe different from
         % the current one.
-        FakeID = ''; 
+        FakeID = '';
     end
     
     properties (SetAccess = private, GetAccess = private)
         
-        TrainingModel  = []; % May be used to store the output of train()        
+        TrainingModel  = []; % May be used to store the output of train()
         IOReport       = []; % Will be ignored when converting to struct
         
         % Properties with a _ postfix will not be considered when
@@ -92,7 +92,7 @@ classdef abstract_node < ...
         NodeIdx_      = [];      % the index of this node within a pipeline
         SavedNode_    = '';
         SavedInput_   = '';
-        Diagnostics_  = struct;      
+        Diagnostics_  = struct;
     end
     
     %% Consistency checks
@@ -225,11 +225,11 @@ classdef abstract_node < ...
         % Generate I/O report
         report      = io_report(obj, input, output);
         
-        restore_global_state(obj);          
-       
+        restore_global_state(obj);
+        
         % File where the meegpipe version is stored
-        fileName = get_vers_file(obj);        
-       
+        fileName = get_vers_file(obj);
+        
         
     end
     
@@ -238,7 +238,7 @@ classdef abstract_node < ...
         dirName = get_data_dir(obj, data);
         
     end
-  
+    
     % Construction keys handled by this class, to be used in constructors
     % of children classes to split own and parent arguments
     methods (Access = protected, Static)
@@ -310,14 +310,12 @@ classdef abstract_node < ...
         
         obj         = set_io_report(obj, rep);
         
-        dirName     = get_tempdir(obj);
-        
         % Operate with log files
         fid         = get_log(obj, filename);
         
         
     end
-  
+    
     %% meegpipe.node.node interface
     methods
         
@@ -343,7 +341,9 @@ classdef abstract_node < ...
         
         fileName             = get_ini_filename(obj);
         
-        dirName              = get_dir(obj);
+        dirName              = get_dir(obj);        
+        
+        dirName              = get_tempdir(obj);        
         
         dirName              = get_save_dir(obj);
         
@@ -376,7 +376,7 @@ classdef abstract_node < ...
         dirName     = get_full_dir(obj, data);
         
         % meegpipe version with which the node was last run
-        vers = get_meegpipe_version(obj);        
+        vers = get_meegpipe_version(obj);
         
         
     end
@@ -402,7 +402,7 @@ classdef abstract_node < ...
         
         % Default implementation of train() does nothing
         function myNode = train(myNode, varargin)
-           % do nothing 
+            % do nothing
         end
         
         function myNode = set_training_model(myNode, trainModel)

@@ -50,7 +50,7 @@ classdef verbose
         end       
         
         function level  = get_verbose_level(obj)
-            if ~isempty(obj.VerboseLevel),
+            if ~isempty(obj.VerboseLevel) && is_verbose(obj),
                 % user-defined level
                 level = obj.VerboseLevel;
                 return;
@@ -90,6 +90,9 @@ classdef verbose
         
         function obj    = set_verbose(obj, value)
             obj.Verbose = value;
+            if ~value,
+                obj = set_verbose_level(obj, 0);
+            end
         end
         
         function obj    = set_verbose_label(obj, value)

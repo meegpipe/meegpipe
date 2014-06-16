@@ -44,7 +44,7 @@ try
     
     myPipe = pipeline.new(...
         physioset_import.new('Importer', physioset.import.physioset), ...
-        filter.new('Filter', filter.lpfilt('fc', 0.1)));
+        filter.new('Filter', filter.fieldtrip_butter([0 0.1])));
     
     data = run(myPipe, fileName);
     
@@ -54,7 +54,7 @@ try
         numel(procH) == 3 & ...
         ischar(procH{1}) & ...
         isa(procH{3}, 'meegpipe.node.filter.filter') & ...
-        isa(get_config(procH{3}, 'Filter'), 'filter.lpfilt'), name);
+        isa(get_config(procH{3}, 'Filter'), 'filter.fieldtrip_butter'), name);
     
 catch ME
     

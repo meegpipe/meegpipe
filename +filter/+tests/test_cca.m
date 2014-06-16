@@ -91,7 +91,7 @@ try
         snrAfter = snrAfter + var(S(i,idx))/var(data(i,idx)-S(i,idx));
     end
     snrAfter = snrAfter/numel(idx);
-    ok(snrAfter > 20*snr, name);
+    ok(snrAfter > 5*snr, name);
     
 catch ME
     

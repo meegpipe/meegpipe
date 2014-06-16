@@ -2,12 +2,11 @@ function [featVal, featName] = extract_feature(obj, ~, tSeries, data, varargin)
 
 featName = [];
 
-% Duration and number of sample analysis windows
-WIN_DUR = 40; % In seconds
-NB_WIN  = 10;
+epochDuration = obj.EpochDuration; % In seconds
+nbEpochs      = obj.NbEpochs;
 
-verbose         = is_verbose(obj);
-verboseLabel    = get_verbose_label(obj);
+verbose       = is_verbose(obj);
+verboseLabel  = get_verbose_label(obj);
 
 if nargin < 4 || isempty(data),
     sr = tSeries.SamplingRate;
@@ -37,20 +36,21 @@ if verbose,
     fprintf([verboseLabel 'Extracting qrs_erp features ...']);
 end
 
-% Onset of the NB_WIN sample windows that will be used as a representative
+% Onset of the nbEpochs sample windows that will be used as a representative
 % sample of the whole dataset. Important: Do not pick windows randomly as
 % that would prevent reproducing any results that use qrs_erp features.
-winDur = sr*WIN_DUR;
+winDur = sr*epochDuration;
 init = 1:winDur:size(tSeries,2)-winDur;
 if isempty(init), init = 1; end
-idx  = round(linspace(1, numel(init), NB_WIN + 1));
+idx  = round(linspace(1, numel(init), nbEpochs + 1));
 idx  = unique(idx);
 init = init(idx);
 
 off = -floor(obj.Offset*sr);
 dur = floor(obj.Duration*sr);
+
 [featVal, allPeakLocs] = compute_feat_val(tSeries, init, winDur, sr, ...
-    obj.CorrAggregationStat, off, dur, verbose);
+    obj.EpochAggregationStat, obj.CorrAggregationStat, off, dur, verbose);
 
 %% Post-processing
 % If the first-ranked component has a high rank then use the peak locations
@@ -64,24 +64,26 @@ if maxVal > 0.5,
    end
    peakLocs = allPeakLocs(maxIdx, :);
    featVal = compute_feat_val(tSeries, init, winDur, sr, ...
-       obj.CorrAggregationStat, off, dur, verbose, peakLocs);
+       obj.EpochAggregationStat, obj.CorrAggregationStat, off, dur, verbose, peakLocs);
    if verbose,
        clear +misc/eta;
        fprintf('\n\n');
    end
 end
 
-
 end
 
+
+% Helper functions #############################################################
+
 function [featVal, allPeakLocs] = compute_feat_val(tSeries, init, winDur, ...
-    sr, corrAggrStat, off, dur, verbose, providedPeakLocs)
+    sr, epochAggrStat, corrAggrStat, off, dur, verbose, providedPeakLocs)
 
 import misc.eta;
 import fmrib.my_fmrib_qrsdetect;
 import misc.epoch_get;
 
-if nargin < 9,
+if nargin < 10,
     providedPeakLocs = [];
 end
 
@@ -124,7 +126,7 @@ for j = 1:size(tSeries,1)
     if verbose,
         eta(tinit, size(tSeries,1), j, 'remaintime', false);
     end
-    featVal(j) = median(winStatVal);
+    featVal(j) = epochAggrStat(winStatVal);
 end
 if verbose, 
     clear +misc/eta;

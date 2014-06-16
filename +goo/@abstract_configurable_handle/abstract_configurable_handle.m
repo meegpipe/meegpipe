@@ -2,45 +2,37 @@ classdef abstract_configurable_handle < ...
         goo.configurable_handle & ...
         goo.clonable
     
-    
-    % IMPLEMENTATION .....................................................
-    
     properties (GetAccess = private, SetAccess = private)
         
-       Config; 
-       
+        Config;
+        
     end
-    
-    % PUBLIC INTERFACE ...................................................
     
     methods
         
         % goo.configurable interface
-        obj     = set_config(obj, varargin);   
-        val     = get_config(obj, varargin);         
-        disp_body(obj);     
+        obj     = set_config(obj, varargin);
+        val     = get_config(obj, varargin);
+        val     = get_config_reference(obj, varargin);        
+        disp_body(obj);
         obj = clone(obj);
         
         % default implementations defined here
         disp(obj);
         
-    end
-    
-    
-    % Virtual constructor
-    methods
+        % Virtual constructor
         function obj = abstract_configurable_handle(varargin)
             
             import goo.get_cfg_class;
             
             if nargin == 1 && isa(varargin{1}, class(obj)),
-                % Copy constructor -> clone the config           
+                % Copy constructor -> clone the config
                 if ~isempty(varargin{1}.Config),
                     obj.Config  = clone(varargin{1}.Config);
                 end
                 return;
-            end            
-           
+            end
+            
             cfgClass = get_cfg_class(obj);
             
             if isempty(cfgClass),
@@ -49,7 +41,7 @@ classdef abstract_configurable_handle < ...
                 obj.Config = eval(cfgClass);
             end
             
-            obj = set_config(obj, varargin{:});         
+            obj = set_config(obj, varargin{:});
             
         end
     end

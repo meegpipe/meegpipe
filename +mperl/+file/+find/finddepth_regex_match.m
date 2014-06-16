@@ -1,7 +1,9 @@
 function list = finddepth_regex_match(root, regex, ignorePath, noDirs, noFiles, negated)
 % FIND_REGEX_MATCH - Find files and dirs using regular expression
 %
-% list = finddepth_regex_match(root, regex, ignorePath, noDirs, noFiles, negated)
+%
+%   list = finddepth_regex_match(root, regex, ignorePath, noDirs, noFiles, negated)
+%
 %
 % Where
 %

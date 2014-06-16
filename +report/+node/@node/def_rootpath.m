@@ -2,10 +2,8 @@ function [repFolder, repFileFolder] = def_rootpath(obj, varargin)
 
 import mperl.file.spec.catdir;
 
-
-repFolder = catdir(get_save_dir(obj.Node_), 'remark');
-repFileFolder = strrep(repFolder, 'remark', 'remark_files');
-
-
+saveDir = get_save_dir(obj.Node_);
+repFolder = [saveDir filesep 'remark'];
+repFileFolder = [saveDir filesep 'remark_files'];
 
 end

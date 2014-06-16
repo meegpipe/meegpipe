@@ -20,6 +20,5 @@ for bandItr = 1:numel(obj.LpFilter)
 end
 
 H = cascade(H{:});
-H.PersistentMemory = obj.LpFilter{1}.PersistentMemory;
 
 end

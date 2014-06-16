@@ -13,7 +13,6 @@ if isempty(obj.LpFilter),
 end
 
 H = cell(1, numel(obj.LpFilter));
-persistentMem = false;
 
 count = 0;
 for bandItr = 1:numel(obj.LpFilter)
@@ -26,16 +25,11 @@ for bandItr = 1:numel(obj.LpFilter)
         
         count = count + 1;
         H{count} = mdfilt(obj.LpFilter{bandItr});
-        persistentMem = persistentMem || ...
-            obj.LpFilter{bandItr}.PersistentMemory;
-        
-        
+      
     elseif isempty(obj.LpFilter{bandItr}),
         
         count = count + 1;
         H{count} = mdfilt(obj.HpFilter{bandItr});
-        persistentMem = persistentMem || ...
-            obj.HpFilter{bandItr}.PersistentMemory;
         
     else
         
@@ -43,11 +37,6 @@ for bandItr = 1:numel(obj.LpFilter)
         H{count} = cascade(...
             mdfilt(obj.LpFilter{bandItr}), ...
             mdfilt(obj.HpFilter{bandItr}));
-        
-        persistentMem = persistentMem || ...
-            obj.HpFilter{bandItr}.PersistentMemory || ...
-            obj.LpFilter{bandItr}.PersistentMemory;
-        
         
     end
     

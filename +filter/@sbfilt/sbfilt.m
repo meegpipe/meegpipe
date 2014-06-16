@@ -42,20 +42,15 @@ classdef sbfilt < filter.abstract_dfilt
     %
     % See also: bpfilt, lpfilt, hpfilt
     
-    % Documentation: class_filter_sbfilt.txt
-    % Description: Class definition
-    
     properties (SetAccess = private, GetAccess = private)
        MDFilt; 
     end
     
-    % Public interface ....................................................
-    
+   
     properties (SetAccess = 'private')
         LpFilter;
         HpFilter;
         FStop;
-        PersistentMemory;
     end
     
     % misc.verbose interface reimplementation
@@ -82,15 +77,6 @@ classdef sbfilt < filter.abstract_dfilt
         y = filtfilt(obj, x, varargin);
         % required by abstract_dfilt
         H = mdfilt(obj);
-        function obj = set_persistent(obj, value)    
-            obj.PersistentMemory = value;
-            for i = 1:numel(obj.LpFilter),
-               set_persistent(obj.LpFilter{i}, value); 
-            end
-            for i = 1:numel(obj.HpFilter),
-               set_persistent(obj.HpFilter{i}, value); 
-            end
-        end
     end   
     
     methods
@@ -112,18 +98,16 @@ classdef sbfilt < filter.abstract_dfilt
                 for filtItr = 1:size(opt.fstop),
                     if opt.fstop(filtItr, 2) < 1,
                         obj.HpFilter{filtItr} = ...
-                            filter.hpfilt('fc', opt.fstop(filtItr, 2), ...
-                            'PersistentMemory', opt.persistentmemory);
+                            filter.hpfilt('fc', opt.fstop(filtItr, 2));
                     end
                     if opt.fstop(filtItr, 1) > 0,
                         obj.LpFilter{filtItr} = ...
-                            filter.lpfilt('fc', opt.fstop(filtItr, 1), ...
-                            'PersistentMemory', opt.persistentmemory);
+                            filter.lpfilt('fc', opt.fstop(filtItr, 1));
                     end
                 end
             end
             obj.FStop = opt.fstop;
-            obj = set_persistent(obj, opt.persistentmemory);
+            
             obj = set_verbose(obj, opt.verbose);
             obj = set_verbose_label(obj, opt.verboselabel);
             

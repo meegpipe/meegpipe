@@ -68,7 +68,7 @@ end
 fName = catfile(path, [name '.mat']);
 
 if verbose,
-    fprintf([verboseLabel 'Exporting to %s.mat...'], [path name]);
+    fprintf([verboseLabel 'Exporting to %s.mat...'], catfile(path,name));
 end
 save(fName, 'ftripData');
 

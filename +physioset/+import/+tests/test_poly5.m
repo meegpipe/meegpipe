@@ -14,7 +14,7 @@ import misc.set_warning_status;
 DATA_FILE = '20140205_112958.DummyData.Poly5';
 DATA_FILE_2 = '20131125_130803.DATA.Poly5';
 DATA_URL = 'http://kasku.org/data/meegpipe/';
-WARN_IDS = { 'sensors:MissingPhysDim', 'sensors:MissingPhysDim' };
+WARN_IDS = { 'sensors:InvalidLabel', 'sensors:MissingPhysDim' };
 
 MEh     = [];
 

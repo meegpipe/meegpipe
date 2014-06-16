@@ -1,29 +1,45 @@
 classdef bpfilt < filter.abstract_dfilt
-    % BPFILT - Band-pass digital filter
+    % BPFILT - Band-pass digital filter (windowed sinc type I FIR)
     %
-    % obj = bpfilt('key', value, ...)
+    % This class implements the recommended approach for band-pass
+    % filtering electrophysiological time-series [1]. It is implemented in terms
+    % of a windowed sinc type I linear phase FIR filter. The implementation
+    % has been borrowed from Andreas Widmann's firfilt plug-in for EEGLAB
+    % [2].
+    %
+    % ## CONSTRUCTION
+    % 
+    %   myFilter = filter.bpfilt(fp);
+    %   myFilter = filter.bpfilt(fp, 'key', value, ...);
+    %   myFilter = filter.bpfilt('key', value, ...);
     %
     %
-    % where
+    % Where
     %
-    % OBJ is an bpfilt object
+    % MYFILTER is a filter.bpfilt object
+    %
+    % FP is a Kx2 matrix with the edges of K passbands.
     %
     %
     % ## Most common key/value pairs:
     %
-    %       Fp: A numeric 2x1 array.
-    %           Normalized 6dB cutoff frequencies of the passband. For
-    %           instance, Fp=[0.25 0.50] will use a passband delimited
-    %           by the frequencies 0.25*fs/2 and 0.50*fs/2 with fs the
-    %           sampling frequency.
+    %   Fp: A numeric Kx2 array. Default: []
+    %       Normalized 6dB cutoff frequencies of the passband. For instance, 
+    %       Fp=[0.25 0.50] will use a passband delimited by the frequencies
+    %       0.25*fs/2 and 0.50*fs/2 with fs the sampling rate. You can
+    %       especify multiple passbands (one per row of Fp).
     %
-    %       PersistentMemory:  A logical scalar. Default: false
-    %           Determines whether to save the filter state. If set to true
-    %           the filter state will be saved, which is useful when
-    %           processing large datasets in data chunks. Note however that
-    %           using persistent memory will slow-down considerably the
-    %           filtering operation.
+    %   TransitionBandWidth : A numeric scalar. 
+    %       Default: [], i.e. use the defaults for classes lpfilt and hpfilt
+    %        The (normalized) bandwidth of the transition band. This
+    %        parameter is inversely proportional to the filter order. So
+    %        you should try to use as wide transition band as is acceptable
+    %        for your application.
     %
+    %   MaxOrder : A numeric scalar. Default: 30000
+    %       The maximum allowed order for the filter. Note that this
+    %       parameter imposes a lower limit on the width of the transition
+    %       band. 
     %
     %
     % ## Notes:
@@ -42,31 +58,22 @@ classdef bpfilt < filter.abstract_dfilt
     properties (SetAccess = private, GetAccess = private)
         MDFilt;     % Equivalent MATLAB dfilt object
     end
-  
+    
     properties (SetAccess = private)
         LpFilter;
         HpFilter;
         Fp;
-        PersistentMemory;
     end
     
     % filter.dfilt interface
     methods
-        [y, obj] = filter(obj, x, varargin);
-    end
-    
-    % report.self_reportable interface
-    methods
-        [pName, pValue, pDescr]   = report_info(obj);
-        % The method below is implemented at abstract_dfilt
-        % filename = generate_remark_report(obj, varargin);
-    end
-    
-    % Reimplement the set_verbose method from class goo.verbose
-    methods
-       
+        function [y, obj] = filter(obj, varargin)
+            y = filtfilt(obj, varargin{:});
+        end
+        
+        % Reimplement the set_verbose method from class goo.verbose
         function obj = set_verbose(obj, value)
-           
+            
             obj = set_verbose@goo.verbose(obj, value);
             
             if value, return; end
@@ -84,36 +91,27 @@ classdef bpfilt < filter.abstract_dfilt
             end
             
         end
-        
-    end
-    
-    % Other public methods
-    methods
+     
         y = filtfilt(obj, x, varargin);
+        
         % Required by parent class
         H = mdfilt(obj);
-        function obj = set_persistent(obj, value)
-            obj.PersistentMemory = value;
-            for i = 1:numel(obj.LpFilter),
-                if isempty(obj.LpFilter{i}), continue; end
-                set_persistent(obj.LpFilter{i}, value);
-            end
-            for i = 1:numel(obj.HpFilter),
-                if isempty(obj.HpFilter{i}), continue; end
-                set_persistent(obj.HpFilter{i}, value);
-            end
-        end
-    end
-    
-    % Constructor
-    methods
+        
+        % Constructor 
         function obj = bpfilt(varargin)
             import misc.process_arguments;
             
             obj = obj@filter.abstract_dfilt(varargin{:});
             
+            if nargin < 1, return; end
+            
+            if isnumeric(varargin{1}),
+                varargin = [{'fp'}, varargin];
+            end
+            
             opt.fp                  = [];
-            opt.persistentmemory    = false;
+            opt.transitionbandwidth = [];
+            opt.maxorder            = [];
             opt.verbose             = true;
             opt.verboselabel        = '(filter.bpfilt) ';
             
@@ -126,23 +124,24 @@ classdef bpfilt < filter.abstract_dfilt
                     if opt.fp(filtItr, 2) < 1,
                         obj.LpFilter{filtItr} = ...
                             filter.lpfilt(...
-                            'fc',               opt.fp(filtItr, 2), ...
-                            'PersistentMemory', opt.persistentmemory, ...
-                            'Verbose',          opt.verbose, ...
-                            'VerboseLabel',     opt.verboselabel);
+                            'fc',                  opt.fp(filtItr, 2), ...
+                            'TransitionBandWidth', opt.transitionbandwidth, ...
+                            'MaxOrder',            opt.maxorder, ...
+                            'Verbose',             opt.verbose, ...
+                            'VerboseLabel',        opt.verboselabel);
                     end
                     if opt.fp(filtItr, 1) > 0,
                         obj.HpFilter{filtItr} = ...
                             filter.hpfilt(...
-                            'fc',               opt.fp(filtItr, 1), ...
-                            'PersistentMemory', opt.persistentmemory, ...
-                            'Verbose',          opt.verbose, ...
-                            'VerboseLabel',     opt.verboselabel);
+                            'fc',                  opt.fp(filtItr, 1), ...
+                            'TransitionBandWidth', opt.transitionbandwidth, ...
+                            'MaxOrder',            opt.maxorder, ...
+                            'Verbose',             opt.verbose, ...
+                            'VerboseLabel',        opt.verboselabel);
                     end
                 end
             end
             obj.Fp = opt.fp;
-            obj = set_persistent(obj, opt.persistentmemory);
             
             % Now set the verbose property, but not for nested filters
             obj = set_verbose(obj, opt.verbose);

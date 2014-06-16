@@ -4,10 +4,7 @@ classdef verbose_handle < handle
     %
     %
     % See also: eegpipe.verbose
-    
-    
-    %% IMPLEMENTATION .....................................................
-    
+  
     properties (SetAccess = private, GetAccess = private)
         
         Verbose         = true;
@@ -26,9 +23,7 @@ classdef verbose_handle < handle
         end
   
     end
-    
-    %% PUBLIC INTERFACE ....................................................
-    
+ 
     methods
         
         function bool   = is_verbose(obj)
@@ -37,7 +32,7 @@ classdef verbose_handle < handle
         end
         
         function level  = get_verbose_level(obj)
-            if ~isempty(obj.VerboseLevel),
+            if ~isempty(obj.VerboseLevel) && is_verbose(obj),
                 % user-defined level
                 level = obj.VerboseLevel;
                 return;
@@ -81,6 +76,9 @@ classdef verbose_handle < handle
         
         function obj    = set_verbose_level(obj, value)
             obj.VerboseLevel = value;
+            if ~value,
+                obj = set_verbose_level(obj, 0);
+            end
         end
         
     end

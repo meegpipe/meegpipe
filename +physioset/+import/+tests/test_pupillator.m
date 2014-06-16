@@ -9,14 +9,10 @@ import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
 
-% The sample data file to be used for testing
-% You may have to edit some of the tests below if you change this URL
-DATA_URL = ['http://kasku.org/data/meegpipe/' ...
-    'pupw_0001_pupillometry_afternoon-sitting_1.csv'];
-
 MEh     = [];
+REMOTE  = meegpipe.get_config('test', 'remote');
 
-initialize(7);
+initialize(8);
 
 %% Create a new session
 try
@@ -54,12 +50,16 @@ end
 
 %% download sample data file
 try
-    name = 'download sample data file';
+    name = 'download sample data files';
     
-    folder = session.instance.Folder;    
+    folder = session.instance.Folder;
     file = catfile(folder, 'sample.csv');
-    urlwrite(DATA_URL, file);    
-    ok(exist(file, 'file') > 0, name);
+    url = [REMOTE 'pupw_0001_pupillometry_afternoon-sitting_1.csv'];
+    urlwrite(url, file);
+    fileNewPupillator = catfile(folder, 'sample_new_pupillator.csv');
+    url = [REMOTE 'jestest.csv'];
+    urlwrite(url, fileNewPupillator);
+    ok(exist(file, 'file') > 0 & exist(fileNewPupillator, 'file') > 0, name);
     
 catch ME
     
@@ -71,15 +71,55 @@ end
 %% import sample data
 try
     
-    name = 'import sample data file';   
+    name = 'import sample data file';
     
     warning('off', 'sensors:InvalidLabel');
     warning('off', 'sensors:MissingPhysDim');
     data = import(pupillator, file);
     warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel'); 
+    warning('on', 'sensors:InvalidLabel');
+    
+    evArray = get_event(data);
+    
+    ok(...
+        all(size(data) == [2 52508])    && ...
+        numel(evArray) == 246   && ...
+        evArray(1).Duration == 1500, ...
+        name);
+    
+    clear data;
+    
+    
+catch ME
+    
+    warning('on', 'sensors:MissingPhysDim');
+    warning('on', 'sensors:InvalidLabel');
+    clear data;
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
 
-    ok(all(size(data) == [2 52508]) & numel(get_event(data)) == 246, name);    
+%% import sample data (pupillator 2.0)
+try
+    
+    name = 'import sample data (pupillator 2.0)';
+    
+    warning('off', 'sensors:InvalidLabel');
+    warning('off', 'sensors:MissingPhysDim');
+    data = import(pupillator, fileNewPupillator);
+    warning('on', 'sensors:MissingPhysDim');
+    warning('on', 'sensors:InvalidLabel');
+    
+    evArray = get_event(data);
+    
+    ok(...
+        all(size(data) == [2 6238])     && ...
+        numel(evArray) == 21            && ...
+        numel(unique(evArray)) == 11    && ...
+        evArray(1).Duration == 659      && ...
+        strcmp(evArray(1).Type, 'R255G200B200'), ...
+        name);
     
     clear data;
     
@@ -98,7 +138,7 @@ end
 try
     
     name = 'import multiple files';
-    folder = session.instance.Folder;   
+    folder = session.instance.Folder;
     file2 = catfile(folder, 'sample_copy.mff');
     copyfile(file, file2);
     
@@ -133,7 +173,7 @@ try
     name = 'specify file name';
     
     folder = session.instance.Folder;
-   
+    
     warning('off', 'sensors:InvalidLabel');
     warning('off', 'sensors:MissingPhysDim');
     warning('off', 'equalize:ZeroVarianceData')

@@ -114,10 +114,7 @@ else
 end
 
 % Create a train of events to mark the transitions between protocol stages
-isStatus = cellfun(@(x) strcmp(x, 'status'), dataHdr);
-
-myProtEvs = pupillator.generate_block_events(prot, protHdr, data(:, isTime), ...
-    data(:, isStatus));
+myProtEvs = pupillator.generate_block_events(prot, protHdr, data, dataHdr);
     %transitionSampl, data(transitionSampl, isTime), seq);
 
 dataCols = cellfun(@(x) ismember(x, {'diameter [mm]', 'shapefactor'}), dataHdr);

@@ -25,8 +25,6 @@ function [y, obj] = filter(obj, x, varargin)
 %
 % See also: filter.dfilt, filter.abstract_dfilt, filter.sbfilt.filtfilt
 
-% Documentation: filter_sbfilt_class.txt
-% Description: Stop-band digital filtering
 
 y = x;
 

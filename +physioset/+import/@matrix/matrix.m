@@ -23,11 +23,7 @@ classdef matrix < physioset.import.abstract_physioset_import
     %
     %
     % See also: abstract_physioset_import, physioset.import.
-    
   
-
-     %% PROTECTED INTERFACE ................................................
-    
     methods (Access = protected)       
      
         % Overrides parent method
@@ -41,9 +37,7 @@ classdef matrix < physioset.import.abstract_physioset_import
         
         
     end   
-    
-    %% PUBLIC INTERFACE ...................................................
-    
+  
     properties
         
         SamplingRate;

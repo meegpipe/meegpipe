@@ -193,7 +193,7 @@ if numel(hdr.signal) > 1,
         
         % Candidate MUX definition
         muxSensorsDef = ['sensors.mux.' muxTemplate];
-        if ~isempty(strcmp(which(muxSensorsDef), 'not found')),
+        if ~isempty(regexp(which(muxSensorsDef), 'not found', 'once')),
             warning('MUX:UnknownMUX', ...
                 'Could not find MUX definition for %s, using %s instead', ...
                 muxTemplate, 'braintronics_tempmux_1012');

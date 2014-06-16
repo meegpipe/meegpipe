@@ -32,7 +32,10 @@ end
 Q = ceil(size(data1,2)/MAX_LENGTH);
 data1 = resample(data1(:,:), 1, Q);
 data2 = resample(data2(:,:), 1, Q);
-samplTime = samplTime(1:Q:end);
+% Realize that only the first and last sampling instants in samplTime 
+% below are guaranteed to be correct. The reason is that sampling instants
+% do not need to be contiguous (e.g. due to data selections). 
+samplTime = linspace(samplTime(1), samplTime(2), size(data1,2));
 
 figure('Visible', visibleStr);
 plot(samplTime, data1, 'k', 'LineWidth', LINE_WIDTH);

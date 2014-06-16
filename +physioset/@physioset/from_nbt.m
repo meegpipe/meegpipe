@@ -1,13 +1,13 @@
-function physObj = from_nbt(str,SignalInfo, varargin)
+function physObj = from_nbt(signalInfo, rawSignal, varargin)
 % FROM_NBT - Construction from NBT structure
 %
 % import physioset.
-% physObj = physioset.from_nbt(str, SignalInfo, 'key', value, ...)
+% physObj = physioset.from_nbt(signalInfo, rawSignal, 'key', value, ...)
 %
 % Where
 %
-% STR is an EEGLAB structure
-% SIGNALINFO is an NBT Info object
+% SIGNALINFO is the Info structure corresponding to the raw data matrix
+% RAWSIGNAL. See the documentation of the NBT toolbox for more information.
 %
 % PHYSOBJ is a physioset object
 %
@@ -18,12 +18,18 @@ function physObj = from_nbt(str,SignalInfo, varargin)
 %           The name of the memory-mapped file to which the generated
 %           physioset will be linked.
 %
-%       SensorClass : A cell array of strings. 
+%       SensorClass : A cell array of strings
 %           Default: repmat({'eeg', str.nbchan, 1)
 %           The classes of the data sensors. Valid types are: eeg, meg,
-%           physiology
+%           physiology.
 %
-% See also: from_pset, from_fieldtrip
+%
+% ## References
+%
+% [1] The Neurophysiological Biomarker Toolbox (NBT): http://www.nbtwiki.net/
+%
+%
+% See also: physioset.physioset, physioset.physioset.nbt
 
 import misc.process_arguments;
 import misc.is_valid_filename;
@@ -37,106 +43,121 @@ import physioset.import.matrix;
 import exceptions.*;
 import pset.session;
 
-%% Error checking
-if ~isstruct(str) || ~isfield(str, 'data') || ...
-        ~isfield(str, 'chanlocs'),
-    ME = InvalidArgument('str', 'An EEGLAB struct is expected');
+check_input_arguments(signalInfo, rawSignal);
+
+% The physioset constructor expects channels rowwise
+if size(rawSignal, 1) > size(rawSignal, 2), rawSignal = rawSignal'; end
+
+% Optional input arguments
+opt.SensorClass  = {};
+opt.FileName     = '';
+[~, opt] = process_arguments(opt, varargin);
+
+opt.FileName    = check_file_name(signalInfo, opt.FileName);
+opt.SensorClass = check_sensor_class(size(rawSignal, 1), opt.SensorClass);
+
+if isfield(signalInfo.Interface, 'EEG') && ...
+        isfield(signalInfo.Interface.EEG, 'chanlocs'),
+    hasEEGLAB = true;
+    str = signalInfo.Interface.EEG;
+    [sensorArray, ordering] = sensors.eeglab_to_sensor_array(str, ...
+        opt.SensorClass);
+    rawSignal = rawSignal(ordering, :);
+    % dirty fix:
+    eventArray = event.from_eeglab(str.event);
+   
+    % If it is an epoched dataset we need to add some extra events marking the
+    % onsets and durations of such epochs
+    if str.trials > 1,
+        nbSamples = str.pnts*str.trials;
+        trialEvents = trial_begin(1:str.pnts:nbSamples, 'Duration', str.pnts);
+        eventArray = [eventArray(:); trialEvents(:)];
+    end
+else
+    hasEEGLAB = false;
+    sensorArray = sensors.eeg.dummy(size(rawSignal, 1));
+    eventArray = [];
+end
+
+importer = matrix(signalInfo.converted_sample_frequency, ...
+    'FileName',     opt.FileName, ...
+    'Sensors',      sensorArray);
+physObj  = import(importer, rawSignal);
+
+set_name(physObj, signalInfo.file_name);
+add_event(physObj, eventArray);
+
+% This is handy when converting back to NBT format (or to EEGLAB format)
+if hasEEGLAB,
+    set_meta(physObj, 'eeglab', signalInfo.Interface.EEG);
+end
+set_meta(physObj, 'nbt', signalInfo);
+
+end
+
+
+%
+% Helper functions ########################################################
+%
+
+function check_input_arguments(signalInfo, rawSignal)
+import exceptions.*;
+if ~isa(signalInfo, 'nbt_Info'),
+    ME = InvalidArgument('signalInfo', ...
+        'An NBT SignalInfo struct was expected');
+    throw(ME);
+end
+if ~isnumeric(rawSignal)
+    ME = InvalidArgument('rawSignal', ...
+        'A numeric data matrix was expected');
     throw(ME);
 end
 
-%% Optional input arguments
-opt.SensorClass  = repmat({'eeg'}, str.nbchan, 1);
-opt.FileName    = '';
-
-[~, opt] = process_arguments(opt, varargin);
-
-if numel(opt.SensorClass) < str.nbchan,
-    opt.SensorClass = [opt.SensorClass(:); ...
-        repmat({'eeg'}, str.nbchan-numel(opt.SensorClass), 1)];
 end
 
-if isempty(opt.FileName),
-    if ~isempty(str.filepath),
-       filePath = str.filepath;
-    else
-       filePath = session.instance.Folder;
-    end
-    filename = catfile(filePath, str.setname);
-    if is_valid_filename(filename),
-        opt.FileName = filename;
-    end
+% Ensure that the pset file is valid
+function newFileName = check_file_name(str, desiredFileName)
+import misc.is_valid_filename;
+
+fileExt = pset.globals.get.DataFileExt;
+
+if nargin > 1 && ~isempty(desiredFileName) && is_valid_filename(desiredFileName),
+    [path, name] = fileparts(desiredFileName);
+    newFileName = mperl.file.spec.catfile(path, [name fileExt]);
+    return;
 end
 
-if isempty(opt.FileName),
-    opt.FileName = pset.file_naming_policy('Random');
-elseif ~is_valid_filename(opt.FileName),
-    error('The provided file name is not valid');
+filePath = '';
+if ~isempty(str.Interface) && isfield(str.Interface, 'EEG'),
+   filePath = str.Interface.EEG.filepath;
+end
+if isempty(filePath)
+   filePath = pset.session.instance.Folder;
+end
+[~, dataName] = fileparts(str.file_name); 
+dataName = regexprep(dataName, '[^\w]', '');
+newFileName = mperl.file.spec.catfile(filePath, dataName);
+if ~is_valid_filename(newFileName)
+    newFileName = pset.pset.file_naming_policy('Random');
+end
+[path, name] = fileparts(newFileName);
+newFileName = mperl.file.spec.catfile(path, [name fileExt]);
+
 end
 
-fileExt = globals.get.DataFileExt;
-[path, name] = fileparts(opt.FileName);
-opt.FileName = catfile(path, [name fileExt]);
+% Check the consistency of the SensorClass parameter
+function sensorClass = check_sensor_class(N, desiredSensorClass)
 
-%% Sensor information
-uTypes = unique(opt.SensorClass);
-
-% We need to ensure that same-type sensors are correlative
-count = 0;
-for i = 1:numel(uTypes)
-   idx = find(ismember(opt.SensorClass, uTypes{i}));
-   ordering(count+1:count+numel(idx)) = idx;
-   count = count + numel(idx);
-end
-
-sensorGroups = cell(1, numel(uTypes));
-if ~isempty(str.chanlocs),    
-    for i = 1:numel(uTypes)
-        chans = str.chanlocs(ismember(opt.SensorClass, uTypes{i})); %#ok<NASGU>
-        sensorGroups{i} = ...
-            eval(sprintf('sensors.%s.from_eeglab(chans);', ...
-            lower(uTypes{i})));
-    end
-else
-    for i = 1:numel(uTypes)
-        nbSensors = numel(find(ismember(opt.SensorClass, uTypes{i})));
-        sensorGroups{i} = eval(sprintf('sensors.%s.dummy(%d);', ...
-            uTypes{i}, nbSensors));
+if ~iscell(desiredSensorClass), desiredSensorClass = {desiredSensorClass}; end
+if nargin > 1 && ~isempty(desiredSensorClass)
+    if numel(desiredSensorClass) == 1,
+        sensorClass = repmat(desiredSensorClass, N, 1);
+        return;
+    elseif numel(desiredSensorClass) ~= N,
+        error(['The number of elements of SensorClass (%d) does not match ' ...
+               'the number of channels (%d)'], numel(desiredSensorClass), N);
     end
 end
-if numel(sensorGroups) > 1,
-    sensorObj = sensors.mixed(sensorGroups{:});
-else
-    sensorObj = sensorGroups{1};
-end
 
-
-%% Events information
-eventsObj = event.from_eeglab(str.event);
-
-% If it is an epoched dataset we need to add some extra events to tell so
-if str.trials > 1,
-   trialEvents = trial_begin(1:str.pnts:str.pnts*str.trials, ...
-       'Duration', str.pnts); 
-   eventsObj = [eventsObj(:); trialEvents(:)];
-end
-
-
-%% Use the matrix importer to generate a physioset object
-str.data = reshape(str.data, str.nbchan, str.pnts*str.trials);
-
-importer = matrix(str.srate, ...
-    'FileName',     opt.FileName, ...
-    'Sensors',      sensorObj);
-physObj  = import(importer, str.data(ordering,:));
-
-set_name(physObj, str.setname);
-add_event(physObj, eventsObj);
-
-% This might be handy when converting back to NBT format
-str.data    = [];
-str.icaact  = [];
-set_meta(physObj, 'eeglab', str);
-set_meta(physObj, 'NBT', SignalInfo);
-
-
+sensorClass = repmat({'eeg'}, N, 1);
 end

@@ -25,7 +25,7 @@ obj = varargin(1:count);
 
 varargin = varargin(count+1:end);
 
-opt.BadDataPolicy = 'reject';
+opt.BadDataPolicy = 'donothing';
 opt.MemoryMapped = false;
 [~, opt] = process_arguments(opt, varargin);
 

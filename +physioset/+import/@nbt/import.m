@@ -1,20 +1,13 @@
 function pObj = import(obj, varargin)
 % IMPORT - Imports files in NBT format
 %
-% pObj = import(obj, fileName)
-% pObjArray = import(obj, fileName1, fileName2, ...);
 %
-% ## Notes:
-%
-%   
-%
-% See also: mff
+% See also: physioset.import.nbt
 
 import physioset.physioset;
 import pset.file_naming_policy;
 import pset.globals;
-
-misc.check_dependency('eeglab');
+import mperl.file.spec.catfile;
 
 if numel(varargin) == 1 && iscell(varargin{1}),
     varargin = varargin{1};
@@ -48,14 +41,41 @@ else
     newFileName = obj.FileName;
 end
 
+[path, name, ext] = fileparts(fileName);
+if isempty(regexp(name, '_info$', 'once')),
+    % user provided the data file, not the info file
+    infoFileName = catfile(path, [name '_info' ext]);
+    dataFileName = fileName;
+else
+    dataFileName = catfile(path, [name(1:end-5) ext]);
+    infoFileName = fileName;
+end
 
-cmd = sprintf('EEG = nbt_NBTsignal2EEGlab(''%s'');',fileName);
-evalc(cmd);
-pObj = physioset.from_nbt(EEG, EEG.NBTinfo, ...
-    'FileName', newFileName, 'SensorClass', obj.SensorClass);
+nbtData = load(dataFileName);
+fNames = fieldnames(nbtData);
+if numel(fNames) > 1,
+    error('Invalid format for file %s', dataFileName);
+end
+nbtData = nbtData.(fNames{1});
 
+nbtInfo = load(infoFileName);
+fNames = fieldnames(nbtInfo);
+if numel(fNames) > 1,
+    error('Invalid format for file %s', infoFileName);
+end
+nbtInfo = nbtInfo.(fNames{1});
 
-%% Undoing stuff 
+if verbose,
+    fprintf([verboseLabel 'Importing NBT file %s into %s ...\n\n'], ...
+        infoFileName, newFileName);
+end
+pObj = physioset.physioset.from_nbt(nbtInfo, nbtData, ...
+    'Filename', newFileName, 'SensorClass', obj.SensorClass);
+
+if ~isempty(obj.Sensors),
+    % Sensors property takes precedence over SensorClass
+    set_sensors(pObj, obj.Sensors);
+end
 
 % Unset the global verbose
 goo.globals.set('VerboseLabel', origVerboseLabel);
