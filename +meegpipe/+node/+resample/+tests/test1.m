@@ -16,6 +16,10 @@ import misc.get_username;
 
 MEh     = [];
 
+% Number of samples for the simulated datasets
+% Do not use less than 10000 or the filters will be too long
+NB_SAMPLES = 10000;
+
 initialize(13);
 
 %% Create a new session
@@ -100,7 +104,7 @@ try
     myNode2 = resample('DownsampleBy', 2, 'Antialiasing', false);
     myPipe  = pipeline(myNode1, myNode2);
     
-    data = import(physioset.import.matrix, randn(10, 1000));
+    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     data = filter(lpfilt('fc', 0.1), data);
     
     newData = run(myPipe, data);
@@ -123,7 +127,7 @@ try
     myNode2 = resample('DownsampleBy', 2);
     myPipe  = pipeline(myNode1, myNode2);
     
-    data = import(physioset.import.matrix, randn(10, 1000));
+    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     data = filter(lpfilt('fc', 0.1), data);
     
     newData = run(myPipe, data);
@@ -146,7 +150,7 @@ try
     myNode2 = resample('DownsampleBy', 2, 'AutoDestroyMemMap', true);
     myPipe  = pipeline(myNode1, myNode2);
     
-    data = import(physioset.import.matrix, randn(10, 1000));
+    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     data = filter(lpfilt('fc', 0.1), data);
     
     newData = run(myPipe, data);
@@ -172,7 +176,7 @@ try
     myPipe  = pipeline(myNode1, myNode2);
     
     importer = physioset.import.matrix('SamplingRate', 250);
-    data = import(importer, randn(10, 1000));
+    data = import(importer, randn(10, NB_SAMPLES));
     data = filter(lpfilt('fc', 0.1), data);
     
     newData = run(myPipe, data);
@@ -195,7 +199,7 @@ try
     myNode2 = resample('DownsampleBy', 2);
     myPipe  = pipeline(myNode1, myNode2);
     
-    data = import(physioset.import.matrix, randn(10, 1000));
+    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     data = filter(lpfilt('fc', 0.1), data);
     
     set_bad_channel(data, 2:3);
@@ -204,7 +208,7 @@ try
     newData = run(myPipe, data);
     
     select(dataSel, data);
-    ok(all(size(newData) == [8 900]) & ...
+    ok(all(size(newData) == [8 9900]) & ...
         max(abs(newData(:) - data(:))) < .1, name);
     
 catch ME
@@ -220,7 +224,7 @@ try
     name = 'save node output';
     myNode = resample('UpsampleBy', 2, 'Save', true);
     
-    data = import(physioset.import.matrix, randn(10, 1000));
+    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     
     savedFile = get_output_filename(myNode, data);
     
@@ -242,11 +246,11 @@ try
     % create 3 random physioset objects
     data = cell(1, 3);
     for i = 1:3,
-        data{i} = import(physioset.import.matrix, randn(10, 1000));
+        data{i} = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     end
     myNode = resample('DownsampleBy', 2, 'OGE', false);
     newData = run(myNode, data{:});
-    ok(size(newData{1},2) == 500, name);
+    ok(size(newData{1},2) == 5000, name);
     
 catch ME
     
@@ -263,7 +267,7 @@ try
         
         data = cell(1, 3);
         for i = 1:3,
-            data{i} = import(physioset.import.matrix, randn(10, 1000));
+            data{i} = import(physioset.import.matrix, randn(10, NB_SAMPLES));
             
         end
         myNode    = resample('DownsampleBy', 2, 'OGE', true, 'Save', true);
