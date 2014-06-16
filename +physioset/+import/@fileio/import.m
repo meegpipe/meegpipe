@@ -218,6 +218,7 @@ for chunkItr = 1:nbChunks
         eta(tinit, nbChunks, chunkItr);
     end
 end
+fid.fclose;
 
 % Fix the order of the channels in the header
 if isfield(hdr, 'grad')
