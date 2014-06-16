@@ -26,7 +26,7 @@ classdef lpfilt < filter.abstract_dfilt
     %   Fc : A numeric scalar. Default: []
     %        The normalized cutoff frequency of the filter.
     %
-    %   TransitionBandWidth : A numeric scalar. Default: max(1e-4, 0.01*(1-Fc))
+    %   TransitionBandWidth : A numeric scalar. Default: max(1e-4, 0.005*(1-opt.fc))
     %        The (normalized) bandwidth of the transition band. This
     %        parameter is inversely proportional to the filter order. So
     %        you should try to use as wide transition band as is acceptable
@@ -107,7 +107,7 @@ classdef lpfilt < filter.abstract_dfilt
             end
             
             if isempty(opt.transitionbandwidth),
-                opt.transitionbandwidth = max(1e-4, 0.01*(1-opt.fc)); 
+                opt.transitionbandwidth = max(1e-4, 0.005*(1-opt.fc)); 
             end
 
             order = firfilt.firwsord('hamming', 1, opt.transitionbandwidth);
