@@ -32,7 +32,7 @@ classdef lpfilt < filter.abstract_dfilt
     %        you should try to use as wide transition band as is acceptable
     %        for your application.
     %
-    %   MaxFilterOrder : A numeric scalar. Default: 10000
+    %   MaxOrder : A numeric scalar. Default: 10000
     %       The maximum allowed order for the filter. Note that this
     %       parameter imposes a lower limit on the width of the transition
     %       band. 
