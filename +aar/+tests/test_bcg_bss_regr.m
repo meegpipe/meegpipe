@@ -84,7 +84,8 @@ try
     myNode = meegpipe.node.pipeline.new('NodeList', {myNode1, myNode2});
     run(myNode, data);    
     
-    ok(prctile(abs(dataO), 90) > 2*prctile(abs(data(1,:)), 90), name);
+    ok(prctile(abs(dataO(1,5*1000:1000*30)), 95) > ...
+        1.5*prctile(abs(data(1,5*1000:1000*30)), 95), name);
     
 catch ME
     
