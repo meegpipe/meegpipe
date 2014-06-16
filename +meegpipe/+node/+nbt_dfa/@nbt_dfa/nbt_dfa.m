@@ -7,7 +7,7 @@ function myNode = nbt_dfa(varargin)
 %
 % ## CONSTRUCTION
 %
-%   myNode = meegpipe.node.nbt_biomarkers.new('key', value, ...)
+%   myNode = meegpipe.node.nbt_dfa.new('key', value, ...)
 %
 % Where
 %
@@ -25,7 +25,7 @@ function myNode = nbt_dfa(varargin)
 %   WindowOverlap : A percentage. Default: 50
 %       The overlap between analysis windows, as a percentage.
 %
-%   NbLogBins : A natural scanar. Default: 10
+%   NbLogBins : A natural scalar. Default: 10
 %       The number of bins for logarithmic window scale.
 %
 %   FitInterval : A 1x2 numeric vector. 
@@ -57,7 +57,7 @@ function myNode = nbt_dfa(varargin)
 % [1] NBT toolbox: http://www.nbtwiki.net/
 %
 % 
-% See also: 
+% See also: nbt_DFA.nbt_doDFA
 
 
 
