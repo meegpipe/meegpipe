@@ -6,6 +6,9 @@ import test.simple.*;
 import pset.session;
 import datahash.DataHash;
 
+% Number of samples for simulated signals
+NB_SAMPLES = 10000;
+
 MEh     = [];
 
 initialize(7);
@@ -96,11 +99,11 @@ end
 try
     
     name = 'band-pass filter';
-    X = randn(5, 1000);
+    X = randn(5, NB_SAMPLES);
     
     X = filter(filter.bpfilt('Fp', [5 15]/(250/2)), X);
     
-    N = 0.1*randn(5, 1000);   
+    N = 0.1*randn(5, NB_SAMPLES);   
     
     data = import(physioset.import.matrix('SamplingRate', 250), X+N);
     
@@ -131,11 +134,11 @@ end
 try
     
     name = 'low-pass filter';
-    X = randn(5, 1000);
+    X = randn(5, NB_SAMPLES);
     
     X = filter(filter.lpfilt('fc', 10/(250/2)), X);
     
-    N = 0.1*randn(5, 1000);   
+    N = 0.1*randn(5, NB_SAMPLES);   
     
     data = import(physioset.import.matrix('SamplingRate', 250), X+N);
     
@@ -166,11 +169,11 @@ end
 try
     
     name = 'low-pass filter';
-    X = randn(5, 1000);
+    X = randn(5, NB_SAMPLES);
     
     X = filter(filter.lpfilt('fc', 10/(250/2)), X);
     
-    N = 0.1*randn(5, 1000);   
+    N = 0.1*randn(5, NB_SAMPLES);   
     
     data = import(physioset.import.matrix('SamplingRate', 250), X+N);
     
