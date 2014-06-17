@@ -8,6 +8,8 @@ import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
 
+NB_SAMPLES = 10000;
+
 MEh     = [];
 
 initialize(4);
@@ -78,7 +80,7 @@ try
         'PCFilter', filter.lpfilt('fc', 0.1));    
     
     mySlidingWindowFilter = filter.sliding_window(myFilter, ...
-        'WindowLength', 1000);
+        'WindowLength', NB_SAMPLES);
     
     filter(mySlidingWindowFilter, data);
     
