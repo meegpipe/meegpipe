@@ -26,10 +26,14 @@ if get_config(obj, 'Visible'),
 else
     visible = 'off';
 end
-% We use evalc to avoid messages from EEGLAB's eegplot
-data = data - repmat(mean(data,2), 1, size(data,2)); 
 
+% IMPORTANT: for whatever reason mean(data,2) makes MATLAB 2014a crash
+% badly on somerenserver (Centos 6.5 Linux). No clue why... this is a quick
+% and dirty fix only.
+data = data - repmat(misc.row_mean(data), 1, size(data,2)); 
 winLength = max(1, ceil(obj.NbPoints/opt.srate));
+
+% We use evalc to avoid messages from EEGLAB's eegplot
 evalc(sprintf(['eegplot(''noui'', data, varargin{:}, ''winlength'', ' ...
     '%d, ''visible'', ''%s'');'], winLength, visible));
 
