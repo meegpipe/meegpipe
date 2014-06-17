@@ -131,9 +131,13 @@ else
         trialTime  = trialTime(begSample:endSample);     
         
         ftripStruct.time{trialItr}  = trialTime;
-        
-        
-        ftripStruct.sampleinfo(trialItr,:) = get_meta(ev, 'sampleinfo');
+
+        thisSampleInfo = get_meta(ev, 'sampleinfo');
+        if isempty(thisSampleInfo),
+           thisSampleInfo = [ev.Sample + ev.Offset, ...
+               ev.Sample + ev.Offset + ev.Duration];
+        end
+        ftripStruct.sampleinfo(trialItr,:) = thisSampleInfo;
         if ~isempty(tInfo),
             tInfo = get_meta(ev, 'trialinfo');
             ftripStruct.trialinfo(trialItr,:) = tInfo;
