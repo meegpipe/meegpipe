@@ -43,7 +43,7 @@ for i = 1:size(x, 1)
     if isa(obj, 'physioset.physioset') && obj.BadChan(i),
         continue;
     end
-    x(i, :) = builtin('filtfilt', obj.H.sosMatrix, obj.H.ScaleValues, x(i,:));
+    x(i, :) = filtfilt(obj.H.sosMatrix, obj.H.ScaleValues, x(i,:));
     if verbose && ~mod(i, by25)
         eta(tinit, size(x,1), i, 'remaintime', false);
     end
