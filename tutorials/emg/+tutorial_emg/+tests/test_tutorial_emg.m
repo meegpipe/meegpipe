@@ -51,7 +51,7 @@ end
 %% build the pipeline
 try
     name = 'build the pipeline';
-    myPipe = tutorial_emg.create_pipeline;
+    myPipe = tutorial_emg.create_pipeline('GenerateReport', true);
     ok(true, name);
     
 catch ME
@@ -65,7 +65,8 @@ end
 try
     name = 'run the pipeline';
     run(myPipe, file);
-    ok(true, name);
+    rootDir = get_full_dir(myPipe, file);
+    ok(exist(catfile(rootDir, 'directory.htm'), 'file')>0, name);
     
 catch ME
     
