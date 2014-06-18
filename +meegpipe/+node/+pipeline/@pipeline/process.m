@@ -16,8 +16,8 @@ nodes = get_config(obj, 'NodeList');
 verboseLabel = get_verbose_label(obj);
 
 if is_verbose(obj)
-    fprintf([verboseLabel 'Running under account %s on %s ...\n\n'], ...
-        get_username, get_hostname);        
+    fprintf([verboseLabel 'Running MATLAB %s under account %s on %s ...\n\n'], ...
+        version, get_username, get_hostname);        
 end
 
 for i = 1:numel(nodes)
