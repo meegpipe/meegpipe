@@ -83,8 +83,9 @@ classdef percentile < goo.verbose
             end
            
             [~, otherArgs] = split_arguments(THIS_PROPS, varargin);
+         
             Hpsd = psd(obj.Estimator, data{count}, otherArgs{:});
-            
+           
             if is_verbose(obj) && toc*numel(data) > 10,
                 verbose = true;
             else

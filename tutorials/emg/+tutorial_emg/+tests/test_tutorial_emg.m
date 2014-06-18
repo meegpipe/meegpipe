@@ -51,21 +51,7 @@ end
 %% build the pipeline
 try
     name = 'build the pipeline';
-    nodeList = {};
-    myImporter = physioset.import.eeglab;
-    myNode = meegpipe.node.physioset_import.new('Importer', myImporter);
-    nodeList = [nodeList {myNode}];
-    myNode = aar.emg.cca_sliding_window(...
-        'WindowLength',     5, ...
-        'WindowOverlap',    50, ...
-        'CorrectionTh',     90);
-    nodeList = [nodeList {myNode}];
-    myExporter = physioset.export.eeglab('FileName', 'cleaned-data');
-    myNode = meegpipe.node.physioset_export.new('Exporter', myExporter);
-    nodeList = [nodeList {myNode}];
-    myPipe = meegpipe.node.pipeline.new(...
-        'NodeList', nodeList, ...
-        'Name',     'emg-corr');
+    myPipe = tutorial_emg.create_pipeline;
     ok(true, name);
     
 catch ME

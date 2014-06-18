@@ -1,5 +1,5 @@
-function [status, MEh] = test_tutorial_eog()
-% TEST1 - Test basic package functionality
+function [status, MEh] = test_tutorial_klaus()
+% TEST_TUTORIAL_KLAUS - Tests Klaus tutorial
 
 import mperl.file.spec.*;
 import pset.*;
@@ -35,9 +35,11 @@ end
 try
     
     name = 'download sample dataset';
-    url = 'http://kasku.org/data/meegpipe/NBT.S0021.090205.EOR1.set';
-    file = catfile(session.instance.Folder, 'NBT.S0021.090205.EOR1.set');
+    url = 'https://dl.dropboxusercontent.com/u/4479286/meegpipe/NBT.S0021.090205.EOR1.zip';
+    file = catfile(session.instance.Folder, 'NBT.S0021.090205.EOR1.zip');
     urlwrite(url, file);
+    unzip(file, session.instance.Folder);
+    file = catfile(session.instance.Folder, 'NBT.S0021.090205.EOR1.set');
     ok(exist(file, 'file') > 0, name);
     
 catch ME
@@ -63,7 +65,7 @@ end
 
 %% run the pipeline
 try    
-    name = 'sample pipeline';
+    name = 'run the pipeline';
     run(myPipe, file);
     ok(true, name);
     
