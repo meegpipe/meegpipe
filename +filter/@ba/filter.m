@@ -23,13 +23,16 @@ if 5*delay > size(x, 2),
 end
 
 for i = 1:size(x,1),
+   
+    thisX = [fliplr(x(i, 1:(2*delay))) x(i,:)];
     
-    y = filter(obj.B, obj.A, x(i, :));
+    
+    y = filter(obj.B, obj.A, thisX);
     if numel(obj.A) > 1,
-        x(i,:) = y;
+        x(i,:) = y(2*delay+1:end);
     else    
-        x(i, 1:end-delay) = y((delay+1):end);
-        x(i, end-delay+1:end) = fliplr(x(i, end-2*delay+1:end-delay));
+        x(i, 1:end-delay) = y((3*delay+1):end);
+        x(i, end-delay+1:end) = fliplr(x(i, (end-2*delay+1):(end-delay)));
     end
     
     if verbose,
