@@ -12,7 +12,7 @@ hashCode1 = get_static_hash_code(obj);
 
 % Get also a hash code for the version of meegpipe
 vers = meegpipe.version;  
-hashCode2 = DataHash(vers(1:7));
+hashCode2 = DataHash(vers(1:min(numel(ver), 6)));
 
 hashCode = DataHash({hashCode1, hashCode2});
 
