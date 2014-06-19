@@ -1,6 +1,8 @@
 % Main tutorial script
 
-unzip('https://dl.dropboxusercontent.com/u/4479286/meegpipe/f1_750to810.set');
+urlwrite(...
+    'http://dl.dropboxusercontent.com/u/4479286/meegpipe/f1_750to810.set', ...
+    'f1_750to810.set');
 
 myPipe = tutorial_emg.create_pipeline;
 
