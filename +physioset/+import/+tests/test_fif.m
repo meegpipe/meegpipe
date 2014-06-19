@@ -2,7 +2,6 @@ function [status, MEh] = test_fif()
 % test_fif - Tests importing MEG .fif files
 
 import mperl.file.spec.*;
-import physioset.import.fileio;
 import test.simple.*;
 import pset.session;
 import safefid.safefid;
@@ -56,13 +55,10 @@ end
 try
     
     name = 'import sample data file';   
-    
-    warning('off', 'sensors:InvalidLabel');
-    warning('off', 'sensors:MissingPhysDim');
-    data = import(fileio('Equalize', false), DATA_FILE);
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel'); 
-    
+   
+    myImporter = physioset.import.fileio;
+    data = import(myImporter, DATA_FILE);
+  
     evalc('dataFt = ft_read_data(DATA_FILE)');
     
     condition  = all(size(data) == size(dataFt)) & ...
