@@ -1,7 +1,7 @@
-function sensorClass = label2class(labelArray, className, classRegex)
+function sClass = label2class(labelArray, className, classRegex)
 % LABEL2CLASS - Map sensor labels to valid sensor classes
 %
-%   sensorClass = label2class(labelArray, className, classRegex)
+%   sClass = label2class(labelArray, className, classRegex)
 %
 % Where
 %
@@ -12,7 +12,11 @@ function sensorClass = label2class(labelArray, className, classRegex)
 % CLASSREGEX is a cell array of regular expressions matching the various
 % sensor classes.
 %
-% SENSORCLASS is a cell array of class names (strings).
+% SCLASS is a cell array of class names (strings).
+%
+% STYPE is a cell array of sensor types (strings), when applicable. For
+% instance MEG sensors can be gradiometers (type=grad) or magnetometers
+% (type=mag).
 %
 %
 % See also: sensors
@@ -21,7 +25,7 @@ function sensorClass = label2class(labelArray, className, classRegex)
 if nargin < 3 || isempty(classRegex) || isempty(className),
     className = {'eeg', 'meg', 'trigger', 'physiology'};
     classRegex = {...
-        '(EEG|EOG|E|eeg|eog|e)\s?', ...
+        '(EEG|EOG|E\d|eeg|eog|e\d)\s?', ...
         '(MEG|meg)(\d+)', ...
         '(STI|sti)101', ...
         '([^\s]+)\s*([^\s]*)' ...
@@ -31,18 +35,20 @@ end
 verbose = goo.globals.get.Verbose;
 verboseLabel = goo.globals.get.VerboseLabel;
 
-isMatched = false(size(labelArray));
-sensorClass = cell(size(labelArray));
+isMatched   = false(size(labelArray));
+sClass      = cell(size(labelArray));
 isAmbiguous = false(size(labelArray));
 
 for classItr = 1:numel(className),
     isThisClass = ...
-        cellfun(@(x) ~isempty(x), regexp(labelArray, classRegex{classItr}));    
-    isAmbiguous = isAmbiguous | (isThisClass & isMatched);
+        cellfun(@(x) ~isempty(x), regexp(labelArray, classRegex{classItr}));
+    if classItr < numel(className)
+        isAmbiguous = isAmbiguous | (isThisClass & isMatched);
+    end
     % The first listed classes take preference
     isThisClass(isMatched) = false;
     nbThisClass = numel(find(isThisClass));
-    sensorClass(isThisClass) = repmat(className(classItr), nbThisClass, 1);
+    sClass(isThisClass) = repmat(className(classItr), nbThisClass, 1);
     if verbose && any(isThisClass),
         fprintf([verboseLabel 'Found %d %s sensor(s): %s\n'], ...
             nbThisClass, ...
@@ -59,9 +65,10 @@ if any(isAmbiguous),
 end
 
 if ~all(isMatched)
-   warning('label2class:UnknownSensorClass', ...
-       'Using default %s class for sensor(s): %s', className{end}, ...
-       misc.any2str(labelArray(~isMatched))); 
+    warning('label2class:UnknownSensorClass', ...
+        'Using default %s class for sensor(s): %s', className{end}, ...
+        misc.any2str(labelArray(~isMatched)));
+    sClass(~isMatched) = repmat(className(end), numel(find(~isMatched)), 1);
 end
 
 end
