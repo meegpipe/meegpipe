@@ -71,9 +71,6 @@ classdef meg < sensors.physiology
     %
     %
     % See also: sensors.
-
-    
-    %% IMPLEMENTATION .....................................................
     
     properties (SetAccess = 'private')
         Cartesian;     % Cartesian coordinates of the MEG sensors.
@@ -94,8 +91,8 @@ classdef meg < sensors.physiology
                     throw(abstract_sensors.InvalidPropValue('Label', ...
                         'Must be unique non-empty labels (strings)'));
                 end
-               
-            
+                
+                
             elseif isempty(obj.Label) && ~isempty(obj.Cartesian),
                 
                 throw(Inconsistent('Missing sensor labels'));
@@ -119,7 +116,6 @@ classdef meg < sensors.physiology
         
     end
     
-    %% PUBLIC INTERFACE ...................................................
     properties (Dependent = true)
         Spherical;
         Polar;
@@ -243,19 +239,15 @@ classdef meg < sensors.physiology
     
     % Other public methods
     methods
-        
         h = plot(obj);
-        
     end
     
-    % Static constructors
     methods (Static)
-        
+        % Static constructors
         obj = from_fieldtrip(fStr, label);
         obj = from_eeglab(eStr);
         obj = empty(nb);  % For backwards compatibility, use dummy instead
         obj = dummy(nb);  % To replace empty() at some point
-        
     end
     
     % Constructor
@@ -276,25 +268,35 @@ classdef meg < sensors.physiology
             isValid = cellfun(...
                 @(x) io.edfplus.is_valid_label(x, 'MEG'), ...
                 obj.Label);
+            
             if ~all(isValid),
-                warning('meg:InvalidLabel', ...
-                    ['Sensor labels are not EDF+ compatible. \n' ...
-                    'Automatically creating compatible MEG labels: ' ...
-                    'MEG 1, MEG 2, ...']),
-                tmp = num2str((1:numel(obj.Label))');
-                newLabels = ...
-                    mat2cell(tmp, ones(size(tmp,1),1), size(tmp,2));
+                newLabels = cell(size(obj.Label));
                 for i = 1:numel(obj.Label),
-                    newLabels{i} = ['MEG ' newLabels{i}];
+                    % The Elekta system uses MEG# naming -> MEG #
+                    match = regexp(obj.Label{i}, 'MEG(?<number>\d+)$', 'names');
+                    if isempty(match),
+                        spec = regexprep(obj.Label{i}, '^Unknown\s+', '');
+                        spec = genvarname(spec);
+                        if isempty(spec), spec = num2str(i); end
+                        
+                        newLabels{i} = ['MEG ' spec];
+                    else
+                        newLabels{i} = ['MEG ' match.number];
+                    end
                 end
+                
+                % Ensure that the new labels are unique
+                if numel(unique(newLabels)) < numel(newLabels),
+                    for i = 1:numel(newLabels),
+                        newLabels{i} = [newLabels{i} '_' num2str(i)];
+                    end
+                end
+                
                 obj.Label = newLabels;
             end
             
             %% Ensure valid PhysDims
             if isempty(obj.PhysDim),
-                warning('meg:MissingPhysDim', ...
-                    ['Physical dimensions not provided: assuming ' ...
-                    'gradiometric sensors.(T/m)']);
                 obj.PhysDim = repmat({'T/m'}, numel(obj.Label), 1);
             end
             

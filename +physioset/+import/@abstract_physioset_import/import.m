@@ -25,6 +25,13 @@ fileName = varargin{1};
 verbose      = is_verbose(obj);
 verboseLabel = get_verbose_label(obj);
 
+if isempty(goo.globals.get.VerboseLabel),
+    goo.globals.set('VerboseLabel', verboseLabel);
+    clearVerboseLabel = true;
+else
+    clearVerboseLabel = false;
+end
+
 % Determine the names of the generated (imported) files
 if isempty(obj.FileName),
     psetFileName = file_naming_policy(obj.FileNaming, fileName);
@@ -37,7 +44,7 @@ end
 if verbose,
     fprintf([verboseLabel 'Reading %s...\n\n'], fileName);
 end
-[sens, sr, hdr, ev, startTime, startDate] = ...
+[sens, sr, hdr, ev, startTime, startDate, metaData] = ...
     read_file(obj, fileName, psetFileName, ...
     verbose, verboseLabel);
 if isempty(startDate), startDate = datestr(now, globals.get.DateFormat); end
@@ -69,7 +76,16 @@ end
 
 if obj.ReadEvents && isempty(ev),
     
-    ev = read_events(obj, fileName, pObj, verbose, verboseLabel);
+    [ev, metaEvs] = read_events(obj, fileName, pObj, verbose, verboseLabel);
     add_event(pObj, ev);
+end
+
+metaData = misc.struct2cell(metaData);
+metaEvs  = misc.struct2cell(metaEvs);
+meta = [metaData(:);metaEvs(:)];
+set_meta(pObj, meta{:});
+
+if clearVerboseLabel,
+    goo.globals.set('VerboseLabel', '');
 end
 

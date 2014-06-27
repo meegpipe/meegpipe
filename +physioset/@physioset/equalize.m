@@ -70,7 +70,7 @@ for i = 1:nbGroups
         continue;
     end
     
-    thisPower       = log10(sqrt(thisRange)) + oldPower;
+    thisPower   = log10(sqrt(thisRange)) + oldPower;
     
     powerIdx    = nan(nbSensors,1);
     thisPrefix  = cell(nbSensors,1);

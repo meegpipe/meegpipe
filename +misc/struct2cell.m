@@ -1,5 +1,6 @@
 function y = struct2cell(x)
 
+if isempty(x), y = {}; return; end
 
 fNames = fieldnames(x);
 y = cell(1, numel(fNames)*2);

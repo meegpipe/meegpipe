@@ -49,6 +49,7 @@ classdef physiology < sensors.abstract_sensors
         TransducerType  = [];   % Transduce type
         Label           = [];   % Sensor/Signal label
         PhysDim         = [];   % Physical dimensions
+        SensorVariance  = [];   % The variance of each sensor
     end
     
     % Global consistency check
@@ -77,10 +78,7 @@ classdef physiology < sensors.abstract_sensors
         end
         
     end
-    
-    
-    % Public interface ....................................................
-    
+  
     properties (Dependent)
         Type;               % Signal type, e.g. EEG, Resp, ...
         Specification;      % Signal specifation, e.g. 246, abdomen, ...
@@ -246,7 +244,7 @@ classdef physiology < sensors.abstract_sensors
         
         function type = get_physdim(obj)
             type = obj.PhysDim;
-            if isempty(type) && obj.NbSensors > 1,
+            if isempty(type) && obj.NbSensors > 0,
                 type = repmat({''}, obj.NbSensors, 1);
             end
         end

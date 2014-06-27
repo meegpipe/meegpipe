@@ -24,7 +24,7 @@ function [sample, code] = trigger2code(trigger, varargin)
 
 import misc.process_arguments;
 
-opt.minduration = 2;
+opt.minduration = 1;
 [~, opt] = process_arguments(opt, varargin);
 
 trigger = trigger(:);

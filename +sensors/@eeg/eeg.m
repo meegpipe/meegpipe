@@ -246,10 +246,7 @@ classdef eeg < sensors.physiology
                 @(x) io.edfplus.is_valid_label(x, 'EEG'), ...
                 obj.Label);
             if ~all(isValid),
-%                 warning('sensors:InvalidLabel', ...
-%                     ['Sensor labels are not EDF+ compatible. \n' ...
-%                     'Automatically creating compatible EEG labels ']),
-                
+%           
                 newLabels = cell(size(obj.Label));
                 
                 for i = 1:numel(obj.Label),

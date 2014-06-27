@@ -1,5 +1,5 @@
 function [status, MEh] = test_fif()
-% test_fif - Tests importing MEG .fif files
+% TEST_FIF - Tests importing MEG .fif files
 
 import mperl.file.spec.*;
 import test.simple.*;
@@ -8,13 +8,12 @@ import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
 
-
 DATA_URL = meegpipe.get_config('test', 'remote');    
-DATA_FILE = 'abcg_0002_meg_task_2_8_raw.fif.gz';
+DATA_FILE = 'abcg_0002_meg_task_2_8_raw.fif';
 
 MEh     = [];
 
-initialize(3);
+initialize(4);
 
 %% Create a new session
 try
@@ -40,9 +39,12 @@ try
     name = 'download sample data file';
   
     if ~exist(DATA_FILE, 'file'),
-        urlwrite([DATA_URL DATA_FILE '.fif'], pwd);
+        urlwrite([DATA_URL DATA_FILE '.gz'], [pwd filesep DATA_FILE '.gz']);
+        gunzip([pwd filesep DATA_FILE '.gz']);
+    elseif exist([pwd filesep DATA_FILE '.gz'], 'file'),
+        gunzip([pwd filesep DATA_FILE '.gz']);
     end
-    ok(exist(DATA_FILE, 'dir') > 0, name);
+    ok(exist(DATA_FILE, 'file') > 0, name);
     
 catch ME
     
@@ -59,79 +61,20 @@ try
     myImporter = physioset.import.fileio;
     data = import(myImporter, DATA_FILE);
   
-    evalc('dataFt = ft_read_data(DATA_FILE)');
+    evalc('dataFt = ft_read_data(DATA_FILE);');
     
-    condition  = all(size(data) == size(dataFt)) & ...
-        max(abs(data(:) - dataFt(:))) < 0.001; %#ok<NODEF>
+    rawIdx = get_meta(data, 'raw_chan_indexing');
+    dataFt = dataFt(rawIdx,:); %#ok<NODEF>
+    
+    condition  = all(size(data) == size(dataFt)) && ...
+        max(abs(data(:) - dataFt(:))) < 0.001; 
     clear data;
     ok(condition, name);
     
     
 catch ME
-    
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
+
     clear data;
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-%% import multiple files
-try
-    
-    name = 'import multiple files';
-    folder = session.instance.Folder;   
-    file2 = catfile(folder, 'copy.mff');
-    copyfile(DATA_FILE, file2);
-    
-    warning('off', 'sensors:InvalidLabel');
-    warning('off', 'sensors:MissingPhysDim');
-    warning('off', 'equalize:ZeroVarianceData')
-    data = import(fileio, DATA_FILE, file2);
-    warning('on', 'equalize:ZeroVarianceData')
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
-
-    condition = iscell(data) && numel(data) == 2 && ...
-        all(size(data{1})==size(data{2}));
-    
-    clear data;
-    
-    ok(condition, name);
-    
-catch ME
-    
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-%% specify file name
-try
-    
-    name = 'specify file name';
-    
-    folder = session.instance.Folder;
-   
-    warning('off', 'sensors:InvalidLabel');
-    warning('off', 'sensors:MissingPhysDim');
-    warning('off', 'equalize:ZeroVarianceData')
-    import(fileio('FileName', catfile(folder, 'myfile')), DATA_FILE);
-    warning('on', 'equalize:ZeroVarianceData')
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
-    
-    psetExt = pset.globals.get.DataFileExt;
-    newFile = catfile(folder, ['myfile' psetExt]);
-    ok(exist(newFile, 'file') > 0, name);
-    
-catch ME
-    
-    warning('on', 'sensors:MissingPhysDim');
-    warning('on', 'sensors:InvalidLabel');
     ok(ME, name);
     MEh = [MEh ME];
     
