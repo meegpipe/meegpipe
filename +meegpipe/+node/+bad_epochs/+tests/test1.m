@@ -262,7 +262,7 @@ try
     mySel  = class_selector('Type', 'myevent');
     myNode = minmax(-10, 10, 'EventSelector', mySel);
     
-    run(myNode, data);
+    tic;run(myNode, data);toc
     
     ok(numel(find(is_bad_sample(data))) == 900, name);
     

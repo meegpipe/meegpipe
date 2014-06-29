@@ -1,7 +1,4 @@
 function [mergedData, data] = process(obj, fileList, varargin)
-% PROCESS - Split into smaller physiosets
-%
-% See also: merge
 
 
 import mperl.file.spec.catfile;
