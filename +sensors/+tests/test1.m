@@ -6,7 +6,7 @@ import test.simple.*;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Default constructors
 try
@@ -21,6 +21,24 @@ try
     dummy;
     
     ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+end
+
+%% Mixed sensors
+try
+    
+    name = 'mixed sensors';
+    
+    obj = sensors.mixed(...
+        sensors.eeg.from_template('egi256'), ...
+        sensors.physiology('Label', {'Resp chest'}) ...
+        );
+    
+    ok(nb_sensors(obj) == 258, name);
     
 catch ME
     
