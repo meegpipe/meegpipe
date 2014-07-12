@@ -77,7 +77,13 @@ classdef lpfilt < filter.abstract_dfilt
         end
         
         function y = filtfilt(obj, varargin)
-            y = filtfilt(obj.BAFilter, varargin{:});
+            if numel(obj.BAFilter.A) > 1,
+                y = filtfilt(obj.BAFilter, varargin{:});
+            else
+                % Since this is a FIR filter, filtfilt() is not necessary
+                % to ensure zero filter delay and a linear phase response.
+                y = filter(obj.BAFilter, varargin{:});
+            end
         end
         
         function H = mdfilt(obj)
