@@ -56,9 +56,7 @@ try
     name = 'import sample data file';   
    
     myImporter = physioset.import.fileio;
-    warning('off', 'read_file:MissingSensorCoords');
     data = import(myImporter, DATA_FILE);
-    warning('on', 'read_file:MissingSensorCoords');
   
     evalc('dataFt = ft_read_data(DATA_FILE);');
     
