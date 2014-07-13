@@ -172,9 +172,26 @@ if isempty(obj.Sensors),
                 'PhysDim',      'T', ...
                 'Label',        hdr.label(magIdx));
         elseif ~isfield(hdr, 'grad'),
-            warning('read_file:MissingSensorCoords', ...
-                'Could not retrieve magnetometer sensor locations');
-            magSensors = sensors.meg.dummy(numel(magIdx));
+            % Last try at guessing the sensor coordinates
+            if isfield(hdr.orig, 'chs') && isfield(hdr.orig.chs, 'loc'),
+                coords = nan(3, numel(magIdx));
+                for i = 1:numel(magIdx),
+                    coords(:,i) = hdr.orig.chs(rawChanIndexing(magIdx(i))).loc(1:3);
+                end
+                % Head center at 0 and head radius 10 cm: the convention
+                % used by EGI's head templates
+                coords = coords - repmat(mean(coords, 2), 1, numel(magIdx));
+                R = mean(sqrt(sum(coords.^2)));
+                coords = (10/R)*coords;
+                magSensors  = sensors.meg(...
+                    'Cartesian',    coords', ...
+                    'PhysDim',      'T', ...
+                    'Label',        hdr.label(magIdx));
+            else
+                warning('read_file:MissingSensorCoords', ...
+                    'Could not retrieve magnetometer sensor locations');
+                magSensors = sensors.meg.dummy(numel(magIdx));
+            end
         else
             error('Invalid Fieldtrip structure');
         end
@@ -202,9 +219,26 @@ if isempty(obj.Sensors),
                 'PhysDim',      'T/m', ...
                 'Label',        hdr.label(gradIdx));
         elseif ~isfield(hdr, 'grad'),
-            warning('read_file:MissingSensorCoords', ...
-                'Could not retrieve magnetometer sensor locations');
-            gradSensors = sensors.meg.dummy(numel(gradIdx));
+            % Last try at guessing the sensor coordinates...
+            if isfield(hdr.orig, 'chs') && isfield(hdr.orig.chs, 'loc'),
+                coords = nan(3, numel(gradIdx));
+                for i = 1:numel(gradIdx),
+                    coords(:,i) = hdr.orig.chs(rawChanIndexing(gradIdx(i))).loc(1:3);
+                end
+                % Head center at 0 and head radius 10 cm: the convention
+                % used by EGI's head templates
+                coords = coords - repmat(mean(coords, 2), 1, numel(gradIdx));
+                R = mean(sqrt(sum(coords.^2)));
+                coords = (10/R)*coords;
+                gradSensors  = sensors.meg(...
+                    'Cartesian',    coords', ...
+                    'PhysDim',      'T/m', ...
+                    'Label',        hdr.label(gradIdx));
+            else
+                warning('read_file:MissingSensorCoords', ...
+                    'Could not retrieve magnetometer sensor locations');
+                gradSensors = sensors.meg.dummy(numel(gradIdx));
+            end
         else
             error('Invalid Fieldtrip structure');
         end
