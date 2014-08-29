@@ -14,6 +14,9 @@ import misc.rmdir;
 import oge.has_oge;
 import misc.get_username;
 
+% number of samples for the simulated signals. Do not use less than 5000 or
+% the filters may be too long for the signal
+NB_SAMPLES = 10000;
 
 MEh     = [];
 
@@ -93,7 +96,7 @@ end
 try
     
     name = 'small pipeline (saving output)';
-    data = import(physioset.import.matrix, randn(2, 500));
+    data = import(physioset.import.matrix, randn(2, NB_SAMPLES));
     
     save(data);
     
@@ -126,7 +129,7 @@ end
 try
     
     name = 'small pipeline';
-    data = import(physioset.import.matrix, randn(2, 500));
+    data = import(physioset.import.matrix, randn(2, NB_SAMPLES));
     
     save(data);
     
@@ -161,7 +164,7 @@ try
     
     name = 'process sample data';
     myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', 'Save', true);
-    data = import(physioset.import.matrix, randn(10, 1000));
+    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     dataCopy = run(myNode, data);
     
     [~, origFileName] = fileparts(get_datafile(data));
@@ -215,7 +218,7 @@ try
     % create 3 random physioset objects
     data = cell(1, 3);
     for i = 1:3,
-        data{i} = import(physioset.import.matrix, randn(10, 1000));
+        data{i} = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     end
     myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', ...
         'OGE', false);
@@ -238,7 +241,7 @@ try
         % create 3 random physioset objects
         data = cell(1, 3);
         for i = 1:3,
-            data{i} = import(physioset.import.matrix, randn(2, 100));
+            data{i} = import(physioset.import.matrix, randn(2, NB_SAMPLES));
         end
         myNode = copy('PreFix', 'myprefix_', 'PostFix', '_mypostfix', ...
             'OGE', true, 'Save', true);

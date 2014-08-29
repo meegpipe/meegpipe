@@ -10,6 +10,8 @@ import misc.rmdir;
 import oge.has_oge;
 import misc.get_username;
 
+NB_SAMPLES = 10000;
+
 MEh     = [];
 
 initialize(6);
@@ -40,7 +42,7 @@ try
     
     myPipe = sample_pipe();
     
-    X      = randn(5, 1000);
+    X      = randn(5, NB_SAMPLES);
     data   = run(myPipe, X);
     
     condition = (rank(cov(data)) == 3);
@@ -115,7 +117,7 @@ try
     
     myPipe = sample_pipe();
     
-    X      = randn(5, 1000);
+    X      = randn(5, NB_SAMPLES);
     data   = run(myPipe, X);
     
     condition = (rank(cov(data)) == 3);
@@ -171,7 +173,7 @@ try
     
     myPipe = sample_pipe();
     
-    X      = randn(5, 1000);
+    X      = randn(5, NB_SAMPLES);
     data   = run(myPipe, X);
     
     condition = (rank(cov(data)) == 3);
@@ -213,7 +215,7 @@ try
     
     myPipe = sample_pipe();
     
-    X      = randn(5, 1000);
+    X      = randn(5, NB_SAMPLES);
     data   = run(myPipe, X);
     
     condition = (rank(cov(data)) == 3);

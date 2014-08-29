@@ -51,16 +51,12 @@ goo.globals.set('VerboseLabel', verboseLabel);
 isZipped = ~status;
 
 % Determine the names of the generated (imported) files
-if isempty(obj.FileName),
-    
+if isempty(obj.FileName),  
     newFileName = file_naming_policy(obj.FileNaming, fileName);
     dataFileExt = globals.get.DataFileExt;
-    newFileName = [newFileName dataFileExt];
-    
-else
-    
-    newFileName = obj.FileName;
-    
+    newFileName = [newFileName dataFileExt];  
+else    
+    newFileName = obj.FileName;  
 end
 
 

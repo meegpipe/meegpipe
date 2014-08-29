@@ -6,20 +6,19 @@ import mperl.file.spec.catfile;
 
 FILE_NAME = '.git/refs/heads/master';
 
-dirName = rel2abs([meegpipe.root_path filesep '..']);
+dirName = regexprep(meegpipe.root_path, '.\+meegpipe$', '');
 fileName = catfile(dirName, FILE_NAME);
 %currDir = pwd;
 try
-    %cd(dirName);
     if exist(fileName, 'file')
         fid = safefid.fopen(fileName, 'r');
         id = fid.fgetl;
     else
         % If the user followed the installation instructions on the web,
         % then his meegpipe installation dir is named
-        % meegpipe/meegpipe-meegpipe-[version]
+        % meegpipe-[version]
        
-        match = regexp(dirName, 'meegpipe-meegpipe-(?<id>\w+)$', 'names');
+        match = regexp(dirName, 'meegpipe-(?<id>.+)$', 'names');
         if isempty(match)
             warning('meegpipe:version:Unknown', ...
                 ['Could not figure out meegpipe version. You may have ' ... 
@@ -34,9 +33,7 @@ try
 catch ME
     rethrow(ME);
 end
-%cd(currDir);
 
-id = id(1:7);
-
+id = ['v' id];
 
 end

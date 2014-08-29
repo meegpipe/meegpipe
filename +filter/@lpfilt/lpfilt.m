@@ -77,7 +77,13 @@ classdef lpfilt < filter.abstract_dfilt
         end
         
         function y = filtfilt(obj, varargin)
-            y = filtfilt(obj.BAFilter, varargin{:});
+            if numel(obj.BAFilter.A) > 1,
+                y = filtfilt(obj.BAFilter, varargin{:});
+            else
+                % Since this is a FIR filter, filtfilt() is not necessary
+                % to ensure zero filter delay and a linear phase response.
+                y = filter(obj.BAFilter, varargin{:});
+            end
         end
         
         function H = mdfilt(obj)
@@ -111,6 +117,15 @@ classdef lpfilt < filter.abstract_dfilt
             end
 
             order = firfilt.firwsord('hamming', 1, opt.transitionbandwidth);
+            
+            if order > opt.maxorder,
+                warning(...
+                ['The minimum filter order that meets the specifications ' ...
+                '(%d) exceeds the maximum allowed filter order (%d). The ' ...
+                'generated filter will not meet the specs exactly! You may ' ...
+                'want to increase the maximum allowed filter order.'], ...
+                order, opt.maxorder);
+            end
             
             obj.Order = min(order, opt.maxorder);
             

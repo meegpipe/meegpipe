@@ -79,9 +79,10 @@ evBad = ev(selected);
 rejIdx = find(selected);
 
 for i = 1:numel(evBad),
-    [~, ~, samplIdx] = epoch_get(data, evBad(i));
+    evOnset  = evBad(i).Sample+evBad(i).Offset;
+    samplIdx = evOnset:(evOnset+evBad(i).Duration-1);
     
-    set_bad_sample(data, samplIdx(:));
+    set_bad_sample(data, samplIdx);
 end
 
 if ~isempty(rep),

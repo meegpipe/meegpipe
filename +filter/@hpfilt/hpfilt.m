@@ -20,7 +20,7 @@ classdef hpfilt < filter.abstract_dfilt
     %   FC is the normalized cutoff frequency of the filter. This construction
     %   argument can also be provided as a key/value pair (see below).
     %
-    % 
+    %
     % ## KEY/VALUE PAIRS ACCEPTED BY CONSTRUCTOR
     %
     %   Fc : A numeric scalar. Default: []
@@ -35,7 +35,7 @@ classdef hpfilt < filter.abstract_dfilt
     %   MaxOrder : A numeric scalar. Default: 10000
     %       The maximum allowed order for the filter. Note that this
     %       parameter imposes a lower limit on the width of the transition
-    %       band. 
+    %       band.
     %
     %
     % ## USAGE EXAMPLES
@@ -77,7 +77,13 @@ classdef hpfilt < filter.abstract_dfilt
         end
         
         function y = filtfilt(obj, varargin)
-            y = filtfilt(obj.BAFilter, varargin{:});
+            if numel(obj.BAFilter.A) > 1,
+                y = filtfilt(obj.BAFilter, varargin{:});
+            else
+                % Since this is a FIR filter, filtfilt() is not necessary
+                % to ensure zero filter delay and a linear phase response.
+                y = filter(obj.BAFilter, varargin{:});
+            end
         end
         
         function H = mdfilt(obj)
@@ -96,7 +102,7 @@ classdef hpfilt < filter.abstract_dfilt
             if isnumeric(varargin{1}),
                 varargin = [{'fc'}, varargin];
             end
-        
+            
             opt.fc = [];
             opt.transitionbandwidth = [];
             opt.maxorder = 10*1000;
@@ -107,11 +113,19 @@ classdef hpfilt < filter.abstract_dfilt
             end
             
             if isempty(opt.transitionbandwidth),
-                opt.transitionbandwidth = 0.25*opt.fc; 
+                opt.transitionbandwidth = 0.25*opt.fc;
             end
-
+            
             order = firfilt.firwsord('hamming', 1, opt.transitionbandwidth);
             
+            if order > opt.maxorder,
+                warning(...
+                ['The minimum filter order that meets the specifications ' ...
+                '(%d) exceeds the maximum allowed filter order (%d). The ' ...
+                'generated filter will not meet the specs exactly! You may ' ...
+                'want to increase the maximum allowed filter order.'], ...
+                order, opt.maxorder);
+            end
             obj.Order = min(order, opt.maxorder);
             
             B = firfilt.firws(obj.Order, opt.fc, 'high', ...
@@ -120,7 +134,7 @@ classdef hpfilt < filter.abstract_dfilt
             
             obj.BAFilter = set_name(obj.BAFilter, get_name(obj));
             obj.BAFilter = set_verbose(obj.BAFilter, is_verbose(obj));
-         
+            
         end
         
     end

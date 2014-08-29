@@ -7,7 +7,7 @@ import test.simple.*;
 
 MEh     = [];
 
-initialize(5);
+initialize(7);
 
 %% Default constructors
 try
@@ -77,6 +77,42 @@ try
     name = 'filtering with spfilt';
     filter(filter.sbfilt('fstop', [0.1 0.5]), randn(5, 10000));
     ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% filter() with cascade filter
+try
+    name = 'filter() with cascade filter';
+    myFilt1 = filter.lpfilt('fc', 0.1);
+    myFilt2 = filter.hpfilt('fc', 0.01);
+    myFilt  = filter.cascade(myFilt1, myFilt2);
+    X = randn(5, 10000);
+    Y1 = filter(myFilt2, filter(myFilt1, X));
+    Y2 = filter(myFilt, X);
+    ok(max(abs(Y1(2,:)-Y2(2,:))) < 1e-6, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% filtfilt() with cascade filter
+try
+    name = 'filtfilt() with cascade filter';
+    myFilt1 = filter.lpfilt('fc', 0.1);
+    myFilt2 = filter.hpfilt('fc', 0.01);
+    myFilt  = filter.cascade(myFilt1, myFilt2);
+    X = randn(5, 10000);
+    Y1 = filtfilt(myFilt2, filtfilt(myFilt1, X));
+    Y2 = filtfilt(myFilt, X);
+    ok(max(abs(Y1(2,:)-Y2(2,:))) < 1e-6, name);
     
 catch ME
     

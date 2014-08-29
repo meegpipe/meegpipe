@@ -71,7 +71,7 @@ copy and paste the following code in the MATLAB command window:
 ````matlab
 % installDir is your installation directory
 installDir = [pwd filesep 'meegpipe'];
-url = 'https://github.com/meegpipe/meegpipe/zipball/master';
+url = 'https://github.com/meegpipe/meegpipe/archive/v0.1.9.zip';
 unzip(url, installDir);
 addpath(genpath('meegpipe'));
 meegpipe.initialize;

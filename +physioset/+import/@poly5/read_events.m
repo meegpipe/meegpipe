@@ -1,8 +1,10 @@
-function ev = read_events(obj, fileName, pObj, verbose, verboseLabel)
+function [ev, meta] = read_events(~, fileName, pObj, varargin)
 
 import safefid.safefid;
 import mperl.file.spec.catfile;
 import mperl.split;
+
+meta = [];
 
 NB_EVENTS = 10000;
 

@@ -14,7 +14,7 @@ import misc.get_hostname;
 
 MEh     = [];
 
-initialize(4);
+initialize(5);
 
 %% Create a new session
 try
@@ -32,6 +32,30 @@ catch ME
     ok(ME, name);
     status = finalize();
     return;
+    
+end
+
+%% process very large file with simple pipeline
+try
+    
+    name = 'process very large file with simple pipeline';
+
+    data = pset.pset.randn(256, 1000*60*60*1);
+    data = physioset.physioset(data);
+    myPipe = pipeline.new('NodeList', {...
+        copy.new, ...
+        copy.new ...       
+        }, ...
+        'Save', true, 'GenerateReport', false, 'Name', 'sample');
+    
+    run(myPipe, data);
+    
+    ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
     
 end
 

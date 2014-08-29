@@ -16,10 +16,8 @@ classdef mixed < sensors.abstract_sensors
     %
     % See also: sensors.sensors sensors.
 
-    
-    % Public interface ....................................................
     properties (SetAccess = 'private')
-        Sensor;  % One or more sensor.sensor objects
+        Sensor;           % One or more sensor.sensor objects
     end
     
     % Consistency checks
@@ -96,6 +94,9 @@ classdef mixed < sensors.abstract_sensors
     % Constructor
     methods
         function obj = mixed(varargin)
+            
+            if nargin < 1, return; end
+           
             obj.Sensor = varargin;
         end
     end

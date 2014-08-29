@@ -15,7 +15,8 @@ depRoot = hash;
 
 verboseLabel = '(meegpipe) ';
 
-fprintf(['\n\n' verboseLabel 'Initializing...\n\n']);
+fprintf(['\n\n' verboseLabel 'Initializing at host %s on account %s ...\n\n'], ...
+    misc.get_hostname, misc.get_username);
 
 if nargin < 1 || isempty(cfg),
     cfg = get_config();

@@ -246,10 +246,7 @@ classdef eeg < sensors.physiology
                 @(x) io.edfplus.is_valid_label(x, 'EEG'), ...
                 obj.Label);
             if ~all(isValid),
-                warning('sensors:InvalidLabel', ...
-                    ['Sensor labels are not EDF+ compatible. \n' ...
-                    'Automatically creating compatible EEG labels ']),
-                
+%           
                 newLabels = cell(size(obj.Label));
                 
                 for i = 1:numel(obj.Label),
@@ -290,8 +287,7 @@ classdef eeg < sensors.physiology
             
             % Ensure valid PhysDims
             if isempty(obj.PhysDim),
-                warning('sensors:MissingPhysDim', ...
-                    'Physical dimensions not provided: assuming uV');
+                % We assume microvolts by default
                 obj.PhysDim = repmat({'uV'}, numel(obj.Label), 1);
             end
             

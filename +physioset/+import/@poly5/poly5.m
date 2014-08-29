@@ -6,8 +6,8 @@ classdef poly5 < physioset.import.abstract_physioset_import
     
     % Needed by import() method of parent class
     methods
-        ev = read_events(obj, fileName, pObj, verb, verbLabl);
-        [sens, sr, hdr, ev, startDate, startTime] = ...
+        [ev, meta] = read_events(obj, fileName, pObj, verb, verbLabl);
+        [sens, sr, hdr, ev, startDate, startTime, meta] = ...
             read_file(obj, fileName, psetFileName, verb, verbLabl);
     end
     

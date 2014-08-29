@@ -6,10 +6,8 @@ classdef abstract_dfilt < ...
         goo.abstract_named_object
     % ABSTRACT_DFILT - Common ancestor to digital filter classes
     
-    methods (Static, Access = protected)
-        
+    methods (Static, Access = protected)  
         [y, wp, ws, rp, rs] = filt_ord(designmethod, wp, ws, rp, rs, type)
-        
     end
 
     methods
@@ -18,18 +16,10 @@ classdef abstract_dfilt < ...
         function H =  mdfilt(obj) %#ok<STOUT>
             error('Class %s does not implement method mdfilt', class(obj));
         end
-        function obj = set_persistent(obj, ~)
-            % arg2 is a boolean value
-            error('Class %s does not implement method set_persistent', ...
-                class(obj));
-        end
-        
     end
     
-    methods
-        
-        y = filtfilt(obj, x, varargin);
-        
+    methods     
+        y = filtfilt(obj, x, varargin); 
     end
 
     % report.printable interface

@@ -10,5 +10,5 @@ _meegpipe_:
 * Tutorial on how to [regress out EOG signals from the EEG][eogtut]
 * Tutorial on how to [minimize muscle artifacts in the EEG][emgtut]
 
-[emgtut]: ../../emg/README.md
-[eogtut]: ../../eog/README.md
+[emgtut]: ../emg/README.md
+[eogtut]: ../eog/README.md

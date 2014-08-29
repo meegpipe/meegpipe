@@ -29,7 +29,7 @@ if isa(filtObj, 'function_handle'),
             filtObj = filtObj(data);
         else
             rethrow(ME);
-        end        
+        end
     end
 end
 
@@ -50,16 +50,8 @@ if verbose,
     clear +misc/eta.m;
 end
 
-%% Select a representative set of channels for the report
+
 if do_reporting(obj)
-    
-    if nbChannelsRep > 0,
-        channelSel = ceil(linspace(1, size(data,1), nbChannelsRep));
-        channelSel = unique(channelSel);
-    else
-        channelSel = [];
-    end
-    
     rep = get_report(obj);
     print_title(rep, 'Data processing report', get_level(rep) + 1);
 end
@@ -92,7 +84,7 @@ for segItr = 1:numel(evSample)
     
     first = evSample(segItr);
     last  = min(evSample(segItr)+evDur(segItr)-1, size(data,2));
-
+    
     %filtObj = set_verbose(filtObj, false);
     
     if do_reporting(obj)
@@ -148,6 +140,14 @@ for segItr = 1:numel(evSample)
     end
     
     if do_reporting(obj),
+        % Select a representative set of channels for the report
+        if nbChannelsRep > 0,
+            channelSel = ceil(linspace(1, size(data,1), nbChannelsRep));
+            channelSel = unique(channelSel);
+        else
+            channelSel = [];
+        end
+        
         if verbose,
             fprintf([verboseLabel 'Generating report for %d channels ...'], ...
                 numel(channelSel));
@@ -176,7 +176,7 @@ for segItr = 1:numel(evSample)
             select(data, [], firstRepSampl:lastRepSampl);
             select(pcs, [], firstRepSampl:lastRepSampl);
             attach_figure(obj);
-            galleryArray = filter.generate_filt_plot(thisRep, ...
+            galleryArray = meegpipe.node.rfilter.rfilter.generate_filt_plot(thisRep, ...
                 i, ...
                 data, ...
                 pcs, ...

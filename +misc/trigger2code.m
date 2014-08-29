@@ -1,10 +1,8 @@
 function [sample, code] = trigger2code(trigger, varargin)
 % TRIGGER2CODE - Converts a trigger channel into an array of trigger codes
 %
-%
-% [sample, code] = trigger2code(trigger)
-%
-% [sample, code] = trigger2code(trigger, 'key', value, ...)
+%   [sample, code] = trigger2code(trigger)
+%   [sample, code] = trigger2code(trigger, 'key', value, ...)
 %
 % Where
 %
@@ -17,19 +15,19 @@ function [sample, code] = trigger2code(trigger, varargin)
 %
 % ## Accepted key/value pairs:
 %
-% MinDuration   <value/samples>
+%   MinDuration   <value/samples>
+%                 Minimum duration of a trigger pulse. If a pulse of a 
+%                 shorter duration it will be ignored.
 %
-%       Minimum duration of a trigger pulse. If a pulse of a shorter
-%       duration it will be ignored.
 %
+% See also: misc
 
 import misc.process_arguments;
 
-opt.minduration = 2;
+opt.minduration = 1;
 [~, opt] = process_arguments(opt, varargin);
 
 trigger = trigger(:);
-
 
 % Places where the triggers start
 triggerStart = find([trigger(1);abs(diff(trigger))>0]);
@@ -40,7 +38,6 @@ if isempty(triggerStart) || isempty(triggerEnd),
     code = [];
     return;
 end
-
 triggerStart = setdiff(triggerStart, triggerEnd);
 tmp = [0;trigger];
 alsoEnd = triggerStart(abs(tmp(triggerStart-1))>eps);
