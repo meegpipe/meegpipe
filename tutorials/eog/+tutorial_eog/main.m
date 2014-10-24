@@ -1,7 +1,9 @@
 % Main tutorial script
 
-urlwrite('http://kasku.org/data/meegpipe/eeglab_data_epochs_ica.set', ...
-    'eeglab_data_epochs_ica.set');
+if ~exist('eeglab_data_epochs_ica.set', 'file')
+    urlwrite('http://kasku.org/data/meegpipe/eeglab_data_epochs_ica.set', ...
+        'eeglab_data_epochs_ica.set');
+end
 
 myPipe = tutorial_eog.create_pipeline;
 

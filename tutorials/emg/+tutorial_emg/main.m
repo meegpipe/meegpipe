@@ -1,8 +1,10 @@
 % Main tutorial script
 
-urlwrite(...
-    'http://dl.dropboxusercontent.com/u/4479286/meegpipe/f1_750to810.set', ...
-    'f1_750to810.set');
+if ~exist('f1_750to810.set', 'file')
+    urlwrite(...
+        'http://dl.dropboxusercontent.com/u/4479286/meegpipe/f1_750to810.set', ...
+        'f1_750to810.set');
+end
 
 myPipe = tutorial_emg.create_pipeline;
 
