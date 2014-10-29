@@ -115,6 +115,28 @@ myNode = meegpipe.node.physioset_export.new('Exporter', myExporter);
 ````
 
 
+### How to prevent modification of certain channels?
+
+Sometimes, you know for certain that there is no EMG activity present in 
+certain set of channels. You can specify the subset of EEG channels on which 
+EMG correction should be applied by re-defining the EMG correction node as 
+follows:
+
+````matlab
+
+% We know that channels 1 and 5 are free of EMG activity, so don't consider 
+% those for EMG correction. Notice the tilde (~) sign, indicating you want to
+% select all channels except 1 and 5
+mySelector = ~pset.selector.sensor_idx([1 5])
+myNode = aar.emg.cca_sliding_window(...
+    'DataSelector',     mySelector, ...
+    'WindowLength',     5, ...
+    'WindowOverlap',    50, ...
+    'CorrectionTh',     90);
+
+````
+
+
 ## Cleaning the sample dataset
 
 Once the pipeline has been defined, we can simply run the following command to
