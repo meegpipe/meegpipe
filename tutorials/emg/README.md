@@ -117,10 +117,9 @@ myNode = meegpipe.node.physioset_export.new('Exporter', myExporter);
 
 ### How to prevent modification of certain channels?
 
-Sometimes, you know for certain that there is no EMG activity present in 
-certain set of channels. You can specify the subset of EEG channels on which 
-EMG correction should be applied by re-defining the EMG correction node as 
-follows:
+If you know that a set of channels are free from EMG activity, you can 
+prevent modification of those channels by specifying the subset of channels 
+on which the EMG correction should be applied:
 
 ````matlab
 
