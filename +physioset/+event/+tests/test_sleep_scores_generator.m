@@ -1,5 +1,5 @@
-function [status, MEh] = test_generators()
-% TEST_GENERATORS - Tests event generators
+function [status, MEh] = test_sleep_scores_generator()
+% TEST_SLEEP_SCORES_GENERATOR - Tests event generators
 
 
 import physioset.event.*;
@@ -32,13 +32,11 @@ catch ME
     
 end
 
-
 %% default constructors
 try
     
-    name = 'default constructors';
+    name = 'default constructor';
     sleep_scores_generator;
-    periodic_generator;
     ok(true, name);
     
 catch ME
