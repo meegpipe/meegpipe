@@ -136,8 +136,8 @@ classdef periodic_generator < physioset.event.generator & ...
                 get_duration(evArray(end)) - 1;
             if obj.FillData && last_sample < size(data,2),
                 missingSampl = size(data,2) - last_sample;
-               evArray(end) = set_duration(evArray(end), ...
-                   get_duration(evArray(end)) + missingSampl);
+                evArray(end) = set_duration(evArray(end), ...
+                    get_duration(evArray(end)) + missingSampl);
             end
         end
         
