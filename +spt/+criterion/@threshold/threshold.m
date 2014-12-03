@@ -210,6 +210,9 @@ classdef threshold < spt.criterion.criterion & goo.verbose & goo.abstract_named_
             i = 0;
             while isa(varargin{i+1}, 'spt.feature.feature'),
                 i = i + 1;
+                if i == nargin
+                    break
+                end
             end
             opt.Feature = varargin(1:i);
             varargin = varargin(i+1:end);

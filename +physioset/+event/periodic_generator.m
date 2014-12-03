@@ -117,11 +117,27 @@ classdef periodic_generator < physioset.event.generator & ...
             for i = 2:numel(sampl)
                 evArray(i) = obj.Template(sampl(i), i, data);
             end
-            if obj.FillData,
-                missingSampl = 1 + size(data,2) - ...
-                    (get_sample(evArray(end)) + get_duration(evArray(end)));
-               evArray(end) = set_duration(evArray(end), ...
-                   get_duration(evArray(end)) + missingSampl);
+            
+            % Ensure that no event exceeds the data duration
+            for i = numel(evArray):-1:1
+                onset_sample = get_sample(evArray(i));
+                last_sample = onset_sample + get_duration(evArray(i)) - 1;
+                if last_sample > size(data, 2),
+                    available_samples = size(data, 2) - onset_sample + 1;
+                    evArray(i) = set_duration(evArray(i), available_samples);
+                else
+                    break
+                end
+            end
+            
+            % If FillData ensure that the last sample of the last epoch is
+            % the last sample of the dataset
+            last_sample = get_sample(evArray(end)) + ...
+                get_duration(evArray(end)) - 1;
+            if obj.FillData && last_sample < size(data,2),
+                missingSampl = size(data,2) - last_sample;
+                evArray(end) = set_duration(evArray(end), ...
+                    get_duration(evArray(end)) + missingSampl);
             end
         end
         
@@ -145,8 +161,7 @@ classdef periodic_generator < physioset.event.generator & ...
             [~, opt] = process_arguments(opt, varargin);
             
             if ~isempty(opt.Type) || ~isempty(opt.Duration) || ...
-                    ~isempty(opt.Offset),
-                
+                    ~isempty(opt.Offset),             
                 if ~isempty(opt.Template),
                     error(['Cannot use Template together with any of ' ...
                         'Type, Duration, Offset']);
@@ -160,8 +175,7 @@ classdef periodic_generator < physioset.event.generator & ...
                     'Type', opt.Type, 'Duration', ...
                     ceil(opt.Duration*data.SamplingRate), 'Offset', ...
                     round(opt.Offset*data.SamplingRate), 'Value', idx);
-            else
-                
+            else       
                 if isempty(opt.Template),
                     opt.Template =  periodic_generator.default_template;
                 end

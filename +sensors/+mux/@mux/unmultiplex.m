@@ -83,7 +83,7 @@ for i = 1:numel(pos)-4
     P = [P1 P2 P3];
     
     % heuristic 0
-    if diffData(P1) > 0,
+    if diffData(P1) < 0,
         isPeak(i) = false;
         continue;
     end
@@ -103,7 +103,6 @@ for i = 1:numel(pos)-4
     end   
     
     % heuristic 3
-    
     meanP = mean(abs(P));
     if any(P < 0.25*meanP) || any(P > 4*meanP)
         isPeak(i) = false;

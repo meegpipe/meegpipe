@@ -32,7 +32,8 @@ nodeList = [nodeList, {myNode}];
 % myNode = aar.ecg.new;
 % nodeList = [nodeList, {myNode}];
 
-myNode = aar.eog.new('IOReport', report.plotter.io);
+myFilter = @(sr) filter.lpfilt('fc', 30/(sr/2));
+myNode = aar.eog.new('IOReport', report.plotter.io, 'Filter', myFilter);
 nodeList = [nodeList, {myNode}];
 
 myNode = meegpipe.node.filter.new(...
