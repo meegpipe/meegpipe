@@ -45,8 +45,8 @@ epochBeginTime = cell2mat({epochs(:).begin_time});
 epochEndTime = cell2mat({epochs(:).end_time});
 
 % Transform to seconds
-epochBeginTime = epochBeginTime*1e-9;
-epochEndTime   = epochEndTime*1e-9;
+epochBeginTime = epochBeginTime*1e-6;
+epochEndTime   = epochEndTime*1e-6;
 
 % Duration of each epoch in samples
 epochDurSamples = round((epochEndTime - epochBeginTime)*fs);
@@ -100,7 +100,7 @@ for evItr = 1:nbEvents
     evArray(evCount).Sample      = ceil(evSample);
     evArray(evCount).Type        = code;
     evArray(evCount).Duration    = ...
-        ceil(str2double(duration)./1000000000*fs);
+        ceil(str2double(duration)./1000000*fs);
     evArray(evCount).Time        = evTime;
     
 end

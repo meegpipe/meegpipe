@@ -115,7 +115,7 @@ if didSelection,
     end
 end
 
-[Signal,SignalInfo, SignalPath] = nbt_EEGlab2NBTsignal(EEG,0);
+[Signal,SignalInfo, SignalPath] = nbt_EEGlab2NBTsignal(EEG,1);
 
 end
 

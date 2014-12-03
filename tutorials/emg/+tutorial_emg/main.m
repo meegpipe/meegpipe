@@ -6,6 +6,7 @@ if ~exist('f1_750to810.set', 'file')
         'f1_750to810.set');
 end
 
+
 myPipe = tutorial_emg.create_pipeline;
 
 cleanedData = run(myPipe, 'f1_750to810.set');

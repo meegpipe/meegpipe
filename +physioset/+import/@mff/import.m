@@ -395,7 +395,7 @@ if numel(hdr.epochs) > 1,
     epochSampl = 1;
     for i = 1:numel(epochEvents)
         epochDur      = hdr.epochs(i).end_time-hdr.epochs(i).begin_time;
-        epochDurSampl = round((epochDur/1e9)*fs);
+        epochDurSampl = round((epochDur/1e6)*fs);
         epochTime = parse_begin_time(hdr.begin_time);
         epochTime = addtodate(epochTime, ...
             round(hdr.epochs(i).begin_time*1e-6), ... 

@@ -69,6 +69,17 @@ switch lower(ext)
         end
         filename = catfile(path, name);
         status = false;
+    case '.zip'
+         [path, name] = fileparts(filename);
+        if opt.verbose,            
+            fprintf([thisLabel 'Uncompressing %s ...'], name);
+        end
+        unzip(filename);
+        if opt.verbose,           
+            fprintf('[done]\n\n');
+        end
+        filename = catfile(path, name);
+        status = false;
     otherwise
         % Do nothing
 end

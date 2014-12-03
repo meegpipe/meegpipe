@@ -24,11 +24,11 @@ end
 pntSel = pnt_selection(obj);
 if ~isempty(pntSel),
    
-    origSample = get_sample(evArray);  
+    origSample = cell2mat(get_sample(evArray));  
     
     % This happens sometimes and we don't want to produce an error for such
     % a tiny inconsistency. 
-    origSample(origSample == numel(pntSel) + 1) = numel(pntSel);
+    origSample(origSample(end) == numel(pntSel) + 1) = numel(pntSel);
     
     if any(origSample > numel(pntSel)),      
         error('Out of range event');

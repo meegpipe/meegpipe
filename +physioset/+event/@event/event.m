@@ -159,7 +159,7 @@ classdef event < goo.abstract_setget & ...
         
         function value = get_sample(obj)
             
-            value = arrayfun(@(x) get(x, 'Sample'), obj);
+            value = arrayfun(@(x) get(x, 'Sample'), obj,'UniformOutput',false);
             
         end
         
