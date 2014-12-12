@@ -21,7 +21,7 @@ else
     latex = '';
 end
 
-cmd = sprintf('"%s" %s--export-eps="%s" "%s"', ...
+cmd = sprintf('"%s" -z %s--export-eps="%s" "%s"', ...
     inkscape_binary, latex, out, in); 
 
 [status, res] = system(cmd);

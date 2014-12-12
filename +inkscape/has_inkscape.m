@@ -12,7 +12,7 @@ function bool = has_inkscape()
 %
 % See also: inkscape
 
-cmd = sprintf('"%s" -V', inkscape.inkscape_binary);
+cmd = sprintf('"%s" -z -V', inkscape.inkscape_binary);
 [~, res] = system(cmd);
 
 match = regexp(res, 'Inkscape\s+\d+\.\d+', 'once');
