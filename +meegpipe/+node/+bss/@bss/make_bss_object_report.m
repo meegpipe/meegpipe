@@ -22,7 +22,7 @@ generate(objRep);
 fprintf(rep, 'BSS performed using algorithm [%s](%s)\n\n', class(myBSS), ...
     [repName '.htm']);
 
-set_method_config(myBSS, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
+myBSS = set_method_config(myBSS, 'fprintf', 'ParseDisp', false, 'SaveBinary', true);
 fprintf(rep, myBSS);
 
 end

@@ -133,14 +133,16 @@ for i = 1:numel(sensorArray),
             for k = 1:size(A,2)
                 stat = bpVarStats(statNames{j});
                 statVal(k, j) = stat(A(sensorIdx{i},k));
-                yMin = min(yMin, statVal(k, j));
-                yMax = max(yMax, statVal(k, j));
+%                 yMin = min(yMin, statVal(k, j));
+%                 yMax = max(yMax, statVal(k, j));
             end
             hold on;
             plot(statVal(:,j), rnd_line_format(j));
             text(pos(1+j), statVal(pos(1+j),j), statNames{j}, ...
                 'FontSize', 10, 'BackgroundColor', 'white', 'FontWeight', 'bold');
         end
+        yMax = max([yMax; statVal(isfinite(statVal))]);
+        yMin = min([yMin; statVal(isfinite(statVal))]);
         R = (yMax - yMin);
         axis([0.75 numel(maxAbsVar)+0.25 yMin-0.05*abs(R) yMax+0.05*R]);
     end
