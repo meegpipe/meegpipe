@@ -334,6 +334,7 @@ classdef pset < pset.mmappset & ...
         y = transpose(obj);
         y = horzcat(obj,b,varargin);
         y = vertcat(obj, b,varargin);
+        y = decimate(obj, factor, varargin);
         
     end
     

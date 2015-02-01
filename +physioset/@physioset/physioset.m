@@ -573,11 +573,15 @@ classdef physioset < ...
     
     % MATLAB built-in numeric methods (pset.pset forwarded)
     methods
-        
-        function obj        = circshift(obj, ~, varargin)
-            error('Not implemented yet!');
+ 
+        function out = decimate(in, factor, out)
+            if nargin > 2 && ~isempty(out),
+                out.PointSet = decimate(in, factor, out.PointSet);
+            else
+                out = copy(in);
+                out.PointSet = decimate(in.PointSet, factor);
+            end
         end
-        
         function obj        = conj(obj, varargin)
             obj.PointSet = conj(obj.PointSet, varargin{:});
         end

@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(12);
+initialize(13);
 
 %% Create a new session
 try
@@ -23,6 +23,22 @@ try
     hashStr = DataHash(randn(1,100));
     session.subsession(hashStr(1:5));
     ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% decimate()
+try
+    name = 'decimate()';
+    data = pset.pset.randn(50,100000);
+    data_expected = data(:, 1:10:end);
+    data_decimated = decimate(data, 10);
+    ok(all(size(data_expected) == size(data_decimated)) && ...
+        all(data_expected(:) == data_decimated(:)), name)
     
 catch ME
     
