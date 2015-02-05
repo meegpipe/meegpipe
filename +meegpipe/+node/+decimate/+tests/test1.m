@@ -99,7 +99,7 @@ try
     name = 'decimate large data file';
     
     myNode = decimate('DownsampleBy', 4);
-    data = import(physioset.import.matrix, randn(10, NB_SAMPLES*10000));
+    data = import(physioset.import.matrix, randn(10, NB_SAMPLES*1000));
     tic;
     newData = run(myNode, data);
     name = [name, ' ( ' num2str(toc) ' seconds )'];

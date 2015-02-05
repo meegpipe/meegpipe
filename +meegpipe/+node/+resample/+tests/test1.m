@@ -18,7 +18,7 @@ MEh     = [];
 
 % Number of samples for the simulated datasets
 % Do not use less than 10000 or the filters will be too long
-NB_SAMPLES = 11000;
+NB_SAMPLES = 10000;
 
 initialize(14);
 
@@ -101,7 +101,7 @@ try
     name = 'process sample data';
     
     myNode = resample('DownsampleBy', 4);
-    data = import(physioset.import.matrix, randn(10, NB_SAMPLES*10000));
+    data = import(physioset.import.matrix, randn(10, NB_SAMPLES*1000));
     tic;
     newData = run(myNode, data);
     name = [name, '( ' num2str(toc) ' seconds )'];

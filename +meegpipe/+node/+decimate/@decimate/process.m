@@ -48,7 +48,7 @@ if verbose,
     
 end
 
-dataOut = decimate(dataIn.PointSet, Q, dataOut);
+dataOut = decimate(dataIn.PointSet, Q, dataOut, 'verbose', verbose);
 
 if verbose, fprintf('\n\n'); end
 

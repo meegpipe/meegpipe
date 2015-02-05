@@ -4,7 +4,7 @@ import pset.pset
 import misc.process_arguments
 import misc.eta
 
-opt.verbose = false;
+opt.verbose = true;
 [~, opt] = process_arguments(opt, varargin);
 
 
@@ -37,7 +37,7 @@ for i = 1:obj.NbChunks
     s.subs = {1:size(data,1), count+1:count+size(data,2)};
     y = subsasgn(y, s, data);
     count = count + size(data,2);
-    if verbose,
+    if opt.verbose,
         eta(tinit, obj.NbChunks, i);
     end
 end
