@@ -39,6 +39,8 @@ classdef ba < ...
     properties (SetAccess = private, GetAccess = public)
         B;
         A;
+        CorrectDelay;
+        NbChansPerChunk = NaN;
     end
     
     methods
@@ -51,6 +53,9 @@ classdef ba < ...
             H = dfilt.df1(obj.B, obj.A);
         end
         
+        function delay = get_filter_delay(obj)
+            delay = ceil((numel(obj.B) - 1)/2);
+        end
         
         % Constructor    
         function obj = ba(b, a, varargin)
@@ -61,10 +66,14 @@ classdef ba < ...
             
             opt.Name = 'ba';
             opt.Verbose = true;
+            opt.CorrectDelay = true;
+            opt.NbChansPerChunk = NaN;
             [~, opt] = process_arguments(opt, varargin);
             
             obj.A = a;
             obj.B = b;
+            obj.NbChansPerChunk = opt.NbChansPerChunk;
+            obj.CorrectDelay = opt.CorrectDelay;
             obj = set_name(obj, opt.Name);
             obj = set_verbose(obj, opt.Verbose);
             
