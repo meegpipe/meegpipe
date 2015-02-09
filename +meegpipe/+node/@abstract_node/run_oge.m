@@ -107,6 +107,13 @@ else
     cmd5 = sprintf('delete(''%s'');', dataFile);
 end
 
+%% Cleanup all the temp dirs within the .meegpipe directories
+cmd6 = '';
+if isa(obj, 'meegpipe.node.node'),
+    tempdir = get_tempdir(obj);
+    cmd6 = ['system(''rm -rf ' tempdir ''')'];
+end
+
 %% Call qsub or condor_q
 
 cmd00 = sprintf('close all; clear all; clear classes;');
@@ -124,7 +131,7 @@ if has_condor && strcmp(obj.Queue, 'condor'),
         'Log',       log, ...
         'MatlabLog', matlabLog);
 else
-    qsub([cmd00 cmd01 cmd0 cmd1 cmd2 cmd3 cmd4 cmd5], ...
+    qsub([cmd00 cmd01 cmd0 cmd1 cmd2 cmd3 cmd4 cmd5 cmd6], ...
         'Name',   jobName, ...
         'Queue',  get_queue(obj));
 end
