@@ -73,6 +73,7 @@ opt.queue       = oge.globals.get.Queue;
 opt.name        = 'oge.qsub';
 opt.cleanup     = true;
 opt.tempdir     = oge.globals.get.TempDir;
+opt.cleanupdirs = {};
 
 [~, opt] = process_arguments(opt, varargin);
 
@@ -124,7 +125,7 @@ try
     fprintf(fid, 'catch ME\n');   
     fprintf(fid, ['\t fprintf(''%%s : %%s'', ME.identifier, ' ...
         'ME.message);\n']);
-    fprintf(fid, 'disp(getReport(ME));\n');
+    fprintf(fid, '\t disp(getReport(ME));\n');
     fprintf(fid, '\t exit;\n');
     fprintf(fid, 'end\n');
     fclose(fid);
@@ -145,6 +146,9 @@ try
         fprintf(fid, 'sleep 10\n');
         fprintf(fid, ['rm ' mFile '\n']);
     end
+    for i = 1:numel(opt.cleanupdirs)
+        fprintf(fid, ['rm -rf ' opt.cleanupdirs{i}]);
+    end       
     fclose(fid);
 catch ME
     fclose(fid);
