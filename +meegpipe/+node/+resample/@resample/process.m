@@ -44,12 +44,10 @@ dataOut  = pset.nan(size(dataIn,1), ceil(P*size(dataIn,2)/Q), ...
 if verbose, fprintf('[done]\n\n'); end
 
 %% Resample input data and directly write it to output data file
-if verbose,
-    
-    fprintf([verboseLabel 
+if verbose, 
+    fprintf([verboseLabel ...
         'Resampling by %d/%d (from %d Hz to %.1f Hz)...'], ...
         P, Q, dataIn.SamplingRate, P/Q*dataIn.SamplingRate);
-    
 end
 
 expandDuration = floor(3*size(dataIn,2)/100);
