@@ -107,6 +107,13 @@ else
     cmd5 = sprintf('delete(''%s'');', dataFile);
 end
 
+% Directories that need to be cleaned up after processing
+cleanup_dirs = {};
+if isa(obj, 'meegpipe.node.node'),
+    tempdir = get_tempdir(obj);    
+    cleanup_dirs = [cleanup_dirs; {tempdir}];
+end
+
 %% Call qsub or condor_q
 
 cmd00 = sprintf('close all; clear all; clear classes;');
