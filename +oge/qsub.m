@@ -145,10 +145,7 @@ try
     if opt.cleanup,
         fprintf(fid, 'sleep 10\n');
         fprintf(fid, ['rm ' mFile '\n']);
-    end
-    for i = 1:numel(opt.cleanupdirs)
-        fprintf(fid, ['rm -rf ' opt.cleanupdirs{i}]);
-    end       
+    end    
     fclose(fid);
 catch ME
     fclose(fid);
