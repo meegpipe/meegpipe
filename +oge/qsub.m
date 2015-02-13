@@ -69,7 +69,7 @@ end
 opt.hmemory     = oge.globals.get.HVmem;
 opt.smemory     = [];
 opt.walltime    = oge.globals.get.HRt;
-opt.queue       = oge.globals.get.Queue;
+opt.queue       = meegpipe.get_config('oge', 'queue');
 opt.name        = 'oge.qsub';
 opt.cleanup     = true;
 opt.tempdir     = oge.globals.get.TempDir;
