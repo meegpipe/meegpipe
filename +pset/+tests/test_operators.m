@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(14);
+initialize(15);
 
 %% Create a new session
 try
@@ -31,9 +31,9 @@ catch ME
     
 end
 
-%% cov()
+%% cov() of a small pset
 try
-    name = 'cov()';
+    name = 'cov() of a small pset';
     data = pset.pset.randn(50,10000);
     C = cov(data(:,:)');
     C2 = cov(data);
@@ -44,6 +44,18 @@ catch ME
     ok(ME, name);
     MEh = [MEh ME];
     
+end
+
+%% cov() of a large pset
+try
+    name = 'cov() of a large pset';
+    data = pset.pset.randn(50, 1500000);
+    C = cov(data(:,:)');
+    C2 = cov(data);
+    ok(all(C(:)-C2(:) < 1e-3), name);
+catch ME 
+    ok(ME, name);
+    MEh = [MEh ME]; 
 end
 
 %% decimate()
