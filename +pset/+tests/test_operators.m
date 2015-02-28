@@ -11,7 +11,7 @@ import misc.rmdir;
 
 MEh     = [];
 
-initialize(13);
+initialize(14);
 
 %% Create a new session
 try
@@ -23,6 +23,21 @@ try
     hashStr = DataHash(randn(1,100));
     session.subsession(hashStr(1:5));
     ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% cov()
+try
+    name = 'cov()';
+    data = pset.pset.randn(50,10000);
+    C = cov(data(:,:)');
+    C2 = cov(data);
+    ok(all(C(:)-C2(:) < 1e-3), name)
     
 catch ME
     
