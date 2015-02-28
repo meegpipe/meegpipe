@@ -58,13 +58,13 @@ try
                 'The required sleep file could not be retrieved');
         else
             importNode = meegpipe.node.physioset_import.new(...
-                'Importer', physioset.import.mff);
+                'Importer', physioset.import.mff('Precision', 'single'));
             filterNode = meegpipe.node.filter.new(...
                 'Filter', @(sr) filter.lpfilt('fc', 20/(sr/2)));
             myNode = meegpipe.node.pipeline.new(importNode, filterNode);
             
             data   = run(myNode, files{1});
-            ok(true, name);
+            ok(size(data,1) > 20 && size(data,2) > 100000, name);
         end
     else
         ok(NaN, name, 'somsds is not installed in this system')
