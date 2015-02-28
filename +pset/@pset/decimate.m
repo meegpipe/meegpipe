@@ -4,7 +4,7 @@ import pset.pset
 import misc.process_arguments
 import misc.eta
 
-opt.verbose = true;
+opt.verbose = is_verbose(obj);
 [~, opt] = process_arguments(opt, varargin);
 
 
