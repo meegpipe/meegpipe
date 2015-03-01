@@ -61,6 +61,7 @@ for i = 1:maxChansPerChunk:size(x,1),
 end
 
 if verbose,
+    eta(tinit, size(x, 1), size(x, 1), 'remaintime', false);
     fprintf('\n\n');
     clear +misc/eta;
 end
