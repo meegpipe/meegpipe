@@ -183,12 +183,13 @@ for segItr = 1:numel(evSample)
     end
     
     if verbose,
+        fprintf('\n\n');
         fprintf([verboseLabel 'Assigning filtered values to output ...']);
     end
     if retRes,
         data = data - pcs;
     else
-        data = assign_values(data, pcs);
+        data = assign_values(data, pcs, verbose);
     end
     if verbose,
         fprintf('[done]\n\n');

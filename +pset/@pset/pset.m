@@ -262,7 +262,7 @@ classdef pset < pset.mmappset & ...
         
         obj = backup_projection(obj);
         
-        obj = assign_values(obj, otherObj);
+        obj = assign_values(obj, otherObj, varargin);
         
         [y, pIdx] = get_chunk(obj, chunk_index);
         

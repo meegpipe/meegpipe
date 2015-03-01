@@ -3,7 +3,6 @@ function [status, MEh] = sleep_file()
 
 import mperl.file.spec.*;
 import test.simple.*;
-import pset.session;
 import safefid.safefid;
 import datahash.DataHash;
 import misc.rmdir;
@@ -15,10 +14,10 @@ initialize(4);
 try
     name = 'create new session';
     warning('off', 'session:NewSession');
-    session.instance;
+    pset.session.instance;
     warning('on', 'session:NewSession');
     hashStr = DataHash(randn(1,100));
-    session.subsession(hashStr(1:5));
+    pset.session.subsession(hashStr(1:5));
     ok(true, name);
 catch ME
     ok(ME, name);
@@ -70,8 +69,8 @@ end
 try
     name = 'cleanup';
     clear data ans importNode filterNode;
-    rmdir(session.instance.Folder, 's');
-    session.clear_subsession();
+    rmdir(pset.session.instance.Folder, 's');
+    pset.session.clear_subsession();
     ok(true, name);
 catch ME
     ok(ME, name);
@@ -84,14 +83,14 @@ status = finalize();
 end
 
 
-function myPipe = create_pipeline(importer)
+function myPipe = create_pipeline(myImporter)
 
 if nargin < 1,
-    importer = physioset.import.mff('Precision', 'single');
+    myImporter = physioset.import.mff('Precision', 'single');
 end
 
 importNode = meegpipe.node.physioset_import.new(...
-    'Importer', importer);
+    'Importer', myImporter);
 filterNode = meegpipe.node.filter.new(...
     'Filter', @(sr) filter.lpfilt('fc', 125/(sr/2)));
 decimateNode = meegpipe.node.decimate.new('OutputRate', 250);
