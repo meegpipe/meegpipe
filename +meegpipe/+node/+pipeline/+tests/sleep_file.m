@@ -29,15 +29,11 @@ end
 %% process tiny sample data file
 try
     name = 'process tiny sample data file';
-    importNode = meegpipe.node.physioset_import.new(...
-        'Importer', physioset.import.matrix);
-    filterNode = meegpipe.node.filter.new(...
-        'Filter', @(sr) filter.lpfilt('fc', 20/(sr/2)));
-    myNode = meegpipe.node.pipeline.new(importNode, filterNode);
-    
-    X      = randn(10, 10000);
-    data   = run(myNode, X);
-    ok(all(size(data) == size(X)), name);
+    X      = randn(10, 40000);
+    myImporter = physioset.import.matrix('SamplingRate', 1000);
+    myPipe = create_pipeline(myImporter);
+    data   = run(myPipe, X);
+    ok(size(data,2) == 10000, name);
 catch ME
     ok(ME, name);
     MEh = [MEh ME];
@@ -57,13 +53,8 @@ try
             ok(NaN, name, ...
                 'The required sleep file could not be retrieved');
         else
-            importNode = meegpipe.node.physioset_import.new(...
-                'Importer', physioset.import.mff('Precision', 'single'));
-            filterNode = meegpipe.node.filter.new(...
-                'Filter', @(sr) filter.lpfilt('fc', 20/(sr/2)));
-            myNode = meegpipe.node.pipeline.new(importNode, filterNode);
-            
-            data   = run(myNode, files{1});
+            myPipe = create_pipeline();
+            data   = run(myPipe, files{1});
             ok(size(data,1) > 20 && size(data,2) > 100000, name);
         end
     else
@@ -88,3 +79,23 @@ end
 
 %% Testing summary
 status = finalize();
+
+
+end
+
+
+function myPipe = create_pipeline(importer)
+
+if nargin < 1,
+    importer = physioset.import.mff('Precision', 'single');
+end
+
+importNode = meegpipe.node.physioset_import.new(...
+    'Importer', importer);
+filterNode = meegpipe.node.filter.new(...
+    'Filter', @(sr) filter.lpfilt('fc', 125/(sr/2)));
+decimateNode = meegpipe.node.decimate.new('OutputRate', 250);
+myPipe = meegpipe.node.pipeline.new(importNode, ...
+    filterNode, ...
+    decimateNode);
+end
