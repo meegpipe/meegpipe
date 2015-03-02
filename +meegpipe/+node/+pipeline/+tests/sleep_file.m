@@ -60,7 +60,7 @@ try
                 pause(5); % give a lot of time to OGE to do its magic
                 MAX_TRIES = 50;
                 tries = 0;
-                while tries < MAX_TRIES && ~exist(dataFiles{3}, 'file'),
+                while tries < MAX_TRIES && ~exist(dataFiles{1}, 'file'),
                     pause(1000);
                     tries = tries + 1;
                 end
