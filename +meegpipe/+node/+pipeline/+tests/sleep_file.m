@@ -41,7 +41,7 @@ end
 %% process two huge sleep files via OGE
 try
     name = 'process two huge sleep files via OGE';
-    if has_oge,
+    if oge.has_oge,
         if somsds.has_somsds,
             files = somsds.link2rec('vici', ...
                 'subject', '6', ...
