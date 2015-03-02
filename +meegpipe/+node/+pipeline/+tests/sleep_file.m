@@ -8,7 +8,7 @@ import datahash.DataHash;
 import misc.rmdir;
 
 MEh     = [];
-initialize(4);
+initialize(5);
 
 %% Create a new session
 try
@@ -38,6 +38,47 @@ catch ME
     MEh = [MEh ME];
 end
 
+%% process two huge sleep files via OGE
+try
+    name = 'process two huge sleep files via OGE';
+    if has_oge,
+        if somsds.has_somsds,
+            files = somsds.link2rec('vici', ...
+                'subject', '6', ...
+                'modality', 'eeg', ...
+                'condition', 'sleep', ...
+                'folder', session.instance.Folder);
+            if numel(files) < 2,
+                ok(NaN, name, ...
+                    'The required sleep file could not be retrieved');
+            else
+                myImporter = physioset.import.matrix('SamplingRate', 1000);
+                myPipe = create_pipeline(myImporter, ...
+                    'Queue', meegpipe.get_config('oge', 'queue'));
+               
+                dataFiles = run(myPipe, files{:});
+                pause(5); % give a lot of time to OGE to do its magic
+                MAX_TRIES = 50;
+                tries = 0;
+                while tries < MAX_TRIES && ~exist(dataFiles{3}, 'file'),
+                    pause(1000);
+                    tries = tries + 1;
+                end
+                [~, ~] = system(sprintf('qdel -u %s', get_username));
+            end
+            ok(true, name);
+        else
+            ok(NaN, name, 'somsds is not available');
+        end
+    else
+        ok(NaN, name, 'OGE is not available');
+    end  
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
 
 %% process huge sleep file (will take very long...)
 try
@@ -64,7 +105,6 @@ catch ME
     MEh = [MEh ME];
 end
 
-
 %% Cleanup
 try
     name = 'cleanup';
@@ -83,7 +123,7 @@ status = finalize();
 end
 
 
-function myPipe = create_pipeline(myImporter)
+function myPipe = create_pipeline(myImporter, varargin)
 
 if nargin < 1,
     myImporter = physioset.import.mff('Precision', 'single');
@@ -96,5 +136,5 @@ filterNode = meegpipe.node.filter.new(...
 decimateNode = meegpipe.node.decimate.new('OutputRate', 250);
 myPipe = meegpipe.node.pipeline.new(importNode, ...
     filterNode, ...
-    decimateNode);
+    decimateNode, varargin{:});
 end
