@@ -53,7 +53,8 @@ try
                     'The required sleep file could not be retrieved');
             else
                 myPipe = create_pipeline([], ...
-                    'Queue', meegpipe.get_config('oge', 'queue'));
+                    'Queue', [meegpipe.get_config('oge', 'queue') ...
+                    '@somerenserver.herseninstituut.knaw.nl']);
                
                 dataFiles = run(myPipe, files{:});
                 pause(5); % give a lot of time to OGE to do its magic
