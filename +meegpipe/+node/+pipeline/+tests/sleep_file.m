@@ -52,8 +52,7 @@ try
                 ok(NaN, name, ...
                     'The required sleep file could not be retrieved');
             else
-                myImporter = physioset.import.matrix('SamplingRate', 1000);
-                myPipe = create_pipeline(myImporter, ...
+                myPipe = create_pipeline([], ...
                     'Queue', meegpipe.get_config('oge', 'queue'));
                
                 dataFiles = run(myPipe, files{:});
@@ -125,7 +124,7 @@ end
 
 function myPipe = create_pipeline(myImporter, varargin)
 
-if nargin < 1,
+if nargin < 1 || isempty(myImporter),
     myImporter = physioset.import.mff('Precision', 'single');
 end
 
