@@ -64,7 +64,7 @@ try
                     pause(1000);
                     tries = tries + 1;
                 end
-                [~, ~] = system(sprintf('qdel -u %s', get_username));
+                [~, ~] = system(sprintf('qdel -u %s', misc.get_username));
             end
             ok(true, name);
         else
@@ -88,7 +88,7 @@ try
             'subject', '6', ...
             'modality', 'eeg', ...
             'condition', 'sleep', ...
-            'folder', session.instance.Folder);
+            'folder', pset.session.instance.Folder);
         if isempty(files),
             ok(NaN, name, ...
                 'The required sleep file could not be retrieved');
