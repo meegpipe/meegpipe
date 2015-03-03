@@ -73,7 +73,6 @@ opt.queue       = meegpipe.get_config('oge', 'queue');
 opt.name        = 'oge.qsub';
 opt.cleanup     = true;
 opt.tempdir     = oge.globals.get.TempDir;
-opt.cleanupdirs = {};
 
 [~, opt] = process_arguments(opt, varargin);
 
