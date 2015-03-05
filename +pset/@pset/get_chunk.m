@@ -35,7 +35,7 @@ if obj.Transposed,
     try
         y = subsref(obj, s);
     catch ME
-        handle_exception(ME);
+        handle_exception(ME, s);
     end
 else
     s.type = '()';
@@ -43,14 +43,14 @@ else
     try
         y = subsref(obj, s);
     catch ME
-        handle_exception(ME);        
+        handle_exception(ME, s);        
     end
 end
 
 end
 
 
-function handle_exception(ME)
+function handle_exception(ME, s)
 
 if strcmp(ME.identifier, 'MATLAB:nomem'),
     fprintf(['Ran out memory trying to allocate matrix ' ...
