@@ -54,7 +54,7 @@ function handle_exception(ME)
 
 if strcmp(ME.identifier, 'MATLAB:nomem'),
     fprintf(['Ran out memory trying to allocate matrix ' ...
-        'of dimensions %dx%d', numel(s.subs{1}), numel(s.subs{2}));
+        'of dimensions %dx%d'], numel(s.subs{1}), numel(s.subs{2}));
 end
 rethrow(ME);
 end
