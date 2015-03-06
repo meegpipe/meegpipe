@@ -430,7 +430,7 @@ classdef pset < pset.mmappset & ...
             end
             
             % Number of points in each memory chunk
-            chunkSize = pset.globals.get.MemoryMapSize;
+            chunkSize = meegpipe.get_config('pset', 'memory_map_size');
             nPointsChunk = floor(chunkSize/(sizeof(obj.Precision)*nDims));
             obj.ChunkIndices = 1:nPointsChunk:nPoints;
             if obj.ChunkIndices(end) == nPoints && numel(obj.ChunkIndices)>1,
