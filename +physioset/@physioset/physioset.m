@@ -829,7 +829,6 @@ classdef physioset < ...
             
             import pset.pset;
             import misc.process_arguments;
-            import pset.globals;
             
             % Ensure each physioset instance gets an independent method
             % configuration object
@@ -843,14 +842,17 @@ classdef physioset < ...
             
             varargin = varargin(3:end);
             
-            opt.samplingrate    = globals.get.SamplingRate;
+            opt.samplingrate    = meegpipe.get_config('physioset', ...
+                'sampling_rate');
             opt.sensors         = [];
             opt.event           = [];
             opt.name            = '';
             
             opt.samplingtime  = [];
-            dateFormat        = globals.get.DateFormat;
-            timeFormat        = globals.get.TimeFormat;
+            dateFormat        = meegpipe.get_config('physioset', ...
+                'date_format');
+            timeFormat        = meegpipe.get_config('physioset', ...
+                'time_format');
             opt.startdate     = datestr(now, dateFormat);
             opt.starttime     = now;
             opt.eqweights     = [];
