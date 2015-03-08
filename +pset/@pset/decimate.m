@@ -34,9 +34,10 @@ end
 for i = 1:obj.NbChunks
     [~, data] = get_chunk(obj, i);
     data = data(:, 1:factor:end);
-    s.subs = {1:size(data,1), count+1:count+size(data,2)};
-    y = subsasgn(y, s, data);
-    count = count + size(data,2);
+    nb_points = min(size(data, 2), size(y, 2)-count);
+    s.subs = {1:size(data,1), count+1:count+nb_points};
+    y = subsasgn(y, s, data(:, 1:nb_points));
+    count = count + nb_points;
     if opt.verbose,
         eta(tinit, obj.NbChunks, i);
     end
