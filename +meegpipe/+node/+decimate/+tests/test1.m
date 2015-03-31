@@ -2,7 +2,7 @@ function [status, MEh] = test1()
 % TEST1 - Tests basic node functionality
 
 import mperl.file.spec.*;
-import meegpipe.node.resample.*;
+import meegpipe.node.decimate.*;
 import meegpipe.node.pipeline.pipeline;
 import filter.lpfilt;
 import test.simple.*;
@@ -20,7 +20,7 @@ MEh     = [];
 % Do not use less than 10000 or the filters will be too long
 NB_SAMPLES = 10000;
 
-initialize(14);
+initialize(11);
 
 %% Create a new session
 try
@@ -46,7 +46,7 @@ end
 try
     
     name = 'constructor';
-    myNode = resample; %#ok<NASGU>
+    myNode = decimate; %#ok<NASGU>
     ok(true, name);
     
 catch ME
@@ -61,11 +61,10 @@ try
     
     name = 'constructor from config object';
     
-    myCfg  = config('UpsampleBy', 10, 'DownsampleBy', 20);
-    myNode = resample(myCfg);
+    myCfg  = config('DownsampleBy', 20);
+    myNode = decimate(myCfg);
     
     ok(...
-        get_config(myNode, 'UpsampleBy') == 10 && ...
         get_config(myNode, 'DownsampleBy') == 20, ...
         name);
     
@@ -81,10 +80,9 @@ try
     
     name = 'constructor with config options';
     
-    myNode = resample('UpsampleBy', 10, 'DownsampleBy', 20);
+    myNode = decimate('DownsampleBy', 20);
     
     ok(...
-        get_config(myNode, 'UpsampleBy') == 10 && ...
         get_config(myNode, 'DownsampleBy') == 20, ...
         name);
     
@@ -95,16 +93,16 @@ catch ME
     
 end
 
-%% downsample very large file
+%% decimate large data file
 try
     
-    name = 'process sample data';
+    name = 'decimate large data file';
     
-    myNode = resample('DownsampleBy', 4);
+    myNode = decimate('DownsampleBy', 4);
     data = import(physioset.import.matrix, randn(10, NB_SAMPLES*1000));
     tic;
     newData = run(myNode, data);
-    name = [name, '( ' num2str(toc) ' seconds )'];
+    name = [name, ' ( ' num2str(toc) ' seconds )'];
     ok(size(newData,2) == size(data,2)/4, name);
     
 catch ME
@@ -114,93 +112,21 @@ catch ME
     
 end
 
-%% Antialiasing=false
-try
-    
-    name = 'Antialiasing=false';
-    
-    myNode1 = resample('UpsampleBy', 2, 'Antialiasing', false);
-    myNode2 = resample('DownsampleBy', 2, 'Antialiasing', false);
-    myPipe  = pipeline(myNode1, myNode2);
-    
-    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
-    data = filter(lpfilt('fc', 0.1), data);
-    
-    newData = run(myPipe, data);
-    
-    ok(max(abs(newData(:)-data(:))) < .001, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-%% process sample data
-try
-    
-    name = 'process sample data';
-    
-    myNode1 = resample('UpsampleBy', 2);
-    myNode2 = resample('DownsampleBy', 2);
-    myPipe  = pipeline(myNode1, myNode2);
-    
-    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
-    data = filter(lpfilt('fc', 0.1), data);
-    
-    newData = run(myPipe, data);
-    
-    ok(max(abs(newData(:)-data(:))) < .1, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-%% process sample data with AutoDestroyMemMap
-try
-    
-    name = 'process sample data with AutoDestroyMemMap';
-    
-    myNode1 = resample('UpsampleBy', 2);
-    myNode2 = resample('DownsampleBy', 2, 'AutoDestroyMemMap', true);
-    myPipe  = pipeline(myNode1, myNode2);
-    
-    data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
-    data = filter(lpfilt('fc', 0.1), data);
-    
-    newData = run(myPipe, data);
-    
-    ok(newData.PointSet.AutoDestroyMemMap & ...
-        max(abs(newData(:)-data(:))) < .1, name);
-    
-catch ME
-    
-    ok(ME, name);
-    MEh = [MEh ME];
-    
-end
-
-
 %% process sample data using outRate
 try
     
     name = 'process sample data specifying outRate';
     
-    myNode1 = resample('OutputRate', 125);
-    myNode2 = resample('OutputRate', 250);
+    myNode1 = decimate('OutputRate', 125);
+    myNode2 = decimate('OutputRate', 125);
     myPipe  = pipeline(myNode1, myNode2);
     
     importer = physioset.import.matrix('SamplingRate', 250);
     data = import(importer, randn(10, NB_SAMPLES));
-    data = filter(lpfilt('fc', 0.1), data);
     
     newData = run(myPipe, data);
     
-    ok(max(abs(newData(:)-data(:))) < .1, name);
+    ok(size(newData, 2) == floor(size(data, 2)/2), name);
     
 catch ME
     
@@ -214,8 +140,8 @@ try
     name = 'check selections';
     
     dataSel = pset.selector.good_data;
-    myNode1 = resample('UpsampleBy', 2, 'DataSelector', dataSel);
-    myNode2 = resample('DownsampleBy', 2);
+    myNode1 = decimate('DownsampleBy', 2, 'DataSelector', dataSel);
+    myNode2 = decimate('DownsampleBy', 5);
     myPipe  = pipeline(myNode1, myNode2);
     
     data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
@@ -227,8 +153,8 @@ try
     newData = run(myPipe, data);
     
     select(dataSel, data);
-    ok(all(size(newData) == [8 NB_SAMPLES-100]) & ...
-        max(abs(newData(:) - data(:))) < .1, name);
+    ok(all(size(newData) == [8 floor(NB_SAMPLES/10)-10]) & ...
+        max(abs(newData(1,:) - data(1, 1:10:end))) < .1, name);
     
 catch ME
     
@@ -241,7 +167,7 @@ end
 try
     
     name = 'save node output';
-    myNode = resample('UpsampleBy', 2, 'Save', true);
+    myNode = decimate('DownsampleBy', 2, 'Save', true);
     
     data = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     
@@ -267,9 +193,9 @@ try
     for i = 1:3,
         data{i} = import(physioset.import.matrix, randn(10, NB_SAMPLES));
     end
-    myNode = resample('DownsampleBy', 2, 'OGE', false);
+    myNode = decimate('DownsampleBy', 2, 'OGE', false);
     newData = run(myNode, data{:});
-    ok(size(newData{1},2) == floor(NB_SAMPLES/2), name);
+    ok(size(newData{1}, 2) == floor(NB_SAMPLES/2), name);
     
 catch ME
     
@@ -289,7 +215,7 @@ try
             data{i} = import(physioset.import.matrix, randn(10, NB_SAMPLES));
             
         end
-        myNode    = resample('DownsampleBy', 2, 'OGE', true, 'Save', true);
+        myNode    = decimate('DownsampleBy', 2, 'OGE', true, 'Save', true);
         dataFiles = run(myNode, data{:});
         pause(5); % give time for OGE to do its magic
         MAX_TRIES = 100;

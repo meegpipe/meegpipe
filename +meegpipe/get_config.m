@@ -1,5 +1,5 @@
 function value = get_config(varargin)
-% GET_CONFIG - Get user configuration options for EEGPIPE
+% GET_CONFIG - Get user configuration options for MEEGPIPE
 
 import mperl.config.inifiles.inifile;
 import meegpipe.root_path;

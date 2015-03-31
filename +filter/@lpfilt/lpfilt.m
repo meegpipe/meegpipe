@@ -106,6 +106,7 @@ classdef lpfilt < filter.abstract_dfilt
             opt.fc = [];
             opt.transitionbandwidth = [];
             opt.maxorder = 10*1000;
+            opt.NbChansPerChunk = NaN;
             [~, opt] = process_arguments(opt, varargin);
             
             if isempty(opt.fc),
@@ -131,7 +132,8 @@ classdef lpfilt < filter.abstract_dfilt
             
             B = firfilt.firws(obj.Order, opt.fc, 'low', ...
                 firfilt.windows('blackman', obj.Order + 1));
-            obj.BAFilter = filter.ba(B, 1);
+            obj.BAFilter = filter.ba(B, 1, ...
+                'NbChansPerChunk', opt.NbChansPerChunk);
             
             obj.BAFilter = set_name(obj.BAFilter, get_name(obj));
             obj.BAFilter = set_verbose(obj.BAFilter, is_verbose(obj));

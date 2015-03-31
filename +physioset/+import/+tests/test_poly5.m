@@ -104,7 +104,7 @@ try
     data = import(poly5, files{1});
     set_warning_status(WARN_IDS, stat);
     
-    ok(all(size(data) == [37 1743921]) & numel(get_event(data)) == 0, name);
+    ok(all(size(data) == [37 358786]) & numel(get_event(data)) == 0, name);
     
     clear data;
     

@@ -1,50 +1,50 @@
-function y = decimate(obj, varargin)
+function y = decimate(obj, factor, output_pset, varargin)
 
-import misc.process_varargin;
-import pset.globals;
+import pset.pset
+import misc.process_arguments
+import misc.eta
 
-if nargin < 2,
-    varargin = {1};
+opt.verbose = is_verbose(obj);
+[~, opt] = process_arguments(opt, varargin);
+
+
+if nargin < 3,
+    output_pset = [];
 end
-
-THIS_OPTIONS = {'verbose'};
-
-verbose = globals.evaluate.Verbose;
-
-[cmd_str, remove_flag] = process_varargin(THIS_OPTIONS, varargin);
-eval(cmd_str);
-varargin(remove_flag) = [];
 
 transposed_flag = false;
 if obj.Transposed,
     obj.Transposed = false;
     transposed_flag = true;
 end
-s.type = '()';
 
-if verbose,
-    [~, name, ext] = fileparts(obj.DataFile);
-    fprintf('\n(decimate) Decimating ''%s''', [name ext]);  
+if isempty(output_pset),
+    y = pset.nan(size(obj,1), floor(size(obj,2)/factor));
+    y.Writable = obj.Writable;
+    y.Temporary = true;
+else
+    y = output_pset;
 end
-y = pset.zeros(size(obj,1), ceil(size(obj,2)/varargin{1}));
-y.Writable = true;
-y.Temporary = true;
-y.Compact = obj.Compact;
 
-for i = 1:obj.NbDims
-    s.subs = {i, 1:obj.NbPoints};
-    data = decimate(subsref(obj, s), varargin{:});  
-    s.subs = {i, 1:length(data)};
-    y = subsasgn(y, s, data);    
-    if verbose && ~mod(i, floor(obj.NbDims/10)),
-        fprintf('.');
+count = 0;
+s.type = '()';
+if opt.verbose,
+    tinit = tic;
+end
+for i = 1:obj.NbChunks
+    [~, data] = get_chunk(obj, i);
+    data = data(:, 1:factor:end);
+    nb_points = min(size(data, 2), size(y, 2)-count);
+    s.subs = {1:size(data,1), count+1:count+nb_points};
+    y = subsasgn(y, s, data(:, 1:nb_points));
+    count = count + nb_points;
+    if opt.verbose,
+        eta(tinit, obj.NbChunks, i);
     end
 end
-if verbose, fprintf('[done]\n');  end
 
 if transposed_flag,
     obj.Transposed = true;    
-    obj.Transposed = true; 
     y.Transposed = true;
 end
 

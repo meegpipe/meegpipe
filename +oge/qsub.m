@@ -69,7 +69,7 @@ end
 opt.hmemory     = oge.globals.get.HVmem;
 opt.smemory     = [];
 opt.walltime    = oge.globals.get.HRt;
-opt.queue       = oge.globals.get.Queue;
+opt.queue       = meegpipe.get_config('oge', 'queue');
 opt.name        = 'oge.qsub';
 opt.cleanup     = true;
 opt.tempdir     = oge.globals.get.TempDir;
@@ -124,7 +124,7 @@ try
     fprintf(fid, 'catch ME\n');   
     fprintf(fid, ['\t fprintf(''%%s : %%s'', ME.identifier, ' ...
         'ME.message);\n']);
-    fprintf(fid, 'disp(getReport(ME));\n');
+    fprintf(fid, '\t disp(getReport(ME));\n');
     fprintf(fid, '\t exit;\n');
     fprintf(fid, 'end\n');
     fclose(fid);
@@ -144,7 +144,7 @@ try
     if opt.cleanup,
         fprintf(fid, 'sleep 10\n');
         fprintf(fid, ['rm ' mFile '\n']);
-    end
+    end    
     fclose(fid);
 catch ME
     fclose(fid);

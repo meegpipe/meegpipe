@@ -75,6 +75,9 @@ There most important among the _basic node properties_ are:
  generate only a minimal HTML report. This can speed up considerably the
  data processing at the expense of not allowing to inspect intermediate
  processing stages.
+* __TempDir__: A string. The location of the directory where the node 
+ will store temporary files. If not specified it defaults to a directory
+ called `tmp` within the output `.meegpipe` directory.
 
 [pset.selector.selector]: https://github.com/germangh/matlab_pset/blob/master/%2Bpset/%2Bselector/selector.m
 

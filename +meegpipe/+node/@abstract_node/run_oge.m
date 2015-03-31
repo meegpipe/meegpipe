@@ -125,8 +125,8 @@ if has_condor && strcmp(obj.Queue, 'condor'),
         'MatlabLog', matlabLog);
 else
     qsub([cmd00 cmd01 cmd0 cmd1 cmd2 cmd3 cmd4 cmd5], ...
-        'Name',   jobName, ...
-        'Queue',  get_queue(obj));
+        'Name',         jobName, ...
+        'Queue',        get_queue(obj));
 end
 
 end

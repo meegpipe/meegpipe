@@ -52,8 +52,7 @@ classdef pset < pset.mmappset & ...
     %
     %
     % See also: physioset, pset
-    
-    %% IMPLEMENTATION .....................................................
+
     properties (GetAccess = private, SetAccess = private)
         
         % For storing previous selections
@@ -262,7 +261,7 @@ classdef pset < pset.mmappset & ...
         
         obj = backup_projection(obj);
         
-        obj = assign_values(obj, otherObj);
+        obj = assign_values(obj, otherObj, varargin);
         
         [y, pIdx] = get_chunk(obj, chunk_index);
         
@@ -334,6 +333,7 @@ classdef pset < pset.mmappset & ...
         y = transpose(obj);
         y = horzcat(obj,b,varargin);
         y = vertcat(obj, b,varargin);
+        y = decimate(obj, factor, varargin);
         
     end
     
@@ -393,8 +393,11 @@ classdef pset < pset.mmappset & ...
             opt.Transposed   = get_config('pset', 'transposed');
             opt.Precision    = get_config('pset', 'precision');
             opt.Writable     = get_config('pset', 'writable');
+            opt.MapSize      = meegpipe.get_config('pset', ...
+                'memory_map_size');
             
-            opt.AutoDestroyMemMap = get_config('pset', 'auto_destroy_mem_map');
+            opt.AutoDestroyMemMap = get_config('pset', ...
+                'auto_destroy_mem_map');
             
             if isempty(opt.AutoDestroyMemMap),
                 % Just in case...
@@ -418,7 +421,10 @@ classdef pset < pset.mmappset & ...
                 filename, nDims, nPoints, obj.Precision, ...
                 'mapsize',  obj.MapSize, ...
                 'writable', obj.Writable);
-            
+            if is_verbose(obj),
+                fprintf('Mapped %s into %d maps\n\n', filename, ...
+                    numel(obj.MemoryMap));
+            end
             
             % Dimensions of the dataset
             obj.NbDims = nDims;
@@ -429,7 +435,7 @@ classdef pset < pset.mmappset & ...
             end
             
             % Number of points in each memory chunk
-            chunkSize = pset.globals.get.MemoryMapSize;
+            chunkSize = meegpipe.get_config('pset', 'largest_memory_chunk');
             nPointsChunk = floor(chunkSize/(sizeof(obj.Precision)*nDims));
             obj.ChunkIndices = 1:nPointsChunk:nPoints;
             if obj.ChunkIndices(end) == nPoints && numel(obj.ChunkIndices)>1,

@@ -63,7 +63,7 @@ for i = 1:numel(depList)
 end
 
 fprintf([verboseLabel 'Done with initialization\n\n']);
-
+clear classes;
 
 end
 

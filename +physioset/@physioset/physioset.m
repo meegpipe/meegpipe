@@ -573,11 +573,15 @@ classdef physioset < ...
     
     % MATLAB built-in numeric methods (pset.pset forwarded)
     methods
-        
-        function obj        = circshift(obj, ~, varargin)
-            error('Not implemented yet!');
+ 
+        function out = decimate(in, factor, out)
+            if nargin > 2 && ~isempty(out),
+                out.PointSet = decimate(in, factor, out.PointSet);
+            else
+                out = copy(in);
+                out.PointSet = decimate(in.PointSet, factor);
+            end
         end
-        
         function obj        = conj(obj, varargin)
             obj.PointSet = conj(obj.PointSet, varargin{:});
         end
@@ -699,10 +703,9 @@ classdef physioset < ...
             val = ndims(obj.PointSet, varargin{:});
         end
         
-        function obj        = assign_values(obj, otherObj)
-            
-            obj.PointSet = assign_values(obj.PointSet, otherObj.PointSet);
-            
+        function obj        = assign_values(obj, otherObj, verbose)         
+            obj.PointSet = assign_values(obj.PointSet, ...
+                otherObj.PointSet, verbose);         
         end
         
         function obj        = plus(varargin)
@@ -826,7 +829,6 @@ classdef physioset < ...
             
             import pset.pset;
             import misc.process_arguments;
-            import pset.globals;
             
             % Ensure each physioset instance gets an independent method
             % configuration object
@@ -840,14 +842,17 @@ classdef physioset < ...
             
             varargin = varargin(3:end);
             
-            opt.samplingrate    = globals.get.SamplingRate;
+            opt.samplingrate    = meegpipe.get_config('physioset', ...
+                'sampling_rate');
             opt.sensors         = [];
             opt.event           = [];
             opt.name            = '';
             
             opt.samplingtime  = [];
-            dateFormat        = globals.get.DateFormat;
-            timeFormat        = globals.get.TimeFormat;
+            dateFormat        = meegpipe.get_config('physioset', ...
+                'date_format');
+            timeFormat        = meegpipe.get_config('physioset', ...
+                'time_format');
             opt.startdate     = datestr(now, dateFormat);
             opt.starttime     = now;
             opt.eqweights     = [];

@@ -42,13 +42,8 @@ singleKeys = varargin(isSingleKey);
 varargin(isSingleKey) = [];
 
 % Is SOMSDS available in this system?
-localSOMSDS = false;
+localSOMSDS = somsds.has_somsds;
 
-evalc('status = system(''somsds_link2rec'')');
-
-if isunix && status == 255, %#ok<NODEF>
-    localSOMSDS = true;
-end
 if ~localSOMSDS,
     error('Remote somsds queries are not supported yet');
 end

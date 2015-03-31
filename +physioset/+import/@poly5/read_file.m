@@ -9,6 +9,8 @@ if nargin < 2 || isempty(verb), verb = true; end
 
 % The code in this function has been provided by TMSi
 
+meta = [];
+
 %% Read header
 fid = safefid(fileName, 'r');
 fidPset = safefid(psetFileName, 'w');

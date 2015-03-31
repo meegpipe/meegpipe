@@ -7,7 +7,7 @@ import test.simple.*;
 
 MEh     = [];
 
-initialize(7);
+initialize(8);
 
 %% Default constructors
 try
@@ -35,6 +35,22 @@ try
     name = 'filtering with lpfilt';
     filter(filter.lpfilt('fc', 0.5), randn(5, 10000));
     ok(true, name);
+    
+catch ME
+    
+    ok(ME, name);
+    MEh = [MEh ME];
+    
+end
+
+%% Ensure NbChansPerChunk does not affect the filtering result
+try
+    
+    name = 'ensure NbChansPerChunk does not affect the filtering result';
+    x = randn(10,10000);
+    y1 = filter(filter.lpfilt('fc', 0.5, 'NbChansPerChunk', 1), x);
+    y2 = filter(filter.lpfilt('fc', 0.5, 'NbChansPerChunk', 3), x);
+    ok(all(y1(:) == y2(:)), name);
     
 catch ME
     

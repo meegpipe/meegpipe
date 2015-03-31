@@ -3,7 +3,7 @@ function [pIndex, y] = get_chunk(obj, chunkIdx)
 %
 %   [pIndex, DATA] = get_chunk(OBJ, chunkIdx) returns a data chunk from
 %   a pset object OBJ. The second input argument is the index of the chunk.
-%   The second output argument is a numeric matrix with the point values 
+%   The second output argument is a numeric matrix with the point values
 %   corresponding to the given chunk. The first output (pIndex) is an
 %   array with the indices that correspond to the points in the chunk. The
 %   number of chunks that are needed to load a whole pset object is
@@ -19,22 +19,42 @@ if chunkIdx > nbChunks || chunkIdx < 0,
     error('pset:pset:get_chunk', ...
         'Chunk index must be a natural number less than %d', nbChunks);
 elseif chunkIdx > (nbChunks-1),
-    pIndex = obj.ChunkIndices(chunkIdx):obj.NbPoints;    
+    pIndex = obj.ChunkIndices(chunkIdx):obj.NbPoints;
 else
-    pIndex = obj.ChunkIndices(chunkIdx):obj.ChunkIndices(chunkIdx+1)-1;    
+    pIndex = obj.ChunkIndices(chunkIdx):obj.ChunkIndices(chunkIdx+1)-1;
 end
 
 if ~isempty(obj.PntSelection),
     [~, ia] = intersect(obj.PntSelection, pIndex);
-    pIndex = ia;    
+    pIndex = ia;
 end
 
 if obj.Transposed,
     s.type = '()';
     s.subs = {pIndex, 1:nb_dim(obj)};
-    y = subsref(obj, s);
+    try
+        y = subsref(obj, s);
+    catch ME
+        handle_exception(ME, s);
+    end
 else
     s.type = '()';
     s.subs = {1:nb_dim(obj), pIndex};
-    y = subsref(obj, s);
+    try
+        y = subsref(obj, s);
+    catch ME
+        handle_exception(ME, s);        
+    end
+end
+
+end
+
+
+function handle_exception(ME, s)
+
+if strcmp(ME.identifier, 'MATLAB:nomem'),
+    fprintf(['Ran out memory trying to allocate matrix ' ...
+        'of dimensions %dx%d'], numel(s.subs{1}), numel(s.subs{2}));
+end
+rethrow(ME);
 end

@@ -29,7 +29,7 @@ classdef config < meegpipe.node.abstract_config
         ExpandBoundary   = [2 2];   % left/right expand in % of segment length
         ChopSelector     = [];      % a pset.event.selector
         ReturnResiduals  = false;
-        NbChannelsReport = 10;
+        NbChannelsReport = 5;
         EpochDurReport   = 50;   % In seconds
         ShowDiffReport   = false;
         PCA              = [];

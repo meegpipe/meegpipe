@@ -59,6 +59,21 @@ myImporter = physioset.import.edfplus('Precision', 'single');
 pObj = import(myImpoter, 'myfile.edf'); % pObj uses single precision
 ````
 
+### Using custom sensor information
+
+Typically a physioset importer reads the sensor coordinates from the 
+disk file that contains your M/EEG data. But sometimes you want to 
+manually set the sensor information when importing a physioset. You 
+can do that using option `Sensors`. For instance, the following code 
+can be used to import EEG data acquired with EGI's 256-sensors net:
+
+````
+mySensors = sensors.eeg.from_template('egi256')
+myImporter = physioset.import.matrix('Sensors', mySensors);
+myData = import(myImporter, randn(257, 1000));
+````
+
+
 
 ## Available data importers
 
