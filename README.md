@@ -1,6 +1,11 @@
 meegpipe
 ========
 
+__NOTE__: meegpipe is not being actively developed at this moment. Please contact 
+[German Gomez-Herrero](german.gomezherrero@gmail.com) if you are interested in
+maintaining or developing meegpipe.
+
+
 _meegpipe_ is a collection of MATLAB tools for building advanced processing
 pipelines for high density physiological recordings. It is especially
 suited for the processing of high-density [EEG][eeg] and [MEG][meg],
@@ -250,6 +255,7 @@ can be found in the [documentation][doc-main]. The documentation is still
 work in progress.
 
 [doc-main]: https://github.com/meegpipe/meegpipe/blob/master/%2Bmeegpipe/README.md
+
 
 
 ## License
