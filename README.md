@@ -1,9 +1,8 @@
+| :exclamation: | I am not developing nor maintaining this repository anymore.    |
+| --------------| --------------------------------------------------------------- |
+
 meegpipe
 ========
-
-__NOTE__: meegpipe is not being actively developed at this moment. Please contact 
-[German Gomez-Herrero](german.gomezherrero@gmail.com) if you are interested in
-maintaining or developing meegpipe.
 
 
 _meegpipe_ is a collection of MATLAB tools for building advanced processing
